@@ -11,6 +11,8 @@ public struct DeveloperState: Equatable, Sendable {
     public var dontKeepActivities = false
     public var animationScale = 1.0
     public var nightMode = NightMode.auto
+    public var wifiOn = true
+    public var mobileDataOn = true
 
     public init() {}
 
@@ -21,7 +23,7 @@ public enum DeveloperSettings {
     public static let readCommand = "echo '##LAYOUT'; getprop debug.layout; echo '##OVERDRAW'; getprop debug.hwui.overdraw; "
         + "echo '##FINISH'; settings get global always_finish_activities; "
         + "echo '##ANIM'; settings get global window_animation_scale; settings get global transition_animation_scale; settings get global animator_duration_scale; "
-        + "echo '##NIGHT'; cmd uimode night"
+        + "echo '##NIGHT'; cmd uimode night; echo '##WIFI'; settings get global wifi_on; echo '##DATA'; settings get global mobile_data"
 
     public static func parse(_ output: String) -> DeveloperState {
         var sections: [String: [String]] = [:]
@@ -40,6 +42,8 @@ public enum DeveloperSettings {
         if let night = sections["NIGHT"]?.first?.lowercased() {
             if night.hasSuffix("yes") { state.nightMode = .yes } else if night.hasSuffix("no") { state.nightMode = .no }
         }
+        if let wifi = sections["WIFI"]?.first { state.wifiOn = wifi != "0" }
+        if let data = sections["DATA"]?.first { state.mobileDataOn = data != "0" }
         return state
     }
 
@@ -56,6 +60,8 @@ public enum DeveloperSettings {
             }
         }
         if old.nightMode != new.nightMode { commands.append("cmd uimode night \(new.nightMode.rawValue)") }
+        if old.wifiOn != new.wifiOn { commands.append("svc wifi \(new.wifiOn ? "enable" : "disable")") }
+        if old.mobileDataOn != new.mobileDataOn { commands.append("svc data \(new.mobileDataOn ? "enable" : "disable")") }
         return commands
     }
 }

@@ -14,6 +14,16 @@ final class DeveloperSettingsTests: XCTestCase {
         XCTAssertEqual(on.nightMode, .auto)
     }
 
+    func testNetworkSwitches() {
+        let s = DeveloperSettings.parse("##WIFI\n0\n##DATA\n1\n")
+        XCTAssertFalse(s.wifiOn)
+        XCTAssertTrue(s.mobileDataOn)
+        var off = DeveloperState()
+        off.wifiOn = false
+        off.mobileDataOn = false
+        XCTAssertEqual(DeveloperSettings.commands(from: DeveloperState(), to: off), ["svc wifi disable", "svc data disable"])
+    }
+
     func testNullSettingsFromAdbMeanDefault() {
         let s = DeveloperSettings.parse("##FINISH\nnull\n##ANIM\nnull\n")
         XCTAssertFalse(s.dontKeepActivities)

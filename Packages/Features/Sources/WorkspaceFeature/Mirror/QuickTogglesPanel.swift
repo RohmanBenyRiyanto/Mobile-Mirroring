@@ -11,14 +11,21 @@ public final class DeveloperToolsModel: ObservableObject {
     @Published public private(set) var state = DeveloperState()
     @Published public private(set) var canUndo = false
     @Published public private(set) var failure: String?
+    public let allowsNetworkSwitches: Bool
+    @Published public private(set) var mockLocation: MockLocation?
+    private var mockTask: Task<Void, Never>?
 
     private var baseline: DeveloperState?
     private var beforeLastChange: DeveloperState?
     private let run: @Sendable (String) throws -> String
 
-    public init(run: @escaping @Sendable (String) throws -> String) { self.run = run }
+    /// Wi-Fi and mobile data are only offered over USB: switching Wi-Fi off would also cut a wireless connection to the phone.
+    public init(allowsNetworkSwitches: Bool = true, run: @escaping @Sendable (String) throws -> String) {
+        self.allowsNetworkSwitches = allowsNetworkSwitches
+        self.run = run
+    }
 
-    public var hasChanges: Bool { baseline.map { $0 != state } ?? false }
+    public var hasChanges: Bool { mockLocation != nil || (baseline.map { $0 != state } ?? false) }
 
     public func load() async {
         let run = self.run
@@ -47,6 +54,7 @@ public final class DeveloperToolsModel: ObservableObject {
     }
 
     public func resetAll() {
+        stopMocking()
         guard let baseline else { return }
         beforeLastChange = nil
         canUndo = false
@@ -55,11 +63,41 @@ public final class DeveloperToolsModel: ObservableObject {
 
     /// Called when the session ends. Best effort: if the cable is already gone nothing can be sent.
     public func restoreOnEnd() {
+        mockTask?.cancel()
+        if mockLocation != nil { _ = try? run(MockLocation.stopCommand); mockLocation = nil }
         guard let baseline, baseline != state else { return }
         let commands = DeveloperSettings.commands(from: state, to: baseline)
         let run = self.run
         _ = try? run(commands.joined(separator: "; "))
         state = baseline
+    }
+
+    public func startMocking(_ location: MockLocation) {
+        let run = self.run
+        do {
+            _ = try run(location.startCommand)
+        } catch {
+            failure = String(localized: "The phone did not accept the change")
+            return
+        }
+        failure = nil
+        mockLocation = location
+        mockTask?.cancel()
+        mockTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(3))
+                guard let self, let current = mockLocation, !Task.isCancelled else { return }
+                _ = await Task.detached { try? run(current.updateCommand) }.value
+            }
+        }
+    }
+
+    public func stopMocking() {
+        mockTask?.cancel()
+        mockTask = nil
+        guard mockLocation != nil else { return }
+        _ = try? run(MockLocation.stopCommand)
+        mockLocation = nil
     }
 
     private func apply(_ new: DeveloperState) {
@@ -81,6 +119,7 @@ public final class DeveloperToolsModel: ObservableObject {
 struct QuickTogglesPanel: View {
     static let width: CGFloat = 300
     @ObservedObject var tools: DeveloperToolsModel
+    @State private var coordinates = ""
 
     var body: some View {
         VStack(spacing: 0) {
@@ -104,6 +143,25 @@ struct QuickTogglesPanel: View {
                         Text("Off").tag(DeveloperState.NightMode.no)
                     }
                 } header: { Text("Display") }
+                Section {
+                    Picker("Place", selection: Binding(get: { tools.mockLocation }, set: { place in place.map(tools.startMocking) ?? tools.stopMocking() })) {
+                        Text("Real location").tag(MockLocation?.none)
+                        ForEach(MockLocation.presets, id: \.name) { Text(verbatim: $0.name).tag(MockLocation?.some($0.location)) }
+                    }
+                    LabeledContent("Coordinates") {
+                        TextField("", text: $coordinates, prompt: Text(verbatim: "-6.2088, 106.8456"))
+                            .textFieldStyle(.roundedBorder).font(Theme.Font.mono).multilineTextAlignment(.trailing)
+                            .onSubmit { if let place = MockLocation(text: coordinates) { tools.startMocking(place) } }
+                    }
+                } header: { Text("Location") } footer: {
+                    Text("Needs Android 12 or later. The real location returns when you pick Real location, press Reset All or disconnect.")
+                }
+                if tools.allowsNetworkSwitches {
+                    Section {
+                        Toggle("Wi-Fi", isOn: binding(\.wifiOn))
+                        Toggle("Mobile data", isOn: binding(\.mobileDataOn))
+                    } header: { Text("Network") } footer: { Text("Switch both off to test how the app behaves without a connection.") }
+                }
                 if let failure = tools.failure {
                     Section { Label(failure, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.orange) }
                 }

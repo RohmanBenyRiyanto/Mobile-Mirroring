@@ -52,3 +52,27 @@ final class DeveloperToolsTests: XCTestCase {
         XCTAssertEqual(log.commands.last, "setprop debug.hwui.overdraw ''")
     }
 }
+
+@MainActor
+final class MockLocationModelTests: XCTestCase {
+    func testStartStopAndResetAll() {
+        let log = Log()
+        let tools = DeveloperToolsModel { log.add($0); return "" }
+        let place = MockLocation(latitude: 1, longitude: 2)!
+        tools.startMocking(place)
+        XCTAssertEqual(tools.mockLocation, place)
+        XCTAssertTrue(tools.hasChanges)
+        tools.resetAll()
+        XCTAssertNil(tools.mockLocation)
+        XCTAssertEqual(log.commands.last, MockLocation.stopCommand)
+    }
+
+    func testRestoreOnEndStopsMocking() {
+        let log = Log()
+        let tools = DeveloperToolsModel { log.add($0); return "" }
+        tools.startMocking(MockLocation(latitude: 1, longitude: 2)!)
+        tools.restoreOnEnd()
+        XCTAssertNil(tools.mockLocation)
+        XCTAssertEqual(log.commands.last, MockLocation.stopCommand)
+    }
+}

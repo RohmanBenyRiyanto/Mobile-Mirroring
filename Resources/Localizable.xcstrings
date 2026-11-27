@@ -1004,6 +1004,23 @@
         }
       }
     },
+    "Coordinates" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coordinates"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koordinat"
+          }
+        }
+      }
+    },
     "Copied %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2415,6 +2432,23 @@
         }
       }
     },
+    "Location" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokasi"
+          }
+        }
+      }
+    },
     "Logcat" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2619,6 +2653,23 @@
         }
       }
     },
+    "Mobile data" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mobile data"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data seluler"
+          }
+        }
+      }
+    },
     "Mode" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2768,6 +2819,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Asli"
+          }
+        }
+      }
+    },
+    "Needs Android 12 or later. The real location returns when you pick Real location, press Reset All or disconnect." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Needs Android 12 or later. The real location returns when you pick Real location, press Reset All or disconnect."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perlu Android 12 atau lebih baru. Lokasi asli kembali saat Anda memilih Lokasi asli, menekan Reset Semua, atau memutus koneksi."
+          }
+        }
+      }
+    },
+    "Network" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jaringan"
           }
         }
       }
@@ -3265,6 +3350,23 @@
         }
       }
     },
+    "Place" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Place"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tempat"
+          }
+        }
+      }
+    },
     "Play phone audio on this Mac" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3499,6 +3601,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Siap"
+          }
+        }
+      }
+    },
+    "Real location" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Real location"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokasi asli"
           }
         }
       }
@@ -4502,6 +4621,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gaya"
+          }
+        }
+      }
+    },
+    "Switch both off to test how the app behaves without a connection." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch both off to test how the app behaves without a connection."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matikan keduanya untuk menguji perilaku aplikasi tanpa koneksi."
           }
         }
       }
