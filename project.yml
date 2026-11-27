@@ -32,6 +32,11 @@ targets:
         excludes:
           - "Info.plist"
           - "*.entitlements"
+          - "DeviceNames.state.json"
+    preBuildScripts:
+      - name: Refresh device names
+        script: '"$SRCROOT/scripts/sync-device-names.sh" || true'
+        basedOnDependencyAnalysis: false
     dependencies:
       - package: Features
         product: WorkspaceFeature

@@ -106,7 +106,7 @@ public final class DeviceSession: ObservableObject {
         guard !hasEnded else { return }
         switch event {
         case let .started(name):
-            deviceName = name
+            deviceName = DeviceNameDirectory.bundled.name(model: name) ?? name
             state = .mirroring
             beginMonitoring()
         case let .resized(size):

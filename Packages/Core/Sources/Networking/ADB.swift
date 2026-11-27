@@ -1,3 +1,4 @@
+import DomainModels
 import Foundation
 
 public struct AndroidDevice: Identifiable, Hashable {
@@ -6,16 +7,21 @@ public struct AndroidDevice: Identifiable, Hashable {
     public let serial: String
     public let state: State
     public let model: String?
+    /// The device code name from `adb devices -l` (such as "dm1q"), a fallback when the model is not in the name list.
+    public let codename: String?
 
-    public init(serial: String, state: State, model: String?) {
+    public init(serial: String, state: State, model: String?, codename: String? = nil) {
         self.serial = serial
         self.state = state
         self.model = model
+        self.codename = codename
     }
 
     public var id: String { serial }
     public var isReady: Bool { state == .device }
-    public var title: String { model?.replacingOccurrences(of: "_", with: " ") ?? serial }
+    public var title: String {
+        DeviceNameDirectory.bundled.name(model: model, codename: codename) ?? model?.replacingOccurrences(of: "_", with: " ") ?? serial
+    }
 
     /// Serials end up as arguments to `adb -s`, so accept only the characters adb itself emits.
     public static func isValidSerial(_ serial: String) -> Bool {
@@ -126,7 +132,8 @@ public struct ADB: Sendable {
             let fields = line.split(whereSeparator: \.isWhitespace).map(String.init)
             guard fields.count >= 2, AndroidDevice.isValidSerial(fields[0]) else { return nil }
             let model = fields.first { $0.hasPrefix("model:") }.map { String($0.dropFirst("model:".count)) }
-            return AndroidDevice(serial: fields[0], state: AndroidDevice.State(rawValue: fields[1]) ?? .other, model: model)
+            let codename = fields.first { $0.hasPrefix("device:") }.map { String($0.dropFirst("device:".count)) }
+            return AndroidDevice(serial: fields[0], state: AndroidDevice.State(rawValue: fields[1]) ?? .other, model: model, codename: codename)
         }
     }
 }

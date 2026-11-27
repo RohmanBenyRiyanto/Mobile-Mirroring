@@ -12,6 +12,7 @@
 		29C698FD5B508E7BDD6B2E61 /* AppDependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60D3DF83AC6FA78DB547F9 /* AppDependencyContainer.swift */; };
 		2D7F2E94E2AD86125ABB338D /* SystemServices in Frameworks */ = {isa = PBXBuildFile; productRef = 1E560A2E87D2017E41437062 /* SystemServices */; };
 		34567EA082CF2912D2B184F7 /* scrcpy-server-v5.0.1 in Resources */ = {isa = PBXBuildFile; fileRef = E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */; };
+		6B273535DB71D8C7FF97506F /* DeviceNames.json in Resources */ = {isa = PBXBuildFile; fileRef = C03F96CFAD9DE801A13ABE3A /* DeviceNames.json */; };
 		8FCD962239B0AE475DA15C73 /* LogcatFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 402245A7E6F598F72F5E4DEB /* LogcatFeature */; };
 		A994CA7235440BA47D9C8717 /* BenzMirrorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C68D746BE6AFB5D670D9C8 /* BenzMirrorApp.swift */; };
 		AF734AA80957A1A118CEDEEA /* DatabaseFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 6736FF2FF4DE9D440AF3D568 /* DatabaseFeature */; };
@@ -47,6 +48,7 @@
 		7BBC50544FCA7CB00A7865CB /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		816A761943BB291DAF42B9A9 /* Features */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Features; path = Packages/Features; sourceTree = SOURCE_ROOT; };
 		B6C68D746BE6AFB5D670D9C8 /* BenzMirrorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenzMirrorApp.swift; sourceTree = "<group>"; };
+		C03F96CFAD9DE801A13ABE3A /* DeviceNames.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = DeviceNames.json; sourceTree = "<group>"; };
 		CC97B6F0380385DA21171307 /* UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = "scrcpy-server-v5.0.1"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -93,6 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				4BD89CCC5C5900DC34C0DA4C /* Assets.xcassets */,
+				C03F96CFAD9DE801A13ABE3A /* DeviceNames.json */,
 				678A51690BABF7156640242A /* LICENSE-scrcpy */,
 				7BBC50544FCA7CB00A7865CB /* Localizable.xcstrings */,
 				E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */,
@@ -136,6 +139,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 25A5D0C6A1887AA95BBA88CB /* Build configuration list for PBXNativeTarget "BenzMirror" */;
 			buildPhases = (
+				22F38AB1833354D64EA6E6D0 /* Refresh device names */,
 				D3F2DA18B1E69DEB6A89B022 /* Sources */,
 				9D78E9784FE154A5001A44A0 /* Resources */,
 				0CE8D6842DD10B5C7B6E14EA /* Frameworks */,
@@ -229,6 +233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F7FDB0923949DDD47D13CE5E /* Assets.xcassets in Resources */,
+				6B273535DB71D8C7FF97506F /* DeviceNames.json in Resources */,
 				E3868D26959A6490F8F7FB52 /* LICENSE-scrcpy in Resources */,
 				E827A178297B008528DC8DF6 /* Localizable.xcstrings in Resources */,
 				34567EA082CF2912D2B184F7 /* scrcpy-server-v5.0.1 in Resources */,
@@ -236,6 +241,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		22F38AB1833354D64EA6E6D0 /* Refresh device names */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Refresh device names";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$SRCROOT/scripts/sync-device-names.sh\" || true";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		143A829AA6AC4745D70673F5 /* Sources */ = {
