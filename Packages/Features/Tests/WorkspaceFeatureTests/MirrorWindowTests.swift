@@ -190,3 +190,12 @@ final class WindowSizeMemoryTests: XCTestCase {
         XCTAssertNil(memory.update(isPhoneShaped: true, currentContentSize: size, availableHeight: 1000, pictureRatio: landscape), "already the right shape: leave it")
     }
 }
+
+final class RailShortcutHintTests: XCTestCase {
+    func testHintsAreUniqueAndFollowTheMenus() {
+        let hints = RailItemID.allCases.compactMap(\.shortcutHint)
+        XCTAssertEqual(hints.count, Set(hints).count)
+        XCTAssertEqual(RailItemID.back.shortcutHint, "⌘[")
+        XCTAssertEqual(RailItemID.streamMode.shortcutHint, "⇧⌘B")
+    }
+}

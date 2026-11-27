@@ -57,6 +57,35 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         }
     }
 
+    /// The menu shortcut shown in the tooltip, kept in step with the menu bar.
+    public var shortcutHint: String? {
+        switch self {
+        case .back: return "⌘["
+        case .home: return "⇧⌘H"
+        case .recents: return "⇧⌘A"
+        case .volumeUp: return "⌘↑"
+        case .volumeDown: return "⌘↓"
+        case .power: return "⇧⌘P"
+        case .notifications: return "⇧⌘N"
+        case .quickSettings: return "⌥⌘N"
+        case .rotate: return "⌘R"
+        case .screenshot: return "⌘S"
+        case .record: return "⇧⌘R"
+        case .mute: return "⇧⌘M"
+        case .streamMode: return "⇧⌘B"
+        case .statistics: return "⌘I"
+        case .keymapToggle: return "⇧⌘K"
+        case .keymapProfile: return nil
+        case .editKeymap: return "⌘E"
+        case .recordMacro: return nil
+        case .inspector: return "⌥⌘I"
+        case .designOverlay: return "⌥⌘G"
+        case .colourPicker: return nil
+        case .grid: return nil
+        case .logcat: return "⇧⌘L"
+        }
+    }
+
     public var symbol: String {
         switch self {
         case .back: return "chevron.backward"

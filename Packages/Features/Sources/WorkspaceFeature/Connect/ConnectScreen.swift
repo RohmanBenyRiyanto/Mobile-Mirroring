@@ -35,6 +35,9 @@ struct ConnectScreen: View {
             Button { model.showsWireless = true } label: { Label("Wireless", systemImage: "wifi") }
                 .help("Connect over Wi-Fi")
                 .disabled(model.isAdbMissing)
+            Button { model.showsDeviceInfo = true } label: { Label("Device Information", systemImage: "info.circle") }
+                .help("Device Information")
+                .disabled(model.selectedDevice?.isReady != true)
             if status.isStarting {
                 Button("Cancel") { model.cancelConnect() }
                 Label { Text("Starting…") } icon: { ProgressView().controlSize(.small) }

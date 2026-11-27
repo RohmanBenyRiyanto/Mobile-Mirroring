@@ -6,6 +6,7 @@ import Theme
 struct RailButton: View {
     let title: LocalizedStringKey
     let symbol: String
+    var hint: String?
     var isOn = false
     var tint: Color?
     let action: () -> Void
@@ -22,7 +23,7 @@ struct RailButton: View {
         }
         .buttonStyle(.plain)
         .onHover { isHovered = $0 }
-        .help(title)
+        .help(hint.map { Text(title) + Text(verbatim: "  \($0)") } ?? Text(title))
         .accessibilityLabel(title)
     }
 }
@@ -93,16 +94,16 @@ struct RailView: View {
     @ViewBuilder
     private func button(for item: RailItemID) -> some View {
         switch item {
-        case .back: RailButton(title: item.title, symbol: item.symbol) { model.press(.back) }
-        case .home: RailButton(title: item.title, symbol: item.symbol) { model.press(.home) }
-        case .recents: RailButton(title: item.title, symbol: item.symbol) { model.press(.appSwitch) }
-        case .volumeUp: RailButton(title: item.title, symbol: item.symbol) { model.press(.volumeUp) }
-        case .volumeDown: RailButton(title: item.title, symbol: item.symbol) { model.press(.volumeDown) }
-        case .power: RailButton(title: item.title, symbol: item.symbol) { model.press(.power) }
-        case .notifications: RailButton(title: item.title, symbol: item.symbol) { model.send(.expandNotificationPanel) }
-        case .quickSettings: RailButton(title: item.title, symbol: item.symbol) { model.send(.expandSettingsPanel) }
-        case .rotate: RailButton(title: item.title, symbol: item.symbol) { model.send(.rotateDevice) }
-        case .screenshot: RailButton(title: item.title, symbol: item.symbol) { model.takeScreenshot() }
+        case .back: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.press(.back) }
+        case .home: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.press(.home) }
+        case .recents: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.press(.appSwitch) }
+        case .volumeUp: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.press(.volumeUp) }
+        case .volumeDown: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.press(.volumeDown) }
+        case .power: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.press(.power) }
+        case .notifications: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.send(.expandNotificationPanel) }
+        case .quickSettings: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.send(.expandSettingsPanel) }
+        case .rotate: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.send(.rotateDevice) }
+        case .screenshot: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.takeScreenshot() }
         case .record:
             RailButton(title: model.isRecording ? "Stop Recording" : item.title, symbol: model.isRecording ? "stop.fill" : item.symbol,
                        isOn: model.isRecording, tint: model.isRecording ? .white : nil) { model.toggleRecording() }
@@ -110,9 +111,9 @@ struct RailView: View {
         case .mute:
             RailButton(title: model.isMuted ? "Unmute" : item.title, symbol: model.isMuted ? "speaker.slash" : item.symbol,
                        isOn: model.isMuted) { model.toggleMute() }
-        case .streamMode: RailButton(title: item.title, symbol: item.symbol) { model.isStreamMode = true }
-        case .statistics: RailButton(title: item.title, symbol: item.symbol, isOn: model.showsStats) { model.showsStats.toggle() }
-        case .keymapToggle: RailButton(title: item.title, symbol: item.symbol, isOn: model.isKeymapEnabled) { model.setKeymapEnabled(!model.isKeymapEnabled) }
+        case .streamMode: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.isStreamMode = true }
+        case .statistics: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.showsStats) { model.showsStats.toggle() }
+        case .keymapToggle: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.isKeymapEnabled) { model.setKeymapEnabled(!model.isKeymapEnabled) }
         case .keymapProfile:
             Menu {
                 if model.keymapProfiles.isEmpty { Text("No keymaps yet") }
@@ -127,16 +128,16 @@ struct RailView: View {
             }
             .menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden)
             .help(item.title).accessibilityLabel(item.title)
-        case .editKeymap: RailButton(title: item.title, symbol: item.symbol) { model.startEditingKeymap() }
+        case .editKeymap: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.startEditingKeymap() }
         case .recordMacro:
             RailButton(title: model.isRecordingMacro ? "Stop Recording Macro" : item.title, symbol: item.symbol, isOn: model.isRecordingMacro) { model.toggleMacroRecording() }
-        case .inspector: RailButton(title: item.title, symbol: item.symbol, isOn: model.isInspecting) { model.setInspecting(!model.isInspecting) }
+        case .inspector: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.isInspecting) { model.setInspecting(!model.isInspecting) }
         case .designOverlay:
-            RailButton(title: item.title, symbol: item.symbol, isOn: model.designTool == .crosshair) { model.setDesignTool(model.designTool == .crosshair ? .off : .crosshair) }
+            RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.designTool == .crosshair) { model.setDesignTool(model.designTool == .crosshair ? .off : .crosshair) }
         case .colourPicker:
-            RailButton(title: item.title, symbol: item.symbol, isOn: model.designTool == .colorPicker) { model.setDesignTool(model.designTool == .colorPicker ? .off : .colorPicker) }
-        case .grid: RailButton(title: item.title, symbol: item.symbol, isOn: model.designGrid != .off) { model.designGrid = Self.nextGrid(after: model.designGrid) }
-        case .logcat: RailButton(title: item.title, symbol: item.symbol) { openLogcat() }
+            RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.designTool == .colorPicker) { model.setDesignTool(model.designTool == .colorPicker ? .off : .colorPicker) }
+        case .grid: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.designGrid != .off) { model.designGrid = Self.nextGrid(after: model.designGrid) }
+        case .logcat: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { openLogcat() }
         }
     }
 

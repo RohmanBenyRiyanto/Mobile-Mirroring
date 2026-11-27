@@ -14,6 +14,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular) // Needed for a bare executable to show a normal window.
         NSApp.activate(ignoringOtherApps: true)
+        // The helper windows (Logcat, Mini Mirror, …) mean nothing without the main window, so closing it ends the app.
+        closeObserver = NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: nil, queue: .main) { note in
+            guard let window = note.object as? NSWindow, Self.isMainWindow(window) else { return }
+            NSApp.terminate(nil)
+        }
+    }
+
+    private var closeObserver: NSObjectProtocol?
+
+    private static let helperWindowIDs = ["logcat", "mini", "apilog", "database"]
+
+    private static func isMainWindow(_ window: NSWindow) -> Bool {
+        guard let id = window.identifier?.rawValue, id.contains("AppWindow") else { return false }
+        return !helperWindowIDs.contains { id.hasPrefix($0) }
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        model?.restorePhoneChanges()
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }

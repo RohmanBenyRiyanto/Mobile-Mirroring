@@ -117,6 +117,14 @@ public final class AppModel: ObservableObject {
 
     deinit { pollTask?.cancel() }
 
+    /// Puts back everything the developer tools changed on the phones (quick toggles, mock location, proxy). Called when the app quits.
+    public func restorePhoneChanges() {
+        for session in sessions {
+            session.developerTools.restoreOnEnd()
+            session.traffic.stop()
+        }
+    }
+
     public func finishOnboarding() {
         defaults.set(true, forKey: "onboardingDone")
         showsOnboarding = false
