@@ -116,9 +116,9 @@ public struct AppCommands: Commands {
                 .keyboardShortcut("m", modifiers: [.command, .shift])
                 .disabled(!mirroring)
             Divider()
-            Button("Mini Mirror") {}
+            Button("Mini Mirror") { openWindow(id: "mini") }
                 .keyboardShortcut("y", modifiers: [.command, .shift])
-                .disabled(true) // the floating mini mirror is not built yet
+                .disabled(!mirroring)
             Toggle("Keep on Top", isOn: $model.alwaysOnTop)
                 .keyboardShortcut("y", modifiers: [.command, .option])
             Divider()

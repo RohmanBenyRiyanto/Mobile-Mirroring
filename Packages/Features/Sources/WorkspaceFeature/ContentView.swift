@@ -65,7 +65,7 @@ private struct MirrorScreen: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if model.sessions.count > 1 && !model.isStreamMode { PhoneTabs() }
+            if (model.sessions.count > 1 || model.devices.contains { $0.state == .offline && !model.sessions.map(\.serial).contains($0.serial) } && !model.sessions.isEmpty) && !model.isStreamMode { PhoneTabs() }
             content
         }
         .navigationTitle(model.deviceName)
@@ -123,21 +123,52 @@ private struct MirrorScreen: View {
     }
 }
 
+struct PhoneTab: Equatable, Identifiable {
+    let id: String
+    let title: String
+    let isActive: Bool
+    let isRecording: Bool
+    let isOffline: Bool
+
+    /// One tab per mirrored phone, then a dimmed tab for each known phone that is not responding.
+    static func tabs(mirrored: [(serial: String, name: String, isRecording: Bool)], devices: [AndroidDevice], activeSerial: String?) -> [PhoneTab] {
+        let live = mirrored.map {
+            PhoneTab(id: $0.serial, title: $0.name.isEmpty ? $0.serial : $0.name, isActive: $0.serial == activeSerial, isRecording: $0.isRecording, isOffline: false)
+        }
+        let known = Set(mirrored.map(\.serial))
+        let offline = devices.filter { !known.contains($0.serial) && ($0.state == .offline || $0.state == .unauthorized) }
+            .map { PhoneTab(id: $0.serial, title: $0.title, isActive: false, isRecording: false, isOffline: true) }
+        return live + offline
+    }
+}
+
 private struct PhoneTabs: View {
     @EnvironmentObject private var model: AppModel
 
+    private var tabs: [PhoneTab] {
+        PhoneTab.tabs(mirrored: model.sessions.map { ($0.serial, $0.deviceName, $0.isRecording) }, devices: model.devices, activeSerial: model.activeSerial)
+    }
+
     var body: some View {
-        HStack(spacing: 4) {
-            ForEach(model.sessions, id: \.serial) { session in
-                Button(session.deviceName.isEmpty ? session.serial : session.deviceName) { model.activate(session.serial) }
-                    .buttonStyle(.borderless)
-                    .fontWeight(session.serial == model.activeSerial ? .medium : .regular)
-                    .foregroundStyle(session.serial == model.activeSerial ? .primary : .secondary)
+        HStack(spacing: Theme.Space.s1) {
+            ForEach(tabs) { tab in
+                Button { tab.isOffline ? model.reconnectDevices() : model.activate(tab.id) } label: {
+                    HStack(spacing: Theme.Space.s1) {
+                        if tab.isRecording { Circle().fill(Theme.Palette.red.color).frame(width: 7, height: 7).accessibilityLabel("Recording") }
+                        Text(verbatim: tab.title).lineLimit(1)
+                        if tab.isOffline { Text("Offline").font(Theme.Font.caption) }
+                    }
+                    .padding(.horizontal, Theme.Space.s3).padding(.vertical, 4)
+                    .background(tab.isActive ? Theme.Palette.control.color : .clear, in: Capsule())
+                    .foregroundStyle(tab.isActive ? .primary : .secondary)
+                    .opacity(tab.isOffline ? 0.6 : 1)
+                }
+                .buttonStyle(.plain)
             }
             Spacer()
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 6)
+        .padding(.horizontal, Theme.Space.s3)
+        .padding(.vertical, Theme.Space.s2)
         .background(.bar)
     }
 }

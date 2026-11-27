@@ -10,6 +10,23 @@ public final class VideoDecoder: @unchecked Sendable {
 
     public let layer = AVSampleBufferDisplayLayer()
 
+    /// Extra places the picture is shown (the mini mirror). They are fed the same frames as `layer`.
+    private let extraRenderers = LockedValue<[(layer: AVSampleBufferDisplayLayer, renderer: AVSampleBufferVideoRenderer)]>([])
+
+    /// Creates another layer showing the same picture. Call from the main thread; it starts at the next key frame.
+    public func makeMirrorLayer() -> AVSampleBufferDisplayLayer {
+        let extra = AVSampleBufferDisplayLayer()
+        extra.videoGravity = .resizeAspect
+        extra.backgroundColor = CGColor(gray: 0, alpha: 1)
+        extraRenderers.withLock { $0.append((extra, extra.sampleBufferRenderer)) }
+        onNeedsKeyFrame?()
+        return extra
+    }
+
+    public func removeMirrorLayer(_ layer: AVSampleBufferDisplayLayer) {
+        extraRenderers.withLock { $0.removeAll { $0.layer === layer } }
+    }
+
     /// Called when decoding broke and a fresh key frame is needed.
     public var onNeedsKeyFrame: (() -> Void)?
 
@@ -69,6 +86,10 @@ public final class VideoDecoder: @unchecked Sendable {
 
         SampleBuffers.markDisplayImmediately(sample)
         renderer.enqueue(sample)
+        for extra in extraRenderers.get() {
+            extra.renderer.enqueue(sample)
+            if extra.renderer.status == .failed { extra.renderer.flush() }
+        }
         if renderer.status == .failed {
             renderer.flush()
             waitingForKeyFrame = true

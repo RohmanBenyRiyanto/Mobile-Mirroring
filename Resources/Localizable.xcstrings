@@ -3520,6 +3520,23 @@
         }
       }
     },
+    "Open the main window" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the main window"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka jendela utama"
+          }
+        }
+      }
+    },
     "Other files are copied to Download on the phone." : {
       "extractionState" : "manual",
       "localizations" : {
