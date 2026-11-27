@@ -1616,6 +1616,23 @@
         }
       }
     },
+    "Could not reach the phone over Wi-Fi. Check that it is on the same network." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not reach the phone over Wi-Fi. Check that it is on the same network."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak dapat menjangkau ponsel lewat Wi-Fi. Pastikan berada di jaringan yang sama."
+          }
+        }
+      }
+    },
     "Could not reconnect. Check the cable and that the phone is unlocked." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3843,6 +3860,23 @@
         }
       }
     },
+    "More than one phone is connected. Choose one in the list first." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More than one phone is connected. Choose one in the list first."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lebih dari satu ponsel terhubung. Pilih salah satu di daftar dulu."
+          }
+        }
+      }
+    },
     "Move Down" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4064,6 +4098,23 @@
         }
       }
     },
+    "No phone is connected. Plug it in and turn on USB debugging." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No phone is connected. Plug it in and turn on USB debugging."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada ponsel yang terhubung. Colokkan dan aktifkan USB debugging."
+          }
+        }
+      }
+    },
     "No shortcut matches." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4111,6 +4162,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tidak berjalan"
+          }
+        }
+      }
+    },
+    "Nothing answered at that address. Check the address and that Wireless debugging is on." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing answered at that address. Check the address and that Wireless debugging is on."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada yang menjawab di alamat itu. Periksa alamat dan pastikan Debugging nirkabel aktif."
           }
         }
       }
@@ -6716,6 +6784,23 @@
         }
       }
     },
+    "That file is not a valid app package." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That file is not a valid app package."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File itu bukan paket aplikasi yang valid."
+          }
+        }
+      }
+    },
     "That name cannot be used." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6750,6 +6835,40 @@
         }
       }
     },
+    "The app is already installed with a different signature. Uninstall it on the phone first." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app is already installed with a different signature. Uninstall it on the phone first."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikasi sudah terpasang dengan tanda tangan berbeda. Hapus dulu di ponsel."
+          }
+        }
+      }
+    },
+    "The app is already installed." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app is already installed."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikasi sudah terpasang."
+          }
+        }
+      }
+    },
     "The clipboard has no text to import" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6763,6 +6882,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Papan klip tidak berisi teks untuk diimpor"
+          }
+        }
+      }
+    },
+    "The connection to the phone was interrupted. Try again." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The connection to the phone was interrupted. Try again."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koneksi ke ponsel terputus. Coba lagi."
           }
         }
       }
@@ -6801,6 +6937,23 @@
         }
       }
     },
+    "The phone blocks installs over USB. Turn on “Install via USB” in Developer options." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The phone blocks installs over USB. Turn on “Install via USB” in Developer options."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponsel memblokir pemasangan lewat USB. Aktifkan “Instal via USB” di Opsi pengembang."
+          }
+        }
+      }
+    },
     "The phone did not accept the change" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6831,6 +6984,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ponsel tidak menjawab"
+          }
+        }
+      }
+    },
+    "The phone does not have enough free space for this app." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The phone does not have enough free space for this app."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruang kosong di ponsel tidak cukup untuk aplikasi ini."
+          }
+        }
+      }
+    },
+    "The phone has no free space left." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The phone has no free space left."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruang kosong di ponsel habis."
           }
         }
       }
@@ -6886,6 +7073,23 @@
         }
       }
     },
+    "The phone refused access to that location." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The phone refused access to that location."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponsel menolak akses ke lokasi itu."
+          }
+        }
+      }
+    },
     "The phone stopped responding" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6899,6 +7103,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ponsel tidak merespons"
+          }
+        }
+      }
+    },
+    "The phone stopped responding. Unplug the cable, plug it in again and unlock the phone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The phone stopped responding. Unplug the cable, plug it in again and unlock the phone."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponsel berhenti merespons. Cabut kabel, colokkan lagi, lalu buka kunci ponsel."
+          }
+        }
+      }
+    },
+    "The phone was disconnected." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The phone was disconnected."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponsel terputus."
           }
         }
       }
@@ -6988,6 +7226,23 @@
         }
       }
     },
+    "This Mac is not allowed on the phone yet. Unlock the phone and tap Allow." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Mac is not allowed on the phone yet. Unlock the phone and tap Allow."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac ini belum diizinkan di ponsel. Buka kunci ponsel lalu ketuk Izinkan."
+          }
+        }
+      }
+    },
     "This Mac sees" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7035,6 +7290,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aplikasi ini tidak debuggable, jadi Android tidak mengizinkan alat apa pun membaca filenya. Hanya build debug yang bisa dibuka."
+          }
+        }
+      }
+    },
+    "This app needs a newer version of Android than the phone has." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This app needs a newer version of Android than the phone has."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikasi ini butuh Android yang lebih baru dari yang ada di ponsel."
           }
         }
       }

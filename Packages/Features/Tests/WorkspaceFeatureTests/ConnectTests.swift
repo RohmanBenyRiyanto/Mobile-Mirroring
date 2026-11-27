@@ -112,6 +112,11 @@ final class LocalizationCatalogTests: XCTestCase {
         }
     }
 
+    func testEveryFriendlyErrorIsTranslated() throws {
+        let strings = try catalog()
+        for text in FriendlyErrors.allTexts { XCTAssertNotNil(strings[text].flatMap { value($0, "id") }, "Missing Indonesian text for: \(text)") }
+    }
+
     func testTranslationsKeepTheirPlaceholders() throws {
         for (key, entry) in try catalog() {
             let placeholders = { (text: String) in text.components(separatedBy: "%").dropFirst().map { String($0.prefix(while: { $0.isLetter || $0 == "@" }).prefix(3)) }.sorted() }

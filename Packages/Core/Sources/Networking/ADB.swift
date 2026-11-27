@@ -40,6 +40,7 @@ public enum ADBError: LocalizedError {
         case .notFound:
             return "adb not found. Install Android platform-tools (brew install android-platform-tools)."
         case let .failed(command, message):
+            if let friendly = FriendlyErrors.explain(message) { return String(localized: String.LocalizationValue(friendly)) }
             return "adb \(command) failed: \(message)"
         case let .timedOut(command):
             return "adb \(command) timed out"
