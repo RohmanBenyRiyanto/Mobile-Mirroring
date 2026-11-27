@@ -169,9 +169,9 @@ public struct AppCommands: Commands {
             Divider()
             Button("Logcat") { openWindow(id: "logcat") }
                 .keyboardShortcut("l", modifiers: [.command, .shift])
-            Button("Quick Toggles") {}
+            Button(LocalizedStringKey(model.showsQuickToggles ? "Hide Quick Toggles" : "Quick Toggles")) { model.showsQuickToggles.toggle() }
                 .keyboardShortcut("j", modifiers: [.command, .option])
-                .disabled(true) // the Development mode panel is not built yet
+                .disabled(!mirroring)
             Divider()
             ForEach(DeviceTool.allCases) { tool in
                 Button(LocalizedStringKey(tool.title)) { model.run(tool) }.disabled(!mirroring)

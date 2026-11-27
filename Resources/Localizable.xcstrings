@@ -375,6 +375,23 @@
         }
       }
     },
+    "Animation speed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animation speed"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kecepatan animasi"
+          }
+        }
+      }
+    },
     "Animations: Normal" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1242,6 +1259,40 @@
         }
       }
     },
+    "Dark mode" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dark mode"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode gelap"
+          }
+        }
+      }
+    },
+    "Debugging" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debugging"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debugging"
+          }
+        }
+      }
+    },
     "Default" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1446,6 +1497,23 @@
         }
       }
     },
+    "Display" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilan"
+          }
+        }
+      }
+    },
     "Done" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1459,6 +1527,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Selesai"
+          }
+        }
+      }
+    },
+    "Don’t keep activities" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Don’t keep activities"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jangan simpan aktivitas"
           }
         }
       }
@@ -1718,6 +1803,23 @@
         }
       }
     },
+    "GPU overdraw" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPU overdraw"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overdraw GPU"
+          }
+        }
+      }
+    },
     "Game streaming" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1850,6 +1952,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sembunyikan HUD Developer"
+          }
+        }
+      }
+    },
+    "Hide Quick Toggles" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide Quick Toggles"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sembunyikan Quick Toggles"
           }
         }
       }
@@ -2173,6 +2292,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bahasa"
+          }
+        }
+      }
+    },
+    "Layout bounds" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Layout bounds"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batas layout"
+          }
+        }
+      }
+    },
+    "Layout bounds and overdraw apply to apps the next time they open." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Layout bounds and overdraw apply to apps the next time they open."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batas layout dan overdraw berlaku saat aplikasi dibuka lagi."
           }
         }
       }
@@ -2806,6 +2959,23 @@
         }
       }
     },
+    "Off" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mati"
+          }
+        }
+      }
+    },
     "Offline" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2819,6 +2989,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Offline"
+          }
+        }
+      }
+    },
+    "On" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyala"
           }
         }
       }
@@ -3277,7 +3464,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toggle Cepat"
+            "value" : "Quick Toggles"
           }
         }
       }
@@ -3465,6 +3652,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reset"
+          }
+        }
+      }
+    },
+    "Reset All" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset All"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset Semua"
           }
         }
       }
@@ -4438,6 +4642,40 @@
         }
       }
     },
+    "The phone did not accept the change" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The phone did not accept the change"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponsel tidak menerima perubahan"
+          }
+        }
+      }
+    },
+    "The phone did not answer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The phone did not answer"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponsel tidak menjawab"
+          }
+        }
+      }
+    },
     "The phone is almost out of memory" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4604,6 +4842,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tidak tersedia"
+          }
+        }
+      }
+    },
+    "Undo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undo"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Urungkan"
           }
         }
       }

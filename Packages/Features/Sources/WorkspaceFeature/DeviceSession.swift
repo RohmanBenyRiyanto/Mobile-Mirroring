@@ -41,6 +41,7 @@ public final class DeviceSession: ObservableObject {
     public let design: DesignModel
     public let macroRecorder = MacroRecorder()
     public let performance = PerformanceMonitor()
+    public let developerTools: DeveloperToolsModel
     @Published public private(set) var isRecordingMacro = false
 
     public var onNotice: ((String) -> Void)?
@@ -64,6 +65,7 @@ public final class DeviceSession: ObservableObject {
     public init(adb: ADB, serial: String, settings: MirrorSettings, cursorCapture: CursorCapturing, mode: WorkspaceMode = .normal) {
         modeState = ModeAutoSwitch(mode: mode)
         self.adb = adb
+        developerTools = DeveloperToolsModel(run: { try String(decoding: adb.run(["-s", serial, "shell", $0], timeout: 8), as: UTF8.self) })
         self.serial = serial
         self.settings = settings
         let scrcpy = ScrcpySession(adb: adb, serial: serial, settings: settings)
@@ -176,6 +178,7 @@ public final class DeviceSession: ObservableObject {
         design.reset()
         statsTask?.cancel()
         performance.stop()
+        developerTools.restoreOnEnd()
         foreground.stop()
         isRecording = false
     }
