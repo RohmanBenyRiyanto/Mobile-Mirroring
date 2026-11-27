@@ -34,3 +34,24 @@ final class OnboardingFlowTests: XCTestCase {
         XCTAssertFalse(AppModel(defaults: defaults).showsOnboarding)
     }
 }
+
+@MainActor
+final class PerDeviceSettingsTests: XCTestCase {
+    func testEachPhoneKeepsItsOwnChoices() {
+        let defaults = isolatedDefaults()
+        let model = AppModel(defaults: defaults)
+        model.selectedSerial = "A"
+        model.settings.showTouches = true
+        model.selectedSerial = "B"
+        XCTAssertTrue(model.settings.showTouches, "a phone seen for the first time starts from the current settings")
+        model.settings.showTouches = false
+        model.selectedSerial = "A"
+        XCTAssertTrue(model.settings.showTouches)
+        model.selectedSerial = "B"
+        XCTAssertFalse(model.settings.showTouches)
+
+        let again = AppModel(defaults: defaults)
+        again.selectedSerial = "A"
+        XCTAssertTrue(again.settings.showTouches, "remembered across launches")
+    }
+}

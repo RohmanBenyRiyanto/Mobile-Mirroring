@@ -36,8 +36,22 @@ public final class AppModel: ObservableObject {
     }
 
     @Published public private(set) var devices: [AndroidDevice] = []
-    @Published public var selectedSerial: String?
-    @Published public var settings: MirrorSettings { didSet { SettingsStore.save(settings, to: defaults) } }
+    @Published public var selectedSerial: String? {
+        didSet {
+            guard let serial = selectedSerial, serial != oldValue else { return }
+            let remembered = deviceSettings.apply(to: settings, serial: serial)
+            if remembered != settings { settings = remembered }
+        }
+    }
+    @Published public var settings: MirrorSettings {
+        didSet {
+            SettingsStore.save(settings, to: defaults)
+            guard let serial = selectedSerial else { return }
+            deviceSettings.record(settings, serial: serial)
+            if let data = try? JSONEncoder().encode(deviceSettings) { defaults.set(data, forKey: "deviceSettings.v1") }
+        }
+    }
+    private var deviceSettings = DeviceSettingsBook()
     @Published public private(set) var sessions: [DeviceSession] = []
     @Published public private(set) var activeSerial: String?
     /// True while the user is picking another phone to add; the connect screen shows instead of the mirror.
@@ -105,6 +119,7 @@ public final class AppModel: ObservableObject {
         defaultMode = defaults.string(forKey: "workspaceMode").flatMap(WorkspaceMode.init(rawValue:)) ?? .normal
         railLayout = defaults.data(forKey: "railLayout.v1").flatMap(RailLayout.decode) ?? .standard
         settings = SettingsStore.load(from: defaults)
+        deviceSettings = defaults.data(forKey: "deviceSettings.v1").flatMap(DeviceSettingsBook.decode) ?? DeviceSettingsBook()
         showsOnboarding = !defaults.bool(forKey: "onboardingDone")
         keymapStore = try? ProfileStore<Keymap>(kind: "keymap", root: keymapRoot)
         keymapProfiles = keymapStore?.list() ?? []
