@@ -258,7 +258,7 @@ public final class ScrcpySession: @unchecked Sendable {
         let isConfig = flagsAndTime & (1 << 62) != 0
         let isKeyFrame = flagsAndTime & (1 << 61) != 0
         let presentationTime = Int64(flagsAndTime & ((1 << 61) - 1))
-        statistics.recordVideoPacket(bytes: size, isFrame: !isConfig)
+        statistics.recordVideoPacket(bytes: size, isFrame: !isConfig, presentationMicros: isConfig ? nil : presentationTime)
 
         if isConfig {
             try decoder.configure(with: payload)

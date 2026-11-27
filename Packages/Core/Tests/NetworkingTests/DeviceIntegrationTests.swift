@@ -91,7 +91,7 @@ final class DeviceIntegrationTests: XCTestCase {
 
         let stats = session.statistics.snapshot()
         let state = log.snapshot
-        print("DEVICE>> events=\(state.events) size=\(String(describing: state.size)) fps=\(stats.framesPerSecond) mbps=\(stats.megabitsPerSecond) received=\(received.count) viewers=\(session.streamViewerCount)")
+        print("DEVICE>> events=\(state.events) size=\(String(describing: state.size)) fps=\(stats.framesPerSecond) mbps=\(stats.megabitsPerSecond) jitter=\(stats.jitterMillis) received=\(received.count) viewers=\(session.streamViewerCount)")
 
         XCTAssertTrue(state.events.contains { $0.hasPrefix("started:") }, "session never started: \(state.events)")
         XCTAssertFalse(state.events.contains { $0.hasPrefix("ended:") }, "session ended early: \(state.events)")

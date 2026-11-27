@@ -183,7 +183,7 @@ private struct StatsOverlay: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(String(format: "%.0f fps  ·  %.1f Mbps", model.stats.framesPerSecond, model.stats.megabitsPerSecond))
+            Text(String(format: "%.0f fps  ·  %.1f Mbps  ·  %.1f ms jitter", model.stats.framesPerSecond, model.stats.megabitsPerSecond, model.stats.jitterMillis))
             Text("\(Int(model.videoSize.width))×\(Int(model.videoSize.height))  ·  \(model.settings.quality.codec.rawValue.uppercased())")
             if let info = model.deviceInfo { Text("\(info.density) dpi  ·  Android \(info.androidRelease)") }
             if let app = foreground.current { Text(app.package).lineLimit(1) }
