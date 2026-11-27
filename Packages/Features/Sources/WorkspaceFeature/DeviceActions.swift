@@ -1,0 +1,137 @@
+import AppKit
+import Foundation
+import DomainModels
+
+/// Where screenshots and recordings are saved: `<Pictures|Movies>/<app name>/<Prefix>-<timestamp>.<ext>`.
+public enum OutputFiles {
+    public static func newURL(in directory: FileManager.SearchPathDirectory, prefix: String, pathExtension: String) throws -> URL {
+        let folder = FileManager.default.urls(for: directory, in: .userDomainMask)[0]
+            .appendingPathComponent(AppInfo.name, isDirectory: true)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyyMMdd-HHmmss"
+        return folder.appendingPathComponent("\(prefix)-\(formatter.string(from: Date())).\(pathExtension)")
+    }
+
+    /// A safe file name for the phone: letters, digits and a few punctuation marks only.
+    public static func sanitizedName(_ name: String) -> String {
+        let allowed = Set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-() ")
+        let cleaned = String(name.map { allowed.contains($0) ? $0 : "_" }).trimmingCharacters(in: .whitespaces)
+        return cleaned.isEmpty || cleaned.hasPrefix(".") ? "file" + cleaned : String(cleaned.prefix(120))
+    }
+}
+
+/// One-shot adb actions that do not need the mirroring session.
+extension AppModel {
+    public func takeScreenshot() {
+        guard let adb, let serial = targetSerial else { return }
+        Task {
+            do {
+                let png = try await Task.detached { try adb.run(["-s", serial, "exec-out", "screencap", "-p"], timeout: 15) }.value
+                let url = try OutputFiles.newURL(in: .picturesDirectory, prefix: "Screenshot", pathExtension: "png")
+                try png.write(to: url, options: .withoutOverwriting)
+                notice = "Saved \(url.lastPathComponent) to Pictures/\(AppInfo.name)"
+            } catch {
+                notice = "Screenshot failed: \(error.localizedDescription)"
+            }
+        }
+    }
+
+    /// Dropped files: an `.apk` is installed, a `.benzkeymap` is imported, anything else is copied to the phone's Download folder.
+    public func handleDrop(_ urls: [URL]) {
+        for url in urls where url.isFileURL {
+            switch url.pathExtension.lowercased() {
+            case "apk": install(apk: url)
+            case KeymapFile.fileExtension: importKeymap(from: url) // a shared keymap, not a file for the phone
+            default: push(file: url)
+            }
+        }
+    }
+
+    private func install(apk: URL) {
+        perform("Installing \(apk.lastPathComponent)…", done: "Installed \(apk.lastPathComponent)", timeout: 180) { serial in
+            ["-s", serial, "install", "-r", apk.path]
+        }
+    }
+
+    private func push(file: URL) {
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: file.path, isDirectory: &isDirectory), !isDirectory.boolValue else {
+            notice = "Folders cannot be copied to the phone"
+            return
+        }
+        let name = OutputFiles.sanitizedName(file.lastPathComponent)
+        perform("Copying \(name)…", done: "Copied \(name) to Download", timeout: 600) { serial in
+            ["-s", serial, "push", file.path, "/sdcard/Download/\(name)"]
+        }
+    }
+
+    public func run(_ tool: DeviceTool) {
+        guard let adb, let serial = targetSerial else { return }
+        Task {
+            do {
+                for command in tool.shellCommands {
+                    _ = try await Task.detached { try adb.run(["-s", serial, "shell"] + command, timeout: 10) }.value
+                }
+                notice = tool.title
+            } catch {
+                notice = error.localizedDescription
+            }
+        }
+    }
+
+    // MARK: Wireless
+
+    public func switchToWireless() {
+        guard let adb, let serial = selectedSerial else { return }
+        notice = "Switching to Wi-Fi…"
+        Task {
+            do {
+                let address = try await Task.detached { try adb.enableWireless(serial: serial) }.value
+                notice = "Connected wirelessly at \(address). You can unplug the cable."
+            } catch {
+                notice = error.localizedDescription
+            }
+        }
+    }
+
+    public func pair(address: String, code: String) {
+        guard let adb else { return }
+        Task {
+            do {
+                try await Task.detached { try adb.pair(address: address, code: code) }.value
+                notice = "Paired. Now connect using the address shown on the main wireless screen."
+            } catch {
+                notice = error.localizedDescription
+            }
+        }
+    }
+
+    public func connectWireless(address: String) {
+        guard let adb else { return }
+        Task {
+            do {
+                try await Task.detached { try adb.connect(address: address) }.value
+                notice = "Connected to \(address)"
+            } catch {
+                notice = error.localizedDescription
+            }
+        }
+    }
+
+    // MARK: Helpers
+
+    private func perform(_ start: String, done: String, timeout: TimeInterval, arguments: @escaping @Sendable (String) -> [String]) {
+        guard let adb, let serial = targetSerial else { return }
+        notice = start
+        Task {
+            do {
+                _ = try await Task.detached { try adb.run(arguments(serial), timeout: timeout) }.value
+                notice = done
+            } catch {
+                notice = error.localizedDescription
+            }
+        }
+    }
+}

@@ -1,0 +1,60 @@
+{
+  "format" : "benzmirror.profile",
+  "id" : "example",
+  "kind" : "keymap",
+  "modified" : "2026-11-27T10:00:00Z",
+  "name" : "Example keymap",
+  "payload" : {
+    "elements" : [
+      {
+        "action" : { "joystick" : { "up" : 13, "left" : 0, "down" : 1, "right" : 2, "radius" : 0.12, "response" : 0.08 } },
+        "id" : "5B0E3C2A-6B1D-4C6B-9B0F-0A1E4F6D0000",
+        "label" : "Move",
+        "position" : { "x" : 0.15, "y" : 0.75 }
+      },
+      {
+        "action" : { "aim" : { "toggleKey" : 50, "sensitivity" : 2, "radius" : 0.15 } },
+        "id" : "5B0E3C2A-6B1D-4C6B-9B0F-0A1E4F6D0010",
+        "label" : "Look",
+        "position" : { "x" : 0.70, "y" : 0.50 }
+      },
+      {
+        "action" : { "mouseButton" : { "button" : 0, "mode" : "hold" } },
+        "id" : "5B0E3C2A-6B1D-4C6B-9B0F-0A1E4F6D0011",
+        "label" : "Fire (mouse)",
+        "position" : { "x" : 0.88, "y" : 0.88 }
+      },
+      {
+        "action" : { "button" : { "key" : 12, "mode" : "tap" } },
+        "id" : "5B0E3C2A-6B1D-4C6B-9B0F-0A1E4F6D0001",
+        "label" : "Skill 1",
+        "position" : { "x" : 0.85, "y" : 0.80 }
+      },
+      {
+        "action" : { "skillShot" : { "key" : 15, "cast" : "onRelease", "radius" : 0.12, "range" : 0.3, "hero" : { "x" : 0.5, "y" : 0.5 } } },
+        "id" : "5B0E3C2A-6B1D-4C6B-9B0F-0A1E4F6D0012",
+        "label" : "Skill 3 (aimed)",
+        "position" : { "x" : 0.78, "y" : 0.90 }
+      },
+      {
+        "action" : { "button" : { "key" : 14, "mode" : "tap" } },
+        "id" : "5B0E3C2A-6B1D-4C6B-9B0F-0A1E4F6D0002",
+        "label" : "Skill 2",
+        "position" : { "x" : 0.92, "y" : 0.65 }
+      },
+      {
+        "action" : { "button" : { "key" : 49, "mode" : "hold" } },
+        "id" : "5B0E3C2A-6B1D-4C6B-9B0F-0A1E4F6D0003",
+        "label" : "Fire",
+        "position" : { "x" : 0.88, "y" : 0.88 }
+      },
+      {
+        "action" : { "button" : { "key" : 48, "mode" : "toggle" } },
+        "id" : "5B0E3C2A-6B1D-4C6B-9B0F-0A1E4F6D0004",
+        "label" : "Scope",
+        "position" : { "x" : 0.50, "y" : 0.10 }
+      }
+    ]
+  },
+  "version" : 1
+}

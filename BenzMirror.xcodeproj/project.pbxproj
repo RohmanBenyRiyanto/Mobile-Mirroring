@@ -1,0 +1,522 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0BB9956ABC90871F2DFE286E /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 32BFEDD16B63EF4E1E3AABEE /* Persistence */; };
+		1025220E76289BB9267BDFB8 /* SystemServices in Frameworks */ = {isa = PBXBuildFile; productRef = 1E560A2E87D2017E41437062 /* SystemServices */; };
+		29C698FD5B508E7BDD6B2E61 /* AppDependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60D3DF83AC6FA78DB547F9 /* AppDependencyContainer.swift */; };
+		34567EA082CF2912D2B184F7 /* scrcpy-server-v5.0.1 in Resources */ = {isa = PBXBuildFile; fileRef = E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */; };
+		8FCD962239B0AE475DA15C73 /* LogcatFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 402245A7E6F598F72F5E4DEB /* LogcatFeature */; };
+		A994CA7235440BA47D9C8717 /* BenzMirrorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C68D746BE6AFB5D670D9C8 /* BenzMirrorApp.swift */; };
+		AF734AA80957A1A118CEDEEA /* DomainModels in Frameworks */ = {isa = PBXBuildFile; productRef = C948A5F1BC5B8616080DBAA0 /* DomainModels */; };
+		D08F4837AA7D02B7EAD1EFB9 /* WorkspaceFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 30E55F0DE6A1D89CB3D12124 /* WorkspaceFeature */; };
+		D4558FA377C664035FBD99D1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0082A30184B65ACD6E36D9BD /* AppDelegate.swift */; };
+		DC2A05A65165316A44DA022A /* LaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E934415E0682CA71DE045F9 /* LaunchTests.swift */; };
+		E3868D26959A6490F8F7FB52 /* LICENSE-scrcpy in Resources */ = {isa = PBXBuildFile; fileRef = 678A51690BABF7156640242A /* LICENSE-scrcpy */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B9F3532433648275CD420D53 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E6D070B27E83E2A9E2519E43 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5D09827657F8EEEC262FD557;
+			remoteInfo = BenzMirror;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0082A30184B65ACD6E36D9BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1E60D3DF83AC6FA78DB547F9 /* AppDependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDependencyContainer.swift; sourceTree = "<group>"; };
+		30F5B1F6CEFA8FE4D38083AB /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DesignSystem; path = Packages/DesignSystem; sourceTree = SOURCE_ROOT; };
+		5461CBDBC2A81F551DAB7478 /* Core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Core; path = Packages/Core; sourceTree = SOURCE_ROOT; };
+		5CF35D1C4B6CF35764618076 /* BenzMirror.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BenzMirror.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		678A51690BABF7156640242A /* LICENSE-scrcpy */ = {isa = PBXFileReference; path = "LICENSE-scrcpy"; sourceTree = "<group>"; };
+		6E934415E0682CA71DE045F9 /* LaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchTests.swift; sourceTree = "<group>"; };
+		816A761943BB291DAF42B9A9 /* Features */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Features; path = Packages/Features; sourceTree = SOURCE_ROOT; };
+		B6C68D746BE6AFB5D670D9C8 /* BenzMirrorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenzMirrorApp.swift; sourceTree = "<group>"; };
+		CC97B6F0380385DA21171307 /* UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = "scrcpy-server-v5.0.1"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0CE8D6842DD10B5C7B6E14EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D08F4837AA7D02B7EAD1EFB9 /* WorkspaceFeature in Frameworks */,
+				8FCD962239B0AE475DA15C73 /* LogcatFeature in Frameworks */,
+				AF734AA80957A1A118CEDEEA /* DomainModels in Frameworks */,
+				0BB9956ABC90871F2DFE286E /* Persistence in Frameworks */,
+				1025220E76289BB9267BDFB8 /* SystemServices in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		17C2B1BCB1293C763D01E2F4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5CF35D1C4B6CF35764618076 /* BenzMirror.app */,
+				CC97B6F0380385DA21171307 /* UITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		30ACB6FB0747B93D6FABCEAC /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				5461CBDBC2A81F551DAB7478 /* Core */,
+				30F5B1F6CEFA8FE4D38083AB /* DesignSystem */,
+				816A761943BB291DAF42B9A9 /* Features */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		382D506D2FA24EFBD18E8DCA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				678A51690BABF7156640242A /* LICENSE-scrcpy */,
+				E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		7D4958EB755EFB1122E9371A /* UITests */ = {
+			isa = PBXGroup;
+			children = (
+				6E934415E0682CA71DE045F9 /* LaunchTests.swift */,
+			);
+			path = UITests;
+			sourceTree = "<group>";
+		};
+		86B9D699119C8D39271093A7 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				0082A30184B65ACD6E36D9BD /* AppDelegate.swift */,
+				1E60D3DF83AC6FA78DB547F9 /* AppDependencyContainer.swift */,
+				B6C68D746BE6AFB5D670D9C8 /* BenzMirrorApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		F1CDED897944FE0CCE9E7EE5 = {
+			isa = PBXGroup;
+			children = (
+				86B9D699119C8D39271093A7 /* App */,
+				30ACB6FB0747B93D6FABCEAC /* Packages */,
+				382D506D2FA24EFBD18E8DCA /* Resources */,
+				7D4958EB755EFB1122E9371A /* UITests */,
+				17C2B1BCB1293C763D01E2F4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5D09827657F8EEEC262FD557 /* BenzMirror */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 25A5D0C6A1887AA95BBA88CB /* Build configuration list for PBXNativeTarget "BenzMirror" */;
+			buildPhases = (
+				D3F2DA18B1E69DEB6A89B022 /* Sources */,
+				9D78E9784FE154A5001A44A0 /* Resources */,
+				0CE8D6842DD10B5C7B6E14EA /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BenzMirror;
+			packageProductDependencies = (
+				30E55F0DE6A1D89CB3D12124 /* WorkspaceFeature */,
+				402245A7E6F598F72F5E4DEB /* LogcatFeature */,
+				C948A5F1BC5B8616080DBAA0 /* DomainModels */,
+				32BFEDD16B63EF4E1E3AABEE /* Persistence */,
+				1E560A2E87D2017E41437062 /* SystemServices */,
+			);
+			productName = BenzMirror;
+			productReference = 5CF35D1C4B6CF35764618076 /* BenzMirror.app */;
+			productType = "com.apple.product-type.application";
+		};
+		809B4D863E92EB81C4490A2A /* UITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 69ABEAF6F267B40A71242788 /* Build configuration list for PBXNativeTarget "UITests" */;
+			buildPhases = (
+				143A829AA6AC4745D70673F5 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				89DCE838EE24C64600F3C413 /* PBXTargetDependency */,
+			);
+			name = UITests;
+			packageProductDependencies = (
+			);
+			productName = UITests;
+			productReference = CC97B6F0380385DA21171307 /* UITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E6D070B27E83E2A9E2519E43 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					5D09827657F8EEEC262FD557 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+					809B4D863E92EB81C4490A2A = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+						TestTargetID = 5D09827657F8EEEC262FD557;
+					};
+				};
+			};
+			buildConfigurationList = B7F1808A28A3CCCD6D770FF1 /* Build configuration list for PBXProject "BenzMirror" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = F1CDED897944FE0CCE9E7EE5;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				36EADC0CC79A47169C2AB0E3 /* XCLocalSwiftPackageReference "Packages/Core" */,
+				BDB163CB12D7B08131EEEE9D /* XCLocalSwiftPackageReference "Packages/DesignSystem" */,
+				37D0418E0E569F56D61541A3 /* XCLocalSwiftPackageReference "Packages/Features" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 17C2B1BCB1293C763D01E2F4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5D09827657F8EEEC262FD557 /* BenzMirror */,
+				809B4D863E92EB81C4490A2A /* UITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9D78E9784FE154A5001A44A0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E3868D26959A6490F8F7FB52 /* LICENSE-scrcpy in Resources */,
+				34567EA082CF2912D2B184F7 /* scrcpy-server-v5.0.1 in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		143A829AA6AC4745D70673F5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DC2A05A65165316A44DA022A /* LaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D3F2DA18B1E69DEB6A89B022 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4558FA377C664035FBD99D1 /* AppDelegate.swift in Sources */,
+				29C698FD5B508E7BDD6B2E61 /* AppDependencyContainer.swift in Sources */,
+				A994CA7235440BA47D9C8717 /* BenzMirrorApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		89DCE838EE24C64600F3C413 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5D09827657F8EEEC262FD557 /* BenzMirror */;
+			targetProxy = B9F3532433648275CD420D53 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		8CB3D1FF7A9D73EB752C8BB9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		9C1C08CAE32DE0292556D4B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Resources/BenzMirror.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_NAME = BenzMirror;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.benz.mirror;
+				PRODUCT_NAME = "Benz Mirror";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9E8B119DB7DAA5CC10E2E414 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C5739DC1179963810C73FD2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Resources/BenzMirror.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_NAME = BenzMirror;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.benz.mirror;
+				PRODUCT_NAME = "Benz Mirror";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		DEC6AE63254D08181FAC149D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.benz.mirror.uitests;
+				SDKROOT = macosx;
+				TEST_TARGET_NAME = BenzMirror;
+			};
+			name = Debug;
+		};
+		E86CB0CD1FEC394E434DB4B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.benz.mirror.uitests;
+				SDKROOT = macosx;
+				TEST_TARGET_NAME = BenzMirror;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		25A5D0C6A1887AA95BBA88CB /* Build configuration list for PBXNativeTarget "BenzMirror" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C5739DC1179963810C73FD2F /* Debug */,
+				9C1C08CAE32DE0292556D4B2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		69ABEAF6F267B40A71242788 /* Build configuration list for PBXNativeTarget "UITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DEC6AE63254D08181FAC149D /* Debug */,
+				E86CB0CD1FEC394E434DB4B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B7F1808A28A3CCCD6D770FF1 /* Build configuration list for PBXProject "BenzMirror" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9E8B119DB7DAA5CC10E2E414 /* Debug */,
+				8CB3D1FF7A9D73EB752C8BB9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		36EADC0CC79A47169C2AB0E3 /* XCLocalSwiftPackageReference "Packages/Core" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Core;
+		};
+		37D0418E0E569F56D61541A3 /* XCLocalSwiftPackageReference "Packages/Features" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Features;
+		};
+		BDB163CB12D7B08131EEEE9D /* XCLocalSwiftPackageReference "Packages/DesignSystem" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/DesignSystem;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1E560A2E87D2017E41437062 /* SystemServices */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SystemServices;
+		};
+		30E55F0DE6A1D89CB3D12124 /* WorkspaceFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WorkspaceFeature;
+		};
+		32BFEDD16B63EF4E1E3AABEE /* Persistence */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Persistence;
+		};
+		402245A7E6F598F72F5E4DEB /* LogcatFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LogcatFeature;
+		};
+		C948A5F1BC5B8616080DBAA0 /* DomainModels */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DomainModels;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = E6D070B27E83E2A9E2519E43 /* Project object */;
+}

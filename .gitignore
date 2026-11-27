@@ -1,0 +1,25 @@
+# Build output
+.build/
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+.swiftpm/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Generated from project.yml (XcodeGen); regenerate with `xcodegen`
+# BenzMirror.xcodeproj/
+
+# macOS
+.DS_Store
+
+# AI files
+docs/private/
+CLAUDE.md
+.claude/
+*.local.md
+*.local.json
+
+# Local test output and scratch
+*.log
+/tmp/

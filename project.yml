@@ -1,0 +1,103 @@
+# XcodeGen spec for the thin app shell. Regenerate the project with:  xcodegen generate
+# The shell only holds the entry point and resources; everything else lives in Packages/.
+name: BenzMirror
+options:
+  bundleIdPrefix: dev.benz
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    ENABLE_HARDENED_RUNTIME: YES
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"          # ad-hoc: runs on this Mac; a Developer ID is needed to distribute
+    DEVELOPMENT_TEAM: ""
+packages:
+  Core:
+    path: Packages/Core
+  DesignSystem:
+    path: Packages/DesignSystem
+  Features:
+    path: Packages/Features
+targets:
+  BenzMirror:
+    type: application
+    platform: macOS
+    sources:
+      - path: App
+      - path: Resources
+        buildPhase: resources    # the scrcpy server and its licence are copied as they are
+        excludes:
+          - "Info.plist"
+          - "*.entitlements"
+    dependencies:
+      - package: Features
+        product: WorkspaceFeature
+      - package: Features
+        product: LogcatFeature
+      - package: Core
+        product: DomainModels
+      - package: Core
+        product: Persistence
+      - package: Core
+        product: SystemServices
+    info:
+      path: Resources/Info.plist
+      properties:
+        CFBundleName: Benz Mirror
+        CFBundleDisplayName: Benz Mirror
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSMinimumSystemVersion: "14.0"
+        NSHighResolutionCapable: true
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: Benz Mirror Keymap
+            CFBundleTypeRole: Editor
+            LSHandlerRank: Owner
+            LSItemContentTypes: [dev.benz.mirror.keymap]
+        UTExportedTypeDeclarations:
+          - UTTypeIdentifier: dev.benz.mirror.keymap
+            UTTypeDescription: Benz Mirror Keymap
+            UTTypeConformsTo: [public.json]
+            UTTypeTagSpecification:
+              public.filename-extension: [benzkeymap]
+    entitlements:
+      path: Resources/BenzMirror.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.benz.mirror
+        PRODUCT_NAME: Benz Mirror
+        EXECUTABLE_NAME: BenzMirror
+        INFOPLIST_FILE: Resources/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_ENTITLEMENTS: Resources/BenzMirror.entitlements
+
+  UITests:
+    type: bundle.ui-testing
+    platform: macOS
+    sources:
+      - path: UITests
+    dependencies:
+      - target: BenzMirror
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.benz.mirror.uitests
+        TEST_TARGET_NAME: BenzMirror
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  BenzMirror:
+    build:
+      targets:
+        BenzMirror: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - UITests
+    profile:
+      config: Release
