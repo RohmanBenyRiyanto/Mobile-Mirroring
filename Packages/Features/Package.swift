@@ -10,6 +10,7 @@ let package = Package(
         .library(name: "KeymapFeature", targets: ["KeymapFeature"]),
         .library(name: "LogcatFeature", targets: ["LogcatFeature"]),
         .library(name: "InspectorFeature", targets: ["InspectorFeature"]),
+        .library(name: "DatabaseFeature", targets: ["DatabaseFeature"]),
         .library(name: "WorkspaceFeature", targets: ["WorkspaceFeature"]),
         .library(name: "SettingsFeature", targets: ["SettingsFeature"]),
     ],
@@ -29,6 +30,11 @@ let package = Package(
             .product(name: "DomainModels", package: "Core"), .product(name: "Networking", package: "Core"),
             .product(name: "Theme", package: "DesignSystem"),
         ]),
+        // Read-only browser for a debug app's SQLite databases.
+        .target(name: "DatabaseFeature", dependencies: [
+            .product(name: "DomainModels", package: "Core"), .product(name: "Networking", package: "Core"),
+            .product(name: "Theme", package: "DesignSystem"),
+        ]),
         // UI inspector, grid, crosshair and colour picker.
         .target(name: "InspectorFeature", dependencies: [
             .product(name: "DomainModels", package: "Core"), .product(name: "Networking", package: "Core"),
@@ -40,7 +46,7 @@ let package = Package(
             .product(name: "Media", package: "Core"), .product(name: "Networking", package: "Core"),
             .product(name: "SystemServices", package: "Core"), .product(name: "Theme", package: "DesignSystem"),
             .product(name: "Components", package: "DesignSystem"),
-            "KeymapFeature", "LogcatFeature", "InspectorFeature",
+            "KeymapFeature", "LogcatFeature", "InspectorFeature", "DatabaseFeature",
         ]),
 
         // Settings (⌘,): General with Appearance, Video, Audio, Shortcuts, Advanced.
@@ -58,6 +64,9 @@ let package = Package(
         ]),
         .testTarget(name: "LogcatFeatureTests", dependencies: [
             "LogcatFeature", .product(name: "DomainModels", package: "Core"), .product(name: "TestSupport", package: "TestSupport"),
+        ]),
+        .testTarget(name: "DatabaseFeatureTests", dependencies: [
+            "DatabaseFeature", .product(name: "DomainModels", package: "Core"), .product(name: "Networking", package: "Core"), .product(name: "TestSupport", package: "TestSupport"),
         ]),
         .testTarget(name: "InspectorFeatureTests", dependencies: [
             "InspectorFeature", .product(name: "DomainModels", package: "Core"), .product(name: "TestSupport", package: "TestSupport"),

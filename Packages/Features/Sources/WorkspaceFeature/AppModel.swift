@@ -5,6 +5,7 @@ import SwiftUI
 import DomainModels
 import InspectorFeature
 import KeymapFeature
+import DatabaseFeature
 import LogcatFeature
 import Networking
 import Persistence
@@ -330,6 +331,8 @@ public enum SettingsStore {
         if let data = try? JSONEncoder().encode(settings) { defaults.set(data, forKey: key) }
     }
 }
+
+extension AppModel: DatabaseSource {}
 
 extension AppModel: LogcatSource {
     public var frontPackage: String? { foreground.current?.package }

@@ -1,5 +1,6 @@
 import AppKit
 import Components
+import DatabaseFeature
 import LogcatFeature
 import SettingsFeature
 import SwiftUI
@@ -29,6 +30,12 @@ struct BenzMirrorApp: App {
 
         Window("Logcat", id: "logcat") {
             LogcatView(source: model)
+                .themed(model.appearance)
+        }
+        .defaultSize(width: 900, height: 560)
+
+        Window("Database", id: "database") {
+            DatabaseView(source: model)
                 .themed(model.appearance)
         }
         .defaultSize(width: 900, height: 560)

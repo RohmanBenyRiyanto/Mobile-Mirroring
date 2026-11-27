@@ -7,15 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0BB9956ABC90871F2DFE286E /* Components in Frameworks */ = {isa = PBXBuildFile; productRef = C1D8283AD3EE95CF8A3A9F94 /* Components */; };
-		1025220E76289BB9267BDFB8 /* DomainModels in Frameworks */ = {isa = PBXBuildFile; productRef = C948A5F1BC5B8616080DBAA0 /* DomainModels */; };
+		0BB9956ABC90871F2DFE286E /* SettingsFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 54DF4ED0B72B3591B9B200C2 /* SettingsFeature */; };
+		1025220E76289BB9267BDFB8 /* Components in Frameworks */ = {isa = PBXBuildFile; productRef = C1D8283AD3EE95CF8A3A9F94 /* Components */; };
 		29C698FD5B508E7BDD6B2E61 /* AppDependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60D3DF83AC6FA78DB547F9 /* AppDependencyContainer.swift */; };
+		2D7F2E94E2AD86125ABB338D /* SystemServices in Frameworks */ = {isa = PBXBuildFile; productRef = 1E560A2E87D2017E41437062 /* SystemServices */; };
 		34567EA082CF2912D2B184F7 /* scrcpy-server-v5.0.1 in Resources */ = {isa = PBXBuildFile; fileRef = E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */; };
 		8FCD962239B0AE475DA15C73 /* LogcatFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 402245A7E6F598F72F5E4DEB /* LogcatFeature */; };
 		A994CA7235440BA47D9C8717 /* BenzMirrorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C68D746BE6AFB5D670D9C8 /* BenzMirrorApp.swift */; };
-		AF734AA80957A1A118CEDEEA /* SettingsFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 54DF4ED0B72B3591B9B200C2 /* SettingsFeature */; };
-		B4A7DF32F1E0B0E1CBA0113E /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 32BFEDD16B63EF4E1E3AABEE /* Persistence */; };
-		C9F0966696C944A8001EB9FB /* SystemServices in Frameworks */ = {isa = PBXBuildFile; productRef = 1E560A2E87D2017E41437062 /* SystemServices */; };
+		AF734AA80957A1A118CEDEEA /* DatabaseFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 6736FF2FF4DE9D440AF3D568 /* DatabaseFeature */; };
+		B4A7DF32F1E0B0E1CBA0113E /* DomainModels in Frameworks */ = {isa = PBXBuildFile; productRef = C948A5F1BC5B8616080DBAA0 /* DomainModels */; };
+		C9F0966696C944A8001EB9FB /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 32BFEDD16B63EF4E1E3AABEE /* Persistence */; };
 		D08F4837AA7D02B7EAD1EFB9 /* WorkspaceFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 30E55F0DE6A1D89CB3D12124 /* WorkspaceFeature */; };
 		D4558FA377C664035FBD99D1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0082A30184B65ACD6E36D9BD /* AppDelegate.swift */; };
 		DC2A05A65165316A44DA022A /* LaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E934415E0682CA71DE045F9 /* LaunchTests.swift */; };
@@ -57,11 +58,12 @@
 			files = (
 				D08F4837AA7D02B7EAD1EFB9 /* WorkspaceFeature in Frameworks */,
 				8FCD962239B0AE475DA15C73 /* LogcatFeature in Frameworks */,
-				AF734AA80957A1A118CEDEEA /* SettingsFeature in Frameworks */,
-				0BB9956ABC90871F2DFE286E /* Components in Frameworks */,
-				1025220E76289BB9267BDFB8 /* DomainModels in Frameworks */,
-				B4A7DF32F1E0B0E1CBA0113E /* Persistence in Frameworks */,
-				C9F0966696C944A8001EB9FB /* SystemServices in Frameworks */,
+				AF734AA80957A1A118CEDEEA /* DatabaseFeature in Frameworks */,
+				0BB9956ABC90871F2DFE286E /* SettingsFeature in Frameworks */,
+				1025220E76289BB9267BDFB8 /* Components in Frameworks */,
+				B4A7DF32F1E0B0E1CBA0113E /* DomainModels in Frameworks */,
+				C9F0966696C944A8001EB9FB /* Persistence in Frameworks */,
+				2D7F2E94E2AD86125ABB338D /* SystemServices in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,6 +148,7 @@
 			packageProductDependencies = (
 				30E55F0DE6A1D89CB3D12124 /* WorkspaceFeature */,
 				402245A7E6F598F72F5E4DEB /* LogcatFeature */,
+				6736FF2FF4DE9D440AF3D568 /* DatabaseFeature */,
 				54DF4ED0B72B3591B9B200C2 /* SettingsFeature */,
 				C1D8283AD3EE95CF8A3A9F94 /* Components */,
 				C948A5F1BC5B8616080DBAA0 /* DomainModels */,
@@ -530,6 +533,10 @@
 		54DF4ED0B72B3591B9B200C2 /* SettingsFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SettingsFeature;
+		};
+		6736FF2FF4DE9D440AF3D568 /* DatabaseFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DatabaseFeature;
 		};
 		C1D8283AD3EE95CF8A3A9F94 /* Components */ = {
 			isa = XCSwiftPackageProductDependency;

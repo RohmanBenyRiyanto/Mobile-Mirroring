@@ -494,6 +494,23 @@
         }
       }
     },
+    "App package, for example com.example.app" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App package, for example com.example.app"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paket aplikasi, misalnya com.example.app"
+          }
+        }
+      }
+    },
     "Appearance" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1293,6 +1310,57 @@
         }
       }
     },
+    "Database" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Database"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Database"
+          }
+        }
+      }
+    },
+    "Databases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Databases"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Database"
+          }
+        }
+      }
+    },
+    "Database…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Database…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Database…"
+          }
+        }
+      }
+    },
     "Debugging" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1714,6 +1782,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Keluar dari Mode Stream"
+          }
+        }
+      }
+    },
+    "Export CSV" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export CSV"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekspor CSV"
           }
         }
       }
@@ -2925,6 +3010,23 @@
         }
       }
     },
+    "No phone is connected." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No phone is connected."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada ponsel yang terhubung."
+          }
+        }
+      }
+    },
     "No shortcut matches." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3125,6 +3227,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hanya untuk game yang punya keymap. Mati: mode hanya berubah saat kamu mengubahnya."
+          }
+        }
+      }
+    },
+    "Only read queries are allowed here." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only read queries are allowed here."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hanya query baca yang diizinkan di sini."
+          }
+        }
+      }
+    },
+    "Open" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka"
           }
         }
       }
@@ -3962,6 +4098,23 @@
         }
       }
     },
+    "Run" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Run"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jalankan"
+          }
+        }
+      }
+    },
     "Running" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4387,6 +4540,23 @@
         }
       }
     },
+    "Showing the first 1,000 rows." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Showing the first 1,000 rows."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menampilkan 1.000 baris pertama."
+          }
+        }
+      }
+    },
     "Shown" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4778,6 +4948,40 @@
         }
       }
     },
+    "Tables" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tables"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabel"
+          }
+        }
+      }
+    },
+    "That name cannot be used." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That name cannot be used."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nama itu tidak dapat dipakai."
+          }
+        }
+      }
+    },
     "The phone did not accept the change" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4876,6 +5080,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prosesor sedang penuh"
+          }
+        }
+      }
+    },
+    "The sqlite3 tool was not found on this Mac." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The sqlite3 tool was not found on this Mac."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alat sqlite3 tidak ditemukan di Mac ini."
+          }
+        }
+      }
+    },
+    "This app has no databases." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This app has no databases."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikasi ini tidak punya database."
+          }
+        }
+      }
+    },
+    "This app is not debuggable, so Android does not let any tool read its files. Only debug builds can be opened." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This app is not debuggable, so Android does not let any tool read its files. Only debug builds can be opened."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikasi ini tidak debuggable, jadi Android tidak mengizinkan alat apa pun membaca filenya. Hanya build debug yang bisa dibuka."
           }
         }
       }
