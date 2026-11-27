@@ -18,6 +18,23 @@
         }
       }
     },
+    "%@ stopped responding." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ stopped responding."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ berhenti merespons."
+          }
+        }
+      }
+    },
     "%lld crashes" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1038,6 +1055,23 @@
         }
       }
     },
+    "Close" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutup"
+          }
+        }
+      }
+    },
     "Close Tab" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1153,6 +1187,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sambungkan ponselmu"
+          }
+        }
+      }
+    },
+    "Connection lost" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection lost"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koneksi terputus"
           }
         }
       }
@@ -1357,6 +1408,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salin dari Ponsel"
+          }
+        }
+      }
+    },
+    "Could not reconnect. Check the cable and that the phone is unlocked." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not reconnect. Check the cable and that the phone is unlocked."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak dapat tersambung lagi. Periksa kabel dan pastikan ponsel tidak terkunci."
           }
         }
       }
@@ -4285,6 +4353,23 @@
         }
       }
     },
+    "Reconnecting… attempt %lld of %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconnecting… attempt %lld of %lld"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menyambung ulang… percobaan %lld dari %lld"
+          }
+        }
+      }
+    },
     "Record" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6049,6 +6134,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Coba Lagi"
+          }
+        }
+      }
+    },
+    "Try Now" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Now"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coba Sekarang"
           }
         }
       }

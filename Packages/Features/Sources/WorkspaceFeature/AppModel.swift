@@ -21,6 +21,14 @@ public final class AppModel: ObservableObject {
         case failed(String)
     }
 
+    public struct LostConnection: Equatable {
+        public let serial: String
+        public let name: String
+        public let reason: String
+        public var attempt = 0
+        public var isGivingUp = false
+    }
+
     private enum Launch: Equatable {
         case idle
         case launching
@@ -62,6 +70,7 @@ public final class AppModel: ObservableObject {
     @Published public var editor: KeymapEditorModel?
     @Published public var editorMessage: String?
     @Published private var launch = Launch.idle
+    @Published public private(set) var lostConnection: LostConnection?
     @Published public private(set) var keymapProfiles: [ProfileSummary] = []
 
     public let adb: ADB?
@@ -85,6 +94,7 @@ public final class AppModel: ObservableObject {
     private let cursorCapture: CursorCapturing
     /// Where settings and window preferences are remembered. Replaceable, so tests never write to the real ones.
     private let defaults: UserDefaults
+    private var reconnectTask: Task<Void, Never>?
 
     public init(keymapRoot: URL = ProfileStore<Keymap>.defaultRoot(appName: AppInfo.name), cursorCapture: CursorCapturing? = nil,
                 defaults: UserDefaults = .standard, appearance: AppearanceStore? = nil) {
@@ -263,10 +273,58 @@ public final class AppModel: ObservableObject {
             editor = nil
             isStreamMode = false
             isAddingDevice = false
-            if let reason { launch = .failed(reason) }
+            if let reason { beginReconnecting(serial: session.serial, name: session.deviceName, reason: reason) }
         } else if let reason {
             notice = "\(session.deviceName.isEmpty ? session.serial : session.deviceName): \(reason)"
         }
+    }
+
+    // MARK: Connection lost
+
+    private func beginReconnecting(serial: String, name: String, reason: String) {
+        lostConnection = LostConnection(serial: serial, name: name.isEmpty ? serial : name, reason: reason)
+        startReconnectLoop()
+    }
+
+    private func startReconnectLoop() {
+        reconnectTask?.cancel()
+        reconnectTask = Task { [weak self] in
+            var attempt = (self?.lostConnection?.attempt ?? 0) + 1
+            while let self, let lost = lostConnection, let delay = ReconnectPolicy.delay(forAttempt: attempt) {
+                self.lostConnection?.attempt = attempt
+                try? await Task.sleep(for: .seconds(delay))
+                if Task.isCancelled { return }
+                await attemptReconnect(to: lost.serial)
+                if lostConnection == nil || Task.isCancelled { return }
+                attempt += 1
+            }
+            self?.lostConnection?.isGivingUp = true
+        }
+    }
+
+    private func attemptReconnect(to serial: String) async {
+        guard let adb, launch != .launching else { return }
+        let found = await Task.detached { try? adb.devices() }.value ?? []
+        updateDevices(found)
+        guard found.first(where: { $0.serial == serial })?.isReady == true else { return }
+        selectedSerial = serial
+        connect()
+        while launch == .launching { try? await Task.sleep(for: .milliseconds(200)) }
+        if sessions.contains(where: { $0.serial == serial }) { lostConnection = nil }
+    }
+
+    public func retryNow() {
+        guard var lost = lostConnection else { return }
+        lost.attempt = 0
+        lost.isGivingUp = false
+        lostConnection = lost
+        startReconnectLoop()
+    }
+
+    public func dismissLostConnection() {
+        reconnectTask?.cancel()
+        reconnectTask = nil
+        lostConnection = nil
     }
 
     // MARK: The front phone (convenience for the views)

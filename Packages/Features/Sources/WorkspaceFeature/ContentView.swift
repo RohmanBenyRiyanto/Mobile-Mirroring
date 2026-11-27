@@ -47,6 +47,7 @@ public struct ContentView: View {
         .onChange(of: model.showsQuickToggles) { _, on in Self.resizeWindow(byWidth: on ? QuickTogglesPanel.width : -QuickTogglesPanel.width) }
         .onChange(of: model.showsPerformance) { _, on in Self.resizeWindow(byWidth: on ? PerformancePanel.width : -PerformancePanel.width) }
         .sheet(isPresented: $model.showsDeviceInfo) { DeviceInfoSheet() }
+        .sheet(isPresented: Binding(get: { model.lostConnection != nil }, set: { if !$0 { model.dismissLostConnection() } })) { ConnectionLostSheet().environmentObject(model) }
         .sheet(isPresented: $model.showsOnboarding) { OnboardingView().environmentObject(model) }
     }
 }
@@ -195,5 +196,35 @@ private struct StatsOverlay: View {
         .overVideo(in: RoundedRectangle(cornerRadius: Theme.Radius.field))
         .padding(Theme.Space.s2)
         .allowsHitTesting(false)
+    }
+}
+
+
+private struct ConnectionLostSheet: View {
+    @EnvironmentObject private var model: AppModel
+
+    var body: some View {
+        if let lost = model.lostConnection {
+            VStack(spacing: Theme.Space.s4) {
+                Image(systemName: "bolt.horizontal.circle").font(.system(size: 32)).foregroundStyle(.secondary)
+                Text("Connection lost").font(Theme.Font.title)
+                Text("\(lost.name) stopped responding.").foregroundStyle(.secondary)
+                Text(verbatim: lost.reason).font(Theme.Font.monoCaption).foregroundStyle(.secondary).lineLimit(3).textSelection(.enabled)
+                if lost.isGivingUp {
+                    Text("Could not reconnect. Check the cable and that the phone is unlocked.").multilineTextAlignment(.center)
+                } else {
+                    HStack(spacing: Theme.Space.s2) {
+                        ProgressView().controlSize(.small)
+                        Text("Reconnecting… attempt \(lost.attempt) of \(ReconnectPolicy.maxAttempts)").foregroundStyle(.secondary)
+                    }
+                }
+                HStack {
+                    Button("Close") { model.dismissLostConnection() }.keyboardShortcut(.cancelAction).secondaryAction()
+                    Button("Try Now") { model.retryNow() }.prominentAction().keyboardShortcut(.defaultAction)
+                }
+            }
+            .padding(Theme.Space.s6)
+            .frame(width: 420)
+        }
     }
 }
