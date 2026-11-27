@@ -30,6 +30,15 @@ public enum WirelessInput {
         }
     }
 
+    /// For an `ip:port` typed by the user: the two addresses to show when the phone's address is on none of this Mac's networks.
+    /// Names and unparsable text return nil, since nothing can be said about them.
+    public static func networkMismatch(address: String, mac: [IPv4Interface]) -> (phone: String, mac: String)? {
+        guard isValidAddress(address), let host = address.split(separator: ":").first.map(String.init),
+              let ip = IPv4Interface.parse(host), let reference = mac.first(where: { $0.name.hasPrefix("en") }) ?? mac.first else { return nil }
+        let phone = IPv4Interface(name: "phone", address: ip, prefix: 24)
+        return mac.contains { $0.shares(networkWith: phone) } ? nil : (host, reference.text)
+    }
+
     /// The phone's address on a network this Mac is also on. That works for a shared Wi-Fi and for
     /// the phone's own hotspot, and it skips mobile-data interfaces, which the Mac can never reach.
     public static func reachableAddress(phone: [IPv4Interface], mac: [IPv4Interface]) -> IPv4Interface? {
@@ -97,6 +106,13 @@ extension ADB {
         let address = "\(phone.text):\(Self.defaultTCPPort)"
         try connect(address: address)
         return address
+    }
+
+    /// Puts a phone that is connected over Wi-Fi back into USB mode and drops the wireless connection.
+    public func switchToUSB(serial: String) throws {
+        guard serial.contains(":"), AndroidDevice.isValidSerial(serial) else { throw ADBError.failed(command: "usb", message: "This phone is not connected over Wi-Fi.") }
+        try run(["-s", serial, "usb"], timeout: 10)
+        _ = try? run(["disconnect", serial], timeout: 5)
     }
 
     /// `adb pair`, with the code sent on stdin so it never shows in the process list.

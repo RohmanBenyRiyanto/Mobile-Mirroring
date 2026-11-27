@@ -379,7 +379,7 @@ public final class AppModel: ObservableObject {
         guard let streamURL else { return }
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(streamURL, forType: .string)
-        notice = "Copied \(streamURL)"
+        notice = String(localized: "Copied \(streamURL)")
     }
 }
 

@@ -36,10 +36,10 @@ extension AppModel {
                 let png = try await Task.detached { try adb.run(["-s", serial, "exec-out", "screencap", "-p"], timeout: 15) }.value
                 let url = try OutputFiles.newURL(in: .picturesDirectory, prefix: "Screenshot", pathExtension: "png", custom: settings.screenshotFolder)
                 try png.write(to: url, options: .withoutOverwriting)
-                notice = "Saved \(url.lastPathComponent) to Pictures/\(AppInfo.name)"
+                notice = String(localized: "Saved \(url.lastPathComponent) to Pictures/\(AppInfo.name)")
                 noticeFile = url
             } catch {
-                notice = "Screenshot failed: \(error.localizedDescription)"
+                notice = String(localized: "Screenshot failed: \(error.localizedDescription)")
             }
         }
     }
@@ -56,7 +56,7 @@ extension AppModel {
     }
 
     private func install(apk: URL) {
-        perform("Installing \(apk.lastPathComponent)…", done: "Installed \(apk.lastPathComponent)", timeout: 180) { serial in
+        perform(String(localized: "Installing \(apk.lastPathComponent)…"), done: String(localized: "Installed \(apk.lastPathComponent)"), timeout: 180) { serial in
             ["-s", serial, "install", "-r", apk.path]
         }
     }
@@ -64,11 +64,11 @@ extension AppModel {
     private func push(file: URL) {
         var isDirectory: ObjCBool = false
         guard FileManager.default.fileExists(atPath: file.path, isDirectory: &isDirectory), !isDirectory.boolValue else {
-            notice = "Folders cannot be copied to the phone"
+            notice = String(localized: "Folders cannot be copied to the phone")
             return
         }
         let name = OutputFiles.sanitizedName(file.lastPathComponent)
-        perform("Copying \(name)…", done: "Copied \(name) to Download", timeout: 600) { serial in
+        perform(String(localized: "Copying \(name)…"), done: String(localized: "Copied \(name) to Download"), timeout: 600) { serial in
             ["-s", serial, "push", file.path, "/sdcard/Download/\(name)"]
         }
     }
@@ -80,7 +80,7 @@ extension AppModel {
                 for command in tool.shellCommands {
                     _ = try await Task.detached { try adb.run(["-s", serial, "shell"] + command, timeout: 10) }.value
                 }
-                notice = tool.title
+                notice = String(localized: String.LocalizationValue(tool.title))
             } catch {
                 notice = error.localizedDescription
             }
@@ -91,11 +91,23 @@ extension AppModel {
 
     public func switchToWireless() {
         guard let adb, let serial = selectedSerial else { return }
-        notice = "Switching to Wi-Fi…"
+        notice = String(localized: "Switching to Wi-Fi…")
         Task {
             do {
                 let address = try await Task.detached { try adb.enableWireless(serial: serial) }.value
-                notice = "Connected wirelessly at \(address). You can unplug the cable."
+                notice = String(localized: "Connected wirelessly at \(address). You can unplug the cable.")
+            } catch {
+                notice = error.localizedDescription
+            }
+        }
+    }
+
+    public func switchToUSB() {
+        guard let adb, let serial = selectedSerial else { return }
+        Task {
+            do {
+                try await Task.detached { try adb.switchToUSB(serial: serial) }.value
+                notice = String(localized: "Back in USB mode. Plug the cable in.")
             } catch {
                 notice = error.localizedDescription
             }
@@ -107,7 +119,7 @@ extension AppModel {
         Task {
             do {
                 try await Task.detached { try adb.pair(address: address, code: code) }.value
-                notice = "Paired. Now connect using the address shown on the main wireless screen."
+                notice = String(localized: "Paired. Now connect using the address shown on the main wireless screen.")
             } catch {
                 notice = error.localizedDescription
             }
@@ -119,7 +131,7 @@ extension AppModel {
         Task {
             do {
                 try await Task.detached { try adb.connect(address: address) }.value
-                notice = "Connected to \(address)"
+                notice = String(localized: "Connected to \(address)")
             } catch {
                 notice = error.localizedDescription
             }

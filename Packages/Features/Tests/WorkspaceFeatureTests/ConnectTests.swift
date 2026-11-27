@@ -136,7 +136,11 @@ final class LocalizationCatalogTests: XCTestCase {
                 guard let range = Range(match.range(at: 1), in: source) else { continue }
                 var key = String(source[range])
                 key = key.replacingOccurrences(of: #"\\\([^)]*\)"#, with: "%lld", options: .regularExpression)
-                if key.contains("%lld"), strings[key] == nil, let alt = Optional(key.replacingOccurrences(of: "%lld", with: "%@")), strings[alt] != nil { continue }
+                // An interpolation may be a number (%lld) or text (%@); the catalog keeps whichever the type gives.
+                if key.contains("%lld"), strings[key] == nil {
+                    let shape = NSRegularExpression.escapedPattern(for: key).replacingOccurrences(of: "%lld", with: "(?:%lld|%@)")
+                    if strings.keys.contains(where: { $0.range(of: "^" + shape + "$", options: .regularExpression) != nil }) { continue }
+                }
                 if key.contains("%lld") && !key.contains(" ") { continue } // "\(number)" alone
                 if strings[key] == nil { missing.insert(key) }
             }

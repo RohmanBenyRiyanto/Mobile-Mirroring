@@ -35,6 +35,23 @@
         }
       }
     },
+    "%@. Saved %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@. Saved %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@. %@ disimpan"
+          }
+        }
+      }
+    },
     "%lld crashes" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -715,6 +732,23 @@
         }
       }
     },
+    "Audio is unavailable (needs Android 11 or newer)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio is unavailable (needs Android 11 or newer)"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio tidak tersedia (perlu Android 11 atau lebih baru)"
+          }
+        }
+      }
+    },
     "Automatic" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -762,6 +796,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kembali"
+          }
+        }
+      }
+    },
+    "Back in USB mode. Plug the cable in." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back in USB mode. Plug the cable in."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kembali ke mode USB. Colokkan kabelnya."
           }
         }
       }
@@ -966,6 +1017,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memeriksa…"
+          }
+        }
+      }
+    },
+    "Choose a keymap first (Keymap menu → Profile)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a keymap first (Keymap menu → Profile)"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih keymap dulu (menu Keymap → Profil)"
           }
         }
       }
@@ -1191,6 +1259,40 @@
         }
       }
     },
+    "Connected to %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connected to %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tersambung ke %@"
+          }
+        }
+      }
+    },
+    "Connected wirelessly at %@. You can unplug the cable." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connected wirelessly at %@. You can unplug the cable."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tersambung nirkabel di %@. Kabel boleh dicabut."
+          }
+        }
+      }
+    },
     "Connection lost" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1288,7 +1390,41 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Disalin: %@"
+            "value" : "%@ disalin"
+          }
+        }
+      }
+    },
+    "Copied %@ to Download" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copied %@ to Download"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ disalin ke Download"
+          }
+        }
+      }
+    },
+    "Copied from phone" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copied from phone"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disalin dari ponsel"
           }
         }
       }
@@ -1395,6 +1531,23 @@
         }
       }
     },
+    "Copy failed: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy failed: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagal menyalin: %@"
+          }
+        }
+      }
+    },
     "Copy from Phone" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1412,6 +1565,23 @@
         }
       }
     },
+    "Copying %@…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copying %@…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menyalin %@…"
+          }
+        }
+      }
+    },
     "Could not reconnect. Check the cable and that the phone is unlocked." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1425,6 +1595,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tidak dapat tersambung lagi. Periksa kabel dan pastikan ponsel tidak terkunci."
+          }
+        }
+      }
+    },
+    "Could not save the macro: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not save the macro: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak dapat menyimpan makro: %@"
           }
         }
       }
@@ -2126,6 +2313,40 @@
         }
       }
     },
+    "Export failed: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export failed: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagal mengekspor: %@"
+          }
+        }
+      }
+    },
+    "Exported %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exported %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ diekspor"
+          }
+        }
+      }
+    },
     "File" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2173,6 +2394,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filter…"
+          }
+        }
+      }
+    },
+    "Folders cannot be copied to the phone" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folders cannot be copied to the phone"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folder tidak dapat disalin ke ponsel"
           }
         }
       }
@@ -2534,6 +2772,40 @@
         }
       }
     },
+    "Import cancelled" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import cancelled"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impor dibatalkan"
+          }
+        }
+      }
+    },
+    "Import failed: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import failed: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagal mengimpor: %@"
+          }
+        }
+      }
+    },
     "Import from Clipboard…" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2547,6 +2819,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impor dari Clipboard…"
+          }
+        }
+      }
+    },
+    "Imported %@ from %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imported %@ from %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ diimpor dari %@"
           }
         }
       }
@@ -2636,6 +2925,40 @@
         }
       }
     },
+    "Installed %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installed %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ terpasang"
+          }
+        }
+      }
+    },
+    "Installing %@…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installing %@…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memasang %@…"
+          }
+        }
+      }
+    },
     "Janky frames" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2649,6 +2972,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Frame tersendat"
+          }
+        }
+      }
+    },
+    "Join the phone to the Wi-Fi this Mac uses, then try again. Guest networks often block this." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Join the phone to the Wi-Fi this Mac uses, then try again. Guest networks often block this."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sambungkan ponsel ke Wi-Fi yang dipakai Mac ini, lalu coba lagi. Jaringan tamu sering memblokirnya."
           }
         }
       }
@@ -2751,6 +3091,91 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Profil Keymap"
+          }
+        }
+      }
+    },
+    "Keymap copied. Paste it anywhere; others can use Import from Clipboard." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keymap copied. Paste it anywhere; others can use Import from Clipboard."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keymap disalin. Tempel di mana saja; orang lain bisa memakai Impor dari Papan Klip."
+          }
+        }
+      }
+    },
+    "Keymap off" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keymap off"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keymap mati"
+          }
+        }
+      }
+    },
+    "Keymap on: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keymap on: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keymap nyala: %@"
+          }
+        }
+      }
+    },
+    "Keymap on: %@ (automatic)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keymap on: %@ (automatic)"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keymap nyala: %@ (otomatis)"
+          }
+        }
+      }
+    },
+    "Keymap: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keymap: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keymap: %@"
           }
         }
       }
@@ -2955,6 +3380,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Logcat…"
+          }
+        }
+      }
+    },
+    "Mac" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac"
+          }
+        }
+      }
+    },
+    "Macro %lld saved on %@ in %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Macro %lld saved on %@ in %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Makro %lld disimpan di %@ dalam %@"
+          }
+        }
+      }
+    },
+    "Macro discarded" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Macro discarded"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Makro dibuang"
           }
         }
       }
@@ -3520,6 +3996,23 @@
         }
       }
     },
+    "Nothing was recorded" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing was recorded"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada yang direkam"
+          }
+        }
+      }
+    },
     "Notifications" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3775,6 +4268,23 @@
         }
       }
     },
+    "Open Wi-Fi Settings…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Wi-Fi Settings…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Pengaturan Wi-Fi…"
+          }
+        }
+      }
+    },
     "Open at login" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3894,6 +4404,23 @@
         }
       }
     },
+    "Paired. Now connect using the address shown on the main wireless screen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paired. Now connect using the address shown on the main wireless screen."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terpasang. Sekarang sambungkan dengan alamat di layar nirkabel utama."
+          }
+        }
+      }
+    },
     "Pairing code" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3979,6 +4506,23 @@
         }
       }
     },
+    "Phone" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponsel"
+          }
+        }
+      }
+    },
     "Phone CPU" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3992,6 +4536,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CPU ponsel"
+          }
+        }
+      }
+    },
+    "Phone and Mac are not on the same network" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone and Mac are not on the same network"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponsel dan Mac tidak berada di jaringan yang sama"
           }
         }
       }
@@ -4196,6 +4757,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tekan"
+          }
+        }
+      }
+    },
+    "Press the key for this macro (Esc cancels)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press the key for this macro (Esc cancels)"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tekan tombol untuk makro ini (Esc membatalkan)"
           }
         }
       }
@@ -4421,6 +4999,23 @@
         }
       }
     },
+    "Recording a macro. Use the phone, then choose Stop Recording Macro." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recording a macro. Use the phone, then choose Stop Recording Macro."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merekam makro. Pakai ponsel, lalu pilih Hentikan Rekam Makro."
+          }
+        }
+      }
+    },
     "Recordings" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4434,6 +5029,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rekaman"
+          }
+        }
+      }
+    },
+    "Recording…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recording…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merekam…"
           }
         }
       }
@@ -4727,6 +5339,57 @@
         }
       }
     },
+    "Saved %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ disimpan"
+          }
+        }
+      }
+    },
+    "Saved %@ to Movies/%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved %@ to Movies/%@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ disimpan ke Movies/%@"
+          }
+        }
+      }
+    },
+    "Saved %@ to Pictures/%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved %@ to Pictures/%@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ disimpan ke Pictures/%@"
+          }
+        }
+      }
+    },
     "Screen" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4774,6 +5437,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tangkapan Layar"
+          }
+        }
+      }
+    },
+    "Screenshot failed: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Screenshot failed: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagal mengambil screenshot: %@"
           }
         }
       }
@@ -5526,6 +6206,23 @@
         }
       }
     },
+    "Switch back to USB" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch back to USB"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kembali ke USB"
+          }
+        }
+      }
+    },
     "Switch both off to test how the app behaves without a connection." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5594,6 +6291,23 @@
         }
       }
     },
+    "Switch to USB" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch to USB"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ganti ke USB"
+          }
+        }
+      }
+    },
     "Switch to Wi-Fi" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5624,6 +6338,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pindah ke Wi-Fi…"
+          }
+        }
+      }
+    },
+    "Switching to Wi-Fi…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switching to Wi-Fi…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beralih ke Wi-Fi…"
           }
         }
       }
@@ -5798,6 +6529,23 @@
         }
       }
     },
+    "The clipboard has no text to import" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The clipboard has no text to import"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Papan klip tidak berisi teks untuk diimpor"
+          }
+        }
+      }
+    },
     "The phone asks once for each new computer." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5879,6 +6627,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ponsel mulai panas"
+          }
+        }
+      }
+    },
+    "The phone leaves Wi-Fi debugging and waits for the cable." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The phone leaves Wi-Fi debugging and waits for the cable."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponsel keluar dari debugging Wi-Fi dan menunggu kabel."
           }
         }
       }

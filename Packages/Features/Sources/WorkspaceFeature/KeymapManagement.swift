@@ -47,7 +47,7 @@ extension AppModel {
             let profile = try keymapStore.load(id: id)
             let keymap = try profile.payload.validated()
             session.keymap.load(keymap, profile: ProfileSummary(id: profile.id, name: profile.name, modified: profile.modified))
-            if announce { notice = "Keymap: \(profile.name)" }
+            if announce { notice = String(localized: "Keymap: \(profile.name)") }
             return true
         } catch {
             notice = error.localizedDescription
@@ -58,11 +58,12 @@ extension AppModel {
     public func setKeymapEnabled(_ enabled: Bool) {
         guard let keymap = active?.keymap else { return }
         guard !enabled || keymap.hasKeymap else {
-            notice = "Choose a keymap first (Keymap menu → Profile)"
+            notice = String(localized: "Choose a keymap first (Keymap menu → Profile)")
             return
         }
         keymap.isEnabled = enabled
-        notice = enabled ? "Keymap on: \(keymap.profile?.name ?? "")" : "Keymap off"
+        let keymapName = keymap.profile?.name ?? ""
+        notice = enabled ? String(localized: "Keymap on: \(keymapName)") : String(localized: "Keymap off")
     }
 
     // MARK: Sharing
@@ -83,17 +84,17 @@ extension AppModel {
             guard size <= ProfileFormat.maxBytes else { throw ProfileError.tooLarge }
             importKeymap(data: try Data(contentsOf: url), source: url.lastPathComponent)
         } catch {
-            notice = "Import failed: \(error.localizedDescription)"
+            notice = String(localized: "Import failed: \(error.localizedDescription)")
         }
     }
 
     public func importKeymapFromClipboard(pasteboard: NSPasteboard = .general) {
         guard let text = pasteboard.string(forType: .string), !text.isEmpty else {
-            notice = "The clipboard has no text to import"
+            notice = String(localized: "The clipboard has no text to import")
             return
         }
         guard text.utf8.count <= ProfileFormat.maxBytes else {
-            notice = "Import failed: \(ProfileError.tooLarge.localizedDescription)"
+            notice = String(localized: "Import failed: \(ProfileError.tooLarge.localizedDescription)")
             return
         }
         importKeymap(data: Data(text.utf8), source: "the clipboard")
@@ -108,16 +109,16 @@ extension AppModel {
             let profile = try keymapStore.inspect(data)
             _ = try profile.payload.validated() // refuse what could not be used before asking anything
             guard confirmKeymapImport(KeymapSummary(profile: profile, existingIDs: keymapStore.identifiers())) else {
-                notice = "Import cancelled"
+                notice = String(localized: "Import cancelled")
                 return false
             }
             let imported = try keymapStore.importData(data)
             refreshKeymaps()
             loadKeymap(id: imported.id)
-            notice = "Imported \(imported.name) from \(source)"
+            notice = String(localized: "Imported \(imported.name) from \(source)")
             return true
         } catch {
-            notice = "Import failed: \(error.localizedDescription)"
+            notice = String(localized: "Import failed: \(error.localizedDescription)")
             return false
         }
     }
@@ -130,9 +131,9 @@ extension AppModel {
         guard panel.runModal() == .OK, let url = panel.url else { return }
         do {
             try keymapStore.exportData(id: id).write(to: url, options: .atomic)
-            notice = "Exported \(url.lastPathComponent)"
+            notice = String(localized: "Exported \(url.lastPathComponent)")
         } catch {
-            notice = "Export failed: \(error.localizedDescription)"
+            notice = String(localized: "Export failed: \(error.localizedDescription)")
         }
     }
 
@@ -141,9 +142,9 @@ extension AppModel {
             let data = try keymapStore?.exportData(id: id) ?? Data()
             pasteboard.clearContents()
             pasteboard.setString(String(decoding: data, as: UTF8.self), forType: .string)
-            notice = "Keymap copied. Paste it anywhere; others can use Import from Clipboard."
+            notice = String(localized: "Keymap copied. Paste it anywhere; others can use Import from Clipboard.")
         } catch {
-            notice = "Copy failed: \(error.localizedDescription)"
+            notice = String(localized: "Copy failed: \(error.localizedDescription)")
         }
     }
 
@@ -162,18 +163,18 @@ extension AppModel {
         guard let active else { return }
         guard active.isRecordingMacro else {
             active.startMacroRecording()
-            notice = "Recording a macro. Use the phone, then choose Stop Recording Macro."
+            notice = String(localized: "Recording a macro. Use the phone, then choose Stop Recording Macro.")
             return
         }
 
         let steps = active.stopMacroRecording()
         guard !steps.isEmpty else {
-            notice = "Nothing was recorded"
+            notice = String(localized: "Nothing was recorded")
             return
         }
-        notice = "Press the key for this macro (Esc cancels)"
+        notice = String(localized: "Press the key for this macro (Esc cancels)")
         Task {
-            guard let key = await KeyCapture.next() else { return notice = "Macro discarded" }
+            guard let key = await KeyCapture.next() else { return notice = String(localized: "Macro discarded") }
             saveMacro(steps, key: key)
         }
     }
@@ -193,9 +194,10 @@ extension AppModel {
             let saved = try keymapStore.save(profile)
             refreshKeymaps()
             loadKeymap(id: saved.id)
-            notice = "Macro \(number) saved on \(KeyNames.name(for: key)) in \(saved.name)"
+            let keyName = KeyNames.name(for: key)
+            notice = String(localized: "Macro \(number) saved on \(keyName) in \(saved.name)")
         } catch {
-            notice = "Could not save the macro: \(error.localizedDescription)"
+            notice = String(localized: "Could not save the macro: \(error.localizedDescription)")
         }
     }
 
@@ -219,7 +221,7 @@ extension AppModel {
             editorMessage = nil
             refreshKeymaps()
             loadKeymap(id: saved.id)
-            notice = "Saved \(saved.name)"
+            notice = String(localized: "Saved \(saved.name)")
             return true
         } catch {
             editorMessage = error.localizedDescription

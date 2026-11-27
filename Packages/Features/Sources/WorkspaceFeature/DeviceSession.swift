@@ -115,13 +115,13 @@ public final class DeviceSession: ObservableObject {
         case let .clipboard(text):
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(text, forType: .string)
-            onNotice?("Copied from phone")
+            onNotice?(String(localized: "Copied from phone"))
         case .audioUnavailable:
-            onNotice?("Audio is unavailable (needs Android 11 or newer)")
+            onNotice?(String(localized: "Audio is unavailable (needs Android 11 or newer)"))
         case let .recordingStopped(url, reason):
             isRecording = false
             recordingStartedAt = nil
-            onNotice?(url.map { "\(reason). Saved \($0.lastPathComponent)" } ?? reason)
+            onNotice?(url.map { String(localized: "\(reason). Saved \($0.lastPathComponent)") } ?? reason)
         case let .ended(reason):
             cleanUp()
             onEnded?(self, reason)
@@ -142,12 +142,13 @@ public final class DeviceSession: ObservableObject {
                 keymap.isEnabled = true
                 autoEnabledKeymap = true
                 modeState = modeState.keymapTurnedOnAutomatically(enabled: settings.autoGamingMode)
-                onNotice?("Keymap on: \(keymap.profile?.name ?? "") (automatic)")
+                let keymapName = keymap.profile?.name ?? ""
+                onNotice?(String(localized: "Keymap on: \(keymapName) (automatic)"))
             case .disable:
                 keymap.isEnabled = false
                 autoEnabledKeymap = false
                 modeState = modeState.keymapTurnedOffAutomatically()
-                onNotice?("Keymap off")
+                onNotice?(String(localized: "Keymap off"))
             }
         }
     }
@@ -237,7 +238,7 @@ public final class DeviceSession: ObservableObject {
             Task {
                 do {
                     let url = try await scrcpy.stopRecording()
-                    onNotice?("Saved \(url.lastPathComponent) to Movies/\(AppInfo.name)")
+                    onNotice?(String(localized: "Saved \(url.lastPathComponent) to Movies/\(AppInfo.name)"))
                     onSavedFile?(url)
                 } catch {
                     onNotice?(error.localizedDescription)
@@ -249,7 +250,7 @@ public final class DeviceSession: ObservableObject {
                 try scrcpy.startRecording(to: url)
                 isRecording = true
                 recordingStartedAt = Date()
-                onNotice?("Recording…")
+                onNotice?(String(localized: "Recording…"))
             } catch {
                 onNotice?(error.localizedDescription)
             }

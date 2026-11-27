@@ -71,3 +71,20 @@ final class SecurityTests: XCTestCase {
         XCTAssertTrue(ServerBundle.candidateURLs(resources: nil, executable: nil, workingDirectory: URL(fileURLWithPath: "/w")).count == 1)
     }
 }
+
+final class WirelessNetworkTests: XCTestCase {
+    private let mac = [IPv4Interface(name: "en0", address: IPv4Interface.parse("192.168.1.20")!, prefix: 24)]
+
+    func testSameNetworkIsFineAndOtherIsReported() {
+        XCTAssertNil(WirelessInput.networkMismatch(address: "192.168.1.24:37145", mac: mac))
+        let mismatch = WirelessInput.networkMismatch(address: "10.0.0.14:5555", mac: mac)
+        XCTAssertEqual(mismatch?.phone, "10.0.0.14")
+        XCTAssertEqual(mismatch?.mac, "192.168.1.20")
+    }
+
+    func testNamesAndGarbageSayNothing() {
+        XCTAssertNil(WirelessInput.networkMismatch(address: "phone.local:5555", mac: mac))
+        XCTAssertNil(WirelessInput.networkMismatch(address: "nonsense", mac: mac))
+        XCTAssertNil(WirelessInput.networkMismatch(address: "10.0.0.14:5555", mac: []))
+    }
+}
