@@ -1,8 +1,7 @@
 import SwiftUI
 import DomainModels
 
-/// Draws the keymap's elements on top of the live phone screen so they can be dragged into place.
-/// It also dims the picture and takes every click, so editing never touches the phone.
+/// Draws the keymap's elements over the phone screen for dragging. It takes every click so editing never reaches the phone.
 public struct KeymapEditorOverlay: View {
     @ObservedObject public var editor: KeymapEditorModel
     public let videoSize: CGSize
@@ -35,7 +34,6 @@ public struct KeymapEditorOverlay: View {
     }
 }
 
-/// One element: its reach as a ring, and a chip to grab.
 private struct ElementMarker: View {
     @ObservedObject var editor: KeymapEditorModel
     let element: KeymapElement
@@ -50,7 +48,7 @@ private struct ElementMarker: View {
 
     var body: some View {
         ZStack {
-            if let radius = reach { // how far the finger can travel
+            if let radius = reach {
                 Circle()
                     .strokeBorder(.white.opacity(isSelected ? 0.9 : 0.45), style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
                     .frame(width: radius * 2, height: radius * 2)
@@ -62,7 +60,6 @@ private struct ElementMarker: View {
         .position(center)
     }
 
-    /// Radius of the ring in points, for the elements that have one.
     private var reach: Double? {
         switch element.action {
         case let .joystick(_, _, _, _, radius, _), let .aim(_, _, radius), let .skillShot(_, _, radius, _, _): return radius * shorterEdge
@@ -116,7 +113,6 @@ private struct Chip: View {
     }
 }
 
-/// Where the hero stands on the screen (the origin of a skill-shot's aim), with the mouse range around it.
 private struct HeroHandle: View {
     @ObservedObject var editor: KeymapEditorModel
     let id: UUID

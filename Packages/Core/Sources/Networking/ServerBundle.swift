@@ -34,10 +34,9 @@ public enum ServerBundle {
         return url
     }
 
-    /// Where the server file may be, most likely first: the app bundle; then `Resources/` in the working folder and in
-    /// any folder above it or above the executable (a development build or a package test, whose working folder depends
-    /// on how it was launched, for example from Xcode or from inside `Packages/Core`). Whatever is found is checked
-    /// against `sha256` before use, so the location is not trusted.
+    /// Candidate locations for the server file, most likely first: the app bundle, then `Resources/` in the working
+    /// folder, its parents, and the executable's parents (for development builds and package tests). Each candidate is
+    /// checked against `sha256`, so the location is not trusted.
     public static func candidateURLs(resources: URL?, executable: URL?, workingDirectory: URL, searchDepth: Int = 8) -> [URL] {
         var candidates = [resources?.appendingPathComponent(fileName)]
         for start in [workingDirectory, executable?.deletingLastPathComponent()] {

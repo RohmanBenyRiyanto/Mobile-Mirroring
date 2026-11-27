@@ -1,6 +1,6 @@
 import Foundation
 
-/// A named, versioned document the user can keep, share and import (for example a game's keymap).
+/// A named, versioned document the user can keep, share and import.
 public struct Profile<Payload: Codable & Equatable>: Equatable {
     public var id: String
     public var name: String
@@ -77,7 +77,6 @@ public enum ProfileError: LocalizedError, Equatable {
 /// never name a path outside its folder.
 public final class ProfileStore<Payload: Codable & Equatable> {
     public let kind: String
-    /// The folder holding this kind's profile files.
     public let directory: URL
     private let files = FileManager.default
 
@@ -178,7 +177,6 @@ public final class ProfileStore<Payload: Codable & Equatable> {
         })
     }
 
-    /// Whether a profile id is already taken.
     public func contains(id: String) -> Bool {
         guard let url = try? fileURL(for: id) else { return false }
         return files.fileExists(atPath: url.path)

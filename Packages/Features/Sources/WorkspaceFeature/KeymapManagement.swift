@@ -6,7 +6,7 @@ import KeymapFeature
 import Persistence
 import SystemServices
 
-/// The file type of shared keymaps: JSON with its own extension, so a drop or a double-click can tell it from other files.
+/// Shared keymaps are JSON with their own extension, so drops and double-clicks can recognise them.
 public enum KeymapFile {
     public static let fileExtension = "benzkeymap"
     public static let typeIdentifier = "dev.benz.mirror.keymap"
@@ -16,7 +16,6 @@ public enum KeymapFile {
     }
 }
 
-/// Asks the user whether to import a keymap, with a plain-language summary of what is in it.
 @MainActor
 public enum ImportPrompt {
     public static func ask(_ summary: KeymapSummary) -> Bool {
@@ -30,7 +29,6 @@ public enum ImportPrompt {
     }
 }
 
-/// Loading, importing and exporting keymaps for the front phone.
 extension AppModel {
     public var isKeymapEnabled: Bool { active?.keymap.isEnabled ?? false }
     public var currentKeymap: ProfileSummary? { active?.keymap.profile }
@@ -41,7 +39,7 @@ extension AppModel {
         loadKeymap(id: id, for: active, announce: true)
     }
 
-    /// Loads a saved keymap into one phone. Returns whether it worked; a problem is shown as a notice.
+    /// Returns false when the keymap fails to load; the reason is shown as a notice.
     @discardableResult
     public func loadKeymap(id: String, for session: DeviceSession, announce: Bool) -> Bool {
         guard let keymapStore else { return false }
@@ -69,7 +67,6 @@ extension AppModel {
 
     // MARK: Sharing
 
-    /// Asks for a keymap file and imports it (after showing what is in it).
     public func importKeymap() {
         guard keymapStore != nil else { return }
         let panel = NSOpenPanel()
@@ -90,7 +87,6 @@ extension AppModel {
         }
     }
 
-    /// Keymaps shared as text (in a chat, for example) come in through the clipboard.
     public func importKeymapFromClipboard(pasteboard: NSPasteboard = .general) {
         guard let text = pasteboard.string(forType: .string), !text.isEmpty else {
             notice = "The clipboard has no text to import"
@@ -103,8 +99,7 @@ extension AppModel {
         importKeymap(data: Data(text.utf8), source: "the clipboard")
     }
 
-    /// Reads a shared keymap, checks it, shows the user what it contains, and only then saves it.
-    /// Nothing is written unless the user agrees. Returns whether it was imported.
+    /// Validates the keymap and asks the user before saving anything.
     @discardableResult
     public func importKeymap(data: Data, source: String) -> Bool {
         guard let keymapStore else { return false }
@@ -141,7 +136,6 @@ extension AppModel {
         }
     }
 
-    /// Puts the keymap on the clipboard as text, for pasting into a chat.
     public func copyKeymapToClipboard(id: String, pasteboard: NSPasteboard = .general) {
         do {
             let data = try keymapStore?.exportData(id: id) ?? Data()
@@ -207,7 +201,7 @@ extension AppModel {
 
     // MARK: Editor
 
-    /// Opens the editor on the loaded keymap (or a new one). The keymap is switched off while editing.
+    /// The keymap is switched off while the editor is open.
     public func startEditingKeymap() {
         guard let active, editor == nil else { return }
         let profile = active.keymap.profile.flatMap { try? keymapStore?.load(id: $0.id) }
@@ -217,7 +211,6 @@ extension AppModel {
         editor = KeymapEditorModel(profile: profile)
     }
 
-    /// Saves the open editor and loads the result into the phone's keymap. Returns whether it worked.
     @discardableResult
     public func saveEditor() -> Bool {
         guard let editor, let keymapStore else { return false }

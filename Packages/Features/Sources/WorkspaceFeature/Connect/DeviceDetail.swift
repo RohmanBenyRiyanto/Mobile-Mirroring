@@ -5,7 +5,6 @@ import Networking
 import SwiftUI
 import Theme
 
-/// The settings of the Connect window as a grouped form, as in System Settings: message, quality, OBS, behavior.
 struct DeviceDetail: View {
     @EnvironmentObject private var model: AppModel
     let status: ConnectStatus

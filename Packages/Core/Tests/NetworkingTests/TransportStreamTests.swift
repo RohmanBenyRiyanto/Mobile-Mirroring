@@ -65,9 +65,9 @@ final class TransportStreamTests: XCTestCase {
     func testKeyFramePacketCarriesPCRAndRandomAccessFlag() {
         var muxer = TransportStreamMuxer(codec: .h264, includesAudio: false)
         let packet = muxer.video(Data(count: 1_000), ticks: 180_000, isKeyFrame: true)
-        XCTAssertEqual(packet[1] & 0x40, 0x40) // payload unit start
-        XCTAssertEqual(packet[3] & 0x30, 0x30) // adaptation field and payload
-        XCTAssertEqual(packet[5] & 0x50, 0x50) // random access + PCR flags
+        XCTAssertEqual(packet[1] & 0x40, 0x40)
+        XCTAssertEqual(packet[3] & 0x30, 0x30)
+        XCTAssertEqual(packet[5] & 0x50, 0x50)
     }
 
     func testAACFramesGetValidADTSHeaders() throws {

@@ -4,8 +4,7 @@ import Foundation
 import DomainModels
 import Networking
 
-/// Hover over the mirrored screen to see what element is there. Works from a snapshot of the screen
-/// (`uiautomator dump`), so it is refreshed on request rather than live.
+/// Highlights the element under the pointer using a `uiautomator dump` snapshot, refreshed on request rather than live.
 @MainActor
 public final class InspectorModel: ObservableObject {
     public enum Status: Equatable {
@@ -18,7 +17,7 @@ public final class InspectorModel: ObservableObject {
     @Published public private(set) var status = Status.off
     @Published public private(set) var hierarchy: UIHierarchy?
     @Published public private(set) var hovered: UINode?
-    /// Whether the dump holds anything beyond one full-screen element (games draw themselves and expose nothing).
+    /// False when the dump holds only a full-screen element, as in games that draw themselves.
     public var hasDetail: Bool { (hierarchy?.nodes.count ?? 0) > 3 }
 
     public var isOn: Bool { status != .off }
@@ -27,7 +26,6 @@ public final class InspectorModel: ObservableObject {
     private var task: Task<Void, Never>?
     private var lastRatio: CGPoint?
 
-    /// `fetch` returns the raw output of `uiautomator dump`.
     public init(fetch: @escaping () async throws -> Data) { self.fetch = fetch }
 
     public static func fetcher(adb: ADB, serial: String) -> () async throws -> Data {
@@ -52,7 +50,6 @@ public final class InspectorModel: ObservableObject {
 
     public func toggle() { setOn(!isOn) }
 
-    /// Reads the screen again (after the app moved on).
     public func refresh() {
         task?.cancel()
         status = .reading
@@ -76,14 +73,13 @@ public final class InspectorModel: ObservableObject {
         }
     }
 
-    /// The pointer moved over the picture (nil when it left).
     public func pointerMoved(to ratio: CGPoint?) {
         lastRatio = ratio
         let node = ratio.flatMap { hierarchy?.node(atRatio: $0) }
         if node != hovered { hovered = node }
     }
 
-    /// Copies the hovered element's most useful name (its resource id, else text, else description).
+    /// Copies the hovered element's resource id, falling back to its text, description, then class name.
     @discardableResult
     public func copyHovered() -> String? {
         guard let node = hovered else { return nil }
@@ -99,7 +95,6 @@ public enum InspectorError: LocalizedError {
     public var errorDescription: String? { "The phone's screen could not be read (secure screens such as a lock screen hide their contents)." }
 }
 
-/// The measurements shown for an element.
 public struct NodeMeasurements: Equatable {
     public var pixels: CGRect
     public var dp: CGRect?

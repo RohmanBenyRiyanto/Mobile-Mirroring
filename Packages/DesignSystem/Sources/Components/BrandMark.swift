@@ -1,24 +1,21 @@
 import SwiftUI
 import Theme
 
-/// The Benz mark: two slanted panels. Drawn as vectors from the brand SVG, so it is sharp at any size and takes whatever
-/// colour it is given (`foregroundStyle`), which is what lets it follow light and dark mode.
+/// The Benz mark as a vector shape, so it stays sharp at any size and takes the colour it is filled with.
 public struct BrandMark: Shape {
     public init() {}
 
-    /// The artwork's own coordinates (a 1024 × 1024 canvas, both panels moved and scaled as in the SVG layers).
     static let artwork: Path = {
         let left = SVGPath.parse("M229.8 21.5A16 16 0 0 1 255 34.5L255 550.1A16 16 0 0 1 248.2 563.2L39.2 709.5A16 16 0 0 1 14 696.4L14 182.5A16 16 0 0 1 20.8 169.5Z")
         let right = SVGPath.parse("M291 322.9A16 16 0 0 1 316.2 309.8L489.2 431.6A16 16 0 0 1 496 444.7L496 831.8A16 16 0 0 1 472.7 846.1L169.6 690.8A16 16 0 0 1 167.8 663.5L268.8 592.7A52 52 0 0 0 291 550.1Z")
-        // The SVG layers place both panels with translate(301.72 168.51) scale(0.79327).
+        // Placement copied from the brand SVG's layer transform.
         let place = CGAffineTransform(scaleX: 0.79327, y: 0.79327).concatenating(CGAffineTransform(translationX: 301.72, y: 168.51))
         var both = Path()
         for panel in [left, right] { if let panel { both.addPath(panel, transform: place) } }
         return both
     }()
 
-    /// The mark's own bounds in artwork coordinates.
-    public static var artworkBounds: CGRect { artwork.cgPath.boundingBoxOfPath } // tight: the curves' control points are not counted
+    public static var artworkBounds: CGRect { artwork.cgPath.boundingBoxOfPath } // Tight bounds; control points are excluded.
 
     public func path(in rect: CGRect) -> Path {
         let bounds = Self.artworkBounds
@@ -32,7 +29,6 @@ public struct BrandMark: Shape {
     }
 }
 
-/// The three looks of the app icon (the design's icon board).
 public enum BrandVariant: String, CaseIterable, Identifiable {
     case darkBlue = "A-dark-blue"
     case clearBlue = "B-clear-blue"
@@ -49,14 +45,12 @@ public enum BrandVariant: String, CaseIterable, Identifiable {
     }
 }
 
-/// How the brand is drawn: flat vector, or with the glass effect.
 public enum BrandStyle: String, CaseIterable, Identifiable {
     case flat, glass
 
     public var id: String { rawValue }
 }
 
-/// The mark in the text colour (dark ink in light mode, near white in dark mode), or as glass.
 public struct BrandLogo: View {
     private let height: CGFloat
     private let style: BrandStyle
@@ -79,8 +73,7 @@ public struct BrandLogo: View {
     }
 }
 
-/// The mark as a sheet of glass: the system's own Liquid Glass on macOS 26+, an imitation (a pale gradient, a bright edge and
-/// a soft shadow) before, and a plain fill when the user chose solid surfaces.
+/// Liquid Glass on macOS 26 and later; an imitation on older systems.
 struct GlassMark: View {
     var body: some View {
         switch SurfaceStyle.rendering {
@@ -106,10 +99,8 @@ struct GlassMark: View {
     }
 }
 
-/// The app icon as a tile, for places inside the app (welcome screen, About, Settings).
-///
-/// Flat: drawn in code. Glass: the design's 3D glass render, three layers (background, shadow, mark) stacked on the same
-/// 1024 canvas. With `variant: nil` it follows the appearance: dark blue in dark mode, the pale tile in light mode.
+/// The app icon as a tile. The glass style uses three pre-rendered layers from the asset catalog.
+/// A nil variant follows the appearance.
 public struct BrandTile: View {
     private let size: CGFloat
     private let variant: BrandVariant?
@@ -124,7 +115,6 @@ public struct BrandTile: View {
 
     private var resolved: BrandVariant { variant ?? (colorScheme == .dark ? .darkBlue : .light) }
 
-    /// Top and bottom of the flat tile, and the mark: the three variants of the design's icon board.
     static func colors(_ variant: BrandVariant) -> (top: Color, bottom: Color, mark: Color) {
         switch variant {
         case .clearBlue: return (Color(hex: "#5cc2ff"), Color(hex: "#004fd0"), .white)
@@ -148,7 +138,7 @@ public struct BrandTile: View {
         let colors = Self.colors(resolved)
         return RoundedRectangle(cornerRadius: size * 0.2237, style: .continuous)
             .fill(LinearGradient(colors: [colors.top, colors.bottom], startPoint: .top, endPoint: .bottom))
-            // The mark is 382 x 654 on the icon's 1024 canvas, centred.
+            // Mark size on the icon's 1024 canvas.
             .overlay(BrandMark().fill(colors.mark).frame(width: size * 382 / 1024, height: size * 654 / 1024))
             .overlay(RoundedRectangle(cornerRadius: size * 0.2237, style: .continuous).strokeBorder(.white.opacity(0.12), lineWidth: max(0.5, size / 256)))
     }
@@ -163,7 +153,7 @@ public struct BrandTile: View {
 }
 
 extension Color {
-    /// `#RRGGBB`. Anything else gives clear, so a typo shows up as a missing colour rather than a crash.
+    /// Anything other than `#RRGGBB` gives clear, so a typo shows as a missing colour rather than a crash.
     init(hex: String) {
         guard let value = HexColor(hex) else { self = .clear; return }
         self = Color(.sRGB, red: value.red, green: value.green, blue: value.blue, opacity: 1)

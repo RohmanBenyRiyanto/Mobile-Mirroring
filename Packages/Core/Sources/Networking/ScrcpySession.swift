@@ -46,7 +46,7 @@ public final class ScrcpySession: @unchecked Sendable {
     public let statistics = StreamStatistics()
     /// Delivered from background threads.
     public var onEvent: (@Sendable (Event) -> Void)?
-    /// Sees every control message as it is sent (used to record macros). Set once, before the first send.
+    /// Sees every control message as it is sent. Set once, before the first send.
     public var messageObserver: (@Sendable (ControlMessage) -> Void)?
 
     private let adb: ADB
@@ -80,7 +80,6 @@ public final class ScrcpySession: @unchecked Sendable {
         decoder.onNeedsKeyFrame = { [weak self] in self?.send(.resetVideo) }
     }
 
-    /// Where OBS can read the stream, when the OBS output is enabled.
     public var streamURL: String? { streamServer?.url }
     public var streamViewerCount: Int { streamServer?.viewerCount ?? 0 }
 

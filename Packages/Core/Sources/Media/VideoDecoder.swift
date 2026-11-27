@@ -2,11 +2,7 @@ import AVFoundation
 import CoreMedia
 import DomainModels
 
-/// Turns the encoded stream into pictures.
-///
-/// Packets are handed to `AVSampleBufferDisplayLayer`, which decodes them with the
-/// hardware decoder and shows each frame the moment it is enqueued (`DisplayImmediately`),
-/// so there is no presentation buffering on the Mac side.
+/// Decodes and displays the encoded stream with the hardware decoder.
 ///
 /// Packet-handling methods must be called from a single (the video) thread.
 public final class VideoDecoder: @unchecked Sendable {
@@ -38,7 +34,7 @@ public final class VideoDecoder: @unchecked Sendable {
     /// True if the display pipeline rejected a frame and is waiting for a key frame.
     public var hasDisplayError: Bool { renderer.status == .failed }
 
-    /// Receives an independent copy of every frame while set (used by the recorder).
+    /// Receives an independent copy of every frame while set.
     public func setFrameTap(_ tap: FrameTap?) { frameTap.set(tap) }
 
     /// A new capture session starts (the device rotated): drop everything until its first key frame.

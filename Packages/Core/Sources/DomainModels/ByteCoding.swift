@@ -6,7 +6,6 @@ extension Data {
         Swift.withUnsafeBytes(of: value.bigEndian) { append(contentsOf: $0) }
     }
 
-    /// Reads a big-endian integer at `offset` (relative to the start of the data).
     public func readBigEndian<T: FixedWidthInteger>(_ type: T.Type, at offset: Int) -> T {
         precondition(offset >= 0 && offset + MemoryLayout<T>.size <= count, "read out of bounds")
         return withUnsafeBytes { T(bigEndian: $0.loadUnaligned(fromByteOffset: offset, as: T.self)) }

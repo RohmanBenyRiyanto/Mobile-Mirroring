@@ -18,7 +18,6 @@ public enum SampleBuffers {
                           timing: CMSampleTimingInfo(duration: .invalid, presentationTimeStamp: stamp, decodeTimeStamp: stamp))
     }
 
-    /// A block of interleaved 16-bit stereo PCM at 48 kHz.
     public static func audio(_ pcm: Data, presentationTime: Int64) -> CMSampleBuffer? {
         let frames = pcm.count / PCM.bytesPerFrame
         guard frames > 0, let format = pcmFormat else { return nil }

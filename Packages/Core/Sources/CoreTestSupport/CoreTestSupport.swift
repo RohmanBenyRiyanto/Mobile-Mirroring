@@ -6,7 +6,6 @@ import Networking
 import TestSupport
 import XCTest
 
-/// Opens a TCP connection to a loopback port (what a client such as OBS does).
 public func connectLoopback(port: UInt16) throws -> TCPStream {
     let fd = Darwin.socket(AF_INET, SOCK_STREAM, 0)
     var address = sockaddr_in()
@@ -23,7 +22,7 @@ public func connectLoopback(port: UInt16) throws -> TCPStream {
     return TCPStream(fd: fd)
 }
 
-/// Encodes a test pattern with ffmpeg (no B-frames, like the Android encoder) and returns its NAL units.
+/// Encodes an ffmpeg test pattern without B-frames, matching the Android encoder.
 public func makeH264NALUnits(in directory: URL, seconds: Int, fps: Int) throws -> [Data] {
     let clip = directory.appendingPathComponent("clip-\(UUID().uuidString).h264")
     let result = try runTool("ffmpeg", ["-v", "error", "-f", "lavfi", "-i", "testsrc=size=320x240:rate=\(fps)", "-t", "\(seconds)",

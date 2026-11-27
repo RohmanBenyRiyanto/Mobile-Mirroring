@@ -13,16 +13,16 @@ final class ControlMessageTests: XCTestCase {
     func testTouchDownLayout() {
         let data = ControlMessage.touch(.down, position, pressure: 1).serialized
         XCTAssertEqual(data.count, 32)
-        XCTAssertEqual(data[0], 2) // type
-        XCTAssertEqual(data[1], 0) // action down
-        XCTAssertEqual(data.readBigEndian(UInt64.self, at: 2), .max) // mouse pointer id
+        XCTAssertEqual(data[0], 2)
+        XCTAssertEqual(data[1], 0)
+        XCTAssertEqual(data.readBigEndian(UInt64.self, at: 2), .max)
         XCTAssertEqual(data.readBigEndian(Int32.self, at: 10), 100)
         XCTAssertEqual(data.readBigEndian(Int32.self, at: 14), 200)
         XCTAssertEqual(data.readBigEndian(UInt16.self, at: 18), 1080)
         XCTAssertEqual(data.readBigEndian(UInt16.self, at: 20), 2400)
-        XCTAssertEqual(data.readBigEndian(UInt16.self, at: 22), 0xFFFF) // full pressure
-        XCTAssertEqual(data.readBigEndian(UInt32.self, at: 24), 1) // action button
-        XCTAssertEqual(data.readBigEndian(UInt32.self, at: 28), 1) // buttons held
+        XCTAssertEqual(data.readBigEndian(UInt16.self, at: 22), 0xFFFF)
+        XCTAssertEqual(data.readBigEndian(UInt32.self, at: 24), 1)
+        XCTAssertEqual(data.readBigEndian(UInt32.self, at: 28), 1)
     }
 
     func testTouchUpReleasesButtons() {
@@ -50,7 +50,7 @@ final class ControlMessageTests: XCTestCase {
     func testSetClipboardLayout() {
         let data = ControlMessage.setClipboard("hi", paste: true).serialized
         XCTAssertEqual(data[0], 9)
-        XCTAssertEqual(data[9], 1) // paste flag
+        XCTAssertEqual(data[9], 1)
         XCTAssertEqual(data.readBigEndian(UInt32.self, at: 10), 2)
         XCTAssertEqual(String(data: data.suffix(2), encoding: .utf8), "hi")
     }

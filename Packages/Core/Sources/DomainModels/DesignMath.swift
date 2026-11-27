@@ -2,17 +2,14 @@ import CoreGraphics
 import ImageIO
 import Foundation
 
-/// A grid laid over the phone's screen, in dp.
 public enum DesignGrid: Int, CaseIterable, Identifiable {
     case off = 0, dp4 = 4, dp8 = 8
     public var id: Int { rawValue }
     public var title: String { self == .off ? "Grid Off" : "\(rawValue) dp Grid" }
     public var stepDP: Double? { self == .off ? nil : Double(rawValue) }
-    /// Every Nth line is drawn stronger, so counting is easy.
     public var majorEvery: Int { 4 }
 
-    /// Lines across one axis: each position as a 0…1 ratio, and whether it is a major line.
-    /// Returns nothing when the lines would be packed closer than `minimumSpacing` view points (they would be a blur).
+    /// Returns no lines when they would be packed closer than `minimumSpacing` view points, since they would blur.
     public static func lines(extentPixels: Double, densityScale: Double, stepDP: Double, viewLength: Double,
                       majorEvery: Int = 4, minimumSpacing: Double = 3) -> [(ratio: Double, isMajor: Bool)] {
         guard extentPixels > 0, densityScale > 0, stepDP > 0, viewLength > 0 else { return [] }
@@ -67,7 +64,6 @@ public struct PixelImage {
 
 public struct PickedColor: Equatable {
     public let red: UInt8, green: UInt8, blue: UInt8
-    /// Where it was read, in pixels of the phone's screen.
     public let x: Int, y: Int
 
     public init(red: UInt8, green: UInt8, blue: UInt8, x: Int, y: Int) {
@@ -82,11 +78,9 @@ public struct PickedColor: Equatable {
     public var rgbText: String { "rgb(\(red), \(green), \(blue))" }
 }
 
-/// The numbers shown next to the crosshair.
 public struct CrosshairReadout: Equatable {
     public let pixelX: Int, pixelY: Int
     public let dpX: Double?, dpY: Double?
-    /// Distance to the screen's right and bottom edges, in pixels.
     public let rightPixels: Int, bottomPixels: Int
 
     public init?(ratio: CGPoint, screenSize: CGSize, densityScale: Double?) {

@@ -57,7 +57,6 @@ public struct KeymapSummary: Equatable {
             && lhs.counts.map(\.count) == rhs.counts.map(\.count) && lhs.macroSteps == rhs.macroSteps && lhs.savedAs == rhs.savedAs
     }
 
-    /// Things worth knowing before saying yes.
     public var warnings: [String] {
         var list: [String] = []
         if macroCount > 0 {
@@ -75,7 +74,6 @@ public struct KeymapSummary: Equatable {
         return list
     }
 
-    /// The text of the confirmation.
     public var message: String {
         let contents = counts.isEmpty ? "No elements." : counts.map { "\($0.count) \($0.kind.lowercased())" }.joined(separator: ", ") + "."
         return ([contents] + warnings.map { "• " + $0 }).joined(separator: "\n\n")

@@ -4,7 +4,7 @@ import XCTest
 @testable import Theme
 
 final class ThemeTests: XCTestCase {
-    /// The design's own token file, kept in the repo for the layout numbers (spacing, radii, sizes).
+    /// Reads docs/design/tokens.json, which the layout constants must match.
     private func tokens() throws -> [String: Any] {
         var folder = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
         while !FileManager.default.fileExists(atPath: folder.appendingPathComponent("docs/design/tokens.json").path), folder.path != "/" {
@@ -62,7 +62,7 @@ final class ThemeTests: XCTestCase {
         return (Double(c.redComponent), Double(c.greenComponent), Double(c.blueComponent), Double(c.alphaComponent))
     }
 
-    /// What a colour looks like when drawn over a background (the surfaces use transparent fills).
+    /// A colour as drawn over a background, since surfaces use transparent fills.
     private func composite(_ top: ThemeColor, over background: ThemeColor, in appearance: NSAppearance.Name) -> HexColor {
         let (t, b) = (rgba(top.resolved(in: appearance)), rgba(background.resolved(in: appearance)))
         func mix(_ x: Double, _ y: Double) -> Double { x * t.a + y * (1 - t.a) }
@@ -115,7 +115,7 @@ final class ThemeTests: XCTestCase {
                 let background = composite(surface, over: Theme.Palette.page, in: appearance)
                 let primary = composite(Theme.Palette.text, over: surface, in: appearance)
                 XCTAssertGreaterThanOrEqual(HexColor.contrast(primary, background), 7, "primary text, \(appearance.rawValue)")
-                // Secondary text is the system's own choice (Apple's secondaryLabelColor); it is not asked for more than 3 : 1 here.
+                // Secondary text only needs 3 : 1, as the system's secondary label colour is meant for.
                 let secondary = composite(Theme.Palette.textSecondary, over: surface, in: appearance)
                 XCTAssertGreaterThanOrEqual(HexColor.contrast(secondary, background), 3, "secondary text, \(appearance.rawValue)")
             }
@@ -148,7 +148,7 @@ final class ThemeTests: XCTestCase {
                 Text("Card").padding(16).card()
             }
         }
-        // Real glass does not draw off screen, so the look older systems get is the one that can be checked here.
+        // Real glass does not draw off screen, so the pre-macOS 26 look is checked instead.
         SurfaceStyle.allowsGlass = false
         defer { SurfaceStyle.allowsGlass = true }
         for appearance in appearances {

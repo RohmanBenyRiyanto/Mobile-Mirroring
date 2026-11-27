@@ -1,7 +1,6 @@
 import SwiftUI
 
-/// Animates a change of `value`, unless the user asked for reduced motion (System Settings › Accessibility › Display):
-/// then the change is immediate. (HIG: make motion optional.)
+/// Animates changes to `value`, or applies them instantly when Reduce Motion is on.
 private struct Animated<Value: Equatable>: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let animation: Animation

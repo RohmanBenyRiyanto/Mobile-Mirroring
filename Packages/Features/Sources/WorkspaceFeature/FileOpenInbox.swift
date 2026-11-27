@@ -1,7 +1,6 @@
 import Foundation
 
-/// Receives files opened from Finder. Files that arrive before a handler is set (a double-click that launches the
-/// app) wait here and are handed over as soon as one is.
+/// Holds files that arrive before a handler is set, such as a Finder double-click that launches the app.
 public final class FileOpenInbox {
     public var handler: (([URL]) -> Void)? {
         didSet {

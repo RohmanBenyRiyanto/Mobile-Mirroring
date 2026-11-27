@@ -1,5 +1,3 @@
-# XcodeGen spec for the thin app shell. Regenerate the project with:  xcodegen generate
-# The shell only holds the entry point and resources; everything else lives in Packages/.
 name: BenzMirror
 options:
   bundleIdPrefix: dev.benz
@@ -14,7 +12,7 @@ settings:
     MACOSX_DEPLOYMENT_TARGET: "14.0"
     ENABLE_HARDENED_RUNTIME: YES
     CODE_SIGN_STYLE: Manual
-    CODE_SIGN_IDENTITY: "-"          # ad-hoc: runs on this Mac; a Developer ID is needed to distribute
+    CODE_SIGN_IDENTITY: "-"          # Ad-hoc signing; distribution needs a Developer ID.
     DEVELOPMENT_TEAM: ""
 packages:
   Core:
@@ -30,7 +28,7 @@ targets:
     sources:
       - path: App
       - path: Resources
-        buildPhase: resources    # the scrcpy server and its licence are copied as they are
+        buildPhase: resources    # Copied as-is; the scrcpy server must not be processed.
         excludes:
           - "Info.plist"
           - "*.entitlements"

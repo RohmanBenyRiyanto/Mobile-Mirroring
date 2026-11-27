@@ -37,7 +37,6 @@ public struct ContentView: View {
 
 // MARK: - Mirroring
 
-/// The live phone screen, with a control rail unless stream mode hides it.
 private struct MirrorScreen: View {
     @EnvironmentObject private var model: AppModel
     let session: ScrcpySession
@@ -47,6 +46,7 @@ private struct MirrorScreen: View {
     @State private var dropSummary: DropSummary?
     @State private var showsStreamHint = false
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         VStack(spacing: 0) {
@@ -56,7 +56,8 @@ private struct MirrorScreen: View {
         .navigationTitle(model.deviceName)
         .background(RailPanelAttacher(isVisible: !model.isStreamMode && model.editor == nil,
                                       content: AnyView(RailView(model: model, isCollapsed: $model.isRailCollapsed,
-                                                                openLogcat: { openWindow(id: "logcat") }).themed(model.appearance))))
+                                                                openLogcat: { openWindow(id: "logcat") },
+                                                                customize: { model.showSettingsPane("rail"); openSettings() }).themed(model.appearance))))
         .overlay(alignment: .bottom) { if showsStreamHint { StreamHint().transition(.opacity.combined(with: .move(edge: .bottom))) } }
         .onChange(of: model.isStreamMode) { _, on in
             guard on else { showsStreamHint = false; return }
@@ -97,7 +98,6 @@ private struct MirrorScreen: View {
     }
 }
 
-/// Switches between the phones that are being mirrored.
 private struct PhoneTabs: View {
     @EnvironmentObject private var model: AppModel
 

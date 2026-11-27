@@ -2,7 +2,6 @@ import Foundation
 import DomainModels
 import Networking
 
-/// Streams `adb logcat` for one device and keeps the most recent lines, optionally only those of the app in front.
 @MainActor
 public final class LogcatModel: ObservableObject {
     public init() {}
@@ -48,7 +47,6 @@ public final class LogcatModel: ObservableObject {
         var lines: [LogEntry]
     }
 
-    /// How many process ids are known for the app in front.
     public var knownProcessCount: Int { processIDs.count }
 
     public var visibleEntries: [LogEntry] {
@@ -122,7 +120,7 @@ public final class LogcatModel: ObservableObject {
 
     // MARK: The app in front
 
-    /// Which app to follow. A different app starts with an empty process list, filled in at once.
+    /// Follows another app; its process list starts empty and is refreshed at once.
     public func setForegroundPackage(_ package: String?) {
         guard package != foregroundPackage else { return }
         foregroundPackage = package
@@ -137,7 +135,6 @@ public final class LogcatModel: ObservableObject {
         updateProcesses(from: output)
     }
 
-    /// Adds the app's processes from a `ps` listing.
     public func updateProcesses(from output: String) {
         guard let package = foregroundPackage else { return }
         processIDs.formUnion(ProcessList.pids(of: package, in: ProcessList.parse(output)))
@@ -146,7 +143,7 @@ public final class LogcatModel: ObservableObject {
     // MARK: Taking lines in
 
     private func flush() {
-        guard !isPaused else { return } // lines wait in `incoming` until resumed
+        guard !isPaused else { return }
         let lines = incoming.withLock { pending -> [String] in
             defer { pending.removeAll() }
             return pending
@@ -154,7 +151,6 @@ public final class LogcatModel: ObservableObject {
         ingest(lines)
     }
 
-    /// Parses lines, groups crashes, and keeps what belongs to the chosen scope.
     public func ingest(_ lines: [String]) {
         var kept: [LogEntry] = []
         for line in lines {

@@ -1,9 +1,8 @@
 import CoreGraphics
 import Foundation
 
-/// Turns key presses into touches according to a keymap. It is a pure state machine: the caller feeds it key
-/// events and the passage of time (`tick`) and carries out the `Action`s it returns, so it can be tested
-/// without a phone.
+/// Turns key presses into touches for a keymap. It is a pure state machine: the caller feeds it key events and
+/// `tick`, and carries out the returned `Action`s, so it can be tested without a phone.
 public struct KeymapEngine {
     public enum Action: Equatable {
         case send(ControlMessage)
@@ -16,27 +15,23 @@ public struct KeymapEngine {
 
     private enum Direction { case up, left, down, right }
 
-    /// A joystick whose finger is on the screen.
     private struct Stick {
         let slot: Int
         var deflection = CGVector.zero // -1…1 on each axis, length at most 1
         var lastSent: TouchPosition
     }
 
-    /// The finger that looks around while aiming.
     private struct Look {
         let slot: Int
         var offset = CGVector.zero // frame pixels from the area's centre
         var lastSent: TouchPosition
     }
 
-    /// A finger placed on a skill button while its key is held.
     private struct Skill {
         let slot: Int
         var lastSent: TouchPosition
     }
 
-    /// A macro that is playing: where it is in its steps, and the phone's slot for each of its fingers.
     private struct MacroRun {
         var index = 0
         var elapsed = 0.0
@@ -56,7 +51,6 @@ public struct KeymapEngine {
     private var look: Look?
     private var elementsByID: [UUID: KeymapElement] = [:]
     private var pressedKeys: Set<UInt16> = []
-    /// Buttons (hold and toggle) whose finger is down, and the pointer slot each uses.
     private var down: [UUID: Int] = [:]
     private var heldDirections: [UUID: Set<Direction>] = [:]
     private var sticks: [UUID: Stick] = [:]
@@ -78,13 +72,12 @@ public struct KeymapEngine {
     /// True while free-look is on: the mouse should be captured and its movement and buttons come here.
     public private(set) var isAiming = false
 
-    /// Whether a mouse button does something while aiming.
     public func handlesMouseButton(_ button: Int) -> Bool { elementsByMouseButton[button] != nil }
 
     /// Whether the keymap uses this key (the key event should then not reach the phone as typing).
     public func handles(_ key: UInt16) -> Bool { elementsByKey[key] != nil }
 
-    /// True while a joystick finger is down: the caller should keep calling `tick`.
+    /// True while a stick or macro is active: the caller should keep calling `tick`.
     public var isAnimating: Bool { !sticks.isEmpty || !macros.isEmpty }
 
     // MARK: Events
@@ -374,7 +367,6 @@ extension KeymapEngine {
         return actions
     }
 
-    /// Where the look finger is: the area's centre plus its offset in frame pixels.
     private func lookPosition(of element: KeymapElement, offset: CGVector, frameSize: CGSize) -> TouchPosition? {
         let centre = element.position.clamped
         let ratio = CGPoint(x: centre.x + Double(offset.dx) / Double(frameSize.width),
@@ -453,13 +445,11 @@ extension KeymapEngine {
         return advanceMacro(element, by: 0, frameSize: frameSize)
     }
 
-    /// Stops a macro at once, lifting every finger it still has down.
     fileprivate mutating func cancelMacro(_ element: KeymapElement) -> [Action] {
         guard let run = macros.removeValue(forKey: element.id) else { return [] }
         return liftFingers(of: run, macro: element.id)
     }
 
-    /// Plays every step that has become due, looping or finishing at the end.
     fileprivate mutating func advanceMacro(_ element: KeymapElement, by deltaTime: Double, frameSize: CGSize) -> [Action] {
         guard case let .macro(_, steps, loop, speed) = element.action, var run = macros[element.id] else { return [] }
         let duration = steps.last?.time ?? 0
@@ -472,7 +462,7 @@ extension KeymapEngine {
                 run.index += 1
             }
             guard run.index >= steps.count else { break }
-            guard loop, duration > 0 else { // finished
+            guard loop, duration > 0 else {
                 macros[element.id] = nil
                 return actions + liftFingers(of: run, macro: element.id)
             }
@@ -508,7 +498,6 @@ extension KeymapEngine {
         }
     }
 
-    /// Lifts the fingers a macro still holds, where they are, and frees their slots.
     private mutating func liftFingers(of run: MacroRun, macro id: UUID) -> [Action] {
         run.fingers.sorted { $0.key < $1.key }.map { _, finger in
             giveBack(finger.slot)

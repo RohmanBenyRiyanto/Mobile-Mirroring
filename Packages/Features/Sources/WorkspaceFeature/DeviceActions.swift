@@ -20,7 +20,7 @@ public enum OutputFiles {
         return folder.appendingPathComponent("\(prefix)-\(formatter.string(from: Date())).\(pathExtension)")
     }
 
-    /// A safe file name for the phone: letters, digits and a few punctuation marks only.
+    /// Limits the name to safe characters before it is used on the phone.
     public static func sanitizedName(_ name: String) -> String {
         let allowed = Set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-() ")
         let cleaned = String(name.map { allowed.contains($0) ? $0 : "_" }).trimmingCharacters(in: .whitespaces)
@@ -28,7 +28,6 @@ public enum OutputFiles {
     }
 }
 
-/// One-shot adb actions that do not need the mirroring session.
 extension AppModel {
     public func takeScreenshot() {
         guard let adb, let serial = targetSerial else { return }

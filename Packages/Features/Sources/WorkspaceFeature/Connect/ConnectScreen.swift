@@ -4,7 +4,6 @@ import Networking
 import SwiftUI
 import Theme
 
-/// The window before (or between) mirroring: pick a phone, pick a quality, start.
 struct ConnectScreen: View {
     @EnvironmentObject private var model: AppModel
     @Environment(\.openWindow) private var openWindow

@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Builds a release "Benz Mirror.app" (ad-hoc signed, hardened runtime) into ./build.noindex (Spotlight does not index it).
-# Needs XcodeGen (`brew install xcodegen`) only to regenerate BenzMirror.xcodeproj from project.yml.
+# XcodeGen is optional: the project is regenerated only when it is installed.
 set -euo pipefail
 
 ROOT="${0:A:h:h}"

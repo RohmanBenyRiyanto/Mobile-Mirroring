@@ -1,7 +1,6 @@
 import SwiftUI
 import Theme
 
-/// Short instructions with a small number in front of each line.
 public struct NumberedSteps: View {
     private let steps: [LocalizedStringKey]
 
@@ -22,7 +21,6 @@ public struct NumberedSteps: View {
     }
 }
 
-/// The look of an input: 28 pt tall, fixed-width text, a faint fill and a hairline.
 public struct FieldBackground: ViewModifier {
     public init() {}
 
@@ -37,11 +35,9 @@ public struct FieldBackground: ViewModifier {
 }
 
 extension View {
-    /// Draws an input (a text field, an address) the way the design does.
     public func fieldBackground() -> some View { modifier(FieldBackground()) }
 }
 
-/// A line of fixed-width text styled as an input, with a trailing control (an address and its Copy button).
 public struct MonoField<Trailing: View>: View {
     private let text: String
     private let trailing: Trailing

@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 import Theme
 
-/// What the user chose under Settings › General › Appearance. Everything defaults to following the system.
+/// Appearance preferences. Every setting defaults to following the system.
 public struct AppearanceSettings: Codable, Equatable {
     public enum Mode: String, Codable, CaseIterable, Identifiable {
         case system, light, dark
@@ -10,14 +10,11 @@ public struct AppearanceSettings: Codable, Equatable {
     }
 
     public enum Accent: String, Codable, CaseIterable, Identifiable {
-        /// The accent the user picked in System Settings.
         case system
-        /// The brand blue (#1E6EF4), whatever the system accent is.
         case benzBlue
         public var id: String { rawValue }
     }
 
-    /// The Dock icon: the one in the app bundle, or one of the glass renders of the icon board.
     public enum DockIcon: String, Codable, CaseIterable, Identifiable {
         case standard, darkBlue, clearBlue, light
         public var id: String { rawValue }
@@ -44,7 +41,7 @@ public struct AppearanceSettings: Codable, Equatable {
         self.dockIcon = dockIcon
     }
 
-    /// Settings saved by another version miss some fields (or hold values this version does not know); those get the defaults.
+    /// Saved settings may miss fields or hold unknown values from other versions; those fall back to defaults.
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         mode = (try? values.decodeIfPresent(Mode.self, forKey: .mode)) ?? .system
@@ -53,7 +50,6 @@ public struct AppearanceSettings: Codable, Equatable {
         dockIcon = (try? values.decodeIfPresent(DockIcon.self, forKey: .dockIcon)) ?? .standard
     }
 
-    /// The accent to force over the whole interface, or nil to follow the system.
     public var accentColor: Color? {
         accent == .benzBlue ? Color(hex: "#1e6ef4") : nil
     }
@@ -67,8 +63,7 @@ public struct AppearanceSettings: Codable, Equatable {
     }
 }
 
-/// Holds the appearance choice, remembers it, and applies it: the appearance of every window, the style of floating surfaces
-/// and the Dock icon. The accent is applied by `themed()` on each window's content.
+/// Stores the appearance choice in UserDefaults and applies it to the app.
 @MainActor
 public final class AppearanceStore: ObservableObject {
     @Published public var settings: AppearanceSettings {
@@ -83,7 +78,7 @@ public final class AppearanceStore: ObservableObject {
     private let apply: (AppearanceSettings) -> Void
     private static let key = "appearance.v1"
 
-    /// `apply` is replaceable, so tests never change the real appearance of the machine they run on.
+    /// `apply` is injectable so tests do not change the real appearance.
     public init(defaults: UserDefaults = .standard, apply: ((AppearanceSettings) -> Void)? = nil) {
         self.defaults = defaults
         self.apply = apply ?? Self.applyToApp
@@ -97,7 +92,6 @@ public final class AppearanceStore: ObservableObject {
         if let data = try? JSONEncoder().encode(settings) { defaults.set(data, forKey: Self.key) }
     }
 
-    /// The real thing: the app's appearance, the surface style and the Dock icon.
     private static func applyToApp(_ settings: AppearanceSettings) {
         SurfaceStyle.mode = settings.surface
         switch settings.mode {
@@ -108,7 +102,6 @@ public final class AppearanceStore: ObservableObject {
         NSApp?.applicationIconImage = dockImage(for: settings.dockIcon)
     }
 
-    /// The glass render of the chosen icon, or nil for the icon in the app bundle.
     static func dockImage(for icon: AppearanceSettings.DockIcon) -> NSImage? {
         guard let variant = icon.brandVariant else { return nil }
         let renderer = ImageRenderer(content: BrandTile(size: 512, variant: variant, style: .glass))
@@ -124,12 +117,11 @@ private struct Themed: ViewModifier {
         content
             .tint(store.settings.accentColor)
             .preferredColorScheme(store.settings.colorScheme)
-            // Surfaces read the style when they are drawn; a new style rebuilds them.
+            // Surfaces read their style when drawn, so a new style needs a rebuild.
             .id(store.settings.surface)
     }
 }
 
 extension View {
-    /// Applies the user's accent, appearance and surface style to a window's content.
     public func themed(_ store: AppearanceStore) -> some View { modifier(Themed(store: store)) }
 }

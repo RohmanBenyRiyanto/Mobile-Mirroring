@@ -1,29 +1,23 @@
 import SwiftUI
 
-// Liquid Glass exists on macOS 26 and later. Everything is built from these helpers, so no screen checks the system version
-// itself, and the user's choice of style (Settings › Appearance) is honoured in one place.
-
-/// How floating and navigation surfaces (rail, toolbar groups, toasts, tooltips) are drawn.
 public enum SurfaceMode: String, CaseIterable, Identifiable, Codable {
-    /// Liquid Glass where the system has it, a material before.
+    /// Liquid Glass on macOS 26 and later, a material before.
     case automatic
-    /// Liquid Glass always: the system's own on macOS 26+, a close imitation (blur, highlight, rim) before.
+    /// Liquid Glass always, imitated on systems without it.
     case glass
-    /// Plain solid surfaces, no transparency.
     case solid
 
     public var id: String { rawValue }
 }
 
-/// What a surface is actually drawn with, after the user's choice and the system's abilities are put together.
 public enum SurfaceRendering: Equatable {
     case realGlass, emulatedGlass, material, solid
 }
 
 public enum SurfaceStyle {
-    /// The user's choice. Set once at launch and whenever the setting changes.
+    /// The user's choice, set at launch and whenever the setting changes.
     nonisolated(unsafe) public static var mode = SurfaceMode.automatic
-    /// Lets tests draw the pre-macOS-26 look on a Mac that has glass, so the fallback is checked too.
+    /// Lets tests exercise the pre-macOS 26 fallback on a Mac that has glass.
     nonisolated(unsafe) public static var allowsGlass = true
 
     public static var rendering: SurfaceRendering {
@@ -37,7 +31,7 @@ public enum SurfaceStyle {
     }
 }
 
-/// Names a glass surface so it can morph into another one (a rail that folds into a tab) when the view changes.
+/// Identifies a glass surface so it can morph into another one.
 public struct GlassMorph {
     let id: String
     let namespace: Namespace.ID
@@ -48,8 +42,7 @@ public struct GlassMorph {
     }
 }
 
-/// Groups glass surfaces that appear together. On macOS 26 with real glass this is a `GlassEffectContainer`: one render pass
-/// for the whole group, and surfaces that are close blend and morph into each other. Elsewhere it changes nothing.
+/// Groups glass surfaces that appear together. Real glass uses a `GlassEffectContainer` so they blend and morph; elsewhere it does nothing.
 public struct GlassGroup<Content: View>: View {
     private let spacing: CGFloat
     private let content: Content
@@ -72,10 +65,7 @@ extension View {
     /// A floating or navigation surface (rail, toolbar group, toast, tooltip).
     ///
     /// Apply it after the modifiers that change how the view looks (padding, frame): glass captures what is drawn so far.
-    /// - Parameters:
-    ///   - interactive: the glass reacts to the pointer like a glass button does.
-    ///   - tint: suggests prominence on real glass.
-    ///   - morph: lets this surface morph into another one with the same id inside a `GlassGroup`.
+    /// - Parameter morph: lets this surface morph into another one with the same id inside a `GlassGroup`.
     @ViewBuilder
     public func glassSurface<S: InsettableShape>(in shape: S, interactive: Bool = false, tint: Color? = nil, morph: GlassMorph? = nil) -> some View {
         switch SurfaceStyle.rendering {
@@ -109,7 +99,6 @@ extension View {
         return glass
     }
 
-    /// The one prominent action of a window or sheet.
     @ViewBuilder
     public func prominentAction() -> some View {
         if SurfaceStyle.rendering == .realGlass, #available(macOS 26, *) {
@@ -119,7 +108,6 @@ extension View {
         }
     }
 
-    /// A secondary button next to the prominent one.
     @ViewBuilder
     public func secondaryAction() -> some View {
         if SurfaceStyle.rendering == .realGlass, #available(macOS 26, *) {
@@ -129,19 +117,17 @@ extension View {
         }
     }
 
-    /// Text or marks over the live video: a solid scrim, never glass (blur over moving video costs GPU time and delay).
+    /// Uses a solid scrim rather than glass, since blur over moving video costs GPU time.
     public func overVideo<S: Shape>(in shape: S) -> some View {
         self.foregroundStyle(Theme.OverVideo.text).background(Theme.OverVideo.scrim, in: shape)
     }
 
-    /// A grouped card on the page: a solid fill a little lighter than the page, and no border (as in System Settings).
     public func card(radius: CGFloat = Theme.Radius.card) -> some View {
         self.background(Theme.Palette.card.color, in: RoundedRectangle(cornerRadius: radius))
     }
 }
 
-/// Liquid Glass imitated for systems that do not have it, from the design's own recipe: a blurred, tinted body, a bright
-/// inner edge along the top, a faint dark edge along the bottom, and a hairline rim.
+/// Imitates Liquid Glass with a blurred body, a highlight along the top and a hairline rim.
 struct EmulatedGlass<S: InsettableShape>: View {
     let shape: S
 

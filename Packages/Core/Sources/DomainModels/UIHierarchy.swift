@@ -10,7 +10,6 @@ public struct UINode: Equatable, Identifiable {
     public let text: String
     public let contentDescription: String
     public let package: String
-    /// In pixels of the phone's screen.
     public let bounds: CGRect
     public let isClickable: Bool
     public let isEnabled: Bool
@@ -34,7 +33,6 @@ public struct UINode: Equatable, Identifiable {
     public var shortResourceID: String { resourceID.split(separator: "/").last.map(String.init) ?? resourceID }
 }
 
-/// The elements on the phone's screen at one moment.
 public struct UIHierarchy: Equatable {
     /// In document order: parents before children, later siblings after earlier ones (later is drawn on top).
     public let nodes: [UINode]

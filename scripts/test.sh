@@ -8,7 +8,7 @@ failed=0
 for package in DesignSystem Core Features; do
   log="$(mktemp)"
   (cd "$ROOT/Packages/$package" && swift test > "$log" 2>&1) || failed=1
-  # Count the result lines: SwiftPM's own "Executed N tests" lines are printed per suite and are easy to misread.
+  # Counts per-test results; SwiftPM's "Executed N tests" lines are per suite and easy to misread.
   counts="$(grep -E "^Test Case '.*' (passed|failed|skipped)" "$log" | sed -E "s/.*' (passed|failed|skipped).*/\1/" | sort | uniq -c | tr -s ' ' | tr '\n' ',' )"
   total="${counts:-no results}"
   echo "== $package: $total"

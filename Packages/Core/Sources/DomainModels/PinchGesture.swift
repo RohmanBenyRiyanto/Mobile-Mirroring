@@ -1,7 +1,6 @@
 import Foundation
 
-/// Geometry of a two-finger pinch on the device screen, so zoom and rotate gestures
-/// can be driven by a trackpad pinch or by Option + drag.
+/// Geometry of a two-finger pinch on the device screen, driven by a trackpad pinch or Option + drag.
 public struct PinchGesture: Equatable {
     private let frameWidth: UInt16
     private let frameHeight: UInt16
@@ -11,7 +10,6 @@ public struct PinchGesture: Equatable {
     /// Half the distance between the two fingers, in frame pixels.
     public private(set) var spread: Double
 
-    /// Starts with the fingers slightly apart, centered on `center`.
     public init(center: TouchPosition) {
         frameWidth = center.frameWidth
         frameHeight = center.frameHeight
@@ -20,13 +18,12 @@ public struct PinchGesture: Equatable {
         spread = max(Double(min(center.frameWidth, center.frameHeight)) * 0.1, minimumSpread)
     }
 
-    /// The two finger positions, side by side around the center and kept inside the frame.
+    /// Positions of the two fingers, kept inside the frame.
     public var fingers: (first: TouchPosition, second: TouchPosition) {
         let offset = Int32(spread.rounded())
         return (point(x: centerX - offset), point(x: centerX + offset))
     }
 
-    /// Spreads (factor > 1) or closes (factor < 1) the fingers.
     public mutating func scale(by factor: Double) {
         let limit = Double(frameWidth) / 2
         spread = min(max(spread * max(factor, 0.1), minimumSpread), limit)

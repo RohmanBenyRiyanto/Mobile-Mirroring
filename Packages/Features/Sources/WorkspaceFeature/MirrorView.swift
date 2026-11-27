@@ -6,18 +6,15 @@ import InspectorFeature
 import KeymapFeature
 import Networking
 
-/// Hosts the decoder's display layer and turns mouse and keyboard input into device input.
 public struct MirrorView: NSViewRepresentable {
     public let session: ScrcpySession
     public let keymap: KeymapController
     public let inspector: InspectorModel
     public let design: DesignModel
     public let videoSize: CGSize
-    /// Called while files are dragged over the picture (nil when they leave or are dropped).
     public var onDrag: (DropSummary?) -> Void = { _ in }
-    /// Called with the files that were dropped.
     public var onDrop: ([URL]) -> Void = { _ in }
-    /// Esc was pressed: return true when the app used it (it left Stream Mode, closed a tool); false sends it to the phone.
+    /// Return true when the app used Esc; otherwise it is sent to the phone.
     public var onEscape: () -> Bool = { false }
 
     public init(session: ScrcpySession, keymap: KeymapController, inspector: InspectorModel, design: DesignModel, videoSize: CGSize,
@@ -164,7 +161,6 @@ public final class MirrorNSView: NSView {
         design.pointerMoved(to: nil)
     }
 
-    /// Trackpad pinch zooms around the cursor.
     public override func magnify(with event: NSEvent) {
         switch event.phase {
         case .began:
@@ -252,7 +248,6 @@ public final class MirrorNSView: NSView {
         }
     }
 
-    /// Maps the mouse position to a pixel of the (letterboxed) video frame.
     private func devicePosition(of event: NSEvent) -> TouchPosition? {
         let point = convert(event.locationInWindow, from: nil)
         let topLeftOrigin = CGPoint(x: point.x, y: bounds.height - point.y) // AppKit's y grows upward
@@ -264,7 +259,7 @@ public final class MirrorNSView: NSView {
     public override func keyDown(with event: NSEvent) {
         if keymap.isEditing { return }
         if keymap.keyDown(event.keyCode) { return }
-        if event.keyCode == 53, onEscape() { return } // Esc: leaves Stream Mode or closes the open tool
+        if event.keyCode == 53, onEscape() { return }
         if let key = AndroidKeyCode(macKeyCode: event.keyCode) {
             session.send(.keycode(.down, key))
         } else if let text = typedText(from: event) {

@@ -10,11 +10,8 @@ import CoreTestSupport
 @testable import Persistence
 @testable import WorkspaceFeature
 
-/// Exercises every feature against a real phone. Opt-in:
-///
-///     BENZMIRROR_TEST_SERIAL=<adb serial> swift test --filter DeviceFeatureTests
-///
-/// The tests only use reversible actions (notification shade, Home/Back, settings that are restored).
+/// Runs every feature against a real phone. Opt in with `BENZMIRROR_TEST_SERIAL=<adb serial>`.
+/// Only reversible actions are used.
 final class DeviceFeatureTests: XCTestCase {
     private final class Events: @unchecked Sendable {
         private let lock = NSLock()
@@ -90,7 +87,6 @@ final class DeviceFeatureTests: XCTestCase {
         try await pause(1.2)
         let home = try screenshotDigest()
 
-        // A real touch gesture: drag down from the top edge to open the notification shade.
         session.send(.touch(.down, position(540, 8), pressure: 1))
         for step in 1...20 {
             session.send(.touch(.move, position(540, Int32(8 + step * 70)), pressure: 1))
@@ -101,7 +97,7 @@ final class DeviceFeatureTests: XCTestCase {
         let shade = try screenshotDigest()
         XCTAssertNotEqual(home, shade, "the swipe did not change the screen")
 
-        // Scroll and a two-finger pinch inside the shade (harmless there).
+        // Harmless inside the open shade.
         session.send(.scroll(position(540, 900), horizontal: 0, vertical: -4))
         var pinch = PinchGesture(center: position(540, 900))
         session.send(.touch(.down, pinch.fingers.first, pressure: 1, pointer: .finger))
@@ -113,7 +109,6 @@ final class DeviceFeatureTests: XCTestCase {
         session.send(.touch(.up, pinch.fingers.second, pressure: 0, pointer: .virtualFinger))
         try await pause(0.6)
 
-        // Back closes the shade again.
         session.send(.backOrScreenOn(.down))
         session.send(.backOrScreenOn(.up))
         try await pause(1.2)
@@ -235,10 +230,8 @@ final class DeviceFeatureTests: XCTestCase {
         if !events.audioUnavailable {
             XCTAssertTrue(streams.contains { $0["codec_type"] as? String == "audio" }, "recording has no audio track")
         }
-        // Decode every frame with the file's own timebase. ffmpeg's `null` output otherwise rounds frame times to a 1/60 s grid
-        // and warns about "non monotonically increasing dts" when two real frames land less than 1/60 s apart.
+        // Use the file's own timebase; the default null output rounds frame times and warns about non-monotonic dts.
         let decode = try runTool("ffmpeg", ["-v", "error", "-i", url.path, "-fps_mode", "passthrough", "-enc_time_base", "-1", "-f", "null", "-"])
-        // What matters about the file itself: video timestamps strictly increase.
         let packets = try runTool("ffprobe", ["-v", "error", "-select_streams", "v", "-show_entries", "packet=dts", "-of", "csv=p=0", url.path])
         let stamps = packets.output.split(whereSeparator: \.isNewline).compactMap { Int($0) }
         XCTAssertGreaterThan(stamps.count, 10)
@@ -271,7 +264,7 @@ final class DeviceFeatureTests: XCTestCase {
 
     @MainActor
     func testAppModelActionsRunAgainstThePhone() async throws {
-        let originalNight = try shell(["cmd", "uimode", "night"]) // "Night mode: yes"
+        let originalNight = try shell(["cmd", "uimode", "night"])
         let originalAnimation = try shell(["settings", "get", "global", "window_animation_scale"])
         let originalPointer = try shell(["settings", "get", "system", "pointer_location"])
         defer { // always put the phone back exactly as it was
@@ -286,7 +279,6 @@ final class DeviceFeatureTests: XCTestCase {
         let model = AppModel(defaults: isolatedDefaults())
         model.selectedSerial = serial
 
-        // Device tools.
         model.run(.darkModeOff)
         try await pause(1.5)
         XCTAssertTrue(try shell(["cmd", "uimode", "night"]).contains("no"))
@@ -308,7 +300,6 @@ final class DeviceFeatureTests: XCTestCase {
         try await pause(1.2)
         XCTAssertEqual(try shell(["settings", "get", "system", "pointer_location"]), "0")
 
-        // Drag & drop of a non-APK file copies it to Download (and the name is sanitized).
         let local = workDirectory.appendingPathComponent("benzmirror drop;test.txt")
         try Data("hello from the mac".utf8).write(to: local)
         model.handleDrop([local])
@@ -319,7 +310,6 @@ final class DeviceFeatureTests: XCTestCase {
         print("DEVICE>> push notice=\(model.notice ?? "nil") content=\(pushed)")
         XCTAssertEqual(pushed, "hello from the mac")
 
-        // Dropping a folder is refused.
         model.handleDrop([workDirectory])
         XCTAssertEqual(model.notice, "Folders cannot be copied to the phone")
     }
@@ -477,7 +467,7 @@ final class DeviceFeatureTests: XCTestCase {
     @MainActor
     func testKeymapKeyPressTapsThePhonesScreen() async throws {
         let target = try settingsSearchFieldRatio()
-        defer { // leave the phone on its home screen
+        defer {
             for _ in 0..<2 { _ = try? shell(["input", "keyevent", "KEYCODE_BACK"]) }
             _ = try? shell(["input", "keyevent", "KEYCODE_HOME"])
         }
@@ -582,7 +572,7 @@ final class DeviceFeatureTests: XCTestCase {
         let home = try screenshotDigest()
         XCTAssertFalse(controller.mouseMoved(deltaX: 0, deltaY: 40), "not aiming yet: the mouse is a normal mouse")
 
-        XCTAssertTrue(controller.keyDown(50)) // the toggle key
+        XCTAssertTrue(controller.keyDown(50))
         XCTAssertTrue(controller.isAiming)
         XCTAssertTrue(cursor.isCaptured)
         for _ in 0..<5 { // 5 x 40 points x 2 px = 400 px of the 432 px reach
@@ -595,7 +585,7 @@ final class DeviceFeatureTests: XCTestCase {
         XCTAssertNotEqual(home, pulled, "moving the mouse did not drag the finger")
 
         _ = controller.keyUp(50)
-        XCTAssertTrue(controller.keyDown(50)) // toggle off
+        XCTAssertTrue(controller.keyDown(50))
         XCTAssertFalse(controller.isAiming)
         XCTAssertFalse(cursor.isCaptured, "the pointer is released when free-look ends")
         XCTAssertEqual(cursor.history, [true, false])
@@ -630,14 +620,14 @@ final class DeviceFeatureTests: XCTestCase {
 
         let controller = try XCTUnwrap(model.active?.keymap)
         let home = try screenshotDigest()
-        XCTAssertTrue(controller.keyDown(12)) // finger down on the button
-        for step in 1...6 { // the mouse glides down the screen
+        XCTAssertTrue(controller.keyDown(12))
+        for step in 1...6 {
             controller.pointerMoved(to: CGPoint(x: 0.5, y: 0.05 + 0.025 * Double(step)))
             try await Task.sleep(for: .milliseconds(40))
         }
         try await Task.sleep(for: .milliseconds(900))
         let aimed = try screenshotDigest()
-        XCTAssertTrue(controller.keyUp(12)) // cast: the finger lifts
+        XCTAssertTrue(controller.keyUp(12))
         try await Task.sleep(for: .milliseconds(500))
         print("DEVICE>> skill-shot screenChanged=\(home != aimed)")
         XCTAssertNotEqual(home, aimed, "aiming the skill did not drag the finger")
@@ -663,7 +653,6 @@ final class DeviceFeatureTests: XCTestCase {
         let size = model.videoSize
         let width = UInt16(size.width), height = UInt16(size.height)
 
-        // 1. Record: swipe down from the top edge, the way the mouse would.
         let before = try screenshotDigest()
         phone.startMacroRecording()
         XCTAssertTrue(model.isRecordingMacro)
@@ -687,12 +676,10 @@ final class DeviceFeatureTests: XCTestCase {
         let opened = try screenshotDigest()
         XCTAssertNotEqual(before, opened, "the live swipe should have opened the shade")
 
-        // 2. Close the shade again.
         _ = try shell(["input", "keyevent", "KEYCODE_BACK"])
         try await Task.sleep(for: .seconds(1))
         let closed = try screenshotDigest()
 
-        // 3. Save the recording on the Q key, switch the keymap on, and play it.
         model.saveMacro(steps, key: 12)
         XCTAssertEqual(model.currentKeymap?.id, "macros")
         let saved = try XCTUnwrap(model.keymapStore).load(id: "macros").payload
@@ -721,7 +708,6 @@ final class DeviceFeatureTests: XCTestCase {
         try await waitUntil("mirroring starts") { model.isMirroring }
         let controller = try XCTUnwrap(model.active?.keymap)
 
-        // Open the editor: the keymap is off and keys stop reaching the phone.
         model.startEditingKeymap()
         let editor = try XCTUnwrap(model.editor)
         XCTAssertTrue(controller.isEditing)
@@ -732,7 +718,6 @@ final class DeviceFeatureTests: XCTestCase {
         editor.update(button) { $0.action = .button(key: 12, mode: .tap) }
         editor.add(.joystick)
 
-        // A keymap that cannot be saved keeps the editor open and says why.
         let stick = try XCTUnwrap(editor.keymap.elements.last)
         editor.update(stick.id) { $0.action = .joystick(up: 13, left: 13, down: 1, right: 2, radius: 0.1, response: 0.1) }
         model.closeEditor(save: true)
@@ -740,7 +725,6 @@ final class DeviceFeatureTests: XCTestCase {
         XCTAssertTrue(model.editorMessage?.contains("four different keys") == true, model.editorMessage ?? "nil")
         XCTAssertTrue(model.keymapProfiles.isEmpty)
 
-        // Fix it and save: the profile exists, is loaded into the phone's keymap, and the editor closes.
         editor.update(stick.id) { $0.action = .joystick(up: 13, left: 0, down: 1, right: 2, radius: 0.1, response: 0.1) }
         model.closeEditor(save: true)
         XCTAssertNil(model.editor)
@@ -750,13 +734,11 @@ final class DeviceFeatureTests: XCTestCase {
         XCTAssertEqual(model.currentKeymap?.name, "Live editor")
         XCTAssertTrue(controller.hasKeymap)
 
-        // The saved keymap works.
         model.setKeymapEnabled(true)
         XCTAssertTrue(controller.handles(12))
         XCTAssertTrue(controller.handles(13))
         model.setKeymapEnabled(false)
 
-        // Opening it again edits the same profile; discarding changes nothing.
         model.startEditingKeymap()
         let again = try XCTUnwrap(model.editor)
         XCTAssertEqual(again.profileID, model.currentKeymap?.id)
@@ -790,13 +772,11 @@ final class DeviceFeatureTests: XCTestCase {
         let phone = try XCTUnwrap(model.active)
         XCTAssertFalse(phone.keymap.isEnabled)
 
-        // The "game" opens: its keymap loads and switches on.
         _ = try shell(["am", "start", "-a", "android.settings.SETTINGS"])
         try await waitUntil("the keymap switches on by itself", timeout: 15) { phone.keymap.isEnabled }
         XCTAssertEqual(phone.keymap.profile?.id, "settings-keys")
         XCTAssertTrue(phone.keymap.hasKeymap)
 
-        // Back to the home screen: the keymap the app switched on is switched off again.
         _ = try shell(["input", "keyevent", "KEYCODE_HOME"])
         try await waitUntil("the keymap switches off when the game closes", timeout: 15) { !phone.keymap.isEnabled }
         XCTAssertEqual(phone.keymap.profile?.id, "settings-keys", "it stays loaded")
@@ -849,12 +829,12 @@ final class DeviceFeatureTests: XCTestCase {
         XCTAssertThrowsError(try adb.enableWireless(serial: serial, macNetworks: [elsewhere])) { error in
             XCTAssertTrue(error.localizedDescription.contains("same network"), error.localizedDescription)
         }
-        XCTAssertThrowsError(try adb.connect(address: "10.255.255.1:5555")) // unreachable, must fail cleanly
+        XCTAssertThrowsError(try adb.connect(address: "10.255.255.1:5555"))
     }
 
     /// Drives the shade open and closed for a few seconds so the encoder has real motion, then reports the rates.
     private func measureUnderMotion(_ session: ScrcpySession) async throws -> StreamStatistics.Snapshot {
-        _ = session.statistics.snapshot() // start a clean window
+        _ = session.statistics.snapshot()
         for _ in 0..<5 {
             session.send(.expandNotificationPanel)
             try await pause(0.6)
@@ -878,7 +858,7 @@ final class DeviceFeatureTests: XCTestCase {
 
         let address = try adb.enableWireless(serial: serial)
         defer {
-            _ = try? adb.run(["-s", address, "usb"], timeout: 10) // back to USB mode
+            _ = try? adb.run(["-s", address, "usb"], timeout: 10)
             _ = try? adb.run(["disconnect", address], timeout: 10)
         }
         XCTAssertTrue(try adb.devices().contains { $0.serial == address && $0.isReady }, "wireless device not listed")
@@ -910,7 +890,6 @@ extension DeviceFeatureTests {
         let screen = try XCTUnwrap(hierarchy.screenSize)
         XCTAssertEqual(screen, info.screenSize(matching: screen), "The dump's root must cover the whole screen")
 
-        // Every element must lie on the screen, and the center of the screen must resolve to something inside it.
         let full = CGRect(origin: .zero, size: screen).insetBy(dx: -2, dy: -2)
         for node in hierarchy.nodes { XCTAssertTrue(full.contains(node.bounds), "\(node.className) \(node.bounds) leaves the screen") }
         let hit = try XCTUnwrap(hierarchy.node(atRatio: CGPoint(x: 0.5, y: 0.5)))

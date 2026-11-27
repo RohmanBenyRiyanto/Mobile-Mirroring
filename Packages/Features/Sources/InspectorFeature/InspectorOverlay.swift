@@ -1,7 +1,6 @@
 import SwiftUI
 import DomainModels
 
-/// Draws the hovered element's outline over the mirror, with its details in a small card.
 public struct InspectorOverlay: View {
     @ObservedObject public var inspector: InspectorModel
     public let videoSize: CGSize
@@ -13,7 +12,6 @@ public struct InspectorOverlay: View {
         self.densityScale = densityScale
     }
 
-    /// The card sits on the opposite half of the screen from the element, so it never covers it.
     private var cardAlignment: Alignment {
         guard let node = inspector.hovered, let screen = inspector.hierarchy?.screenSize, screen.height > 0 else { return .topLeading }
         return node.bounds.midY < screen.height / 2 ? .bottomLeading : .topLeading

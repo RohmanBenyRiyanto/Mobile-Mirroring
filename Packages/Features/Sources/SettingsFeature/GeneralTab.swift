@@ -62,7 +62,6 @@ struct GeneralTab: View {
     }
 }
 
-/// Mode, accent, surface style and Dock icon.
 struct AppearanceCard: View {
     @ObservedObject var appearance: AppearanceStore
 
@@ -107,7 +106,6 @@ struct AppearanceCard: View {
     }
 }
 
-/// Choosing a folder, and how a chosen (or default) folder is shown.
 enum FolderChoice {
     /// `~/Pictures/Benz Mirror` for the default; the chosen folder otherwise, with the home folder as `~`.
     static func displayPath(_ custom: String?, fallback: FileManager.SearchPathDirectory) -> String {
@@ -127,7 +125,7 @@ enum FolderChoice {
     }
 }
 
-/// Settings › General › Open at login, through the system's login-item service.
+/// Open-at-login state, backed by the system's login-item service.
 enum LoginItem {
     static var isEnabled: Bool { SMAppService.mainApp.status == .enabled }
 

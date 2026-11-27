@@ -1,11 +1,6 @@
 import SwiftUI
 import Theme
 
-// These components are the pieces of a grouped form. They are meant to sit inside a `Form` with `.formStyle(.grouped)`, so the
-// system itself draws the page, the cards, the separators and the row heights, exactly as in System Settings (including the tint
-// the user's desktop picture gives a window). `GroupedForm` sets that up.
-
-/// A page of grouped sections: `Form` with the grouped style, as in System Settings.
 public struct GroupedForm<Content: View>: View {
     private let content: Content
 
@@ -18,7 +13,6 @@ public struct GroupedForm<Content: View>: View {
     }
 }
 
-/// A section of a grouped form: an optional heading above, and a card of rows.
 public struct SettingsCard<Content: View>: View {
     private let title: LocalizedStringKey?
     private let footer: LocalizedStringKey?
@@ -41,7 +35,6 @@ public struct SettingsCard<Content: View>: View {
     }
 }
 
-/// One row of a card: a title (with an optional line under it) and a control on the trailing side.
 public struct SettingsRow<Trailing: View>: View {
     private let title: LocalizedStringKey
     private let detail: LocalizedStringKey?
@@ -67,7 +60,7 @@ public struct SettingsRow<Trailing: View>: View {
     }
 }
 
-/// A row that carries its own look (a grid of preset cards, a message card): no card behind it, no separator, no inset.
+/// A row without the card's background, separator or inset, for content such as a grid of cards.
 public struct PlainRow<Content: View>: View {
     private let content: Content
 

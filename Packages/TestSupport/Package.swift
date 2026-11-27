@@ -1,8 +1,7 @@
 // swift-tools-version:5.9
 import PackageDescription
 
-// Helpers shared by the tests of every package: drawing a SwiftUI view to an image, and running Homebrew tools
-// (ffmpeg, ffprobe). Only test targets depend on this.
+// Only test targets depend on this package.
 let package = Package(
     name: "TestSupport",
     platforms: [.macOS(.v14)],

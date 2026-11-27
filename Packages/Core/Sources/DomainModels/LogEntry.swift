@@ -32,7 +32,6 @@ public struct LogEntry: Identifiable, Equatable {
         case normal
         /// `FATAL EXCEPTION`: the start of a Java/Kotlin crash.
         case crash
-        /// The exception line (`java.lang.IllegalStateException: …`).
         case exception
         case causedBy
         /// `at com.example.Foo.bar(Foo.kt:12)` or a native `#00 pc …` frame.
@@ -42,7 +41,6 @@ public struct LogEntry: Identifiable, Equatable {
         case anr
         case processDied
 
-        /// The line that opens a crash.
         public var startsCrash: Bool { self == .crash || self == .nativeCrash || self == .anr }
     }
 

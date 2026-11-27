@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 import XCTest
 
-/// Renders a SwiftUI view to an image. Set `BENZMIRROR_SNAPSHOT_DIR` to also write it there as a PNG for a look.
+/// Renders a SwiftUI view to an image. Set `BENZMIRROR_SNAPSHOT_DIR` to also save it there as a PNG.
 @MainActor
 public func renderSnapshot<Content: View>(_ view: Content, size: CGSize, name: String, appearance: NSAppearance.Name = .aqua) throws -> NSBitmapImageRep {
     let hosting = NSHostingView(rootView: view.frame(width: size.width, height: size.height))
@@ -23,7 +23,6 @@ public func renderSnapshot<Content: View>(_ view: Content, size: CGSize, name: S
     return bitmap
 }
 
-/// True if the image is a single flat colour.
 public func isBlankImage(_ image: NSBitmapImageRep) -> Bool {
     guard let first = image.colorAt(x: 0, y: 0) else { return true }
     for y in stride(from: 0, to: image.pixelsHigh, by: 17) {

@@ -3,8 +3,7 @@ import DomainModels
 import SwiftUI
 import Theme
 
-/// The detailed video controls (codec, resolution, bitrate, frame rate, key frames, constant bitrate) as rows of a card.
-/// Used by the Advanced section of the Connect window and by Settings › Video.
+/// Detailed video controls, used by the Connect window's Advanced section and Settings › Video.
 public struct QualityRows: View {
     @Binding public var settings: MirrorSettings
 

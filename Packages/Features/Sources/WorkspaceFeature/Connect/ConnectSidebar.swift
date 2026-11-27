@@ -4,7 +4,6 @@ import Networking
 import SwiftUI
 import Theme
 
-/// The phones that adb can see, and shortcuts to what the app has saved.
 struct ConnectSidebar: View {
     @EnvironmentObject private var model: AppModel
     let openLogcat: () -> Void
@@ -57,13 +56,12 @@ private struct DeviceRow: View {
     }
 }
 
-/// Folders the app writes to.
 public enum LibraryFolder {
     case screenshots, recordings
 }
 
 extension AppModel {
-    /// Opens the folder where screenshots or recordings are saved (it is created first, so it can be empty).
+    /// Creates the folder first so it can be opened while still empty.
     public func revealLibrary(_ folder: LibraryFolder) {
         let directory: FileManager.SearchPathDirectory = folder == .screenshots ? .picturesDirectory : .moviesDirectory
         let url = FileManager.default.urls(for: directory, in: .userDomainMask)[0].appendingPathComponent(AppInfo.name, isDirectory: true)

@@ -1,8 +1,7 @@
 import AppKit
 import SwiftUI
 
-/// Keeps the control rail in a small borderless panel next to the mirror window. A SwiftUI window cannot hang a
-/// capsule outside its own frame, so the rail is a child window: it moves, hides and orders with the mirror window.
+/// Hosts the rail in a borderless child panel, since a SwiftUI window cannot draw outside its own frame.
 /// The panel never takes focus, so the keyboard stays with the phone.
 @MainActor
 final class RailPanelController: NSObject {
@@ -10,7 +9,6 @@ final class RailPanelController: NSObject {
     private let hosting: NSHostingView<AnyView>
     private weak var parent: NSWindow?
     private var observers: [NSObjectProtocol] = []
-    /// Space between the window and the rail.
     private static let gap: CGFloat = 12
 
     init(parent: NSWindow, content: AnyView) {
@@ -70,7 +68,6 @@ final class RailPanelController: NSObject {
         panel.orderOut(nil)
     }
 
-    /// Centered on the window's right edge, kept on the screen.
     private func reposition() {
         guard let parent else { return }
         hosting.layoutSubtreeIfNeeded()
@@ -93,7 +90,6 @@ private final class RailPanel: NSPanel {
     override var canBecomeMain: Bool { false }
 }
 
-/// Puts the rail beside the window this view lives in.
 struct RailPanelAttacher: NSViewRepresentable {
     let isVisible: Bool
     let content: AnyView

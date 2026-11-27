@@ -2,15 +2,13 @@ import Foundation
 import SwiftUI
 import Theme
 
-/// What is being dragged over the mirror, in words: the first file's name and size, and what will happen to it.
 public struct DropSummary: Equatable {
     public enum Action: Equatable { case install, import_, copy }
 
     public let action: Action
-    /// "app-debug.apk · 24.6 MB", or "3 files" when several are dragged.
     public let detail: String
 
-    /// Reads the dragged files (their names and sizes only; nothing is opened). Nil when no file is being dragged.
+    /// Reads only file names and sizes, never opening the files. Nil when no file is dragged.
     public static func make(from urls: [URL]) -> DropSummary? {
         let files = urls.filter(\.isFileURL)
         guard let first = files.first else { return nil }
@@ -27,7 +25,7 @@ public struct DropSummary: Equatable {
     }
 }
 
-/// Over the picture while files are dragged on it: a dark scrim with a blue outline. Solid, not glass (it sits on live video).
+/// Solid rather than glass, because it sits on live video.
 struct DropOverlay: View {
     let summary: DropSummary
 

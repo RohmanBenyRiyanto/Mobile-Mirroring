@@ -2,13 +2,11 @@ import AppKit
 import SwiftUI
 import Theme
 
-/// Adjusts the hosting window: a chrome-free, aspect-locked window in stream mode (clean for OBS
-/// window capture), and an optional always-on-top level.
+/// Styles the hosting window: chrome-free and aspect-locked in stream mode for clean OBS window capture.
 public struct WindowStyler: NSViewRepresentable {
     public let isStreamMode: Bool
     public let alwaysOnTop: Bool
     public let videoSize: CGSize
-    /// Keep the window the shape of the phone's picture (the mirror window).
     public let locksAspect: Bool
 
     public init(isStreamMode: Bool, alwaysOnTop: Bool, videoSize: CGSize, locksAspect: Bool = false) {
@@ -22,7 +20,7 @@ public struct WindowStyler: NSViewRepresentable {
 
     public func makeCoordinator() -> Coordinator { Coordinator() }
 
-    /// Remembers the Connect window's size while the window takes the phone's shape, and the phone window's height for next time.
+    /// Remembers the Connect window's size and the phone window's height between switches.
     @MainActor
     public final class Coordinator {
         var memory = WindowSizeMemory()
@@ -62,7 +60,7 @@ public struct WindowStyler: NSViewRepresentable {
         if let target { resize(window, toContent: target) }
     }
 
-    /// Animated, keeping the top-left corner where it is, so the window grows or shrinks into the new shape instead of jumping.
+    /// Animates the resize from the top-left corner so the window does not jump.
     private func resize(_ window: NSWindow, toContent size: CGSize) {
         var frame = window.frameRect(forContentRect: NSRect(origin: .zero, size: size))
         frame.origin = NSPoint(x: window.frame.minX, y: window.frame.maxY - frame.height)
@@ -70,12 +68,10 @@ public struct WindowStyler: NSViewRepresentable {
     }
 }
 
-/// Decides what size the window should have as it moves between the Connect screen (always the same size, 760 × 512 at first
-/// and wherever the user left it after) and the phone window (the shape of the picture, at the height it was last used).
-/// Pure, so the rules are tested without a window.
+/// Decides the window size as it moves between the Connect screen and the phone window. Pure, so it is tested without a window.
 struct WindowSizeMemory: Equatable {
     static let defaultConnectSize = Theme.Size.connectWindow
-    /// The phone window's content height when nothing was remembered: the design's 818 pt, kept clear of the screen's edges.
+    /// Phone window height used until one is remembered.
     static let defaultPhoneHeight: CGFloat = 818
 
     private(set) var connectSize: CGSize?
@@ -90,7 +86,7 @@ struct WindowSizeMemory: Equatable {
 
         if isPhoneShaped, let ratio = pictureRatio, ratio > 0 {
             if !wasPhoneShaped {
-                connectSize = hasSeenAWindow ? current : (connectSize ?? Self.defaultConnectSize) // leaving Connect: remember it
+                connectSize = hasSeenAWindow ? current : (connectSize ?? Self.defaultConnectSize)
                 return phoneSize(height: phoneHeight ?? Self.defaultPhoneHeight, ratio: ratio, availableHeight: availableHeight)
             }
             // Already a phone window: only follow a change of the picture's shape (the phone rotated).
@@ -99,10 +95,10 @@ struct WindowSizeMemory: Equatable {
         }
 
         if wasPhoneShaped {
-            phoneHeight = current.height // leaving the phone window: remember its height
+            phoneHeight = current.height
             return connectSize ?? Self.defaultConnectSize
         }
-        // The very first look at the window: always start at the Connect size, whatever frame was restored from last time.
+        // Always start at the Connect size, ignoring any frame restored from the last launch.
         if !hasSeenAWindow, abs(current.width - Self.defaultConnectSize.width) > 1 || abs(current.height - Self.defaultConnectSize.height) > 1 {
             return Self.defaultConnectSize
         }

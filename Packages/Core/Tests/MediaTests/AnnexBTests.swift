@@ -16,7 +16,7 @@ final class AnnexBTests: XCTestCase {
 
     func testLengthPrefixingDropsExcludedUnits() {
         let stream = Data([0, 0, 0, 1, 0x67, 0xAA, 0, 0, 0, 1, 0x65, 1, 2, 3])
-        let output = AnnexB.lengthPrefixed(stream) { $0 & 0x1F == 7 } // drop SPS
+        let output = AnnexB.lengthPrefixed(stream) { $0 & 0x1F == 7 }
         XCTAssertEqual([UInt8](output), [0, 0, 0, 4, 0x65, 1, 2, 3])
     }
 }

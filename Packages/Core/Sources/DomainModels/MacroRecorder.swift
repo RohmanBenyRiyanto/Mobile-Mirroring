@@ -24,7 +24,7 @@ public final class MacroRecorder: @unchecked Sendable {
         state.set(State(isRecording: true))
     }
 
-    /// Notes one message. Anything that is not a touch is ignored. The clock is a parameter so tests control time.
+    /// Records one message. Anything that is not a touch is ignored. The clock is a parameter so tests can control time.
     public func observe(_ message: ControlMessage, at time: TimeInterval = ProcessInfo.processInfo.systemUptime) {
         guard case let .touch(action, position, _, pointer) = message else { return }
         state.withLock { state in
@@ -49,7 +49,7 @@ public final class MacroRecorder: @unchecked Sendable {
             }
 
             let point = Self.ratio(of: position)
-            if action == .move, state.lastPosition[finger] == point { return } // nothing moved
+            if action == .move, state.lastPosition[finger] == point { return }
 
             state.origin = origin
             state.steps.append(MacroStep(time: elapsed, kind: Self.kind(of: action), finger: finger, position: point))

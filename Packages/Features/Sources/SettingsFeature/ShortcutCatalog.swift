@@ -1,6 +1,5 @@
 import Foundation
 
-/// One keyboard shortcut: a key and its modifiers, written the way macOS shows them (⇧⌘H).
 public struct KeyCombo: Hashable {
     public struct Modifiers: OptionSet, Hashable {
         public let rawValue: Int
@@ -19,7 +18,7 @@ public struct KeyCombo: Hashable {
         self.modifiers = modifiers
     }
 
-    /// "⇧⌘H": control, option, shift, command, then the key (the order macOS uses).
+    /// Formats the shortcut in macOS order: control, option, shift, command, then the key.
     public var display: String {
         var text = ""
         if modifiers.contains(.control) { text += "⌃" }
@@ -30,12 +29,11 @@ public struct KeyCombo: Hashable {
     }
 }
 
-/// Every shortcut of the menu bar, for Settings › Shortcuts. The menu itself is the source of the shortcuts; this list mirrors it
-/// (a test checks that no two entries share a combination).
+/// Mirrors the menu bar shortcuts. A test checks that no two entries share a combination.
 public struct ShortcutCatalog {
     public struct Entry: Identifiable, Equatable {
         public let id: String
-        /// The name of the menu item, as the string catalog knows it.
+        /// Must match the menu item's localized name.
         public let title: String
         public let menu: String
         public let combo: KeyCombo
@@ -81,19 +79,17 @@ public struct ShortcutCatalog {
         ]
     }
 
-    /// Entries whose name or shortcut contains the text, ignoring case. An empty text keeps everything.
     public func filtered(by query: String) -> [Entry] {
         let text = query.trimmingCharacters(in: .whitespaces).lowercased()
         guard !text.isEmpty else { return entries }
         return entries.filter { $0.title.lowercased().contains(text) || $0.combo.display.lowercased().contains(text) || $0.menu.lowercased().contains(text) }
     }
 
-    /// Entries that share a combination with another one, grouped by that combination.
     public func conflicts() -> [KeyCombo: [Entry]] {
         Dictionary(grouping: entries, by: \.combo).filter { $0.value.count > 1 }
     }
 
-    /// "⌘I is also assigned to Install APK." for the entry, or nil when its shortcut is its own.
+    /// The other entry that uses this entry's combination, or nil.
     public func conflict(of entry: Entry) -> Entry? {
         entries.first { $0.id != entry.id && $0.combo == entry.combo }
     }

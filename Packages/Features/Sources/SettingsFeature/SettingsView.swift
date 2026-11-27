@@ -3,14 +3,13 @@ import SwiftUI
 import Theme
 import WorkspaceFeature
 
-/// The Settings window (⌘,): toolbar tabs and grouped cards, as in the design.
 public struct SettingsView: View {
     @ObservedObject private var model: AppModel
     @ObservedObject private var appearance: AppearanceStore
     @AppStorage("settingsTab") private var tab = Tab.general.rawValue
 
     enum Tab: String, CaseIterable, Identifiable {
-        case general, video, audio, shortcuts, advanced
+        case general, video, audio, rail, shortcuts, advanced
         var id: String { rawValue }
 
         var title: LocalizedStringKey {
@@ -18,6 +17,7 @@ public struct SettingsView: View {
             case .general: return "General"
             case .video: return "Video"
             case .audio: return "Audio"
+            case .rail: return "Control Rail"
             case .shortcuts: return "Shortcuts"
             case .advanced: return "Advanced"
             }
@@ -28,6 +28,7 @@ public struct SettingsView: View {
             case .general: return "gearshape"
             case .video: return "film"
             case .audio: return "speaker.wave.2"
+            case .rail: return "sidebar.right"
             case .shortcuts: return "keyboard"
             case .advanced: return "switch.2"
             }
@@ -58,6 +59,7 @@ public struct SettingsView: View {
             case .general: GeneralTab(model: model, appearance: appearance)
             case .video: VideoTab(model: model)
             case .audio: AudioTab(model: model)
+            case .rail: RailTab(model: model)
             case .shortcuts: ShortcutsTab()
             case .advanced: AdvancedTab(model: model, appearance: appearance)
             }

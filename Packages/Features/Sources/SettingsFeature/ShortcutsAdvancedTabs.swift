@@ -28,7 +28,6 @@ struct ShortcutsTab: View {
     }
 }
 
-/// A shortcut drawn as a key.
 struct KeyCap: View {
     private let text: String
     init(_ text: String) { self.text = text }

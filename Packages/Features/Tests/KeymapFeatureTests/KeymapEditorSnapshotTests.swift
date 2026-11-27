@@ -18,7 +18,6 @@ final class KeymapEditorSnapshotTests: XCTestCase {
         return KeymapEditorModel(profile: profile)
     }
 
-    /// A stand-in for the phone's picture.
     private var fakePhone: some View {
         LinearGradient(colors: [Color(white: 0.28), Color(white: 0.12)], startPoint: .top, endPoint: .bottom)
     }

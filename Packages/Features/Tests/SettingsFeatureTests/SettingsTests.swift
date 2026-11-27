@@ -119,6 +119,7 @@ final class SettingsRenderTests: XCTestCase {
             ("general", AnyView(GroupedForm { GeneralTab(model: model, appearance: appearance) })),
             ("video", AnyView(GroupedForm { VideoTab(model: model) })),
             ("audio", AnyView(GroupedForm { AudioTab(model: model) })),
+            ("rail", AnyView(GroupedForm { RailTab(model: model) })),
             ("shortcuts", AnyView(GroupedForm { ShortcutsTab() })),
             ("advanced", AnyView(GroupedForm { AdvancedTab(model: model, appearance: appearance) })),
         ]

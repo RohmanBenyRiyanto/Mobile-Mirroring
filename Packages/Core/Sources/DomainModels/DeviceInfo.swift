@@ -1,7 +1,6 @@
 import CoreGraphics
 import Foundation
 
-/// Facts about the phone's screen and software.
 public struct DeviceInfo: Equatable {
     public var manufacturer: String
     public var model: String

@@ -4,8 +4,7 @@ import Foundation
 import DomainModels
 import Networking
 
-/// Tools for checking a UI against a design: a dp grid, a crosshair with measurements, and a colour picker.
-/// The colour picker reads a `screencap` still, so it sees the phone's real pixels, not the compressed stream.
+/// The colour picker reads a `screencap` still so colours match the phone's real pixels, not the compressed video.
 @MainActor
 public final class DesignModel: ObservableObject {
     public enum Tool: Equatable {
@@ -22,13 +21,11 @@ public final class DesignModel: ObservableObject {
     @Published public private(set) var snapshot: PixelImage?
     @Published public private(set) var snapshotStatus = SnapshotStatus.none
 
-    /// Whether clicks on the mirror are taken by the active tool instead of reaching the phone.
     public var capturesPointer: Bool { tool != .off }
 
     private let fetchScreenshot: () async throws -> Data
     private var task: Task<Void, Never>?
 
-    /// `fetchScreenshot` returns a PNG of the phone's screen.
     public init(fetchScreenshot: @escaping () async throws -> Data) { self.fetchScreenshot = fetchScreenshot }
 
     public static func fetcher(adb: ADB, serial: String) -> () async throws -> Data {
@@ -52,7 +49,6 @@ public final class DesignModel: ObservableObject {
         }
     }
 
-    /// Takes a new still (after the screen changed).
     public func refresh() {
         guard tool == .colorPicker else { return }
         task?.cancel()
@@ -77,7 +73,7 @@ public final class DesignModel: ObservableObject {
 
     public var color: PickedColor? { pointer.flatMap { snapshot?.color(atRatio: $0) } }
 
-    /// Copies the colour under the pointer as `#RRGGBB`. Returns it, or nil when there is none.
+    /// Copies the colour under the pointer and returns its hex value, or nil when there is none.
     @discardableResult
     public func copyColor() -> String? {
         guard tool == .colorPicker, let color else { return nil }
@@ -86,7 +82,6 @@ public final class DesignModel: ObservableObject {
         return color.hex
     }
 
-    /// Switches everything off (the connection ended).
     public func reset() {
         setTool(.off)
         grid = .off

@@ -102,3 +102,101 @@ final class QuitGuardTests: XCTestCase {
         XCTAssertFalse(asked, "no dialog when there is nothing to lose")
     }
 }
+
+final class RailLayoutTests: XCTestCase {
+    func testTheStandardLayoutHasADistinctListPerMode() {
+        let standard = RailLayout.standard
+        XCTAssertTrue(standard.isStandard)
+        XCTAssertEqual(Set(WorkspaceMode.allCases.map { standard.items(for: $0) }).count, 3)
+        for mode in WorkspaceMode.allCases {
+            let items = standard.items(for: mode)
+            XCTAssertEqual(items.count, Set(items).count, "\(mode) lists a tool twice")
+        }
+    }
+
+    func testALineIsDrawnWhereTheGroupChanges() {
+        let rows = RailLayout(lists: [.normal: [.back, .home, .volumeUp, .power, .screenshot]]).rows(for: .normal)
+        XCTAssertEqual(rows, [.item(.back), .item(.home), .separator, .item(.volumeUp), .item(.power), .separator, .item(.screenshot)])
+    }
+
+    func testAddingPutsAToolNextToItsGroupAndNeverTwice() {
+        var layout = RailLayout.standard
+        layout.remove(.mute, from: .normal)
+        XCTAssertFalse(layout.items(for: .normal).contains(.mute))
+        layout.add(.mute, to: .normal)
+        let items = layout.items(for: .normal)
+        XCTAssertEqual(items.firstIndex(of: .mute), items.firstIndex(of: .record).map { $0 + 1 })
+        layout.add(.mute, to: .normal)
+        XCTAssertEqual(layout.items(for: .normal).filter { $0 == .mute }.count, 1)
+        layout.add(.logcat, to: .normal)
+        XCTAssertEqual(layout.items(for: .normal).last, .logcat, "a tool with no group mate goes last")
+    }
+
+    func testMovingStaysInsideTheList() {
+        var layout = RailLayout(lists: [.normal: [.back, .home, .recents]])
+        layout.move(.back, by: -1, in: .normal)
+        XCTAssertEqual(layout.items(for: .normal), [.back, .home, .recents])
+        layout.move(.back, by: 1, in: .normal)
+        XCTAssertEqual(layout.items(for: .normal), [.home, .back, .recents])
+        layout.move(fromOffsets: IndexSet(integer: 2), toOffset: 0, in: .normal)
+        XCTAssertEqual(layout.items(for: .normal), [.recents, .home, .back])
+    }
+
+    func testChangesToOneModeLeaveTheOthersAlone() {
+        var layout = RailLayout.standard
+        layout.remove(.back, from: .gaming)
+        XCTAssertTrue(layout.items(for: .normal).contains(.back))
+        XCTAssertFalse(layout.isStandard)
+        layout.reset(.gaming)
+        XCTAssertTrue(layout.isStandard)
+        layout.remove(.home, from: .normal)
+        layout.remove(.home, from: .developer)
+        layout = .standard
+        XCTAssertTrue(layout.isStandard)
+    }
+
+    func testHiddenToolsAreTheOnesNotShown() {
+        let layout = RailLayout(lists: [.normal: [.back]])
+        XCTAssertEqual(layout.hidden(in: .normal).count, RailItemID.allCases.count - 1)
+        XCTAssertFalse(layout.hidden(in: .normal).contains(.back))
+    }
+
+    func testSavedLayoutsRoundTripAndTolerateUnknownOrMissingData() throws {
+        var layout = RailLayout.standard
+        layout.remove(.mute, from: .normal)
+        layout.move(.statistics, by: -1, in: .normal)
+        XCTAssertEqual(RailLayout.decode(try JSONEncoder().encode(layout)), layout)
+
+        let future = Data(#"{"lists":{"normal":["back","teleport","back","home"],"gaming":["nonsense"]}}"#.utf8)
+        let decoded = try XCTUnwrap(RailLayout.decode(future))
+        XCTAssertEqual(decoded.items(for: .normal), [.back, .home], "unknown tools are dropped and repeats removed")
+        XCTAssertEqual(decoded.items(for: .gaming), [], "a list of only unknown tools is empty, not the default")
+        XCTAssertEqual(decoded.items(for: .developer), RailLayout.defaultItems(for: .developer), "a missing mode gets its standard list")
+    }
+
+    func testGarbageAndOversizedDataAreIgnored() {
+        XCTAssertNil(RailLayout.decode(Data("not json".utf8)))
+        XCTAssertNil(RailLayout.decode(Data(count: RailLayout.maxSavedBytes + 1)))
+        XCTAssertNotNil(RailLayout.decode(Data("{}".utf8)), "an empty object is a layout that falls back to the standard lists")
+    }
+
+    @MainActor
+    func testTheLayoutIsRememberedByTheModel() {
+        let defaults = isolatedDefaults()
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let first = AppModel(keymapRoot: root, defaults: defaults)
+        first.railLayout.remove(.power, from: .normal)
+        let second = AppModel(keymapRoot: root, defaults: defaults)
+        XCTAssertFalse(second.railLayout.items(for: .normal).contains(.power))
+    }
+
+    @MainActor
+    func testTheRailDrawsWhatTheLayoutSays() throws {
+        SurfaceStyle.allowsGlass = false
+        defer { SurfaceStyle.allowsGlass = true }
+        let app = AppModel(keymapRoot: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString), defaults: isolatedDefaults())
+        app.railLayout = RailLayout(lists: [.normal: []])
+        let empty = try renderSnapshot(RailView(model: app, isCollapsed: .constant(false)), size: CGSize(width: 100, height: 200), name: "rail-empty")
+        XCTAssertFalse(isBlankImage(empty), "Disconnect and the hide button stay even with nothing else")
+    }
+}

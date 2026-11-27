@@ -20,7 +20,6 @@ public enum DeviceTool: CaseIterable, Identifiable {
         }
     }
 
-    /// Arguments for `adb shell`, one array per command.
     public var shellCommands: [[String]] {
         switch self {
         case .darkModeOn: return [["cmd", "uimode", "night", "yes"]]

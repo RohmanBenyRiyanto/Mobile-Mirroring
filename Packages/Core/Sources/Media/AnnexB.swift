@@ -1,8 +1,7 @@
 import Foundation
 
-/// Helpers for H.264/H.265 byte streams in Annex-B form (`00 00 01` start codes),
-/// which is what the Android encoder produces, and conversion to the length-prefixed
-/// (AVCC/HVCC) form that VideoToolbox expects.
+/// Helpers for H.264/H.265 Annex-B byte streams (`00 00 01` start codes) from the Android encoder, and conversion to
+/// the length-prefixed (AVCC/HVCC) form that VideoToolbox expects.
 public enum AnnexB {
     /// Byte ranges of the NAL units in `bytes`, without start codes or trailing zero padding.
     public static func nalUnitRanges(in bytes: UnsafeRawBufferPointer) -> [Range<Int>] {

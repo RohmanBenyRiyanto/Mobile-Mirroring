@@ -1,6 +1,5 @@
 import Foundation
 
-/// The subset of `android.view.KeyEvent` key codes this app sends.
 public enum AndroidKeyCode: UInt32 {
     case home = 3
     case back = 4
@@ -24,8 +23,7 @@ public enum AndroidKeyCode: UInt32 {
     case moveEnd = 123
     case appSwitch = 187
 
-    /// Maps a macOS virtual key code (`NSEvent.keyCode`) for non-printable keys.
-    /// Printable characters are sent as text instead, so layouts and IMEs just work.
+    /// Maps non-printable macOS key codes; printable characters go through text input so layouts and IMEs work.
     public init?(macKeyCode: UInt16) {
         switch macKeyCode {
         case 36, 76: self = .enter

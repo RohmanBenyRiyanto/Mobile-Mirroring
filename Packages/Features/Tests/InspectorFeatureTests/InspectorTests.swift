@@ -62,18 +62,15 @@ final class InspectorTests: XCTestCase {
         let hierarchy = try XCTUnwrap(UIHierarchyParser.parse(dump()))
         // Inside the button (40…240, 60…160) → 0.1, 0.05 of a 1000×2000 screen.
         XCTAssertEqual(hierarchy.node(atRatio: CGPoint(x: 0.1, y: 0.05))?.shortResourceID, "play")
-        // Inside the toolbar only.
         XCTAssertEqual(hierarchy.node(atRatio: CGPoint(x: 0.8, y: 0.05))?.shortResourceID, "toolbar")
-        // Below everything: the root.
         XCTAssertEqual(hierarchy.node(atRatio: CGPoint(x: 0.5, y: 0.9))?.id, 0)
     }
 
     func testLaterSiblingWinsWhereElementsOverlapAndEmptyElementsNeverMatch() throws {
         let hierarchy = try XCTUnwrap(UIHierarchyParser.parse(dump()))
-        // 0.15, 0.075 → (150,150): toolbar child area? the overlay (100…300) is drawn after the toolbar, same depth as toolbar's children? depth 1 vs button depth 2.
+        // The overlay is deeper than the toolbar, so it wins where they overlap.
         let hit = hierarchy.node(atRatio: CGPoint(x: 0.15, y: 0.075))
-        XCTAssertEqual(hit?.shortResourceID, "play") // deeper than the overlay
-        // (280, 280): only the overlay and the root contain it.
+        XCTAssertEqual(hit?.shortResourceID, "play")
         XCTAssertEqual(hierarchy.node(atRatio: CGPoint(x: 0.28, y: 0.14))?.contentDescription, "Overlay")
         XCTAssertNotEqual(hierarchy.node(atRatio: .zero)?.bounds.size, .zero)
     }
@@ -83,7 +80,7 @@ final class InspectorTests: XCTestCase {
     func testMeasurementsInPixelsAndDP() throws {
         let hierarchy = try XCTUnwrap(UIHierarchyParser.parse(dump()))
         let button = hierarchy.nodes[2]
-        let measured = NodeMeasurements(node: button, densityScale: 2.5) // 400 dpi
+        let measured = NodeMeasurements(node: button, densityScale: 2.5)
         XCTAssertEqual(measured.pixelText, "200 × 100 px at 40, 60")
         XCTAssertEqual(measured.dpText, "80 × 40 dp at 16, 24")
         XCTAssertNil(NodeMeasurements(node: button, densityScale: nil).dpText)
@@ -102,7 +99,7 @@ final class InspectorTests: XCTestCase {
         let data = dump()
         let model = InspectorModel(fetch: { data })
         XCTAssertFalse(model.isOn)
-        model.pointerMoved(to: CGPoint(x: 0.1, y: 0.05)) // before reading: nothing to show
+        model.pointerMoved(to: CGPoint(x: 0.1, y: 0.05))
         XCTAssertNil(model.hovered)
 
         model.setOn(true)

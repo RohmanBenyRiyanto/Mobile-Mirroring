@@ -7,8 +7,7 @@ import KeymapFeature
 import Networking
 import SystemServices
 
-/// Everything about one phone that is being mirrored: its connection, live numbers and per-phone switches.
-/// The app can hold several of these at once.
+/// Per-phone mirroring state; the app can hold several of these at once.
 @MainActor
 public final class DeviceSession: ObservableObject {
     public enum State: Equatable {
@@ -28,34 +27,24 @@ public final class DeviceSession: ObservableObject {
     @Published public private(set) var isRecording = false {
         didSet { if !isRecording { recordingStartedAt = nil } }
     }
-    /// When the current recording began, for the timer on screen.
     @Published public private(set) var recordingStartedAt: Date?
     @Published public private(set) var isMuted = false
 
-    /// What this window is used for now; the control rail follows it.
+    /// The mode this phone is in now, which can change automatically with the keymap.
     @Published public private(set) var modeState: ModeAutoSwitch
     public var mode: WorkspaceMode { modeState.mode }
 
-    /// The app in front on this phone.
     public let foreground = ForegroundAppDetector()
     public let scrcpy: ScrcpySession
-    /// Keyboard-to-touch mapping for this phone.
     public let keymap: KeymapController
-    /// Shows what element is under the pointer.
     public let inspector: InspectorModel
-    /// Grid, crosshair and colour picker.
     public let design: DesignModel
-    /// Records the touches sent to this phone, for macros.
     public let macroRecorder = MacroRecorder()
     @Published public private(set) var isRecordingMacro = false
 
-    /// Short messages for the user ("Saved …").
     public var onNotice: ((String) -> Void)?
-    /// A file that was just saved, so the message can offer to show it.
     public var onSavedFile: ((URL) -> Void)?
-    /// Game package → keymap profile id, supplied by the app model.
     public var keymapIndex: () -> [String: String] = { [:] }
-    /// Loads a saved keymap into this phone; returns whether it worked. Supplied by the app model.
     public var loadKeymapProfile: (String) -> Bool = { _ in false }
     /// Called once when the connection ends by itself (cable pulled, server stopped), with the reason if it was a failure.
     public var onEnded: ((DeviceSession, String?) -> Void)?
@@ -85,25 +74,22 @@ public final class DeviceSession: ObservableObject {
         scrcpy.onEvent = { [weak self] event in
             Task { @MainActor in self?.handle(event) }
         }
-        // The keymap's menu state follows its controller.
         keymapObserver = keymap.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
         inspectorObserver = inspector.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
         designObserver = design.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
         foregroundObserver = foreground.$current.removeDuplicates().sink { [weak self] app in self?.foregroundChanged(app) }
-        // Views that follow the app in front (the logcat window) watch the model, so its changes are re-published.
+        // Re-publish foreground changes so views watching this session (such as the logcat window) refresh.
         foregroundForwarder = foreground.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
     }
 
     public var streamURL: String? { scrcpy.streamURL }
-    /// The port this session's OBS stream was asked to use, if the stream is on.
     public var streamPort: Int? { settings.obsStreamEnabled ? settings.obsStreamPort : nil }
 
-    /// Connects to the phone. Throws if it cannot be reached.
     public func start() async throws {
         try await Task.detached { [scrcpy] in try scrcpy.start() }.value
     }
 
-    /// Stops mirroring on request. Does not call `onEnded`.
+    /// Stops on request. Unlike a connection that ends by itself, this does not call `onEnded`.
     public func stop() {
         scrcpy.stop()
         cleanUp()
@@ -192,7 +178,6 @@ public final class DeviceSession: ObservableObject {
         isRecording = false
     }
 
-    /// The user picked a mode.
     public func setMode(_ mode: WorkspaceMode) { modeState = modeState.chosen(mode) }
 
     // MARK: Input

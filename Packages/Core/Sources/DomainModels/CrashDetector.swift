@@ -52,7 +52,6 @@ public struct CrashGrouper {
     private var open: (pid: Int, block: Int, tags: Set<String>)?
     private var nextBlock = 0
 
-    /// Returns `entry` with its crash block set, if it belongs to one.
     public mutating func apply(to entry: LogEntry) -> LogEntry {
         var entry = entry
         if entry.kind.startsCrash {
@@ -71,7 +70,7 @@ public struct CrashGrouper {
             if entry.pid == open.pid, open.tags.contains(entry.tag) {
                 entry.crashBlock = open.block // "Process: …, PID: …" lines of the same report
             } else if entry.tag == "DEBUG", open.tags.contains("libc") {
-                entry.crashBlock = open.block // the rest of a native report
+                entry.crashBlock = open.block
             } else if entry.pid == open.pid {
                 self.open = nil // the same process went on to log something else: the report is over
             }

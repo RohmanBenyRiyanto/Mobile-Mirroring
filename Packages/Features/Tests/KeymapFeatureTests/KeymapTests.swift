@@ -11,7 +11,6 @@ private func button(_ keyCode: UInt16, _ mode: ButtonMode, x: Double = 0.5, y: D
     KeymapElement(label: label, position: NormalizedPoint(x: x, y: y), action: .button(key: keyCode, mode: mode))
 }
 
-/// Pulls the touch out of a message for readable assertions.
 private func touch(_ message: ControlMessage) -> (action: TouchAction, position: TouchPosition, pointer: PointerID)? {
     if case let .touch(action, position, _, pointer) = message { return (action, position, pointer) }
     return nil

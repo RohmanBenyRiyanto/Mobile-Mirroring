@@ -2,10 +2,9 @@ import Foundation
 import DomainModels
 import Persistence
 
-/// The state and rules of the keymap editor, kept apart from its views so they can be tested without a screen.
 @MainActor
 public final class KeymapEditorModel: ObservableObject {
-    /// What the "Add" menu can create. Macros come from recording, not from here.
+    /// Macros come from recording, so they are not listed here.
     public enum ElementKind: CaseIterable, Identifiable {
         case button, joystick, freeLook, mouseButton, skillShot
 
@@ -29,14 +28,13 @@ public final class KeymapEditorModel: ObservableObject {
     @Published public private(set) var isDirty = false
     @Published public private(set) var canUndo = false
     @Published public private(set) var canRedo = false
-    /// The saved profile this edits, or nil for a keymap that has not been saved yet.
+    /// The saved profile being edited; nil until the keymap is first saved.
     public private(set) var profileID: String?
 
     private var undoStack: [Keymap] = []
     private var redoStack: [Keymap] = []
     private static let undoLimit = 100
 
-    /// Edits `profile`, or starts a new keymap when it is nil.
     public init(profile: Profile<Keymap>?) {
         keymap = profile?.payload ?? Keymap()
         name = profile?.name ?? "My keymap"
@@ -50,7 +48,7 @@ public final class KeymapEditorModel: ObservableObject {
 
     // MARK: Adding and removing
 
-    /// Adds an element and selects it. A keymap has only one free-look area, so asking for another selects the one it has.
+    /// Adds an element and selects it. Only one free-look area is allowed, so adding another selects the existing one.
     @discardableResult
     public func add(_ kind: ElementKind) -> UUID {
         if kind == .freeLook, let existing = keymap.elements.first(where: { if case .aim = $0.action { return true } else { return false } }) {
@@ -64,12 +62,11 @@ public final class KeymapEditorModel: ObservableObject {
         return element.id
     }
 
-    /// The kinds of the Keymap menu: the three button modes are listed separately.
+    /// Menu choices; tap, hold and toggle are separate entries for the same button.
     public enum Choice: CaseIterable {
         case tap, hold, toggle, joystick, aim, skillShot
     }
 
-    /// Adds an element of a menu kind, selects it, and returns it.
     @discardableResult
     public func addElement(_ choice: Choice) -> UUID {
         let id: UUID
@@ -95,7 +92,6 @@ public final class KeymapEditorModel: ObservableObject {
         if selection == id { selection = nil }
     }
 
-    /// A copy a little to the side of the original.
     @discardableResult
     public func duplicate(_ id: UUID) -> UUID? {
         guard var copy = element(id) else { return nil }
@@ -110,7 +106,7 @@ public final class KeymapEditorModel: ObservableObject {
 
     // MARK: Changing
 
-    /// Starts one undoable change. Call once when a drag or slider begins, then use the continuous setters.
+    /// Records an undo step. Call once when a drag or slider begins, then use the continuous setters.
     public func checkpoint() {
         undoStack.append(keymap)
         if undoStack.count > Self.undoLimit { undoStack.removeFirst() }
@@ -123,7 +119,6 @@ public final class KeymapEditorModel: ObservableObject {
         change(id) { $0.position = point.clamped }
     }
 
-    /// Moves the hero marker of a skill-shot.
     public func moveHero(of id: UUID, to point: NormalizedPoint) {
         change(id) { element in
             guard case let .skillShot(key, cast, radius, range, _) = element.action else { return }
@@ -184,21 +179,19 @@ public final class KeymapEditorModel: ObservableObject {
         }
     }
 
-    /// Other elements that use any of the same keys, so the editor can warn about them.
     public func conflicts(of id: UUID) -> [String] {
         guard let element = element(id) else { return [] }
         let mine = Set(element.keys)
         return keymap.elements.filter { $0.id != id && !mine.isDisjoint(with: $0.keys) }.map(title(of:))
     }
 
-    /// Whether a key is already used by another element.
     public func isKeyUsed(_ key: UInt16, except id: UUID) -> Bool {
         keymap.elements.contains { $0.id != id && $0.keys.contains(key) }
     }
 
     // MARK: Saving
 
-    /// The keymap as it would be saved, checked and tidied; throws what is wrong with it.
+    /// The keymap as it would be saved, with the package trimmed and the result validated.
     public func validatedKeymap() throws -> Keymap {
         var result = keymap
         let trimmed = package.trimmingCharacters(in: .whitespaces)

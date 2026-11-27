@@ -1,6 +1,5 @@
 import Foundation
 
-/// The phone's process list, to find the processes of one app.
 public enum ProcessList {
     /// Fixed command text; nothing user-supplied reaches the phone's shell.
     public static let command = "ps -A -o PID,NAME"
@@ -21,7 +20,6 @@ public enum ProcessList {
     }
 }
 
-/// Which lines belong to an app.
 public enum LogScope {
     /// A line belongs to the app if it comes from one of its processes, mentions its package (system messages such as
     /// "Process … has died"), or is part of a crash report that was already accepted.

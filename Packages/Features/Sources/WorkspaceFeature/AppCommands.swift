@@ -4,12 +4,12 @@ import LogcatFeature
 import Persistence
 import SwiftUI
 
-/// The menu bar, in the order and with the shortcuts of the design (Menu bar, 9a). Items whose feature is not built yet
-/// are shown but disabled.
+/// Items whose feature is not built yet are shown but disabled.
 public struct AppCommands: Commands {
     @ObservedObject public var model: AppModel
     @FocusedValue(\.logcatActions) private var logcat
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.openSettings) private var openSettings
 
     public init(model: AppModel) {
         self.model = model
@@ -76,6 +76,7 @@ public struct AppCommands: Commands {
             Button(LocalizedStringKey(model.isRailCollapsed ? "Show Control Rail" : "Hide Control Rail")) { model.toggleRail() }
                 .keyboardShortcut("r", modifiers: [.command, .option])
                 .disabled(!mirroring)
+            Button("Customize Control Rail…") { model.showSettingsPane("rail"); openSettings() }
             Toggle("Stream Mode", isOn: $model.isStreamMode)
                 .keyboardShortcut("b", modifiers: [.command, .shift])
                 .disabled(!mirroring)

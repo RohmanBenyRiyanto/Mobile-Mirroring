@@ -20,9 +20,8 @@ public struct NormalizedPoint: Codable, Equatable {
 
 /// What a button does to the touch while its key is used.
 public enum ButtonMode: String, Codable, CaseIterable, Identifiable {
-    /// A quick touch each time the key is pressed.
     case tap
-    /// The finger stays down for as long as the key is held (a fire button).
+    /// The finger stays down while the key is held.
     case hold
     /// One press puts the finger down, the next lifts it (hold-to-aim, auto-fire).
     case toggle
@@ -48,7 +47,6 @@ public struct MacroStep: Codable, Equatable {
     }
 }
 
-/// When an aimed skill is cast.
 public enum SkillCast: String, Codable, CaseIterable, Identifiable {
     /// Hold the key to aim with the mouse, release to cast.
     case onRelease
@@ -60,25 +58,22 @@ public enum SkillCast: String, Codable, CaseIterable, Identifiable {
 
 public enum KeymapAction: Codable, Equatable {
     case button(key: UInt16, mode: ButtonMode)
-    /// Four keys that steer a virtual analog stick centred on the element's position.
-    /// `radius` is a fraction of the screen's shorter edge; `response` is how many seconds the stick takes to
-    /// reach full deflection (0 = instantly), which gives movement a smooth start and stop.
+    /// Four keys steer a virtual analog stick centred on the element. `radius` is a fraction of the shorter screen
+    /// edge; `response` is the seconds taken to reach full deflection (0 = instant).
     case joystick(up: UInt16, left: UInt16, down: UInt16, right: UInt16, radius: Double, response: Double)
 
-    /// Free-look: while switched on with `toggleKey`, the mouse is captured and its movement drags a finger around
-    /// the element's position (the camera). `sensitivity` is screen pixels per mouse point on a 1080-wide screen;
-    /// `radius` (fraction of the shorter edge) is how far the finger roams before it is put back in the middle.
+    /// Free-look: while aiming, mouse movement drags a finger around the element. `sensitivity` is screen pixels per
+    /// mouse point on a 1080-wide screen; `radius` (fraction of the shorter edge) is how far the finger roams before it is recentred.
     case aim(toggleKey: UInt16, sensitivity: Double, radius: Double)
     /// A mouse button (0 left, 1 right, 2 and up the others) that touches the element's position. Active only while aiming.
     case mouseButton(button: Int, mode: ButtonMode)
 
-    /// An aimed skill (MOBA). The element's position is the skill button. While the key is held the finger is
-    /// dragged from the button in the direction of the mouse as seen from the hero's position `hero`; the drag
-    /// reaches `radius` (fraction of the shorter edge) when the mouse is `range` (same unit) or more from the hero.
+    /// An aimed skill. While the key is held, the finger is dragged from the button toward the mouse as seen from
+    /// `hero`. It reaches `radius` (fraction of the shorter edge) when the mouse is `range` or more from the hero.
     case skillShot(key: UInt16, cast: SkillCast, radius: Double, range: Double, hero: NormalizedPoint)
 
-    /// A recorded sequence of touches, played when the key is pressed. With `loop` it repeats for as long as the
-    /// key is held and stops (lifting its fingers) on release. `speed` scales the playback time.
+    /// A recorded touch sequence played on key press. With `loop` it repeats while the key is held and lifts its
+    /// fingers on release. `speed` scales the playback time.
     case macro(key: UInt16, steps: [MacroStep], loop: Bool, speed: Double)
 
     public static let maxMacroSteps = 5_000
@@ -118,7 +113,6 @@ public struct KeymapElement: Codable, Equatable, Identifiable {
     }
 }
 
-/// Keyboard controls for one game: where each key touches the screen.
 public struct Keymap: Codable, Equatable {
     public static let maxElements = 200
 

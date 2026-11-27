@@ -48,7 +48,6 @@ public final class AudioPlayer: @unchecked Sendable {
         }
     }
 
-    /// Converts interleaved 16-bit samples into the planar floats the engine works with.
     public static func fill(_ buffer: AVAudioPCMBuffer, fromInterleavedInt16 pcm: Data) {
         let frames = min(pcm.count / SampleBuffers.PCM.bytesPerFrame, Int(buffer.frameCapacity))
         buffer.frameLength = AVAudioFrameCount(frames)

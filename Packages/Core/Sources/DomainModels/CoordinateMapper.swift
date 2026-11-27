@@ -1,21 +1,14 @@
 import CoreGraphics
 import Foundation
 
-/// Converts between the places a point can live:
-///
-/// - **view**: points inside the on-screen video area, origin at the top-left;
-/// - **ratio**: 0…1 across the video, independent of any screen size (what keymaps are stored in);
-/// - **frame**: pixels of the video frame the phone encodes (what touch events carry);
-/// - **dp**: Android density-independent pixels on the phone's real screen.
-///
-/// The video is letterboxed (aspect fit) inside the view, and the frame may be smaller than the phone's screen
-/// when the stream is downscaled, so each conversion goes through the ratio.
+/// Converts between view, ratio, frame and dp coordinates. Conversions go through the ratio because the video
+/// is letterboxed inside the view and the frame may be downscaled from the phone's screen.
 public struct CoordinateMapper: Equatable {
     public var viewSize: CGSize
     public var frameSize: CGSize
-    /// The phone's screen in pixels, in the current orientation. Needed only for dp.
+    /// Phone screen size in pixels for the current orientation. Only needed for dp conversions.
     public var screenSize: CGSize?
-    /// Android density scale (dpi / 160). Needed only for dp.
+    /// Android density scale (dpi / 160). Only needed for dp conversions.
     public var densityScale: Double?
 
     public init(viewSize: CGSize, frameSize: CGSize, screenSize: CGSize? = nil, densityScale: Double? = nil) {
@@ -25,7 +18,6 @@ public struct CoordinateMapper: Equatable {
         self.densityScale = densityScale
     }
 
-    /// A mapper that also knows the phone's real screen, for dp conversions.
     public init(viewSize: CGSize, frameSize: CGSize, device: DeviceInfo) {
         self.init(viewSize: viewSize, frameSize: frameSize,
                   screenSize: device.screenSize(matching: frameSize), densityScale: device.densityScale)
@@ -35,7 +27,6 @@ public struct CoordinateMapper: Equatable {
         viewSize.width > 0 && viewSize.height > 0 && frameSize.width > 0 && frameSize.height > 0
     }
 
-    /// Where the video is drawn inside the view (aspect fit, centered).
     public var videoRect: CGRect {
         guard isUsable else { return .zero }
         let scale = min(viewSize.width / frameSize.width, viewSize.height / frameSize.height)
@@ -53,7 +44,7 @@ public struct CoordinateMapper: Equatable {
         return unclampedRatio(forViewPoint: point)
     }
 
-    /// Like `ratio(forViewPoint:)`, but a point outside the video snaps to its nearest edge (for drags that leave the picture).
+    /// Like `ratio(forViewPoint:)`, but clamps points outside the video to its edge, for drags that leave the picture.
     public func clampedRatio(forViewPoint point: CGPoint) -> CGPoint? {
         guard videoRect.width > 0 else { return nil }
         let ratio = unclampedRatio(forViewPoint: point)
@@ -105,7 +96,6 @@ public struct CoordinateMapper: Equatable {
         return CGPoint(x: point.x * densityScale / screenSize.width, y: point.y * densityScale / screenSize.height)
     }
 
-    /// A length across the phone's screen in dp (for example an element's width as a fraction of the screen).
     public func dpSize(forRatioSize size: CGSize) -> CGSize? {
         guard let screenSize, let densityScale, densityScale > 0 else { return nil }
         return CGSize(width: size.width * screenSize.width / densityScale, height: size.height * screenSize.height / densityScale)

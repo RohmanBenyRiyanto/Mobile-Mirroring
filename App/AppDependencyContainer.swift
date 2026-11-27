@@ -3,7 +3,7 @@ import Persistence
 import SystemServices
 import WorkspaceFeature
 
-/// Builds the app's long-lived objects and wires their dependencies, so the features never reach for globals.
+/// Builds the app's long-lived objects and their dependencies.
 @MainActor
 struct AppDependencyContainer {
     let model: AppModel

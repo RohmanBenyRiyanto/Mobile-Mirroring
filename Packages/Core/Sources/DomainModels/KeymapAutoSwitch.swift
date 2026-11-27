@@ -1,8 +1,7 @@
 import Foundation
 import Persistence
 
-/// The rules for switching keymaps by themselves when the game in front on the phone changes.
-/// Pure functions, so every case can be tested without a phone.
+/// Rules for switching keymaps automatically when the app in front on the phone changes.
 public enum KeymapAutoSwitch {
     public enum Action: Equatable {
         case load(String)

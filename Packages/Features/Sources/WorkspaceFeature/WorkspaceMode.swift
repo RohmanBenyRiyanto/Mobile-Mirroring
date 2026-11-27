@@ -1,7 +1,6 @@
 import SwiftUI
 
-/// What the phone window is being used for. It decides which tools the control rail offers, so the ones needed now are one
-/// click away: Normal is everyday use, Gaming is for playing with a keymap and streaming, Developer is for inspecting an app.
+/// The phone window's purpose, which decides the control rail tools offered.
 public enum WorkspaceMode: String, CaseIterable, Identifiable, Codable {
     case normal, gaming, developer
 
@@ -23,7 +22,6 @@ public enum WorkspaceMode: String, CaseIterable, Identifiable, Codable {
         }
     }
 
-    /// The digit of the shortcut (⌥⌘1, ⌥⌘2, ⌥⌘3).
     public var shortcutKey: Character {
         switch self {
         case .normal: return "1"
@@ -33,8 +31,7 @@ public enum WorkspaceMode: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-/// When the window goes to Gaming mode by itself (only if the user turned that on), and when it goes back.
-/// A mode the user picked by hand is never taken away.
+/// Switches to Gaming mode by itself when a keymap turns on, and back when it turns off. A chosen mode is never changed.
 public struct ModeAutoSwitch: Equatable {
     public var mode: WorkspaceMode
     /// The mode to return to when the game closes, set only while Gaming was entered automatically.
@@ -45,13 +42,11 @@ public struct ModeAutoSwitch: Equatable {
         self.restoreTo = restoreTo
     }
 
-    /// A game with a keymap came to the front and the keymap was switched on automatically.
     public func keymapTurnedOnAutomatically(enabled: Bool) -> ModeAutoSwitch {
         guard enabled, mode != .gaming else { return self }
         return ModeAutoSwitch(mode: .gaming, restoreTo: mode)
     }
 
-    /// The game closed and the keymap was switched off automatically.
     public func keymapTurnedOffAutomatically() -> ModeAutoSwitch {
         guard let restoreTo, mode == .gaming else { return self }
         return ModeAutoSwitch(mode: restoreTo, restoreTo: nil)

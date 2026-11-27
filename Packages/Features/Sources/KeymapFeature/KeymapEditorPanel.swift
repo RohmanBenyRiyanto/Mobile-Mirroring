@@ -2,7 +2,6 @@ import SwiftUI
 import DomainModels
 import SystemServices
 
-/// The editor's side panel: profile details, the list of elements, and settings for the selected one.
 public struct KeymapEditorPanel: View {
     @ObservedObject public var editor: KeymapEditorModel
     @ObservedObject public var foreground: ForegroundAppDetector
@@ -114,7 +113,6 @@ public struct KeymapEditorPanel: View {
 
 // MARK: - Inspector
 
-/// Settings for the selected element; what shows depends on its kind.
 private struct ElementInspector: View {
     @ObservedObject var editor: KeymapEditorModel
     let element: KeymapElement
@@ -251,7 +249,6 @@ private struct ElementInspector: View {
     }
 }
 
-/// A button that shows a key and, when clicked, waits for the next key press to replace it.
 private struct KeyField: View {
     let title: String
     let key: UInt16

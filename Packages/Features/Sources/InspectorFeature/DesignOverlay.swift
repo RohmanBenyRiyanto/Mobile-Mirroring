@@ -1,7 +1,7 @@
 import SwiftUI
 import DomainModels
 
-/// The grid, crosshair and colour readout, drawn over the mirror. Never takes clicks itself.
+/// The grid, crosshair and colour readout drawn over the mirror. It passes clicks through.
 public struct DesignOverlay: View {
     @ObservedObject public var design: DesignModel
     public let videoSize: CGSize
@@ -66,7 +66,6 @@ public struct DesignOverlay: View {
         if design.tool != .off {
             let ratio = design.pointer
             let cross = ratio.flatMap { CrosshairReadout(ratio: $0, screenSize: screenSize, densityScale: densityScale) }
-            // On the half of the picture away from the pointer, so the card never hides what is measured.
             let alignment: Alignment = (ratio?.y ?? 1) < 0.5 ? .bottomTrailing : .topTrailing
             VStack(alignment: .leading, spacing: 3) {
                 if design.tool == .colorPicker { colorRows }

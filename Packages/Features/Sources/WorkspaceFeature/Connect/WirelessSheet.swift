@@ -4,7 +4,6 @@ import Networking
 import SwiftUI
 import Theme
 
-/// Wi-Fi setup: switch the plugged-in phone over, or pair and connect by address.
 struct WirelessSheet: View {
     @EnvironmentObject private var model: AppModel
     @Environment(\.dismiss) private var dismiss

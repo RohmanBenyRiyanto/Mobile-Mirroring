@@ -5,18 +5,16 @@ import DomainModels
 import Persistence
 import SystemServices
 
-/// Runs a keymap for one phone: feeds key events to the engine and carries out its touches.
 @MainActor
 public final class KeymapController: ObservableObject {
-    /// The loaded keymap, if any.
     @Published public private(set) var profile: ProfileSummary?
-    /// True while free-look is on: the pointer is captured and mouse movement steers the camera.
+    /// Free-look is on: the pointer is captured and mouse movement steers the camera.
     @Published public private(set) var isAiming = false
-    /// True while the keymap editor is open: the keymap is switched off and keys must not reach the phone.
+    /// While editing, the keymap is switched off so keys do not reach the phone.
     @Published public var isEditing = false {
         didSet { if isEditing { isEnabled = false } }
     }
-    /// While off, keys behave normally (typing, shortcuts); turning it off lifts any finger still down.
+    /// Turning this off lifts any finger still held down.
     @Published public var isEnabled = false {
         didSet { if !isEnabled { releaseAll() } }
     }
@@ -31,7 +29,6 @@ public final class KeymapController: ObservableObject {
     private var ticker: Timer?
     private var lastTick: CFTimeInterval = 0
 
-    /// Joystick and macro updates per second.
     private static let tickRate = 120.0
     /// A stalled run loop must not make the stick jump: time per step is capped.
     private static let maxStep = 0.1
@@ -58,7 +55,7 @@ public final class KeymapController: ObservableObject {
         isEnabled = false
     }
 
-    /// The video frame changed size (the phone rotated): fingers placed for the old frame are lifted.
+    /// Lifts fingers placed for the old frame when the phone rotates.
     public func updateFrameSize(_ size: CGSize) {
         guard size != frameSize else { return }
         releaseAll()
@@ -67,10 +64,8 @@ public final class KeymapController: ObservableObject {
 
     // MARK: Keys
 
-    /// Whether a key event belongs to the keymap and must not be typed on the phone.
     public func handles(_ key: UInt16) -> Bool { isEnabled && engine?.handles(key) == true }
 
-    /// Returns true if the key was consumed.
     public func keyDown(_ key: UInt16) -> Bool {
         guard handles(key) else { return false }
         run(engine?.keyDown(key, frameSize: frameSize) ?? [])
@@ -94,7 +89,7 @@ public final class KeymapController: ObservableObject {
 
     // MARK: Pointer (aimed skills)
 
-    /// The pointer moved over the phone, as a fraction of the screen. Aimed skills follow it; nothing is consumed.
+    /// Aimed skills follow the pointer. The event is never consumed.
     public func pointerMoved(to ratio: CGPoint) {
         guard isEnabled else { return }
         run(engine?.pointerMoved(to: ratio, frameSize: frameSize) ?? [])
@@ -102,15 +97,13 @@ public final class KeymapController: ObservableObject {
 
     // MARK: Mouse (free-look)
 
-    /// While aiming, mouse movement steers the camera. Returns true if it was consumed.
     public func mouseMoved(deltaX: Double, deltaY: Double) -> Bool {
         guard isAiming else { return false }
         run(engine?.mouseMoved(deltaX: deltaX, deltaY: deltaY, frameSize: frameSize) ?? [])
         return true
     }
 
-    /// While aiming every click belongs to the keymap (an unmapped button simply does nothing, so the hidden
-    /// pointer never taps the phone by accident). Returns true if it was consumed.
+    /// While aiming, every click belongs to the keymap so the hidden pointer never taps the phone by accident.
     public func mouseDown(button: Int) -> Bool {
         guard isAiming else { return false }
         run(engine?.mouseDown(button: button, frameSize: frameSize) ?? [])
@@ -123,7 +116,6 @@ public final class KeymapController: ObservableObject {
         return true
     }
 
-    /// Keeps the captured pointer in step with the engine's aim state.
     private func syncAiming() {
         let aiming = isEnabled && engine?.isAiming == true
         guard aiming != isAiming else { return }

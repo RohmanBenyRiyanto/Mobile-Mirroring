@@ -50,7 +50,7 @@ final class MultiTouchAndAudioTests: XCTestCase {
 
     func testPCMConversionToPlanarFloat() throws {
         var pcm = Data()
-        for sample: Int16 in [Int16.max, Int16.min, 0, 16_384] { // L R | L R
+        for sample: Int16 in [Int16.max, Int16.min, 0, 16_384] {
             pcm.append(contentsOf: Swift.withUnsafeBytes(of: sample.littleEndian) { Array($0) })
         }
         let format = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 2))

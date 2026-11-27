@@ -48,15 +48,13 @@ final class DeviceIntegrationTests: XCTestCase {
         session.isMuted = true
         defer { session.stop() }
 
-        // Watch the stream the way OBS would.
         let url = try XCTUnwrap(session.streamURL)
         let port = try XCTUnwrap(UInt16(url.split(separator: ":").last?.split(separator: "/").first ?? ""))
         let viewer = try connectLoopback(port: port)
         viewer.setTimeouts(seconds: 3)
         try viewer.write(Data("GET /live.ts HTTP/1.1\r\nHost: localhost\r\n\r\n".utf8))
 
-        // A still screen sends only a few frames a second, so the measurement needs something moving: the notification shade
-        // is opened and closed through the control channel while the stream is watched.
+        // A still screen sends few frames, so the notification shade is toggled to keep the stream moving.
         var received = Data()
         let deadline = Date().addingTimeInterval(6)
         var nextToggle = Date()
@@ -70,7 +68,7 @@ final class DeviceIntegrationTests: XCTestCase {
             if let chunk = try? viewer.readSome(limit: 1 << 20), !chunk.isEmpty { received.append(chunk) }
         }
         session.send(.collapsePanels)
-        session.send(.expandNotificationPanel) // exercise the control channel
+        session.send(.expandNotificationPanel)
         try await Task.sleep(for: .milliseconds(300))
         session.send(.collapsePanels)
 
@@ -85,7 +83,6 @@ final class DeviceIntegrationTests: XCTestCase {
         XCTAssertGreaterThan(stats.megabitsPerSecond, 0.01)
         XCTAssertGreaterThan(session.streamViewerCount, 0)
 
-        // The OBS stream must be a valid, decodable transport stream with the phone's picture.
         let headerEnd = try XCTUnwrap(received.range(of: Data("\r\n\r\n".utf8)), "no HTTP response")
         var body = Data(received[headerEnd.upperBound...])
         body.removeLast(body.count % 188) // the last packet may still be in flight

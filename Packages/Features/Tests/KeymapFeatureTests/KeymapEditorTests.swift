@@ -86,7 +86,7 @@ final class KeymapEditorModelTests: XCTestCase {
         editor.delete(id)
         XCTAssertTrue(editor.keymap.elements.isEmpty)
         XCTAssertNil(editor.selection)
-        editor.delete(UUID()) // unknown id: nothing happens
+        editor.delete(UUID())
         XCTAssertFalse(editor.canRedo)
     }
 
@@ -99,11 +99,11 @@ final class KeymapEditorModelTests: XCTestCase {
         XCTAssertTrue(editor.canUndo)
         XCTAssertFalse(editor.canRedo)
 
-        editor.undo() // the move
+        editor.undo()
         XCTAssertEqual(editor.element(id)?.position, NormalizedPoint(x: 0.85, y: 0.8))
-        editor.undo() // the label
+        editor.undo()
         XCTAssertEqual(editor.element(id)?.label, "")
-        editor.undo() // the add
+        editor.undo()
         XCTAssertTrue(editor.keymap.elements.isEmpty)
         XCTAssertNil(editor.selection, "the selected element no longer exists")
         XCTAssertFalse(editor.canUndo)

@@ -1,6 +1,5 @@
 import SystemServices
 
-/// Stands in for the real pointer lock, and remembers how it was used.
 @MainActor
 public final class FakeCursorCapture: CursorCapturing {
     public private(set) var history: [Bool] = []

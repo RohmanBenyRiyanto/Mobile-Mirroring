@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 import Theme
 
-/// A short message that fades after a few seconds: glass, so it reads on any picture. It can offer to show a saved file.
+/// A glass notice that can offer to show a saved file.
 struct ToastView: View {
     let text: String
     var file: URL?
@@ -35,7 +35,6 @@ struct ToastView: View {
     }
 }
 
-/// Shows the latest notice of the model and removes it after four seconds.
 struct NoticeToast: View {
     @EnvironmentObject private var model: AppModel
 
@@ -51,7 +50,7 @@ struct NoticeToast: View {
     }
 }
 
-/// "● 02:14" at the top of the picture while recording. A solid scrim, because glass over live video costs GPU time.
+/// Solid scrim rather than glass, since glass over live video costs GPU time.
 struct RecordingPill: View {
     let startedAt: Date
 
@@ -71,7 +70,6 @@ struct RecordingPill: View {
         }
     }
 
-    /// `83` → `01:23`, `3725` → `1:02:05`.
     static func clock(_ seconds: TimeInterval) -> String {
         let total = max(0, Int(seconds))
         let (h, m, s) = (total / 3600, total % 3600 / 60, total % 60)
@@ -79,7 +77,6 @@ struct RecordingPill: View {
     }
 }
 
-/// Shown for three seconds after entering Stream Mode, so the way out is never a secret.
 struct StreamHint: View {
     var body: some View {
         HStack(spacing: Theme.Space.s2) {

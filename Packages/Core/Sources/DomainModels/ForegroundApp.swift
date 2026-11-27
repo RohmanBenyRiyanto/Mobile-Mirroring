@@ -1,6 +1,5 @@
 import Foundation
 
-/// The app that currently has the phone's screen.
 public struct ForegroundApp: Equatable {
     public let package: String
     /// As printed by Android; may be relative to the package (".MainActivity").
@@ -49,7 +48,6 @@ public enum ForegroundAppParser {
         return ForegroundApp(package: String(parts[0]), activity: String(parts[1]))
     }
 
-    /// `u0`, `u10`, ... the Android user id.
     private static func isUserToken(_ word: Substring) -> Bool {
         word.count >= 2 && word.first == "u" && word.dropFirst().allSatisfy { $0.isASCII && $0.isNumber }
     }

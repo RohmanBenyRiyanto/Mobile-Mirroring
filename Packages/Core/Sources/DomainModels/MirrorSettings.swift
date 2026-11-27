@@ -100,16 +100,14 @@ public struct MirrorSettings: Equatable, Codable {
     public var showTouches = false
     public var stayAwake = false
     public var turnScreenOffOnStart = false
-    /// Load the keymap that belongs to the game in front on the phone.
     public var autoKeymap = true
-    /// …and switch it on (and off again when the game closes).
+    /// Also switches that keymap on, and off again when the game closes.
     public var autoEnableKeymap = true
     /// Re-serves the phone's stream on loopback as MPEG-TS, for OBS.
     public var obsStreamEnabled = false
     public var obsStreamPort = 8765
-    /// Start mirroring by itself when a phone is plugged in while nothing is being mirrored.
     public var mirrorOnConnect = false
-    /// Go to Gaming mode when a game with a keymap opens (off by default: modes change only when the user changes them).
+    /// Switches to Gaming mode when a game with a keymap opens. Off by default, since modes change only when the user changes them.
     public var autoGamingMode = false
     /// Where screenshots and recordings are saved; nil keeps Pictures/Benz Mirror and Movies/Benz Mirror.
     public var screenshotFolder: String?

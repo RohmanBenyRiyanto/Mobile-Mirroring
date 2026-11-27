@@ -3,7 +3,6 @@ import DomainModels
 import SwiftUI
 import Theme
 
-/// Device ▸ Device Information: what is known about the phone being mirrored.
 struct DeviceInfoSheet: View {
     @EnvironmentObject private var model: AppModel
     @Environment(\.dismiss) private var dismiss

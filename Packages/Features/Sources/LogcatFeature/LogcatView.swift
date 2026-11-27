@@ -3,8 +3,7 @@ import SwiftUI
 import DomainModels
 import Networking
 
-/// What the logcat window needs from the app that hosts it: which phone, how to reach it, and which app is in front.
-/// The window re-reads these whenever the source announces a change.
+/// What the logcat window needs from its host: the phone, how to reach it, and the app in front, re-read on change.
 @MainActor
 public protocol LogcatSource: ObservableObject {
     var adb: ADB? { get }
@@ -89,7 +88,6 @@ public struct LogcatView<Source: LogcatSource>: View {
 public struct LogList: View {
     public let entries: [LogEntry]
     public let followsTail: Bool
-    /// The app being followed; its own stack frames are drawn stronger than the framework's.
     public let package: String?
     @Binding public var jumpTarget: Int?
 
@@ -120,8 +118,6 @@ public struct LogList: View {
     }
 }
 
-/// One line. A crash is drawn as a block: a red bar down its side, a loud first line, and stack frames in quieter type,
-/// with the app's own frames stronger than the framework's.
 public struct LogRow: View {
     public let entry: LogEntry
     public let package: String?

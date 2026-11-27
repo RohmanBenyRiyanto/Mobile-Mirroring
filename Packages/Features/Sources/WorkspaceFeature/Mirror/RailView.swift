@@ -3,7 +3,6 @@ import DomainModels
 import SwiftUI
 import Theme
 
-/// One button of the control rail. 40 × 36, round; it lights up while its feature is on.
 struct RailButton: View {
     let title: LocalizedStringKey
     let symbol: String
@@ -28,7 +27,6 @@ struct RailButton: View {
     }
 }
 
-/// The three modes as a picker, for the Connect window's toolbar. Icons only, with the names as tooltips.
 public struct ModePicker: View {
     @ObservedObject var model: AppModel
 
@@ -46,12 +44,11 @@ public struct ModePicker: View {
     }
 }
 
-/// The control rail: a glass capsule that floats beside the mirror window. Its tools follow the mode:
-/// Normal for everyday use, Gaming for keymap and streaming, Developer for inspecting an app.
 struct RailView: View {
     @ObservedObject var model: AppModel
     @Binding var isCollapsed: Bool
     var openLogcat: () -> Void = {}
+    var customize: () -> Void = {}
 
     private static let divider = Theme.Palette.hairline.color
     /// Expanded and collapsed are the same piece of glass, so folding the rail morphs it instead of swapping two views.
@@ -69,12 +66,13 @@ struct RailView: View {
 
     private var expanded: some View {
         VStack(spacing: Theme.Space.inset) {
-            switch model.mode {
-            case .normal: normalTools
-            case .gaming: gamingTools
-            case .developer: developerTools
+            ForEach(Array(model.railLayout.rows(for: model.mode).enumerated()), id: \.offset) { _, row in
+                switch row {
+                case let .item(item): button(for: item)
+                case .separator: separator
+                }
             }
-            separator
+            if !model.railLayout.items(for: model.mode).isEmpty { separator }
             RailButton(title: "Disconnect", symbol: "eject") { model.disconnect() }
             Button { withAnimation(Theme.Motion.smooth) { isCollapsed = true } } label: {
                 Image(systemName: "chevron.right").font(.system(size: 10, weight: .semibold))
@@ -89,78 +87,45 @@ struct RailView: View {
         .frame(width: Theme.Size.rail)
         .glassSurface(in: RoundedRectangle(cornerRadius: Theme.Radius.rail), morph: GlassMorph(id: "rail", in: glassSpace))
         .shadow(color: .black.opacity(0.18), radius: 14, y: 8)
-    }
-
-    // MARK: Modes (chosen in Mirror ▸ Mode; the rail only follows)
-
-    @ViewBuilder
-    private var normalTools: some View {
-        navigationButtons
-        separator
-        RailButton(title: "Volume Up", symbol: "speaker.wave.3") { model.press(.volumeUp) }
-        RailButton(title: "Volume Down", symbol: "speaker.wave.1") { model.press(.volumeDown) }
-        RailButton(title: "Power", symbol: "power") { model.press(.power) }
-        separator
-        RailButton(title: "Notifications", symbol: "bell") { model.send(.expandNotificationPanel) }
-        RailButton(title: "Quick Settings", symbol: "switch.2") { model.send(.expandSettingsPanel) }
-        RailButton(title: "Rotate", symbol: "rotate.right") { model.send(.rotateDevice) }
-        separator
-        captureButtons
-        separator
-        RailButton(title: "Stream Mode", symbol: "rectangle.on.rectangle") { model.isStreamMode = true }
-        RailButton(title: "Statistics", symbol: "chart.xyaxis.line", isOn: model.showsStats) { model.showsStats.toggle() }
+        .contextMenu { Button("Customize Control Rail…") { customize() } }
     }
 
     @ViewBuilder
-    private var gamingTools: some View {
-        RailButton(title: "Keymap Enabled", symbol: "gamecontroller", isOn: model.isKeymapEnabled) { model.setKeymapEnabled(!model.isKeymapEnabled) }
-        RailButton(title: "Edit Keymap", symbol: "slider.horizontal.3") { model.startEditingKeymap() }
-        RailButton(title: model.isRecordingMacro ? "Stop Recording Macro" : "Record Macro", symbol: "waveform", isOn: model.isRecordingMacro) { model.toggleMacroRecording() }
-        separator
-        RailButton(title: "Stream Mode", symbol: "rectangle.on.rectangle") { model.isStreamMode = true }
-        RailButton(title: "Statistics", symbol: "chart.xyaxis.line", isOn: model.showsStats) { model.showsStats.toggle() }
-        separator
-        captureButtons
-        separator
-        RailButton(title: "Back", symbol: "chevron.backward") { model.press(.back) }
-        RailButton(title: "Home", symbol: "circle") { model.press(.home) }
+    private func button(for item: RailItemID) -> some View {
+        switch item {
+        case .back: RailButton(title: item.title, symbol: item.symbol) { model.press(.back) }
+        case .home: RailButton(title: item.title, symbol: item.symbol) { model.press(.home) }
+        case .recents: RailButton(title: item.title, symbol: item.symbol) { model.press(.appSwitch) }
+        case .volumeUp: RailButton(title: item.title, symbol: item.symbol) { model.press(.volumeUp) }
+        case .volumeDown: RailButton(title: item.title, symbol: item.symbol) { model.press(.volumeDown) }
+        case .power: RailButton(title: item.title, symbol: item.symbol) { model.press(.power) }
+        case .notifications: RailButton(title: item.title, symbol: item.symbol) { model.send(.expandNotificationPanel) }
+        case .quickSettings: RailButton(title: item.title, symbol: item.symbol) { model.send(.expandSettingsPanel) }
+        case .rotate: RailButton(title: item.title, symbol: item.symbol) { model.send(.rotateDevice) }
+        case .screenshot: RailButton(title: item.title, symbol: item.symbol) { model.takeScreenshot() }
+        case .record:
+            RailButton(title: model.isRecording ? "Stop Recording" : item.title, symbol: model.isRecording ? "stop.fill" : item.symbol,
+                       isOn: model.isRecording, tint: model.isRecording ? .white : nil) { model.toggleRecording() }
+                .background(model.isRecording ? Theme.Palette.redFill.color : .clear, in: Capsule())
+        case .mute:
+            RailButton(title: model.isMuted ? "Unmute" : item.title, symbol: model.isMuted ? "speaker.slash" : item.symbol,
+                       isOn: model.isMuted) { model.toggleMute() }
+        case .streamMode: RailButton(title: item.title, symbol: item.symbol) { model.isStreamMode = true }
+        case .statistics: RailButton(title: item.title, symbol: item.symbol, isOn: model.showsStats) { model.showsStats.toggle() }
+        case .keymapToggle: RailButton(title: item.title, symbol: item.symbol, isOn: model.isKeymapEnabled) { model.setKeymapEnabled(!model.isKeymapEnabled) }
+        case .editKeymap: RailButton(title: item.title, symbol: item.symbol) { model.startEditingKeymap() }
+        case .recordMacro:
+            RailButton(title: model.isRecordingMacro ? "Stop Recording Macro" : item.title, symbol: item.symbol, isOn: model.isRecordingMacro) { model.toggleMacroRecording() }
+        case .inspector: RailButton(title: item.title, symbol: item.symbol, isOn: model.isInspecting) { model.setInspecting(!model.isInspecting) }
+        case .designOverlay:
+            RailButton(title: item.title, symbol: item.symbol, isOn: model.designTool == .crosshair) { model.setDesignTool(model.designTool == .crosshair ? .off : .crosshair) }
+        case .colourPicker:
+            RailButton(title: item.title, symbol: item.symbol, isOn: model.designTool == .colorPicker) { model.setDesignTool(model.designTool == .colorPicker ? .off : .colorPicker) }
+        case .grid: RailButton(title: item.title, symbol: item.symbol, isOn: model.designGrid != .off) { model.designGrid = Self.nextGrid(after: model.designGrid) }
+        case .logcat: RailButton(title: item.title, symbol: item.symbol) { openLogcat() }
+        }
     }
 
-    @ViewBuilder
-    private var developerTools: some View {
-        RailButton(title: "UI Inspector", symbol: "cursorarrow.rays", isOn: model.isInspecting) { model.setInspecting(!model.isInspecting) }
-        RailButton(title: "Design Overlay", symbol: "ruler", isOn: model.designTool == .crosshair) { model.setDesignTool(model.designTool == .crosshair ? .off : .crosshair) }
-        RailButton(title: "Colour Picker", symbol: "eyedropper", isOn: model.designTool == .colorPicker) { model.setDesignTool(model.designTool == .colorPicker ? .off : .colorPicker) }
-        RailButton(title: "Grid", symbol: "grid", isOn: model.designGrid != .off) { model.designGrid = Self.nextGrid(after: model.designGrid) }
-        separator
-        RailButton(title: "Logcat", symbol: "text.alignleft") { openLogcat() }
-        RailButton(title: "Statistics", symbol: "chart.xyaxis.line", isOn: model.showsStats) { model.showsStats.toggle() }
-        separator
-        captureButtons
-        separator
-        navigationButtons
-    }
-
-    // MARK: Shared groups
-
-    @ViewBuilder
-    private var navigationButtons: some View {
-        RailButton(title: "Back", symbol: "chevron.backward") { model.press(.back) }
-        RailButton(title: "Home", symbol: "circle") { model.press(.home) }
-        RailButton(title: "Recents", symbol: "square") { model.press(.appSwitch) }
-    }
-
-    @ViewBuilder
-    private var captureButtons: some View {
-        RailButton(title: "Screenshot", symbol: "camera") { model.takeScreenshot() }
-        RailButton(title: model.isRecording ? "Stop Recording" : "Record", symbol: model.isRecording ? "stop.fill" : "record.circle",
-                   isOn: model.isRecording, tint: model.isRecording ? .white : nil) { model.toggleRecording() }
-            .background(model.isRecording ? Theme.Palette.redFill.color : .clear, in: Capsule())
-        RailButton(title: model.isMuted ? "Unmute" : "Mute", symbol: model.isMuted ? "speaker.slash" : "speaker.wave.2",
-                   isOn: model.isMuted) { model.toggleMute() }
-    }
-
-    /// Off → 4 dp → 8 dp → off.
     static func nextGrid(after grid: DesignGrid) -> DesignGrid {
         switch grid {
         case .off: return .dp4
@@ -169,12 +134,11 @@ struct RailView: View {
         }
     }
 
-    /// A short line between groups of buttons: 24 wide, 4 pt above and below.
     private var separator: some View {
         Rectangle().fill(Self.divider).frame(width: 24, height: 1).padding(.vertical, Theme.Space.s1)
     }
 
-    /// Hidden: a tab that brings it back (also in the window toolbar and in View ▸ Show Control Rail). A red dot stays while recording.
+    /// A red dot stays visible while recording.
     private var collapsed: some View {
         Button { withAnimation(Theme.Motion.smooth) { isCollapsed = false } } label: {
             VStack(spacing: Theme.Space.s2) {

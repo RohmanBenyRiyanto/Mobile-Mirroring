@@ -12,7 +12,6 @@ public enum WirelessInput {
             && host.allSatisfy { $0.isASCII && ($0.isLetter || $0.isNumber || $0 == "." || $0 == "-") }
     }
 
-    /// The 6-digit code shown on the phone while pairing.
     public static func isValidPairingCode(_ text: String) -> Bool {
         text.count == 6 && text.allSatisfy { $0.isASCII && $0.isNumber }
     }
@@ -66,7 +65,6 @@ public struct IPv4Interface: Equatable {
         (0..<4).map { String(address >> UInt32(24 - 8 * $0) & 0xFF) }.joined(separator: ".")
     }
 
-    /// This Mac's IPv4 interfaces (loopback excluded).
     public static func ofThisMac() -> [IPv4Interface] {
         var list: UnsafeMutablePointer<ifaddrs>?
         guard getifaddrs(&list) == 0, let first = list else { return [] }

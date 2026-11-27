@@ -11,7 +11,6 @@ final class SVGPathTests: XCTestCase {
     }
 
     func testArcQuarterCircleStaysOnTheCircle() throws {
-        // A quarter circle of radius 100 from (100,0) to (0,100), centre at the origin.
         let path = try XCTUnwrap(SVGPath.parse("M100 0 A100 100 0 0 1 0 100"))
         let bounds = path.cgPath.boundingBoxOfPath
         XCTAssertEqual(bounds.minX, 0, accuracy: 0.5)
@@ -42,11 +41,11 @@ final class SVGPathTests: XCTestCase {
 
 final class BrandMarkTests: XCTestCase {
     func testMarkMatchesTheSVGLayers() {
-        // From the layers: x 14…496 and y 21.5…846.1 in each panel's own space, then translate(301.72 168.51) scale(0.79327).
+        // Expected values come from the SVG layers' coordinates and transform.
         let bounds = BrandMark.artworkBounds
         XCTAssertEqual(bounds.minX, 301.72 + 14 * 0.79327, accuracy: 1.5)
         XCTAssertEqual(bounds.maxX, 301.72 + 496 * 0.79327, accuracy: 1.5)
-        XCTAssertEqual(bounds.minY, 168.51 + 21.5 * 0.79327, accuracy: 4) // the corner arcs reach a little above the first point
+        XCTAssertEqual(bounds.minY, 168.51 + 21.5 * 0.79327, accuracy: 4) // Corner arcs reach above the first point, hence the wider tolerance.
         XCTAssertEqual(bounds.maxY, 168.51 + 846.1 * 0.79327, accuracy: 1.5)
         XCTAssertEqual(bounds.width / bounds.height, 382.0 / 654.0, accuracy: 0.01)
     }
@@ -102,7 +101,6 @@ final class BrandMarkTests: XCTestCase {
     }
 }
 
-/// What the user's style choice and the system's abilities add up to.
 final class SurfaceRenderingTests: XCTestCase {
     override func tearDown() {
         SurfaceStyle.mode = .automatic

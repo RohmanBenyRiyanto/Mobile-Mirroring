@@ -82,7 +82,7 @@ final class RecordingPipelineTests: XCTestCase {
 
     private static let startCode = Data([0, 0, 0, 1])
 
-    /// Encodes a test pattern with ffmpeg (no B-frames, like the Android encoder) and returns its NAL units.
+    /// Encodes an ffmpeg test pattern without B-frames, matching the Android encoder.
     private func makeH264Clip(seconds: Int, fps: Int) throws -> [Data] {
         let ffmpeg = ["/opt/homebrew/bin/ffmpeg", "/usr/local/bin/ffmpeg"].first { FileManager.default.isExecutableFile(atPath: $0) }
         guard let ffmpeg else { throw XCTSkip("ffmpeg is not installed") }
