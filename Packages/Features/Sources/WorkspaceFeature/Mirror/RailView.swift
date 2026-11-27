@@ -113,6 +113,20 @@ struct RailView: View {
         case .streamMode: RailButton(title: item.title, symbol: item.symbol) { model.isStreamMode = true }
         case .statistics: RailButton(title: item.title, symbol: item.symbol, isOn: model.showsStats) { model.showsStats.toggle() }
         case .keymapToggle: RailButton(title: item.title, symbol: item.symbol, isOn: model.isKeymapEnabled) { model.setKeymapEnabled(!model.isKeymapEnabled) }
+        case .keymapProfile:
+            Menu {
+                if model.keymapProfiles.isEmpty { Text("No keymaps yet") }
+                ForEach(model.keymapProfiles) { profile in
+                    Button { model.loadKeymap(id: profile.id) } label: {
+                        if profile.id == model.currentKeymap?.id { Label(profile.name, systemImage: "checkmark") } else { Text(verbatim: profile.name) }
+                    }
+                }
+            } label: {
+                Image(systemName: item.symbol).font(.system(size: 14)).foregroundStyle(Theme.Palette.text.color)
+                    .frame(width: Theme.Size.railButton.width, height: Theme.Size.railButton.height)
+            }
+            .menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden)
+            .help(item.title).accessibilityLabel(item.title)
         case .editKeymap: RailButton(title: item.title, symbol: item.symbol) { model.startEditingKeymap() }
         case .recordMacro:
             RailButton(title: model.isRecordingMacro ? "Stop Recording Macro" : item.title, symbol: item.symbol, isOn: model.isRecordingMacro) { model.toggleMacroRecording() }

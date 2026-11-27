@@ -8,7 +8,7 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
     case notifications, quickSettings, rotate
     case screenshot, record, mute
     case streamMode, statistics
-    case keymapToggle, editKeymap, recordMacro
+    case keymapToggle, keymapProfile, editKeymap, recordMacro
     case inspector, designOverlay, colourPicker, grid
     case logcat
 
@@ -23,7 +23,7 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         case .notifications, .quickSettings, .rotate: return .panels
         case .screenshot, .record, .mute: return .capture
         case .streamMode, .statistics: return .stream
-        case .keymapToggle, .editKeymap, .recordMacro: return .keymap
+        case .keymapToggle, .keymapProfile, .editKeymap, .recordMacro: return .keymap
         case .inspector, .designOverlay, .colourPicker, .grid: return .inspection
         case .logcat: return .log
         }
@@ -46,6 +46,7 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         case .streamMode: return "Stream Mode"
         case .statistics: return "Statistics"
         case .keymapToggle: return "Keymap Enabled"
+        case .keymapProfile: return "Keymap Profile"
         case .editKeymap: return "Edit Keymap"
         case .recordMacro: return "Record Macro"
         case .inspector: return "UI Inspector"
@@ -73,6 +74,7 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         case .streamMode: return "rectangle.on.rectangle"
         case .statistics: return "chart.xyaxis.line"
         case .keymapToggle: return "gamecontroller"
+        case .keymapProfile: return "list.bullet"
         case .editKeymap: return "slider.horizontal.3"
         case .recordMacro: return "waveform"
         case .inspector: return "cursorarrow.rays"
@@ -104,7 +106,7 @@ public struct RailLayout: Codable, Equatable {
             return [.back, .home, .recents, .volumeUp, .volumeDown, .power, .notifications, .quickSettings, .rotate,
                     .screenshot, .record, .mute, .streamMode, .statistics]
         case .gaming:
-            return [.keymapToggle, .editKeymap, .recordMacro, .streamMode, .statistics, .screenshot, .record, .mute, .back, .home]
+            return [.keymapToggle, .keymapProfile, .editKeymap, .recordMacro, .streamMode, .statistics, .screenshot, .record, .mute, .back, .home]
         case .developer:
             return [.inspector, .designOverlay, .colourPicker, .grid, .logcat, .statistics, .screenshot, .record, .mute, .back, .home, .recents]
         }

@@ -2534,6 +2534,23 @@
         }
       }
     },
+    "Keymap Profile" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keymap Profile"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profil Keymap"
+          }
+        }
+      }
+    },
     "Keymaps" : {
       "extractionState" : "manual",
       "localizations" : {

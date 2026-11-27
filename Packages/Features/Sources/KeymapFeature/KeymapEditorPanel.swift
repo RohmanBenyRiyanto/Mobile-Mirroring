@@ -1,6 +1,7 @@
 import SwiftUI
 import DomainModels
 import SystemServices
+import Theme
 
 public struct KeymapEditorPanel: View {
     @ObservedObject public var editor: KeymapEditorModel
@@ -20,8 +21,8 @@ public struct KeymapEditorPanel: View {
     public var body: some View {
         VStack(spacing: 0) {
             ScrollView {
-                VStack(alignment: .leading, spacing: 14) {
-                    Text("Keymap editor").font(.headline)
+                VStack(alignment: .leading, spacing: Theme.Space.s4) {
+                    Text("Keymap editor").font(Theme.Font.headline)
                     details
                     toolbar
                     elementList
@@ -30,7 +31,7 @@ public struct KeymapEditorPanel: View {
                         ElementInspector(editor: editor, element: element)
                     }
                 }
-                .padding(12)
+                .padding(Theme.Space.s4)
             }
             Divider()
             footer
@@ -51,7 +52,7 @@ public struct KeymapEditorPanel: View {
                     .help(foreground.current.map { "Use \($0.package)" } ?? "Open the game on the phone first")
             }
             Text("With a package, this keymap can switch on by itself when that game opens.")
-                .font(.caption).foregroundStyle(.secondary)
+                .font(Theme.Font.caption).foregroundStyle(.secondary)
         }
     }
 
@@ -79,7 +80,7 @@ public struct KeymapEditorPanel: View {
         VStack(alignment: .leading, spacing: 2) {
             if editor.keymap.elements.isEmpty {
                 Text("Nothing here yet. Use Add, then drag the new item onto the phone's screen.")
-                    .font(.caption).foregroundStyle(.secondary)
+                    .font(Theme.Font.caption).foregroundStyle(.secondary)
             }
             ForEach(editor.keymap.elements) { element in
                 Button { editor.selection = element.id } label: {
@@ -89,7 +90,7 @@ public struct KeymapEditorPanel: View {
                         Text(element.keys.map(KeyNames.name).joined(separator: " ")).foregroundStyle(.secondary).lineLimit(1)
                     }
                     .padding(.horizontal, 8).padding(.vertical, 4)
-                    .background(editor.selection == element.id ? Color.primary.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 6))
+                    .background(editor.selection == element.id ? Theme.Palette.accentText.color.opacity(0.16) : Color.clear, in: RoundedRectangle(cornerRadius: Theme.Radius.field))
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -101,13 +102,13 @@ public struct KeymapEditorPanel: View {
         VStack(alignment: .leading, spacing: 8) {
             if let message { Text(message).font(.caption).foregroundStyle(.red).textSelection(.enabled) }
             HStack {
-                Button("Discard") { onClose(false) }
+                Button("Discard") { onClose(false) }.secondaryAction()
                 Spacer()
-                Button("Save") { onSave() }.disabled(!editor.isDirty)
-                Button("Save & Close") { onClose(true) }.keyboardShortcut(.defaultAction)
+                Button("Save") { onSave() }.secondaryAction().disabled(!editor.isDirty)
+                Button("Save & Close") { onClose(true) }.prominentAction().keyboardShortcut(.defaultAction)
             }
         }
-        .padding(12)
+        .padding(Theme.Space.s4)
     }
 }
 
@@ -131,7 +132,7 @@ private struct ElementInspector: View {
             let conflicts = editor.conflicts(of: element.id)
             if !conflicts.isEmpty {
                 Label("Shares a key with \(conflicts.joined(separator: ", "))", systemImage: "exclamationmark.triangle")
-                    .font(.caption).foregroundStyle(.secondary)
+                    .font(Theme.Font.caption).foregroundStyle(.secondary)
             }
             HStack {
                 Button("Duplicate") { editor.duplicate(element.id) }
@@ -186,7 +187,7 @@ private struct ElementInspector: View {
                 Text("Toggle").tag(ButtonMode.toggle)
             }
             .pickerStyle(.segmented)
-            Text("Works only while free-look is on.").font(.caption).foregroundStyle(.secondary)
+            Text("Works only while free-look is on.").font(Theme.Font.caption).foregroundStyle(.secondary)
 
         case let .skillShot(key, cast, radius, range, hero):
             KeyField(title: "Key", key: key, isUsed: editor.isKeyUsed(key, except: element.id)) { newKey in
@@ -204,7 +205,7 @@ private struct ElementInspector: View {
             slider("Mouse range", value: range, range: KeymapAction.skillRange) { value in
                 editor.change(element.id) { $0.action = .skillShot(key: key, cast: cast, radius: radius, range: value, hero: hero) }
             }
-            Text("Drag the yellow marker onto your hero.").font(.caption).foregroundStyle(.secondary)
+            Text("Drag the yellow marker onto your hero.").font(Theme.Font.caption).foregroundStyle(.secondary)
 
         case let .macro(key, steps, loop, speed):
             KeyField(title: "Key", key: key, isUsed: editor.isKeyUsed(key, except: element.id)) { newKey in
@@ -216,7 +217,7 @@ private struct ElementInspector: View {
             slider("Speed", value: speed, range: KeymapAction.macroSpeedRange) { value in
                 editor.change(element.id) { $0.action = .macro(key: key, steps: steps, loop: loop, speed: value) }
             }
-            Text("\(steps.count) steps, \(String(format: "%.1f", steps.last?.time ?? 0)) s").font(.caption).foregroundStyle(.secondary)
+            Text("\(steps.count) steps, \(String(format: "%.1f", steps.last?.time ?? 0)) s").font(Theme.Font.caption).foregroundStyle(.secondary)
         }
     }
 
