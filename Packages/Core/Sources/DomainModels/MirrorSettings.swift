@@ -91,12 +91,20 @@ public struct VideoQuality: Equatable, Codable {
     }
 }
 
+public enum AudioSource: String, Codable, CaseIterable, Sendable {
+    /// What the phone is playing.
+    case output
+    /// The phone's microphone (Android 11 or newer; the phone's own sound is not sent then).
+    case mic
+}
+
 public struct MirrorSettings: Equatable, Codable {
     public static let streamPortRange = 1024...65535
 
     public var quality = VideoQuality()
     /// Android 11+; older devices simply stream without sound.
     public var audioEnabled = true
+    public var audioSource = AudioSource.output
     public var showTouches = false
     public var stayAwake = false
     public var turnScreenOffOnStart = false
@@ -121,6 +129,7 @@ public struct MirrorSettings: Equatable, Codable {
         let defaults = MirrorSettings()
         quality = try values.decodeIfPresent(VideoQuality.self, forKey: .quality) ?? defaults.quality
         audioEnabled = try values.decodeIfPresent(Bool.self, forKey: .audioEnabled) ?? defaults.audioEnabled
+        audioSource = (try? values.decodeIfPresent(AudioSource.self, forKey: .audioSource)).flatMap { $0 } ?? defaults.audioSource
         showTouches = try values.decodeIfPresent(Bool.self, forKey: .showTouches) ?? defaults.showTouches
         stayAwake = try values.decodeIfPresent(Bool.self, forKey: .stayAwake) ?? defaults.stayAwake
         turnScreenOffOnStart = try values.decodeIfPresent(Bool.self, forKey: .turnScreenOffOnStart) ?? defaults.turnScreenOffOnStart
@@ -145,6 +154,7 @@ public struct MirrorSettings: Equatable, Codable {
             "scid=" + String(format: "%08x", scid),
             "log_level=warn",
             "audio=\(audioEnabled)",
+            "audio_source=\(audioSource.rawValue)",
             "audio_codec=raw", // 48 kHz 16-bit stereo PCM: no decoder, so no extra latency
             "control=true",
             "clipboard_autosync=false", // the clipboard only crosses over on an explicit action

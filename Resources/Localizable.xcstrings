@@ -4693,6 +4693,40 @@
         }
       }
     },
+    "Phone microphone" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone microphone"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofon ponsel"
+          }
+        }
+      }
+    },
+    "Phone sound" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone sound"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suara ponsel"
+          }
+        }
+      }
+    },
     "Pick an element, or point at one on the phone." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6104,6 +6138,23 @@
         }
       }
     },
+    "Source" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Source"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sumber"
+          }
+        }
+      }
+    },
     "Start (seconds)" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6712,6 +6763,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Papan klip tidak berisi teks untuk diimpor"
+          }
+        }
+      }
+    },
+    "The microphone needs Android 11 or newer. The phone's own sound is not sent then." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The microphone needs Android 11 or newer. The phone's own sound is not sent then."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofon perlu Android 11 atau lebih baru. Suara ponsel sendiri tidak dikirim saat itu."
           }
         }
       }

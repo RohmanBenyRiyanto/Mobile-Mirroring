@@ -30,6 +30,23 @@ final class DeviceIntegrationTests: XCTestCase {
         var snapshot: (events: [String], size: CGSize?) { lock.withLock { (events, size) } }
     }
 
+    func testPhoneMicrophoneSourceStartsWithoutAudioErrors() async throws {
+        guard let serial = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_SERIAL"] else { throw XCTSkip("Set BENZMIRROR_TEST_SERIAL to run against a real phone") }
+        var settings = MirrorSettings()
+        settings.audioSource = .mic
+        let session = ScrcpySession(adb: try XCTUnwrap(ADB.locate()), serial: serial, settings: settings)
+        let log = EventLog()
+        session.onEvent = { log.record($0) }
+        try await Task.detached { try session.start() }.value
+        defer { session.stop() }
+        try await Task.sleep(for: .seconds(3))
+        let events = log.snapshot.events
+        print("DEVICE>> mic events=\(events)")
+        XCTAssertTrue(events.contains { $0.hasPrefix("started:") })
+        XCTAssertFalse(events.contains("audioUnavailable"), "the phone refused to capture the microphone: \(events)")
+        XCTAssertFalse(events.contains { $0.hasPrefix("ended:") })
+    }
+
     func testRealPhoneMirrorsAndServesAStreamForOBS() async throws {
         guard let serial = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_SERIAL"] else {
             throw XCTSkip("Set BENZMIRROR_TEST_SERIAL to run against a real phone")

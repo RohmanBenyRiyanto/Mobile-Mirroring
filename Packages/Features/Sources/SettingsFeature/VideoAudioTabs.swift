@@ -33,6 +33,13 @@ struct AudioTab: View {
             SettingsRow("Play phone audio on this Mac") {
                 Toggle("Play phone audio on this Mac", isOn: $model.settings.audioEnabled).labelsHidden().toggleStyle(.switch)
             }
+            SettingsRow("Source", detail: "The microphone needs Android 11 or newer. The phone's own sound is not sent then.") {
+                Picker("Source", selection: $model.settings.audioSource) {
+                    Text("Phone sound").tag(AudioSource.output)
+                    Text("Phone microphone").tag(AudioSource.mic)
+                }
+                .labelsHidden().frame(width: 170).disabled(!model.settings.audioEnabled)
+            }
             SettingsRow("Output") {
                 Picker("Output", selection: .constant("System default")) { Text("System default").tag("System default") }
                     .labelsHidden().frame(width: 150).disabled(true)

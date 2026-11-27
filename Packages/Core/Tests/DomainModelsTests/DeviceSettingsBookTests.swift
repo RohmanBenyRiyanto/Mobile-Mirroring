@@ -30,3 +30,16 @@ final class DeviceSettingsBookTests: XCTestCase {
         XCTAssertEqual(book.entries.count, DeviceSettingsBook.capacity - 1)
     }
 }
+
+final class AudioSourceTests: XCTestCase {
+    func testSourceIsSentToTheServerAndOldFilesStillLoad() throws {
+        var settings = MirrorSettings()
+        XCTAssertTrue(settings.serverArguments(scid: 1).contains("audio_source=output"))
+        settings.audioSource = .mic
+        XCTAssertTrue(settings.serverArguments(scid: 1).contains("audio_source=mic"))
+        let old = Data(#"{"audioEnabled":false}"#.utf8)
+        XCTAssertEqual(try JSONDecoder().decode(MirrorSettings.self, from: old).audioSource, .output)
+        let bad = Data(#"{"audioSource":"hack"}"#.utf8)
+        XCTAssertEqual(try JSONDecoder().decode(MirrorSettings.self, from: bad).audioSource, .output)
+    }
+}
