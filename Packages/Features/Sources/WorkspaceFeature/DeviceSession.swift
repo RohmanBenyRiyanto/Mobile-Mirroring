@@ -25,8 +25,16 @@ public final class DeviceSession: ObservableObject {
     @Published public private(set) var stats = StreamStatistics.Snapshot()
     @Published public private(set) var streamViewerCount = 0
     @Published public private(set) var deviceInfo: DeviceInfo?
-    @Published public private(set) var isRecording = false
+    @Published public private(set) var isRecording = false {
+        didSet { if !isRecording { recordingStartedAt = nil } }
+    }
+    /// When the current recording began, for the timer on screen.
+    @Published public private(set) var recordingStartedAt: Date?
     @Published public private(set) var isMuted = false
+
+    /// What this window is used for now; the control rail follows it.
+    @Published public private(set) var modeState: ModeAutoSwitch
+    public var mode: WorkspaceMode { modeState.mode }
 
     /// The app in front on this phone.
     public let foreground = ForegroundAppDetector()
@@ -43,6 +51,8 @@ public final class DeviceSession: ObservableObject {
 
     /// Short messages for the user ("Saved …").
     public var onNotice: ((String) -> Void)?
+    /// A file that was just saved, so the message can offer to show it.
+    public var onSavedFile: ((URL) -> Void)?
     /// Game package → keymap profile id, supplied by the app model.
     public var keymapIndex: () -> [String: String] = { [:] }
     /// Loads a saved keymap into this phone; returns whether it worked. Supplied by the app model.
@@ -61,7 +71,8 @@ public final class DeviceSession: ObservableObject {
     private var autoEnabledKeymap = false
     public private(set) var hasEnded = false
 
-    public init(adb: ADB, serial: String, settings: MirrorSettings, cursorCapture: CursorCapturing) {
+    public init(adb: ADB, serial: String, settings: MirrorSettings, cursorCapture: CursorCapturing, mode: WorkspaceMode = .normal) {
+        modeState = ModeAutoSwitch(mode: mode)
         self.adb = adb
         self.serial = serial
         self.settings = settings
@@ -118,6 +129,7 @@ public final class DeviceSession: ObservableObject {
             onNotice?("Audio is unavailable (needs Android 11 or newer)")
         case let .recordingStopped(url, reason):
             isRecording = false
+            recordingStartedAt = nil
             onNotice?(url.map { "\(reason). Saved \($0.lastPathComponent)" } ?? reason)
         case let .ended(reason):
             cleanUp()
@@ -138,10 +150,12 @@ public final class DeviceSession: ObservableObject {
             case .enable:
                 keymap.isEnabled = true
                 autoEnabledKeymap = true
+                modeState = modeState.keymapTurnedOnAutomatically(enabled: settings.autoGamingMode)
                 onNotice?("Keymap on: \(keymap.profile?.name ?? "") (automatic)")
             case .disable:
                 keymap.isEnabled = false
                 autoEnabledKeymap = false
+                modeState = modeState.keymapTurnedOffAutomatically()
                 onNotice?("Keymap off")
             }
         }
@@ -177,6 +191,9 @@ public final class DeviceSession: ObservableObject {
         foreground.stop()
         isRecording = false
     }
+
+    /// The user picked a mode.
+    public func setMode(_ mode: WorkspaceMode) { modeState = modeState.chosen(mode) }
 
     // MARK: Input
 
@@ -222,15 +239,17 @@ public final class DeviceSession: ObservableObject {
                 do {
                     let url = try await scrcpy.stopRecording()
                     onNotice?("Saved \(url.lastPathComponent) to Movies/\(AppInfo.name)")
+                    onSavedFile?(url)
                 } catch {
                     onNotice?(error.localizedDescription)
                 }
             }
         } else {
             do {
-                let url = try OutputFiles.newURL(in: .moviesDirectory, prefix: "Recording", pathExtension: "mp4")
+                let url = try OutputFiles.newURL(in: .moviesDirectory, prefix: "Recording", pathExtension: "mp4", custom: settings.recordingFolder)
                 try scrcpy.startRecording(to: url)
                 isRecording = true
+                recordingStartedAt = Date()
                 onNotice?("Recording…")
             } catch {
                 onNotice?(error.localizedDescription)

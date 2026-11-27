@@ -7,17 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0BB9956ABC90871F2DFE286E /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 32BFEDD16B63EF4E1E3AABEE /* Persistence */; };
-		1025220E76289BB9267BDFB8 /* SystemServices in Frameworks */ = {isa = PBXBuildFile; productRef = 1E560A2E87D2017E41437062 /* SystemServices */; };
+		0BB9956ABC90871F2DFE286E /* Components in Frameworks */ = {isa = PBXBuildFile; productRef = C1D8283AD3EE95CF8A3A9F94 /* Components */; };
+		1025220E76289BB9267BDFB8 /* DomainModels in Frameworks */ = {isa = PBXBuildFile; productRef = C948A5F1BC5B8616080DBAA0 /* DomainModels */; };
 		29C698FD5B508E7BDD6B2E61 /* AppDependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60D3DF83AC6FA78DB547F9 /* AppDependencyContainer.swift */; };
 		34567EA082CF2912D2B184F7 /* scrcpy-server-v5.0.1 in Resources */ = {isa = PBXBuildFile; fileRef = E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */; };
 		8FCD962239B0AE475DA15C73 /* LogcatFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 402245A7E6F598F72F5E4DEB /* LogcatFeature */; };
 		A994CA7235440BA47D9C8717 /* BenzMirrorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C68D746BE6AFB5D670D9C8 /* BenzMirrorApp.swift */; };
-		AF734AA80957A1A118CEDEEA /* DomainModels in Frameworks */ = {isa = PBXBuildFile; productRef = C948A5F1BC5B8616080DBAA0 /* DomainModels */; };
+		AF734AA80957A1A118CEDEEA /* SettingsFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 54DF4ED0B72B3591B9B200C2 /* SettingsFeature */; };
+		B4A7DF32F1E0B0E1CBA0113E /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 32BFEDD16B63EF4E1E3AABEE /* Persistence */; };
+		C9F0966696C944A8001EB9FB /* SystemServices in Frameworks */ = {isa = PBXBuildFile; productRef = 1E560A2E87D2017E41437062 /* SystemServices */; };
 		D08F4837AA7D02B7EAD1EFB9 /* WorkspaceFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 30E55F0DE6A1D89CB3D12124 /* WorkspaceFeature */; };
 		D4558FA377C664035FBD99D1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0082A30184B65ACD6E36D9BD /* AppDelegate.swift */; };
 		DC2A05A65165316A44DA022A /* LaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E934415E0682CA71DE045F9 /* LaunchTests.swift */; };
 		E3868D26959A6490F8F7FB52 /* LICENSE-scrcpy in Resources */ = {isa = PBXBuildFile; fileRef = 678A51690BABF7156640242A /* LICENSE-scrcpy */; };
+		E827A178297B008528DC8DF6 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 7BBC50544FCA7CB00A7865CB /* Localizable.xcstrings */; };
+		F7FDB0923949DDD47D13CE5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4BD89CCC5C5900DC34C0DA4C /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,10 +38,12 @@
 		0082A30184B65ACD6E36D9BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1E60D3DF83AC6FA78DB547F9 /* AppDependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDependencyContainer.swift; sourceTree = "<group>"; };
 		30F5B1F6CEFA8FE4D38083AB /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DesignSystem; path = Packages/DesignSystem; sourceTree = SOURCE_ROOT; };
+		4BD89CCC5C5900DC34C0DA4C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5461CBDBC2A81F551DAB7478 /* Core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Core; path = Packages/Core; sourceTree = SOURCE_ROOT; };
 		5CF35D1C4B6CF35764618076 /* BenzMirror.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BenzMirror.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		678A51690BABF7156640242A /* LICENSE-scrcpy */ = {isa = PBXFileReference; path = "LICENSE-scrcpy"; sourceTree = "<group>"; };
 		6E934415E0682CA71DE045F9 /* LaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchTests.swift; sourceTree = "<group>"; };
+		7BBC50544FCA7CB00A7865CB /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		816A761943BB291DAF42B9A9 /* Features */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Features; path = Packages/Features; sourceTree = SOURCE_ROOT; };
 		B6C68D746BE6AFB5D670D9C8 /* BenzMirrorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenzMirrorApp.swift; sourceTree = "<group>"; };
 		CC97B6F0380385DA21171307 /* UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -51,9 +57,11 @@
 			files = (
 				D08F4837AA7D02B7EAD1EFB9 /* WorkspaceFeature in Frameworks */,
 				8FCD962239B0AE475DA15C73 /* LogcatFeature in Frameworks */,
-				AF734AA80957A1A118CEDEEA /* DomainModels in Frameworks */,
-				0BB9956ABC90871F2DFE286E /* Persistence in Frameworks */,
-				1025220E76289BB9267BDFB8 /* SystemServices in Frameworks */,
+				AF734AA80957A1A118CEDEEA /* SettingsFeature in Frameworks */,
+				0BB9956ABC90871F2DFE286E /* Components in Frameworks */,
+				1025220E76289BB9267BDFB8 /* DomainModels in Frameworks */,
+				B4A7DF32F1E0B0E1CBA0113E /* Persistence in Frameworks */,
+				C9F0966696C944A8001EB9FB /* SystemServices in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,7 +90,9 @@
 		382D506D2FA24EFBD18E8DCA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4BD89CCC5C5900DC34C0DA4C /* Assets.xcassets */,
 				678A51690BABF7156640242A /* LICENSE-scrcpy */,
+				7BBC50544FCA7CB00A7865CB /* Localizable.xcstrings */,
 				E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */,
 			);
 			path = Resources;
@@ -136,6 +146,8 @@
 			packageProductDependencies = (
 				30E55F0DE6A1D89CB3D12124 /* WorkspaceFeature */,
 				402245A7E6F598F72F5E4DEB /* LogcatFeature */,
+				54DF4ED0B72B3591B9B200C2 /* SettingsFeature */,
+				C1D8283AD3EE95CF8A3A9F94 /* Components */,
 				C948A5F1BC5B8616080DBAA0 /* DomainModels */,
 				32BFEDD16B63EF4E1E3AABEE /* Persistence */,
 				1E560A2E87D2017E41437062 /* SystemServices */,
@@ -188,6 +200,7 @@
 			knownRegions = (
 				Base,
 				en,
+				id,
 			);
 			mainGroup = F1CDED897944FE0CCE9E7EE5;
 			minimizedProjectReferenceProxies = 1;
@@ -212,7 +225,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F7FDB0923949DDD47D13CE5E /* Assets.xcassets in Resources */,
 				E3868D26959A6490F8F7FB52 /* LICENSE-scrcpy in Resources */,
+				E827A178297B008528DC8DF6 /* Localizable.xcstrings in Resources */,
 				34567EA082CF2912D2B184F7 /* scrcpy-server-v5.0.1 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -511,6 +526,14 @@
 		402245A7E6F598F72F5E4DEB /* LogcatFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LogcatFeature;
+		};
+		54DF4ED0B72B3591B9B200C2 /* SettingsFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SettingsFeature;
+		};
+		C1D8283AD3EE95CF8A3A9F94 /* Components */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Components;
 		};
 		C948A5F1BC5B8616080DBAA0 /* DomainModels */ = {
 			isa = XCSwiftPackageProductDependency;

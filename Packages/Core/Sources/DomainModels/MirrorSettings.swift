@@ -13,6 +13,9 @@ public enum VideoCodec: String, CaseIterable, Identifiable, Codable {
         }
     }
 
+    /// "H.264" / "H.265", for tight spaces.
+    public var shortName: String { self == .h264 ? "H.264" : "H.265" }
+
     public var title: String { self == .h264 ? "H.264 (most compatible)" : "H.265 (better quality per bit)" }
 }
 
@@ -104,6 +107,13 @@ public struct MirrorSettings: Equatable, Codable {
     /// Re-serves the phone's stream on loopback as MPEG-TS, for OBS.
     public var obsStreamEnabled = false
     public var obsStreamPort = 8765
+    /// Start mirroring by itself when a phone is plugged in while nothing is being mirrored.
+    public var mirrorOnConnect = false
+    /// Go to Gaming mode when a game with a keymap opens (off by default: modes change only when the user changes them).
+    public var autoGamingMode = false
+    /// Where screenshots and recordings are saved; nil keeps Pictures/Benz Mirror and Movies/Benz Mirror.
+    public var screenshotFolder: String?
+    public var recordingFolder: String?
 
     public init() {}
 
@@ -120,6 +130,10 @@ public struct MirrorSettings: Equatable, Codable {
         autoEnableKeymap = try values.decodeIfPresent(Bool.self, forKey: .autoEnableKeymap) ?? defaults.autoEnableKeymap
         obsStreamEnabled = try values.decodeIfPresent(Bool.self, forKey: .obsStreamEnabled) ?? defaults.obsStreamEnabled
         obsStreamPort = try values.decodeIfPresent(Int.self, forKey: .obsStreamPort) ?? defaults.obsStreamPort
+        mirrorOnConnect = try values.decodeIfPresent(Bool.self, forKey: .mirrorOnConnect) ?? defaults.mirrorOnConnect
+        autoGamingMode = try values.decodeIfPresent(Bool.self, forKey: .autoGamingMode) ?? defaults.autoGamingMode
+        screenshotFolder = try values.decodeIfPresent(String.self, forKey: .screenshotFolder)
+        recordingFolder = try values.decodeIfPresent(String.self, forKey: .recordingFolder)
     }
 
     /// `key=value` arguments for the server. Every value is clamped or enumerated,

@@ -3,6 +3,7 @@
 name: BenzMirror
 options:
   bundleIdPrefix: dev.benz
+  developmentLanguage: en
   deploymentTarget:
     macOS: "14.0"
   createIntermediateGroups: true
@@ -38,6 +39,10 @@ targets:
         product: WorkspaceFeature
       - package: Features
         product: LogcatFeature
+      - package: Features
+        product: SettingsFeature
+      - package: DesignSystem
+        product: Components
       - package: Core
         product: DomainModels
       - package: Core
@@ -47,6 +52,8 @@ targets:
     info:
       path: Resources/Info.plist
       properties:
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, id]
         CFBundleName: Benz Mirror
         CFBundleDisplayName: Benz Mirror
         CFBundleShortVersionString: "0.1.0"
@@ -74,6 +81,7 @@ targets:
         INFOPLIST_FILE: Resources/Info.plist
         GENERATE_INFOPLIST_FILE: NO
         CODE_SIGN_ENTITLEMENTS: Resources/BenzMirror.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 
   UITests:
     type: bundle.ui-testing

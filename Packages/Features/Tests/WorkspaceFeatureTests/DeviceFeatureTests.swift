@@ -283,7 +283,7 @@ final class DeviceFeatureTests: XCTestCase {
             _ = try? shell(["settings", "put", "system", "pointer_location", originalPointer == "null" ? "0" : originalPointer])
         }
 
-        let model = AppModel()
+        let model = AppModel(defaults: isolatedDefaults())
         model.selectedSerial = serial
 
         // Device tools.
@@ -385,7 +385,7 @@ final class DeviceFeatureTests: XCTestCase {
 
     @MainActor
     func testAppModelMirrorsOnePhoneThenDisconnects() async throws {
-        let model = AppModel()
+        let model = AppModel(defaults: isolatedDefaults())
         model.selectedSerial = serial
         try await waitUntil("the phone is listed") { model.selectedDevice?.isReady == true }
 
@@ -425,7 +425,7 @@ final class DeviceFeatureTests: XCTestCase {
             _ = try? adb.run(["disconnect", address], timeout: 10)
         }
 
-        let model = AppModel()
+        let model = AppModel(defaults: isolatedDefaults())
         model.settings.obsStreamEnabled = true
         model.settings.obsStreamPort = 38_765
         try await waitUntil("both transports are listed") {

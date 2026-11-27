@@ -13,13 +13,24 @@ public struct MirrorView: NSViewRepresentable {
     public let inspector: InspectorModel
     public let design: DesignModel
     public let videoSize: CGSize
+    /// Called while files are dragged over the picture (nil when they leave or are dropped).
+    public var onDrag: (DropSummary?) -> Void = { _ in }
+    /// Called with the files that were dropped.
+    public var onDrop: ([URL]) -> Void = { _ in }
+    /// Esc was pressed: return true when the app used it (it left Stream Mode, closed a tool); false sends it to the phone.
+    public var onEscape: () -> Bool = { false }
 
-    public init(session: ScrcpySession, keymap: KeymapController, inspector: InspectorModel, design: DesignModel, videoSize: CGSize) {
+    public init(session: ScrcpySession, keymap: KeymapController, inspector: InspectorModel, design: DesignModel, videoSize: CGSize,
+                onDrag: @escaping (DropSummary?) -> Void = { _ in }, onDrop: @escaping ([URL]) -> Void = { _ in },
+                onEscape: @escaping () -> Bool = { false }) {
         self.session = session
         self.keymap = keymap
         self.inspector = inspector
         self.design = design
         self.videoSize = videoSize
+        self.onDrag = onDrag
+        self.onDrop = onDrop
+        self.onEscape = onEscape
     }
 
     public func makeNSView(context: Context) -> MirrorNSView {
@@ -28,11 +39,17 @@ public struct MirrorView: NSViewRepresentable {
 
     public func updateNSView(_ view: MirrorNSView, context: Context) {
         view.videoSize = videoSize
+        view.onDrag = onDrag
+        view.onDrop = onDrop
+        view.onEscape = onEscape
     }
 }
 
 public final class MirrorNSView: NSView {
     public var videoSize = CGSize(width: 9, height: 16)
+    var onDrag: (DropSummary?) -> Void = { _ in }
+    var onDrop: ([URL]) -> Void = { _ in }
+    var onEscape: () -> Bool = { false }
     private let session: ScrcpySession
     private let keymap: KeymapController
     private let inspector: InspectorModel
@@ -49,6 +66,7 @@ public final class MirrorNSView: NSView {
         super.init(frame: .zero)
         layer = session.decoder.layer // layer-hosting: the video is drawn straight by AVFoundation
         wantsLayer = true
+        registerForDraggedTypes([.fileURL])
     }
 
     @available(*, unavailable)
@@ -77,7 +95,32 @@ public final class MirrorNSView: NSView {
         return super.resignFirstResponder()
     }
 
+    // MARK: Files dragged onto the picture
+
+    private func droppedFiles(_ info: NSDraggingInfo) -> [URL] {
+        (info.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL]) ?? []
+    }
+
+    public override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
+        guard let summary = DropSummary.make(from: droppedFiles(sender)) else { return [] }
+        onDrag(summary)
+        return .copy
+    }
+
+    public override func draggingExited(_ sender: NSDraggingInfo?) { onDrag(nil) }
+
+    public override func prepareForDragOperation(_ sender: NSDraggingInfo) -> Bool { !droppedFiles(sender).isEmpty }
+
+    public override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
+        let files = droppedFiles(sender)
+        onDrag(nil)
+        guard !files.isEmpty else { return false }
+        onDrop(files)
+        return true
+    }
+
     // MARK: Pointer → touch
+
 
     /// Option + drag pinches around the screen center: the second finger mirrors the pointer.
     public override func mouseDown(with event: NSEvent) {
@@ -221,6 +264,7 @@ public final class MirrorNSView: NSView {
     public override func keyDown(with event: NSEvent) {
         if keymap.isEditing { return }
         if keymap.keyDown(event.keyCode) { return }
+        if event.keyCode == 53, onEscape() { return } // Esc: leaves Stream Mode or closes the open tool
         if let key = AndroidKeyCode(macKeyCode: event.keyCode) {
             session.send(.keycode(.down, key))
         } else if let text = typedText(from: event) {

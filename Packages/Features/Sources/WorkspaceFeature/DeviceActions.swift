@@ -4,9 +4,15 @@ import DomainModels
 
 /// Where screenshots and recordings are saved: `<Pictures|Movies>/<app name>/<Prefix>-<timestamp>.<ext>`.
 public enum OutputFiles {
-    public static func newURL(in directory: FileManager.SearchPathDirectory, prefix: String, pathExtension: String) throws -> URL {
-        let folder = FileManager.default.urls(for: directory, in: .userDomainMask)[0]
-            .appendingPathComponent(AppInfo.name, isDirectory: true)
+    /// A new file name in the user's chosen folder (`custom`, when it exists), else in `<Pictures or Movies>/Benz Mirror`.
+    public static func newURL(in directory: FileManager.SearchPathDirectory, prefix: String, pathExtension: String, custom: String? = nil) throws -> URL {
+        let folder: URL
+        var isDirectory: ObjCBool = false
+        if let custom, custom.hasPrefix("/"), FileManager.default.fileExists(atPath: custom, isDirectory: &isDirectory), isDirectory.boolValue {
+            folder = URL(fileURLWithPath: custom, isDirectory: true)
+        } else {
+            folder = FileManager.default.urls(for: directory, in: .userDomainMask)[0].appendingPathComponent(AppInfo.name, isDirectory: true)
+        }
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
 
         let formatter = DateFormatter()
@@ -29,9 +35,10 @@ extension AppModel {
         Task {
             do {
                 let png = try await Task.detached { try adb.run(["-s", serial, "exec-out", "screencap", "-p"], timeout: 15) }.value
-                let url = try OutputFiles.newURL(in: .picturesDirectory, prefix: "Screenshot", pathExtension: "png")
+                let url = try OutputFiles.newURL(in: .picturesDirectory, prefix: "Screenshot", pathExtension: "png", custom: settings.screenshotFolder)
                 try png.write(to: url, options: .withoutOverwriting)
                 notice = "Saved \(url.lastPathComponent) to Pictures/\(AppInfo.name)"
+                noticeFile = url
             } catch {
                 notice = "Screenshot failed: \(error.localizedDescription)"
             }

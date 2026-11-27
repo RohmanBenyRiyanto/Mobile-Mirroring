@@ -17,6 +17,7 @@ public struct LogcatView<Source: LogcatSource>: View {
 
     @StateObject private var logcat = LogcatModel()
     @State private var jumpTarget: Int?
+    @FocusState private var filterIsFocused: Bool
 
     public init(source: Source) {
         self.source = source
@@ -38,6 +39,8 @@ public struct LogcatView<Source: LogcatSource>: View {
         }
         .onChange(of: frontPackage) { _, package in logcat.setForegroundPackage(package) }
         .onDisappear { logcat.stop() }
+        .focusedSceneValue(\.logcatActions, LogcatActions(isPaused: logcat.isPaused, togglePause: { logcat.isPaused.toggle() },
+                                                         clear: { logcat.clear() }, focusFilter: { filterIsFocused = true }))
     }
 
     private var toolbar: some View {
@@ -56,6 +59,7 @@ public struct LogcatView<Source: LogcatSource>: View {
             }
             .frame(width: 140)
             TextField("Filter", text: $logcat.filter)
+                .focused($filterIsFocused)
                 .textFieldStyle(.roundedBorder)
                 .frame(minWidth: 120)
             Button { jumpTarget = logcat.crashIDs.last } label: {

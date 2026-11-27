@@ -7,7 +7,7 @@ Nothing is installed on the phone.
 ## Run
 
 ```bash
-./scripts/build-app.sh && open "build/Benz Mirror.app"   # release build, ad-hoc signed
+./scripts/build-app.sh && open "build.noindex/Benz Mirror.app"   # release build, ad-hoc signed
 open BenzMirror.xcodeproj                                # or work in Xcode: ⌘R to run, ⌘U for the UI tests
 ./scripts/test.sh                                        # unit tests of every package
 BENZMIRROR_TEST_SERIAL=<adb serial> ./scripts/test.sh    # …plus the tests that use a real phone
@@ -15,7 +15,7 @@ BENZMIRROR_TEST_SERIAL=<adb serial> ./scripts/test.sh    # …plus the tests tha
 
 Requirements: macOS 14+ (the full Liquid Glass look needs macOS 26+; older versions get the same layout with plain materials),
 Xcode, `adb` (`brew install android-platform-tools`), USB debugging enabled on the phone.
-`brew install xcodegen` is only needed to regenerate `BenzMirror.xcodeproj` from `project.yml`. No CocoaPods: everything is Swift Package Manager.
+`brew install xcodegen` is only needed to regenerate `BenzMirror.xcodeproj` from `project.yml` (run `scripts/generate-project.sh`, which also keeps Xcode's build output in `build.noindex/`). No CocoaPods: everything is Swift Package Manager.
 
 ## Quality presets
 

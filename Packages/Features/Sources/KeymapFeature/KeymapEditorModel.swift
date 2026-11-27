@@ -64,6 +64,30 @@ public final class KeymapEditorModel: ObservableObject {
         return element.id
     }
 
+    /// The kinds of the Keymap menu: the three button modes are listed separately.
+    public enum Choice: CaseIterable {
+        case tap, hold, toggle, joystick, aim, skillShot
+    }
+
+    /// Adds an element of a menu kind, selects it, and returns it.
+    @discardableResult
+    public func addElement(_ choice: Choice) -> UUID {
+        let id: UUID
+        switch choice {
+        case .tap, .hold, .toggle:
+            id = add(.button)
+            let mode: ButtonMode = choice == .tap ? .tap : (choice == .hold ? .hold : .toggle)
+            change(id) { element in
+                if case let .button(key, _) = element.action { element.action = .button(key: key, mode: mode) }
+            }
+        case .joystick: id = add(.joystick)
+        case .aim: id = add(.freeLook)
+        case .skillShot: id = add(.skillShot)
+        }
+        selection = id
+        return id
+    }
+
     public func delete(_ id: UUID) {
         guard element(id) != nil else { return }
         checkpoint()

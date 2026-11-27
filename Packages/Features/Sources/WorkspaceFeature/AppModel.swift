@@ -1,5 +1,6 @@
 import AppKit
 import Combine
+import Components
 import SwiftUI
 import DomainModels
 import InspectorFeature
@@ -29,7 +30,7 @@ public final class AppModel: ObservableObject {
 
     @Published public private(set) var devices: [AndroidDevice] = []
     @Published public var selectedSerial: String?
-    @Published public var settings: MirrorSettings { didSet { SettingsStore.save(settings) } }
+    @Published public var settings: MirrorSettings { didSet { SettingsStore.save(settings, to: defaults) } }
     @Published public private(set) var sessions: [DeviceSession] = []
     @Published public private(set) var activeSerial: String?
     /// True while the user is picking another phone to add; the connect screen shows instead of the mirror.
@@ -37,7 +38,23 @@ public final class AppModel: ObservableObject {
     @Published public var isStreamMode = false
     @Published public var alwaysOnTop = false
     @Published public var showsStats = false
-    @Published public var notice: String?
+    /// The Wireless sheet of the Connect window (opened from its toolbar or from Device ▸ Pair New Device…).
+    @Published public var showsWireless = false
+    /// The Device Information sheet.
+    @Published public var showsDeviceInfo = false
+    /// The mode a new phone window starts in (remembered between launches).
+    @Published public var defaultMode: WorkspaceMode {
+        didSet { defaults.set(defaultMode.rawValue, forKey: "workspaceMode") }
+    }
+    /// The control rail is tucked away (remembered between launches).
+    @Published public var isRailCollapsed = false {
+        didSet { defaults.set(isRailCollapsed, forKey: "railCollapsed") }
+    }
+    @Published public var notice: String? {
+        didSet { if notice == nil { noticeFile = nil } }
+    }
+    /// A file the current notice is about (a screenshot, a recording): the toast offers to show it in Finder.
+    @Published public var noticeFile: URL?
 
     /// The keymap editor, while it is open.
     @Published public var editor: KeymapEditorModel?
@@ -46,21 +63,35 @@ public final class AppModel: ObservableObject {
     @Published public private(set) var keymapProfiles: [ProfileSummary] = []
 
     public let adb: ADB?
+    /// The user's appearance choice (mode, accent, style, Dock icon); windows apply it with `themed(_:)`.
+    public let appearance: AppearanceStore
     public let keymapStore: ProfileStore<Keymap>?
     /// Asks the user before a keymap from outside is saved. Replaceable, so tests need no dialog.
     public var confirmKeymapImport: (KeymapSummary) -> Bool = { ImportPrompt.ask($0) }
+    /// Asks before quitting during a recording. Replaceable, so tests need no dialog.
+    public var confirmQuitWhileRecording: () -> Bool = { QuitPrompt.ask() }
     /// Game package → saved keymap id, for switching keymaps by game.
     public private(set) var keymapPackageIndex: [String: String] = [:]
     private var pollTask: Task<Void, Never>?
+    private var launchTask: Task<Void, Never>?
+    private var hasListedDevices = false
+    private var pendingSession: DeviceSession?
     private var observers: [String: AnyCancellable] = [:]
     private let noForeground = ForegroundAppDetector()
 
     private let cursorCapture: CursorCapturing
+    /// Where settings and window preferences are remembered. Replaceable, so tests never write to the real ones.
+    private let defaults: UserDefaults
 
     /// `cursorCapture` is replaceable so tests never take hold of the real pointer.
-    public init(keymapRoot: URL = ProfileStore<Keymap>.defaultRoot(appName: AppInfo.name), cursorCapture: CursorCapturing? = nil) {
+    public init(keymapRoot: URL = ProfileStore<Keymap>.defaultRoot(appName: AppInfo.name), cursorCapture: CursorCapturing? = nil,
+                defaults: UserDefaults = .standard, appearance: AppearanceStore? = nil) {
         self.cursorCapture = cursorCapture ?? SystemCursorCapture()
-        settings = SettingsStore.load()
+        self.defaults = defaults
+        self.appearance = appearance ?? AppearanceStore(defaults: defaults)
+        isRailCollapsed = defaults.bool(forKey: "railCollapsed")
+        defaultMode = defaults.string(forKey: "workspaceMode").flatMap(WorkspaceMode.init(rawValue:)) ?? .normal
+        settings = SettingsStore.load(from: defaults)
         keymapStore = try? ProfileStore<Keymap>(kind: "keymap", root: keymapRoot)
         keymapProfiles = keymapStore?.list() ?? []
         keymapPackageIndex = KeymapAutoSwitch.index(from: keymapStore?.loadAll() ?? [])
@@ -93,8 +124,19 @@ public final class AppModel: ObservableObject {
     }
 
     private func updateDevices(_ found: [AndroidDevice]) {
+        let previouslyReady = Set(devices.filter(\.isReady).map(\.serial))
+        let isFirstLook = !hasListedDevices
+        hasListedDevices = true
         if found != devices { devices = found }
         if selectedDevice == nil { selectedSerial = found.first(where: \.isReady)?.serial }
+
+        // Settings › General › Mirror when a phone connects: a phone that shows up ready (not one already there when the app
+        // started) is mirrored by itself, if nothing else is being mirrored.
+        if settings.mirrorOnConnect, !isFirstLook, sessions.isEmpty, launch == .idle,
+           let new = found.first(where: { $0.isReady && !previouslyReady.contains($0.serial) }) {
+            selectedSerial = new.serial
+            connect()
+        }
     }
 
     // MARK: Sessions
@@ -122,8 +164,9 @@ public final class AppModel: ObservableObject {
 
         var launchSettings = settings
         launchSettings.obsStreamPort = SessionOrder.streamPort(base: settings.obsStreamPort, taken: Set(sessions.compactMap(\.streamPort)))
-        let session = DeviceSession(adb: adb, serial: device.serial, settings: launchSettings, cursorCapture: cursorCapture)
+        let session = DeviceSession(adb: adb, serial: device.serial, settings: launchSettings, cursorCapture: cursorCapture, mode: defaultMode)
         session.onNotice = { [weak self] in self?.notice = $0 }
+        session.onSavedFile = { [weak self] in self?.noticeFile = $0 }
         session.keymapIndex = { [weak self] in self?.keymapPackageIndex ?? [:] }
         session.loadKeymapProfile = { [weak self, weak session] id in
             guard let self, let session else { return false }
@@ -132,14 +175,49 @@ public final class AppModel: ObservableObject {
         session.onEnded = { [weak self] session, reason in self?.remove(session, reason: reason) }
 
         launch = .launching
-        Task {
+        pendingSession = session
+        launchTask = Task {
             do {
                 try await session.start()
+                guard !Task.isCancelled else { return session.stop() } // cancelled while the phone was still answering
+                pendingSession = nil
                 add(session)
             } catch {
                 session.stop()
+                guard !Task.isCancelled else { return }
+                pendingSession = nil
                 launch = .failed(error.localizedDescription)
             }
+        }
+    }
+
+    /// Gives up on a start that is taking too long (the Cancel button next to "Starting…").
+    public func cancelConnect() {
+        guard launch == .launching else { return }
+        launchTask?.cancel()
+        pendingSession?.stop()
+        pendingSession = nil
+        launch = .idle
+    }
+
+    /// Forget a failed start, so its message goes away.
+    public func dismissLaunchError() { if case .failed = launch { launch = .idle } }
+
+    /// Looks at the phones right now instead of waiting for the next poll.
+    public func refreshDevicesNow() {
+        guard let adb else { return }
+        Task {
+            let found = await Task.detached { try? adb.devices() }.value ?? []
+            updateDevices(found)
+        }
+    }
+
+    /// Asks adb to drop and re-open its connections (a phone that "stopped responding").
+    public func reconnectDevices() {
+        guard let adb else { return }
+        Task {
+            _ = await Task.detached { try? adb.run(["reconnect", "offline"], timeout: 10) }.value
+            refreshDevicesNow()
         }
     }
 
@@ -191,6 +269,7 @@ public final class AppModel: ObservableObject {
     public var streamViewerCount: Int { active?.streamViewerCount ?? 0 }
     public var deviceInfo: DeviceInfo? { active?.deviceInfo }
     public var isRecording: Bool { active?.isRecording ?? false }
+    public var recordingStartedAt: Date? { active?.recordingStartedAt }
     public var isMuted: Bool { active?.isMuted ?? false }
     public var streamURL: String? { active?.streamURL }
     public var foreground: ForegroundAppDetector { active?.foreground ?? noForeground }
@@ -201,6 +280,21 @@ public final class AppModel: ObservableObject {
     public func copyFromPhone() { active?.copyFromPhone() }
     public func toggleRecording() { active?.toggleRecording() }
     public func toggleMute() { active?.toggleMute() }
+    /// The mode of the phone in front, or the one the next phone will start in.
+    public var mode: WorkspaceMode { active?.mode ?? defaultMode }
+
+    public func setMode(_ mode: WorkspaceMode) {
+        active?.setMode(mode)
+        defaultMode = mode
+    }
+
+    /// Esc: leaves Stream Mode, or closes the tool that is open; otherwise it belongs to the phone.
+    public func handleEscape() -> Bool {
+        if isStreamMode { isStreamMode = false; return true }
+        if isInspectorOrDesignOn { setInspecting(false); setDesignTool(.off); return true }
+        return false
+    }
+
     public var isInspecting: Bool { active?.inspector.isOn ?? false }
     public func setInspecting(_ on: Bool) { active?.setInspecting(on) }
     public func refreshInspector() { active?.refreshInspection() }

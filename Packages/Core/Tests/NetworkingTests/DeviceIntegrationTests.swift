@@ -55,11 +55,21 @@ final class DeviceIntegrationTests: XCTestCase {
         viewer.setTimeouts(seconds: 3)
         try viewer.write(Data("GET /live.ts HTTP/1.1\r\nHost: localhost\r\n\r\n".utf8))
 
+        // A still screen sends only a few frames a second, so the measurement needs something moving: the notification shade
+        // is opened and closed through the control channel while the stream is watched.
         var received = Data()
         let deadline = Date().addingTimeInterval(6)
+        var nextToggle = Date()
+        var opened = false
         while Date() < deadline {
+            if Date() >= nextToggle {
+                session.send(opened ? .collapsePanels : .expandNotificationPanel)
+                opened.toggle()
+                nextToggle = Date().addingTimeInterval(0.5)
+            }
             if let chunk = try? viewer.readSome(limit: 1 << 20), !chunk.isEmpty { received.append(chunk) }
         }
+        session.send(.collapsePanels)
         session.send(.expandNotificationPanel) // exercise the control channel
         try await Task.sleep(for: .milliseconds(300))
         session.send(.collapsePanels)

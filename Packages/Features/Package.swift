@@ -11,6 +11,7 @@ let package = Package(
         .library(name: "LogcatFeature", targets: ["LogcatFeature"]),
         .library(name: "InspectorFeature", targets: ["InspectorFeature"]),
         .library(name: "WorkspaceFeature", targets: ["WorkspaceFeature"]),
+        .library(name: "SettingsFeature", targets: ["SettingsFeature"]),
     ],
     dependencies: [
         .package(path: "../Core"),
@@ -38,7 +39,15 @@ let package = Package(
             .product(name: "DomainModels", package: "Core"), .product(name: "Persistence", package: "Core"),
             .product(name: "Media", package: "Core"), .product(name: "Networking", package: "Core"),
             .product(name: "SystemServices", package: "Core"), .product(name: "Theme", package: "DesignSystem"),
+            .product(name: "Components", package: "DesignSystem"),
             "KeymapFeature", "LogcatFeature", "InspectorFeature",
+        ]),
+
+        // Settings (⌘,): General with Appearance, Video, Audio, Shortcuts, Advanced.
+        .target(name: "SettingsFeature", dependencies: [
+            .product(name: "DomainModels", package: "Core"), .product(name: "Networking", package: "Core"),
+            .product(name: "Theme", package: "DesignSystem"), .product(name: "Components", package: "DesignSystem"),
+            "WorkspaceFeature",
         ]),
 
         // Test helper: a stand-in for the real pointer lock.
@@ -52,6 +61,11 @@ let package = Package(
         ]),
         .testTarget(name: "InspectorFeatureTests", dependencies: [
             "InspectorFeature", .product(name: "DomainModels", package: "Core"), .product(name: "TestSupport", package: "TestSupport"),
+        ]),
+        .testTarget(name: "SettingsFeatureTests", dependencies: [
+            "SettingsFeature", "WorkspaceFeature",
+            .product(name: "DomainModels", package: "Core"), .product(name: "Theme", package: "DesignSystem"),
+            .product(name: "Components", package: "DesignSystem"), .product(name: "TestSupport", package: "TestSupport"),
         ]),
         .testTarget(name: "WorkspaceFeatureTests", dependencies: [
             "WorkspaceFeature", "KeymapFeature", "LogcatFeature", "InspectorFeature", "FeatureTestSupport",

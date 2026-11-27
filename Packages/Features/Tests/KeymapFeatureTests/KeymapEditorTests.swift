@@ -237,3 +237,32 @@ final class KeymapEditorModelTests: XCTestCase {
         XCTAssertEqual(KeymapEditorModel.slug(String(repeating: "a", count: 200)).count, 60)
     }
 }
+
+@MainActor
+final class KeymapMenuChoiceTests: XCTestCase {
+    func testButtonModesComeFromTheMenuKind() throws {
+        let editor = KeymapEditorModel(profile: nil)
+        let expected: [(KeymapEditorModel.Choice, ButtonMode)] = [(.tap, .tap), (.hold, .hold), (.toggle, .toggle)]
+        for (choice, mode) in expected {
+            let id = editor.addElement(choice)
+            let element = try XCTUnwrap(editor.element(id))
+            guard case let .button(_, actual) = element.action else { return XCTFail("\(choice) must add a button") }
+            XCTAssertEqual(actual, mode)
+            XCTAssertEqual(editor.selection, id, "the new element is selected")
+        }
+    }
+
+    func testOtherKindsAddTheMatchingElement() throws {
+        let editor = KeymapEditorModel(profile: nil)
+        let kinds: [(KeymapEditorModel.Choice, (KeymapAction) -> Bool)] = [
+            (.joystick, { if case .joystick = $0 { return true } else { return false } }),
+            (.aim, { if case .aim = $0 { return true } else { return false } }),
+            (.skillShot, { if case .skillShot = $0 { return true } else { return false } }),
+        ]
+        for (choice, matches) in kinds {
+            let element = try XCTUnwrap(editor.element(editor.addElement(choice)))
+            XCTAssertTrue(matches(element.action), "\(choice)")
+        }
+        XCTAssertEqual(editor.keymap.elements.count, 3)
+    }
+}
