@@ -1,4 +1,5 @@
 import AppKit
+import Networking
 import Foundation
 import DomainModels
 
@@ -56,8 +57,27 @@ extension AppModel {
     }
 
     private func install(apk: URL) {
-        perform(String(localized: "Installing \(apk.lastPathComponent)…"), done: String(localized: "Installed \(apk.lastPathComponent)"), timeout: 180) { serial in
-            ["-s", serial, "install", "-r", apk.path]
+        guard let adb, let serial = targetSerial else { return }
+        notice = String(localized: "Installing \(apk.lastPathComponent)…")
+        Task {
+            do {
+                let downgraded = try await Task.detached { try Self.installAllowingDowngrade(adb: adb, serial: serial, apk: apk) }.value
+                notice = downgraded ? String(localized: "Installed \(apk.lastPathComponent) (older version replaced the newer one)") : String(localized: "Installed \(apk.lastPathComponent)")
+            } catch {
+                notice = error.localizedDescription
+            }
+        }
+    }
+
+    /// Updates in place first; only when adb says the file is an older version does it retry with the downgrade flag. Returns true if it did.
+    nonisolated private static func installAllowingDowngrade(adb: ADB, serial: String, apk: URL) throws -> Bool {
+        do {
+            _ = try adb.run(["-s", serial, "install", "-r", apk.path], timeout: 180)
+            return false
+        } catch {
+            guard PhoneTransfer.isDowngradeRefusal(error.localizedDescription) else { throw error }
+            _ = try adb.run(["-s", serial, "install", "-r", "-d", apk.path], timeout: 180)
+            return true
         }
     }
 
@@ -67,9 +87,22 @@ extension AppModel {
             notice = String(localized: "Folders cannot be copied to the phone")
             return
         }
+        guard let adb, let serial = targetSerial else { return }
         let name = OutputFiles.sanitizedName(file.lastPathComponent)
-        perform(String(localized: "Copying \(name)…"), done: String(localized: "Copied \(name) to Download"), timeout: 600) { serial in
-            ["-s", serial, "push", file.path, "/sdcard/Download/\(name)"]
+        let kind = PhoneTransfer.kind(ofFileNamed: name)
+        let folder = PhoneTransfer.folder(for: kind, appName: AppInfo.name)
+        notice = String(localized: "Copying \(name)…")
+        Task {
+            do {
+                try await Task.detached {
+                    _ = try adb.run(["-s", serial, "shell", "mkdir -p " + PhoneTransfer.shellQuoted(folder)], timeout: 10)
+                    _ = try adb.run(["-s", serial, "push", file.path, "\(folder)/\(name)"], timeout: 600)
+                    if kind != .other { _ = try? adb.run(["-s", serial, "shell", PhoneTransfer.scanCommand(forPhonePath: "\(folder)/\(name)")], timeout: 10) }
+                }.value
+                notice = kind == .other ? String(localized: "Copied \(name) to Download") : String(localized: "Copied \(name) to Gallery")
+            } catch {
+                notice = error.localizedDescription
+            }
         }
     }
 

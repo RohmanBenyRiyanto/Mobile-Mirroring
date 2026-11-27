@@ -1,0 +1,34 @@
+import Foundation
+
+/// Where a file dropped on the mirror goes on the phone, and what tells Gallery about it.
+public enum PhoneTransfer {
+    public enum Kind: Equatable { case image, video, other }
+
+    public static func kind(ofFileNamed name: String) -> Kind {
+        switch (name as NSString).pathExtension.lowercased() {
+        case "png", "jpg", "jpeg", "gif", "webp", "heic", "heif", "bmp": return .image
+        case "mp4", "mov", "mkv", "webm", "3gp", "m4v": return .video
+        default: return .other
+        }
+    }
+
+    /// Pictures and videos go where Gallery looks; everything else goes to Download.
+    public static func folder(for kind: Kind, appName: String) -> String {
+        let safe = appName.filter { $0.isLetter || $0.isNumber || $0 == " " || $0 == "-" || $0 == "_" }
+        switch kind {
+        case .image: return "/sdcard/Pictures/\(safe)"
+        case .video: return "/sdcard/Movies/\(safe)"
+        case .other: return "/sdcard/Download"
+        }
+    }
+
+    /// Asks the media scanner to pick the file up so it shows in Gallery at once. The path is single-quoted for the phone's shell.
+    public static func scanCommand(forPhonePath path: String) -> String {
+        "am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d " + shellQuoted("file://" + path)
+    }
+
+    public static func shellQuoted(_ text: String) -> String { "'" + text.replacingOccurrences(of: "'", with: "'\\''") + "'" }
+
+    /// adb refuses to install an older version over a newer one; this is how that failure reads.
+    public static func isDowngradeRefusal(_ message: String) -> Bool { message.contains("INSTALL_FAILED_VERSION_DOWNGRADE") }
+}
