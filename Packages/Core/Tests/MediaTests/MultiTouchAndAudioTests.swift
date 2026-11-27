@@ -82,3 +82,15 @@ final class MultiTouchAndAudioTests: XCTestCase {
         XCTAssertTrue(settings.serverArguments(scid: 1).contains("audio=false"))
     }
 }
+
+final class AudioBacklogTests: XCTestCase {
+    func testALongBacklogIsDroppedOnceAndPlaybackContinues() throws {
+        let player = AudioPlayer()
+        do { try player.start() } catch { throw XCTSkip("no audio output on this machine: \(error)") }
+        defer { player.stop() }
+        player.isMuted = true
+        let chunk = Data(count: 4_800 * SampleBuffers.PCM.bytesPerFrame) // 100 ms
+        for _ in 0..<3 { player.enqueue(chunk) }
+        XCTAssertEqual(player.droppedBacklogs, 1, "300 ms queued: dropped once, then playing from the newest audio")
+    }
+}

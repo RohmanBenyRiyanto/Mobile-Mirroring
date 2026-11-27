@@ -64,6 +64,17 @@ public final class MirrorNSView: NSView {
     private var focusObserver: NSObjectProtocol?
     private var isMirroredPinch = false
     private var trackpadPinch: PinchGesture?
+    private var stroke = ScrollStroke()
+    private var heldArrow: HeldArrow?
+    private var arrowTimer: Timer?
+
+    private struct HeldArrow {
+        let keyCode: UInt16
+        let direction: CGVector
+        let startedAt = Date()
+        var travelled = 0.0
+        let scroll = ArrowScroll()
+    }
 
     public init(session: ScrcpySession, keymap: KeymapController, inspector: InspectorModel, design: DesignModel) {
         self.session = session
@@ -99,6 +110,8 @@ public final class MirrorNSView: NSView {
 
     public override func resignFirstResponder() -> Bool {
         keymap.releaseAll()
+        stopArrowScroll(finishing: false)
+        send(stroke.end())
         return super.resignFirstResponder()
     }
 
@@ -233,11 +246,102 @@ public final class MirrorNSView: NSView {
     }
 
     public override func scrollWheel(with event: NSEvent) {
+        // A trackpad (or Magic Mouse) reports phases: drag a real finger so the app flings on release like under a hand.
+        if event.hasPreciseScrollingDeltas, !event.phase.isEmpty || !event.momentumPhase.isEmpty {
+            smoothScroll(event)
+            return
+        }
         guard let position = devicePosition(of: event) else { return }
         let scale: CGFloat = event.hasPreciseScrollingDeltas ? 0.1 : 1
         session.send(.scroll(position,
                              horizontal: Float(event.scrollingDeltaX * scale),
                              vertical: Float(event.scrollingDeltaY * scale)))
+    }
+
+    private func smoothScroll(_ event: NSEvent) {
+        // The phone does its own momentum from the release, so the Mac's inertia events are dropped.
+        guard event.momentumPhase.isEmpty else { return }
+        let mapper = CoordinateMapper(viewSize: bounds.size, frameSize: videoSize)
+        let origin = mapper.viewPoint(forRatio: .zero), corner = mapper.viewPoint(forRatio: CGPoint(x: 1, y: 1))
+        let shown = CGSize(width: max(corner.x - origin.x, 1), height: max(corner.y - origin.y, 1))
+
+        if event.phase.contains(.began) || (event.phase.contains(.changed) && !stroke.isDown) {
+            let point = convert(event.locationInWindow, from: nil)
+            if let ratio = mapper.ratio(forViewPoint: CGPoint(x: point.x, y: bounds.height - point.y)) { send(stroke.begin(at: ratio)) }
+        }
+        if event.phase.contains(.changed) || event.phase.contains(.began) {
+            send(stroke.move(by: CGVector(dx: event.scrollingDeltaX / shown.width, dy: event.scrollingDeltaY / shown.height)))
+        }
+        if event.phase.contains(.ended) || event.phase.contains(.cancelled) { send(stroke.end()) }
+    }
+
+    private func send(_ outputs: [ScrollStroke.Output]) {
+        let mapper = CoordinateMapper(viewSize: bounds.size, frameSize: videoSize)
+        for output in outputs {
+            let (action, ratio): (TouchAction, CGPoint)
+            switch output {
+            case let .down(point): (action, ratio) = (.down, point)
+            case let .move(point): (action, ratio) = (.move, point)
+            case let .up(point): (action, ratio) = (.up, point)
+            }
+            guard let position = mapper.touchPosition(forRatio: ratio) else { continue }
+            session.send(.touch(action, position, pressure: action == .up ? 0 : 1))
+        }
+    }
+
+    // MARK: Arrow keys scroll
+
+    private static let arrowDirections: [UInt16: CGVector] = [
+        126: CGVector(dx: 0, dy: 1), // up arrow: content moves down, so the finger does too
+        125: CGVector(dx: 0, dy: -1),
+        123: CGVector(dx: 1, dy: 0),
+        124: CGVector(dx: -1, dy: 0),
+    ]
+
+    /// Plain arrow keys scroll; hold Option to send the real D-pad keys (for moving a text cursor).
+    private func startArrowScroll(_ event: NSEvent) -> Bool {
+        guard let direction = Self.arrowDirections[event.keyCode],
+              event.modifierFlags.intersection([.command, .control, .option, .shift]).isEmpty else { return false }
+        if event.isARepeat { return true }
+        guard heldArrow == nil else { return true }
+        stopArrowScroll(finishing: false)
+        heldArrow = HeldArrow(keyCode: event.keyCode, direction: direction)
+        send(stroke.begin(at: arrowStart(for: direction)))
+        let timer = Timer(timeInterval: 1.0 / 120, repeats: true) { [weak self] _ in MainActor.assumeIsolated { self?.arrowTick() } }
+        RunLoop.main.add(timer, forMode: .common)
+        arrowTimer = timer
+        return true
+    }
+
+    private func arrowStart(for direction: CGVector) -> CGPoint {
+        CGPoint(x: direction.dx == 0 ? 0.5 : (direction.dx > 0 ? 0.3 : 0.7), y: direction.dy == 0 ? 0.5 : (direction.dy > 0 ? 0.3 : 0.7))
+    }
+
+    private func arrowTick() {
+        guard var held = heldArrow else { return }
+        let travel = held.scroll.travel(heldFor: Date().timeIntervalSince(held.startedAt))
+        let step = travel - held.travelled
+        held.travelled = travel
+        heldArrow = held
+        let outputs = stroke.move(by: CGVector(dx: held.direction.dx * step, dy: held.direction.dy * step))
+        if outputs.isEmpty, step > 0.001 { // reached the edge of the safe band: lift and take a fresh grip
+            send(stroke.end())
+            send(stroke.begin(at: arrowStart(for: held.direction)))
+        } else {
+            send(outputs)
+        }
+    }
+
+    private func stopArrowScroll(finishing: Bool) {
+        arrowTimer?.invalidate()
+        arrowTimer = nil
+        guard let held = heldArrow else { return }
+        heldArrow = nil
+        if finishing {
+            let owed = held.scroll.remainingAtRelease(travelled: held.travelled)
+            for _ in 0..<3 { send(stroke.move(by: CGVector(dx: held.direction.dx * owed / 3, dy: held.direction.dy * owed / 3))) }
+        }
+        send(stroke.end())
     }
 
     private func sendTouch(_ action: TouchAction, _ event: NSEvent) {
@@ -281,6 +385,7 @@ public final class MirrorNSView: NSView {
         if keymap.isEditing { return }
         if keymap.keyDown(event.keyCode) { return }
         if event.keyCode == 53, onEscape() { return }
+        if startArrowScroll(event) { return }
         if let key = AndroidKeyCode(macKeyCode: event.keyCode) {
             session.send(.keycode(.down, key))
         } else if let text = typedText(from: event) {
@@ -291,6 +396,7 @@ public final class MirrorNSView: NSView {
     public override func keyUp(with event: NSEvent) {
         if keymap.isEditing { return }
         if keymap.keyUp(event.keyCode) { return }
+        if heldArrow?.keyCode == event.keyCode { stopArrowScroll(finishing: true); return }
         if let key = AndroidKeyCode(macKeyCode: event.keyCode) {
             session.send(.keycode(.up, key))
         }
