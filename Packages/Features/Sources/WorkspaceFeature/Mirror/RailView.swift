@@ -80,6 +80,7 @@ struct RailView: View {
                     .foregroundStyle(Theme.Palette.textSecondary.color)
                     .frame(width: 40, height: 24).contentShape(Capsule())
             }
+            .accessibilityLabel("Hide Control Rail")
             .buttonStyle(.plain)
             .help("Hide Control Rail")
             .accessibilityLabel("Hide Control Rail")

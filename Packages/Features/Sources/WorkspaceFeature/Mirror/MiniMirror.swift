@@ -31,12 +31,12 @@ public struct MiniMirrorView: View {
 
     private var controls: some View {
         HStack(spacing: Theme.Space.s4) {
-            Button { model.press(.back) } label: { Image(systemName: "chevron.backward") }.help("Back")
-            Button { model.press(.home) } label: { Image(systemName: "circle") }.help("Home")
-            Button { model.press(.appSwitch) } label: { Image(systemName: "square.on.square") }.help("Recents")
+            Button { model.press(.back) } label: { Image(systemName: "chevron.backward") }.help("Back").accessibilityLabel("Back")
+            Button { model.press(.home) } label: { Image(systemName: "circle") }.help("Home").accessibilityLabel("Home")
+            Button { model.press(.appSwitch) } label: { Image(systemName: "square.on.square") }.help("Recents").accessibilityLabel("Recents")
             Button { NSApp.activate(ignoringOtherApps: true); NSApp.windows.first { $0.level == .normal && $0.canBecomeMain }?.makeKeyAndOrderFront(nil) } label: {
                 Image(systemName: "arrow.up.left.and.arrow.down.right")
-            }.help("Open the main window")
+            }.help("Open the main window").accessibilityLabel("Open the main window")
         }
         .buttonStyle(.plain).labelStyle(.iconOnly)
         .padding(.horizontal, Theme.Space.s4).padding(.vertical, Theme.Space.s2)

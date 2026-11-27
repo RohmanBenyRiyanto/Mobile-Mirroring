@@ -68,11 +68,11 @@ public struct KeymapEditorPanel: View {
             Button { editor.undo() } label: { Image(systemName: "arrow.uturn.backward") }
                 .disabled(!editor.canUndo)
                 .keyboardShortcut("z", modifiers: .command)
-                .help("Undo")
+                .help("Undo").accessibilityLabel("Undo")
             Button { editor.redo() } label: { Image(systemName: "arrow.uturn.forward") }
                 .disabled(!editor.canRedo)
                 .keyboardShortcut("z", modifiers: [.command, .shift])
-                .help("Redo")
+                .help("Redo").accessibilityLabel("Redo")
         }
     }
 
