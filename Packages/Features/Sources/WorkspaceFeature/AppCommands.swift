@@ -109,6 +109,7 @@ public struct AppCommands: Commands {
             Button("Screenshot") { model.takeScreenshot() }
                 .keyboardShortcut("s")
                 .disabled(!mirroring)
+            Button("Export Recording as GIF…") { model.exportRecordingAsGIF() }
             Button(LocalizedStringKey(model.isRecording ? "Stop Recording" : "Start Recording")) { model.toggleRecording() }
                 .keyboardShortcut("r", modifiers: [.command, .shift])
                 .disabled(!mirroring)

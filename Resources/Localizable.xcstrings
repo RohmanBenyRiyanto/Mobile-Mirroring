@@ -1038,6 +1038,23 @@
         }
       }
     },
+    "Choose a recording to turn into a GIF" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a recording to turn into a GIF"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih rekaman untuk dijadikan GIF"
+          }
+        }
+      }
+    },
     "Choose an APK to install on the phone" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2330,6 +2347,23 @@
         }
       }
     },
+    "Export Recording as GIF…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export Recording as GIF…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekspor Rekaman sebagai GIF…"
+          }
+        }
+      }
+    },
     "Export failed: %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2479,6 +2513,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Frame rate dan jank berasal dari aplikasi yang sedang tampil. Game yang menggambar sendiri mungkin tidak menampilkannya."
+          }
+        }
+      }
+    },
+    "GIFs are small and short. The picture is shrunk to fit." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIFs are small and short. The picture is shrunk to fit."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF itu kecil dan pendek. Gambar akan diperkecil."
           }
         }
       }
@@ -3282,6 +3333,23 @@
         }
       }
     },
+    "Length (seconds, up to 30)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Length (seconds, up to 30)"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panjang (detik, maks. 30)"
+          }
+        }
+      }
+    },
     "Library" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3465,6 +3533,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Makro dibuang"
+          }
+        }
+      }
+    },
+    "Make GIF" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Make GIF"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buat GIF"
+          }
+        }
+      }
+    },
+    "Making a GIF…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Making a GIF…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membuat GIF…"
           }
         }
       }
@@ -6002,6 +6104,23 @@
         }
       }
     },
+    "Start (seconds)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start (seconds)"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai (detik)"
+          }
+        }
+      }
+    },
     "Start Mirroring" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7494,6 +7613,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Selamat datang"
+          }
+        }
+      }
+    },
+    "Which part should become a GIF?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Which part should become a GIF?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagian mana yang dijadikan GIF?"
           }
         }
       }
