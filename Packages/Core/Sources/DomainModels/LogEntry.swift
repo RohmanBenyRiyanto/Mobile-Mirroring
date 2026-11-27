@@ -54,6 +54,13 @@ public struct LogEntry: Identifiable, Equatable {
     /// Lines of one crash share a block number, so they can be drawn together.
     public var crashBlock: Int?
 
+    /// "HH:MM:SS.mmm" from a threadtime line, empty for anything else.
+    public var time: String {
+        guard pid != nil else { return "" }
+        let fields = text.split(maxSplits: 2, whereSeparator: \.isWhitespace)
+        return fields.count > 1 ? String(fields[1]) : ""
+    }
+
     /// Parses `logcat -v threadtime`: `MM-DD HH:MM:SS.mmm PID TID L Tag: message`.
     /// Anything else (a wrapped line, a banner such as `--- beginning of crash`) is kept as verbose text.
     public static func parse(_ line: String, id: Int) -> LogEntry {
