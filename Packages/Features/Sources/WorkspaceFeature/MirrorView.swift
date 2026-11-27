@@ -16,10 +16,13 @@ public struct MirrorView: NSViewRepresentable {
     public var onDrop: ([URL]) -> Void = { _ in }
     /// Return true when the app used Esc; otherwise it is sent to the phone.
     public var onEscape: () -> Bool = { false }
+    public var isStreamMode: () -> Bool = { false }
+    public var onExitStreamMode: () -> Void = {}
 
     public init(session: ScrcpySession, keymap: KeymapController, inspector: InspectorModel, design: DesignModel, videoSize: CGSize,
                 onDrag: @escaping (DropSummary?) -> Void = { _ in }, onDrop: @escaping ([URL]) -> Void = { _ in },
-                onEscape: @escaping () -> Bool = { false }) {
+                onEscape: @escaping () -> Bool = { false}, isStreamMode: @escaping () -> Bool = { false },
+                onExitStreamMode: @escaping () -> Void = {}) {
         self.session = session
         self.keymap = keymap
         self.inspector = inspector
@@ -28,6 +31,8 @@ public struct MirrorView: NSViewRepresentable {
         self.onDrag = onDrag
         self.onDrop = onDrop
         self.onEscape = onEscape
+        self.isStreamMode = isStreamMode
+        self.onExitStreamMode = onExitStreamMode
     }
 
     public func makeNSView(context: Context) -> MirrorNSView {
@@ -39,6 +44,8 @@ public struct MirrorView: NSViewRepresentable {
         view.onDrag = onDrag
         view.onDrop = onDrop
         view.onEscape = onEscape
+        view.isStreamMode = isStreamMode
+        view.onExitStreamMode = onExitStreamMode
     }
 }
 
@@ -47,6 +54,9 @@ public final class MirrorNSView: NSView {
     var onDrag: (DropSummary?) -> Void = { _ in }
     var onDrop: ([URL]) -> Void = { _ in }
     var onEscape: () -> Bool = { false }
+    var isStreamMode: () -> Bool = { false }
+    var onExitStreamMode: () -> Void = {}
+    private var swallowsRightButtonUp = false
     private let session: ScrcpySession
     private let keymap: KeymapController
     private let inspector: InspectorModel
@@ -184,11 +194,22 @@ public final class MirrorNSView: NSView {
 
     /// Right click = Back, middle click = Home (same convention as scrcpy).
     public override func rightMouseDown(with event: NSEvent) {
+        if isStreamMode() {
+            swallowsRightButtonUp = true
+            let menu = NSMenu()
+            let item = menu.addItem(withTitle: String(localized: "Exit Stream Mode"), action: #selector(exitStreamMode), keyEquivalent: "")
+            item.target = self
+            NSMenu.popUpContextMenu(menu, with: event, for: self)
+            return
+        }
         if keymap.mouseDown(button: 1) { return }
         session.send(.backOrScreenOn(.down))
     }
 
+    @objc private func exitStreamMode() { onExitStreamMode() }
+
     public override func rightMouseUp(with event: NSEvent) {
+        if swallowsRightButtonUp { swallowsRightButtonUp = false; return }
         if keymap.mouseUp(button: 1) { return }
         session.send(.backOrScreenOn(.up))
     }

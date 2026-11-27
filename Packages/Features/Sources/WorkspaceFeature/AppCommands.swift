@@ -70,9 +70,9 @@ public struct AppCommands: Commands {
             Button(LocalizedStringKey(model.showsStats ? "Hide Statistics" : "Show Statistics")) { model.showsStats.toggle() }
                 .keyboardShortcut("i")
                 .disabled(!mirroring)
-            Button("Show Developer HUD") {}
+            Button(LocalizedStringKey(model.showsPerformance ? "Hide Developer HUD" : "Show Developer HUD")) { model.showsPerformance.toggle() }
                 .keyboardShortcut("i", modifiers: [.command, .shift])
-                .disabled(true) // the performance HUD is not built yet
+                .disabled(!mirroring)
             Button(LocalizedStringKey(model.isRailCollapsed ? "Show Control Rail" : "Hide Control Rail")) { model.toggleRail() }
                 .keyboardShortcut("r", modifiers: [.command, .option])
                 .disabled(!mirroring)

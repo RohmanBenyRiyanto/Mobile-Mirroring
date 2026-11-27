@@ -40,6 +40,7 @@ public final class DeviceSession: ObservableObject {
     public let inspector: InspectorModel
     public let design: DesignModel
     public let macroRecorder = MacroRecorder()
+    public let performance = PerformanceMonitor()
     @Published public private(set) var isRecordingMacro = false
 
     public var onNotice: ((String) -> Void)?
@@ -174,8 +175,15 @@ public final class DeviceSession: ObservableObject {
         inspector.setOn(false)
         design.reset()
         statsTask?.cancel()
+        performance.stop()
         foreground.stop()
         isRecording = false
+    }
+
+    public func startPerformanceMonitoring() {
+        let adb = self.adb, serial = self.serial
+        performance.start(package: { [weak self] in self?.foreground.current?.package },
+                          fetch: { try String(decoding: adb.run(["-s", serial, "shell", PerformanceProbe.command(package: $0)], timeout: 5), as: UTF8.self) })
     }
 
     public func setMode(_ mode: WorkspaceMode) { modeState = modeState.chosen(mode) }

@@ -1,3 +1,4 @@
+import AppKit
 import Components
 import SwiftUI
 import DomainModels
@@ -12,6 +13,14 @@ public struct ContentView: View {
 
     }
     @EnvironmentObject private var model: AppModel
+
+    /// Grows or shrinks the window by the docked panel's width, keeping its top-left corner still.
+    @MainActor private static func resizeWindow(byWidth delta: CGFloat) {
+        guard let window = NSApp.keyWindow ?? NSApp.mainWindow else { return }
+        var frame = window.frame
+        frame.size.width = max(frame.width + delta, window.minSize.width)
+        window.setFrame(frame, display: true, animate: !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion)
+    }
 
     private var isMirrorWindow: Bool { model.isMirroring && !model.isAddingDevice }
 
@@ -28,9 +37,11 @@ public struct ContentView: View {
         .frame(minWidth: isMirrorWindow ? 200 : Theme.Size.connectMinimum.width,
                minHeight: isMirrorWindow ? 360 : Theme.Size.connectMinimum.height)
         .background(WindowStyler(isStreamMode: model.isStreamMode, alwaysOnTop: model.alwaysOnTop, videoSize: model.videoSize,
-                                 locksAspect: isMirrorWindow && model.editor == nil))
+                                 locksAspect: isMirrorWindow && model.editor == nil && !model.showsPerformance))
         .overlay(alignment: .bottom) { NoticeToast().animated(value: model.notice) }
         .animated(value: isMirrorWindow)
+        .animated(value: model.showsPerformance)
+        .onChange(of: model.showsPerformance) { _, on in Self.resizeWindow(byWidth: on ? PerformancePanel.width : -PerformancePanel.width) }
         .sheet(isPresented: $model.showsDeviceInfo) { DeviceInfoSheet() }
     }
 }
@@ -72,11 +83,12 @@ private struct MirrorScreen: View {
     private var content: some View {
         HStack(spacing: 0) {
             MirrorView(session: session, keymap: keymap, inspector: inspector, design: design, videoSize: model.videoSize,
-                       onDrag: { dropSummary = $0 }, onDrop: { model.handleDrop($0) }, onEscape: { model.handleEscape() })
+                       onDrag: { dropSummary = $0 }, onDrop: { model.handleDrop($0) }, onEscape: { model.handleEscape() },
+                       isStreamMode: { model.isStreamMode }, onExitStreamMode: { model.isStreamMode = false })
                 .aspectRatio(model.videoSize, contentMode: .fit)
                 .overlay(alignment: .topLeading) { if model.showsStats { StatsOverlay(foreground: model.foreground) } }
                 .overlay(alignment: .top) {
-                    if let started = model.recordingStartedAt { RecordingPill(startedAt: started).transition(.opacity.combined(with: .move(edge: .top))) }
+                    if let started = model.recordingStartedAt, !model.isStreamMode { RecordingPill(startedAt: started).transition(.opacity.combined(with: .move(edge: .top))) }
                 }
                 .animated(value: model.recordingStartedAt != nil)
                 .animated(value: dropSummary)
@@ -90,6 +102,9 @@ private struct MirrorScreen: View {
                 .overlay { if inspector.isOn { InspectorOverlay(inspector: inspector, videoSize: model.videoSize, densityScale: model.deviceInfo?.densityScale) } }
                 .overlay { if let editor = model.editor { KeymapEditorOverlay(editor: editor, videoSize: model.videoSize) } }
                 .overlay { if let summary = dropSummary { DropOverlay(summary: summary) } }
+            if model.showsPerformance, let session = model.active {
+                PerformancePanel(monitor: session.performance).transition(.move(edge: .trailing).combined(with: .opacity))
+            }
             if let editor = model.editor {
                 KeymapEditorPanel(editor: editor, foreground: model.foreground, message: model.editorMessage,
                                   onSave: { _ = model.saveEditor() }, onClose: { model.closeEditor(save: $0) })

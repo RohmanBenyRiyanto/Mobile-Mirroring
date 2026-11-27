@@ -36,6 +36,7 @@ public final class AppModel: ObservableObject {
     @Published public var isStreamMode = false
     @Published public var alwaysOnTop = false
     @Published public var showsStats = false
+    @Published public var showsPerformance = false
     @Published public var showsWireless = false
     @Published public var showsDeviceInfo = false
     @Published public var railLayout = RailLayout.standard {
@@ -70,6 +71,8 @@ public final class AppModel: ObservableObject {
     public private(set) var keymapPackageIndex: [String: String] = [:]
     private var pollTask: Task<Void, Never>?
     private var launchTask: Task<Void, Never>?
+    private let recordingStatusItem = RecordingStatusItem()
+    private var statusObserver: AnyCancellable?
     private var hasListedDevices = false
     private var pendingSession: DeviceSession?
     private var observers: [String: AnyCancellable] = [:]
@@ -94,9 +97,16 @@ public final class AppModel: ObservableObject {
         adb = ADB.locate()
         if adb == nil { launch = .failed(ADBError.notFound.localizedDescription) }
         startPollingDevices()
+        statusObserver = objectWillChange.receive(on: RunLoop.main).sink { [weak self] _ in self?.refreshRecordingStatusItem() }
     }
 
     deinit { pollTask?.cancel() }
+
+    private func refreshRecordingStatusItem() {
+        recordingStatusItem.update(visible: RecordingStatusItem.shouldShow(isStreamMode: isStreamMode, isRecording: isAnyRecording),
+                                   startedAt: sessions.first { $0.isRecording }?.recordingStartedAt,
+                                   stop: { [weak self] in self?.toggleRecording() }, show: { [weak self] in self?.isStreamMode = false })
+    }
 
     public func refreshKeymaps() {
         keymapProfiles = keymapStore?.list() ?? []
@@ -271,6 +281,8 @@ public final class AppModel: ObservableObject {
     public func toggleMute() { active?.toggleMute() }
     /// The mode of the phone in front, or the one the next phone will start in.
     public var mode: WorkspaceMode { active?.mode ?? defaultMode }
+
+    public func startPerformanceMonitoring() { active?.startPerformanceMonitoring() }
 
     public func setMode(_ mode: WorkspaceMode) {
         active?.setMode(mode)
