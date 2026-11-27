@@ -17,6 +17,7 @@ public final class InspectorModel: ObservableObject {
     @Published public private(set) var status = Status.off
     @Published public private(set) var hierarchy: UIHierarchy?
     @Published public private(set) var hovered: UINode?
+    @Published public private(set) var selected: UINode?
     /// False when the dump holds only a full-screen element, as in games that draw themselves.
     public var hasDetail: Bool { (hierarchy?.nodes.count ?? 0) > 3 }
 
@@ -45,7 +46,16 @@ public final class InspectorModel: ObservableObject {
             status = .off
             hierarchy = nil
             hovered = nil
+            selected = nil
         }
+    }
+
+    public func select(_ node: UINode?) { selected = node }
+
+    public func copyAll() {
+        guard let hierarchy else { return }
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(hierarchy.outline, forType: .string)
     }
 
     public func toggle() { setOn(!isOn) }

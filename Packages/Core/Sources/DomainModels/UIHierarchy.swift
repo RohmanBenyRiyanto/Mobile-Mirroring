@@ -44,6 +44,27 @@ public struct UIHierarchy: Equatable {
     /// The screen's size in pixels (the root element covers it).
     public var screenSize: CGSize? { nodes.first.map { $0.bounds.size } }
 
+    /// Elements whose class, id, text or description contain the words typed (every word must match, case ignored).
+    public func filtered(by query: String) -> [UINode] {
+        let words = query.lowercased().split(separator: " ").map(String.init)
+        guard !words.isEmpty else { return nodes }
+        return nodes.filter { node in
+            let haystack = [node.className, node.resourceID, node.text, node.contentDescription].joined(separator: " ").lowercased()
+            return words.allSatisfy { haystack.contains($0) }
+        }
+    }
+
+    /// The whole tree as indented text, one element per line, for pasting into a bug report.
+    public var outline: String {
+        nodes.map { node in
+            var line = String(repeating: "  ", count: node.depth) + node.shortClassName
+            if !node.resourceID.isEmpty { line += " #" + node.shortResourceID }
+            if !node.text.isEmpty { line += " \"\(node.text)\"" }
+            if !node.contentDescription.isEmpty { line += " [\(node.contentDescription)]" }
+            return line
+        }.joined(separator: "\n")
+    }
+
     /// The element under a point given as a 0…1 ratio across the screen: the deepest one, and among equals the
     /// one drawn last. Zero-area elements never match.
     public func node(atRatio ratio: CGPoint) -> UINode? {

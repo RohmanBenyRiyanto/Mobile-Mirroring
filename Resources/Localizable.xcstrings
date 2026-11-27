@@ -1123,6 +1123,23 @@
         }
       }
     },
+    "Copy All" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy All"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salin Semua"
+          }
+        }
+      }
+    },
     "Copy CSV" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1905,6 +1922,23 @@
         }
       }
     },
+    "Filter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter"
+          }
+        }
+      }
+    },
     "Filter…" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2122,6 +2156,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sembunyikan HUD Developer"
+          }
+        }
+      }
+    },
+    "Hide Inspector Panel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide Inspector Panel"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sembunyikan Panel Inspector"
           }
         }
       }
@@ -3571,6 +3622,23 @@
         }
       }
     },
+    "Pick an element, or point at one on the phone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick an element, or point at one on the phone."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih elemen, atau arahkan ke salah satu di ponsel."
+          }
+        }
+      }
+    },
     "Picture" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3958,6 +4026,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rekaman"
+          }
+        }
+      }
+    },
+    "Refresh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segarkan"
           }
         }
       }
@@ -4553,6 +4638,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tampilkan HUD Developer"
+          }
+        }
+      }
+    },
+    "Show Inspector Panel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Inspector Panel"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan Panel Inspector"
           }
         }
       }
@@ -5301,6 +5403,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aplikasi ini tidak debuggable, jadi Android tidak mengizinkan alat apa pun membaca filenya. Hanya build debug yang bisa dibuka."
+          }
+        }
+      }
+    },
+    "This screen shows no elements (games usually draw everything themselves)." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This screen shows no elements (games usually draw everything themselves)."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Layar ini tidak menampilkan elemen (game biasanya menggambar semuanya sendiri)."
           }
         }
       }

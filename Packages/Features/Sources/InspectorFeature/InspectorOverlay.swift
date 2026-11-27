@@ -20,7 +20,7 @@ public struct InspectorOverlay: View {
     public var body: some View {
         GeometryReader { proxy in
             ZStack(alignment: .topLeading) {
-                if let node = inspector.hovered, let screen = inspector.hierarchy?.screenSize, screen.width > 0 {
+                if let node = inspector.hovered ?? inspector.selected, let screen = inspector.hierarchy?.screenSize, screen.width > 0 {
                     let mapper = CoordinateMapper(viewSize: proxy.size, frameSize: videoSize)
                     let rect = mapper.viewRect(forRatioRect: CGRect(x: node.bounds.minX / screen.width, y: node.bounds.minY / screen.height,
                                                                     width: node.bounds.width / screen.width, height: node.bounds.height / screen.height))

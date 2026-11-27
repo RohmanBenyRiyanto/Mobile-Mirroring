@@ -173,6 +173,9 @@ public struct AppCommands: Commands {
                 .keyboardShortcut("a", modifiers: [.command, .option])
             Button("Database…") { openWindow(id: "database") }
                 .keyboardShortcut("d", modifiers: [.command, .option])
+            Button(LocalizedStringKey(model.showsInspectorPanel ? "Hide Inspector Panel" : "Show Inspector Panel")) { model.showsInspectorPanel.toggle(); if model.showsInspectorPanel { model.setInspecting(true) } }
+                .keyboardShortcut("p", modifiers: [.command, .option])
+                .disabled(!mirroring)
             Button(LocalizedStringKey(model.showsQuickToggles ? "Hide Quick Toggles" : "Quick Toggles")) { model.showsQuickToggles.toggle() }
                 .keyboardShortcut("j", modifiers: [.command, .option])
                 .disabled(!mirroring)

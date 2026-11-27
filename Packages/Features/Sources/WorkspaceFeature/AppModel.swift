@@ -39,6 +39,7 @@ public final class AppModel: ObservableObject {
     @Published public var showsStats = false
     @Published public var showsPerformance = false
     @Published public var showsQuickToggles = false
+    @Published public var showsInspectorPanel = false
     @Published public var showsWireless = false
     @Published public var showsDeviceInfo = false
     @Published public var railLayout = RailLayout.standard {

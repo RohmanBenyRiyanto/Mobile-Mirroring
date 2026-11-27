@@ -37,11 +37,13 @@ public struct ContentView: View {
         .frame(minWidth: isMirrorWindow ? 200 : Theme.Size.connectMinimum.width,
                minHeight: isMirrorWindow ? 360 : Theme.Size.connectMinimum.height)
         .background(WindowStyler(isStreamMode: model.isStreamMode, alwaysOnTop: model.alwaysOnTop, videoSize: model.videoSize,
-                                 locksAspect: isMirrorWindow && model.editor == nil && !model.showsPerformance && !model.showsQuickToggles))
+                                 locksAspect: isMirrorWindow && model.editor == nil && !model.showsPerformance && !model.showsQuickToggles && !model.showsInspectorPanel))
         .overlay(alignment: .bottom) { NoticeToast().animated(value: model.notice) }
         .animated(value: isMirrorWindow)
         .animated(value: model.showsPerformance)
         .animated(value: model.showsQuickToggles)
+        .animated(value: model.showsInspectorPanel)
+        .onChange(of: model.showsInspectorPanel) { _, on in Self.resizeWindow(byWidth: on ? InspectorPanel.width : -InspectorPanel.width) }
         .onChange(of: model.showsQuickToggles) { _, on in Self.resizeWindow(byWidth: on ? QuickTogglesPanel.width : -QuickTogglesPanel.width) }
         .onChange(of: model.showsPerformance) { _, on in Self.resizeWindow(byWidth: on ? PerformancePanel.width : -PerformancePanel.width) }
         .sheet(isPresented: $model.showsDeviceInfo) { DeviceInfoSheet() }
@@ -106,6 +108,9 @@ private struct MirrorScreen: View {
                 .overlay { if let summary = dropSummary { DropOverlay(summary: summary) } }
             if model.showsPerformance, let session = model.active {
                 PerformancePanel(monitor: session.performance).transition(.move(edge: .trailing).combined(with: .opacity))
+            }
+            if model.showsInspectorPanel {
+                InspectorPanel(inspector: inspector, densityScale: model.deviceInfo?.densityScale).transition(.move(edge: .trailing).combined(with: .opacity))
             }
             if model.showsQuickToggles, let session = model.active {
                 QuickTogglesPanel(tools: session.developerTools, traffic: session.traffic).transition(.move(edge: .trailing).combined(with: .opacity))
