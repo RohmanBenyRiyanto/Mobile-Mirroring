@@ -10,7 +10,7 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
     case streamMode, statistics
     case keymapToggle, keymapProfile, editKeymap, recordMacro
     case inspector, designOverlay, colourPicker, grid
-    case logcat
+    case logcat, performanceHUD, quickToggles
 
     public var id: String { rawValue }
 
@@ -25,7 +25,7 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         case .streamMode, .statistics: return .stream
         case .keymapToggle, .keymapProfile, .editKeymap, .recordMacro: return .keymap
         case .inspector, .designOverlay, .colourPicker, .grid: return .inspection
-        case .logcat: return .log
+        case .logcat, .performanceHUD, .quickToggles: return .log
         }
     }
 
@@ -54,6 +54,8 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         case .colourPicker: return "Colour Picker"
         case .grid: return "Grid"
         case .logcat: return "Logcat"
+        case .performanceHUD: return "Developer HUD"
+        case .quickToggles: return "Quick Toggles"
         }
     }
 
@@ -83,6 +85,8 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         case .colourPicker: return nil
         case .grid: return nil
         case .logcat: return "⇧⌘L"
+        case .performanceHUD: return "⇧⌘I"
+        case .quickToggles: return "⌥⌘J"
         }
     }
 
@@ -111,6 +115,8 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         case .colourPicker: return "eyedropper"
         case .grid: return "grid"
         case .logcat: return "text.alignleft"
+        case .performanceHUD: return "gauge.with.dots.needle.50percent"
+        case .quickToggles: return "wrench.and.screwdriver"
         }
     }
 }
@@ -137,7 +143,7 @@ public struct RailLayout: Codable, Equatable {
         case .gaming:
             return [.keymapToggle, .keymapProfile, .editKeymap, .recordMacro, .streamMode, .statistics, .screenshot, .record, .mute, .back, .home]
         case .developer:
-            return [.inspector, .designOverlay, .colourPicker, .grid, .logcat, .statistics, .screenshot, .record, .mute, .back, .home, .recents]
+            return [.inspector, .designOverlay, .colourPicker, .grid, .logcat, .performanceHUD, .quickToggles, .statistics, .screenshot, .record, .mute, .back, .home, .recents]
         }
     }
 

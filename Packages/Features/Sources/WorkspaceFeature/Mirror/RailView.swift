@@ -138,6 +138,8 @@ struct RailView: View {
         case .colourPicker:
             RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.designTool == .colorPicker) { model.setDesignTool(model.designTool == .colorPicker ? .off : .colorPicker) }
         case .grid: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.designGrid != .off) { model.designGrid = Self.nextGrid(after: model.designGrid) }
+        case .performanceHUD: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.showsPerformance) { model.showsPerformance.toggle() }
+        case .quickToggles: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.showsQuickToggles) { model.showsQuickToggles.toggle() }
         case .logcat: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { openLogcat() }
         }
     }
