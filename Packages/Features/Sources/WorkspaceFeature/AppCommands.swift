@@ -169,6 +169,8 @@ public struct AppCommands: Commands {
             Divider()
             Button("Logcat") { openWindow(id: "logcat") }
                 .keyboardShortcut("l", modifiers: [.command, .shift])
+            Button("API Log…") { openWindow(id: "apilog") }
+                .keyboardShortcut("a", modifiers: [.command, .option])
             Button("Database…") { openWindow(id: "database") }
                 .keyboardShortcut("d", modifiers: [.command, .option])
             Button(LocalizedStringKey(model.showsQuickToggles ? "Hide Quick Toggles" : "Quick Toggles")) { model.showsQuickToggles.toggle() }

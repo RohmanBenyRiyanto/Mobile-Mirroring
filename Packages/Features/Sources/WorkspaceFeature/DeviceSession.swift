@@ -42,6 +42,7 @@ public final class DeviceSession: ObservableObject {
     public let macroRecorder = MacroRecorder()
     public let performance = PerformanceMonitor()
     public let developerTools: DeveloperToolsModel
+    public let traffic: TrafficModel
     @Published public private(set) var isRecordingMacro = false
 
     public var onNotice: ((String) -> Void)?
@@ -67,6 +68,7 @@ public final class DeviceSession: ObservableObject {
         self.adb = adb
         developerTools = DeveloperToolsModel(allowsNetworkSwitches: !serial.contains(":"), run: { try String(decoding: adb.run(["-s", serial, "shell", $0], timeout: 8), as: UTF8.self) })
         self.serial = serial
+        traffic = TrafficModel(run: { try String(decoding: adb.run(["-s", serial] + $0, timeout: 8), as: UTF8.self) })
         self.settings = settings
         let scrcpy = ScrcpySession(adb: adb, serial: serial, settings: settings)
         self.scrcpy = scrcpy
@@ -179,6 +181,7 @@ public final class DeviceSession: ObservableObject {
         statsTask?.cancel()
         performance.stop()
         developerTools.restoreOnEnd()
+        traffic.stop()
         foreground.stop()
         isRecording = false
     }

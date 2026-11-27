@@ -119,7 +119,9 @@ public final class DeveloperToolsModel: ObservableObject {
 struct QuickTogglesPanel: View {
     static let width: CGFloat = 300
     @ObservedObject var tools: DeveloperToolsModel
+    @ObservedObject var traffic: TrafficModel
     @State private var coordinates = ""
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         VStack(spacing: 0) {
@@ -161,6 +163,12 @@ struct QuickTogglesPanel: View {
                         Toggle("Wi-Fi", isOn: binding(\.wifiOn))
                         Toggle("Mobile data", isOn: binding(\.mobileDataOn))
                     } header: { Text("Network") } footer: { Text("Switch both off to test how the app behaves without a connection.") }
+                }
+                Section {
+                    Toggle("Send traffic through this Mac", isOn: Binding(get: { traffic.isOn }, set: { $0 ? traffic.start() : traffic.stop() }))
+                    Button("Open API Log…") { openWindow(id: "apilog") }
+                } header: { Text("Traffic") } footer: {
+                    Text("The phone’s proxy setting returns to normal when you switch this off or disconnect.")
                 }
                 if let failure = tools.failure {
                     Section { Label(failure, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.orange) }

@@ -80,6 +80,26 @@ public final class TCPStream: @unchecked Sendable {
         return data.prefix(received)
     }
 
+    /// Opens a connection to a host, trying each address the name resolves to. Blocks for up to `timeout` seconds per address.
+    public static func connect(host: String, port: Int, timeout: Int = 10) throws -> TCPStream {
+        var hints = addrinfo(ai_flags: 0, ai_family: AF_UNSPEC, ai_socktype: SOCK_STREAM, ai_protocol: 0, ai_addrlen: 0, ai_canonname: nil, ai_addr: nil, ai_next: nil)
+        var found: UnsafeMutablePointer<addrinfo>?
+        guard getaddrinfo(host, String(port), &hints, &found) == 0, let first = found else { throw SocketError.system("resolve") }
+        defer { freeaddrinfo(found) }
+        var cursor: UnsafeMutablePointer<addrinfo>? = first
+        while let entry = cursor {
+            let fd = socket(entry.pointee.ai_family, entry.pointee.ai_socktype, entry.pointee.ai_protocol)
+            if fd >= 0 {
+                var limit = timeval(tv_sec: timeout, tv_usec: 0)
+                setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &limit, socklen_t(MemoryLayout<timeval>.size))
+                if Darwin.connect(fd, entry.pointee.ai_addr, entry.pointee.ai_addrlen) == 0 { return TCPStream(fd: fd) }
+                Darwin.close(fd)
+            }
+            cursor = entry.pointee.ai_next
+        }
+        throw SocketError.system("connect")
+    }
+
     /// Unblocks any thread stuck in `readExactly`. The descriptor is closed on deinit.
     public func shutdown() { Darwin.shutdown(fd, SHUT_RDWR) }
 }

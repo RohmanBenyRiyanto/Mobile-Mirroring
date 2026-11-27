@@ -120,6 +120,40 @@
         }
       }
     },
+    "API Log" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Log"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log API"
+          }
+        }
+      }
+    },
+    "API Log…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Log…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log API…"
+          }
+        }
+      }
+    },
     "Accent" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -863,7 +897,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bersihkan"
+            "value" : "Hapus"
           }
         }
       }
@@ -949,6 +983,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sambungkan"
+          }
+        }
+      }
+    },
+    "Connect a phone to see its network calls." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connect a phone to see its network calls."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hubungkan ponsel untuk melihat panggilan jaringannya."
           }
         }
       }
@@ -2007,6 +2058,23 @@
         }
       }
     },
+    "HTTPS calls show only the address. Their contents stay encrypted." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTPS calls show only the address. Their contents stay encrypted."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panggilan HTTPS hanya menampilkan alamat. Isinya tetap terenkripsi."
+          }
+        }
+      }
+    },
     "Hardware video decoding" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2653,6 +2721,23 @@
         }
       }
     },
+    "Method" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Method"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metode"
+          }
+        }
+      }
+    },
     "Mini Mirror" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3261,6 +3346,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buka"
+          }
+        }
+      }
+    },
+    "Open API Log…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open API Log…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Log API…"
           }
         }
       }
@@ -4251,6 +4353,23 @@
         }
       }
     },
+    "Send traffic through this Mac" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send traffic through this Mac"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kirim lalu lintas lewat Mac ini"
+          }
+        }
+      }
+    },
     "Serial" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4591,6 +4710,23 @@
         }
       }
     },
+    "Size" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Size"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukuran"
+          }
+        }
+      }
+    },
     "Solid" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4689,6 +4825,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Overlay Statistik"
+          }
+        }
+      }
+    },
+    "Status" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
           }
         }
       }
@@ -5067,6 +5220,23 @@
         }
       }
     },
+    "The phone’s proxy setting returns to normal when you switch this off or disconnect." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The phone’s proxy setting returns to normal when you switch this off or disconnect."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pengaturan proxy ponsel kembali normal saat Anda mematikannya atau memutus koneksi."
+          }
+        }
+      }
+    },
     "The processor is fully busy" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5131,6 +5301,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aplikasi ini tidak debuggable, jadi Android tidak mengizinkan alat apa pun membaca filenya. Hanya build debug yang bisa dibuka."
+          }
+        }
+      }
+    },
+    "Time" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waktu"
+          }
+        }
+      }
+    },
+    "Traffic" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traffic"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lalu lintas"
           }
         }
       }

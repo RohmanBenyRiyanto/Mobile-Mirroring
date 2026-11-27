@@ -34,6 +34,13 @@ struct BenzMirrorApp: App {
         }
         .defaultSize(width: 900, height: 560)
 
+        Window("API Log", id: "apilog") {
+            TrafficLogView()
+                .environmentObject(model)
+                .themed(model.appearance)
+        }
+        .defaultSize(width: 900, height: 520)
+
         Window("Database", id: "database") {
             DatabaseView(source: model)
                 .themed(model.appearance)

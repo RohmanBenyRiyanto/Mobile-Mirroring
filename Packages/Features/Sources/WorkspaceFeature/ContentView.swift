@@ -108,7 +108,7 @@ private struct MirrorScreen: View {
                 PerformancePanel(monitor: session.performance).transition(.move(edge: .trailing).combined(with: .opacity))
             }
             if model.showsQuickToggles, let session = model.active {
-                QuickTogglesPanel(tools: session.developerTools).transition(.move(edge: .trailing).combined(with: .opacity))
+                QuickTogglesPanel(tools: session.developerTools, traffic: session.traffic).transition(.move(edge: .trailing).combined(with: .opacity))
             }
             if let editor = model.editor {
                 KeymapEditorPanel(editor: editor, foreground: model.foreground, message: model.editorMessage,
