@@ -37,6 +37,7 @@ public final class AppModel: ObservableObject {
     @Published public var isStreamMode = false
     @Published public var alwaysOnTop = false
     @Published public var showsStats = false
+    @Published public var showsOnboarding = false
     @Published public var showsPerformance = false
     @Published public var showsQuickToggles = false
     @Published public var showsInspectorPanel = false
@@ -94,6 +95,7 @@ public final class AppModel: ObservableObject {
         defaultMode = defaults.string(forKey: "workspaceMode").flatMap(WorkspaceMode.init(rawValue:)) ?? .normal
         railLayout = defaults.data(forKey: "railLayout.v1").flatMap(RailLayout.decode) ?? .standard
         settings = SettingsStore.load(from: defaults)
+        showsOnboarding = !defaults.bool(forKey: "onboardingDone")
         keymapStore = try? ProfileStore<Keymap>(kind: "keymap", root: keymapRoot)
         keymapProfiles = keymapStore?.list() ?? []
         keymapPackageIndex = KeymapAutoSwitch.index(from: keymapStore?.loadAll() ?? [])
@@ -104,6 +106,11 @@ public final class AppModel: ObservableObject {
     }
 
     deinit { pollTask?.cancel() }
+
+    public func finishOnboarding() {
+        defaults.set(true, forKey: "onboardingDone")
+        showsOnboarding = false
+    }
 
     private func refreshRecordingStatusItem() {
         recordingStatusItem.update(visible: RecordingStatusItem.shouldShow(isStreamMode: isStreamMode, isRecording: isAnyRecording),

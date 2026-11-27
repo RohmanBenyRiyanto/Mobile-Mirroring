@@ -47,6 +47,7 @@ public struct ContentView: View {
         .onChange(of: model.showsQuickToggles) { _, on in Self.resizeWindow(byWidth: on ? QuickTogglesPanel.width : -QuickTogglesPanel.width) }
         .onChange(of: model.showsPerformance) { _, on in Self.resizeWindow(byWidth: on ? PerformancePanel.width : -PerformancePanel.width) }
         .sheet(isPresented: $model.showsDeviceInfo) { DeviceInfoSheet() }
+        .sheet(isPresented: $model.showsOnboarding) { OnboardingView().environmentObject(model) }
     }
 }
 

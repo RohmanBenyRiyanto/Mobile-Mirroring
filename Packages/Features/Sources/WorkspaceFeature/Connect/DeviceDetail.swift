@@ -54,7 +54,7 @@ private struct ConnectBanner: View {
                 Text("Connect your phone").font(Theme.Font.headline).frame(maxWidth: .infinity)
                 Text("Plug it in with a USB cable and turn on USB debugging.").foregroundStyle(Theme.Palette.textSecondary.color).frame(maxWidth: .infinity)
                 HStack {
-                    Button("Setup Guide…") { NSWorkspace.shared.open(Self.setupGuide) }
+                    Button("Setup Guide…") { model.showsOnboarding = true }
                     Button("Use Wi-Fi…") { showsWireless = true }
                 }
                 .secondaryAction()

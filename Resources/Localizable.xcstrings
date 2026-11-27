@@ -1,6 +1,23 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ is ready" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ is ready"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ siap"
+          }
+        }
+      }
+    },
     "%lld crashes" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -409,6 +426,40 @@
         }
       }
     },
+    "Allow USB debugging?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow USB debugging?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izinkan USB debugging?"
+          }
+        }
+      }
+    },
+    "Allow this Mac" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow this Mac"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izinkan Mac ini"
+          }
+        }
+      }
+    },
     "Always on Top" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -439,6 +490,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Android"
+          }
+        }
+      }
+    },
+    "Android keeps these settings hidden until you ask for them." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Android keeps these settings hidden until you ask for them."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Android menyembunyikan pengaturan ini sampai Anda memintanya."
           }
         }
       }
@@ -817,6 +885,23 @@
         }
       }
     },
+    "Build number" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Build number"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nomor build"
+          }
+        }
+      }
+    },
     "Cancel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1085,6 +1170,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bitrate konstan"
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lanjutkan"
           }
         }
       }
@@ -1871,6 +1973,23 @@
         }
       }
     },
+    "Enter your screen lock if the phone asks." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter your screen lock if the phone asks."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masukkan kunci layar jika ponsel memintanya."
+          }
+        }
+      }
+    },
     "Exit Stream Mode" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2292,6 +2411,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Beranda"
+          }
+        }
+      }
+    },
+    "If no request appears, open Developer options and choose Revoke USB debugging authorizations." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If no request appears, open Developer options and choose Revoke USB debugging authorizations."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jika tidak ada permintaan, buka Opsi pengembang lalu pilih Cabut otorisasi USB debugging."
           }
         }
       }
@@ -3418,6 +3554,23 @@
         }
       }
     },
+    "On the phone" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On the phone"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di ponsel"
+          }
+        }
+      }
+    },
     "On the phone, open Developer options › Wireless debugging." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3499,6 +3652,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buka Log API…"
+          }
+        }
+      }
+    },
+    "Open Settings › System › Developer options." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings › System › Developer options."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Pengaturan › Sistem › Opsi pengembang."
+          }
+        }
+      }
+    },
+    "Open Settings, then About phone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings, then About phone."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Pengaturan, lalu Tentang ponsel."
           }
         }
       }
@@ -3839,6 +4026,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Colokkan dengan kabel USB dan aktifkan USB debugging."
+          }
+        }
+      }
+    },
+    "Plug the phone into this Mac." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plug the phone into this Mac."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colokkan ponsel ke Mac ini."
           }
         }
       }
@@ -4948,6 +5152,23 @@
         }
       }
     },
+    "Skip Setup" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip Setup"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lewati Pengaturan"
+          }
+        }
+      }
+    },
     "Solid" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5080,6 +5301,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gambar lebih stabil untuk OBS"
+          }
+        }
+      }
+    },
+    "Step %lld of %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Step %lld of %lld"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Langkah %lld dari %lld"
+          }
+        }
+      }
+    },
+    "Still unauthorized" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Still unauthorized"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masih belum diizinkan"
           }
         }
       }
@@ -5373,6 +5628,57 @@
         }
       }
     },
+    "Tap Allow when the phone asks." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap Allow when the phone asks."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk Izinkan saat ponsel bertanya."
+          }
+        }
+      }
+    },
+    "Tap Allow." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap Allow."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk Izinkan."
+          }
+        }
+      }
+    },
+    "Tap Build number seven times." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap Build number seven times."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk Nomor build tujuh kali."
+          }
+        }
+      }
+    },
     "That name cannot be used." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5386,6 +5692,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nama itu tidak dapat dipakai."
+          }
+        }
+      }
+    },
+    "The Mac is not allowed yet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Mac is not allowed yet"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac belum diizinkan"
+          }
+        }
+      }
+    },
+    "The phone asks once for each new computer." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The phone asks once for each new computer."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponsel bertanya sekali untuk setiap komputer baru."
           }
         }
       }
@@ -5509,6 +5849,23 @@
         }
       }
     },
+    "The request on the phone was closed or declined." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The request on the phone was closed or declined."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permintaan di ponsel ditutup atau ditolak."
+          }
+        }
+      }
+    },
     "The sqlite3 tool was not found on this Mac." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5522,6 +5879,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alat sqlite3 tidak ditemukan di Mac ini."
+          }
+        }
+      }
+    },
+    "This Mac is allowed." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Mac is allowed."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac ini diizinkan."
+          }
+        }
+      }
+    },
+    "This Mac sees" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Mac sees"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac ini melihat"
           }
         }
       }
@@ -5560,6 +5951,23 @@
         }
       }
     },
+    "This lets your Mac see and control the phone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This lets your Mac see and control the phone."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ini memungkinkan Mac melihat dan mengendalikan ponsel."
+          }
+        }
+      }
+    },
     "This screen shows no elements (games usually draw everything themselves)." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5573,6 +5981,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Layar ini tidak menampilkan elemen (game biasanya menggambar semuanya sendiri)."
+          }
+        }
+      }
+    },
+    "Tick “Always allow from this computer”." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tick “Always allow from this computer”."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centang “Selalu izinkan dari komputer ini”."
           }
         }
       }
@@ -5628,6 +6053,57 @@
         }
       }
     },
+    "Turn on Developer options" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on Developer options"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktifkan Opsi pengembang"
+          }
+        }
+      }
+    },
+    "Turn on USB debugging" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on USB debugging"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktifkan USB debugging"
+          }
+        }
+      }
+    },
+    "Turn on USB debugging." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on USB debugging."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktifkan USB debugging."
+          }
+        }
+      }
+    },
     "Turn the keymap on when its game opens" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5675,6 +6151,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "USB"
+          }
+        }
+      }
+    },
+    "USB debugging" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "USB debugging"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "USB debugging"
+          }
+        }
+      }
+    },
+    "USB debugging is on." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "USB debugging is on."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "USB debugging aktif."
           }
         }
       }
@@ -5747,6 +6257,23 @@
         }
       }
     },
+    "Unlock the phone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock the phone."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka kunci ponsel."
+          }
+        }
+      }
+    },
     "Unmute" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5777,6 +6304,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bunyikan Audio"
+          }
+        }
+      }
+    },
+    "Unplug the cable and plug it in again." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unplug the cable and plug it in again."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cabut kabel lalu colokkan lagi."
           }
         }
       }
@@ -6002,6 +6546,40 @@
         }
       }
     },
+    "Waiting for the phone…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waiting for the phone…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menunggu ponsel…"
+          }
+        }
+      }
+    },
+    "Welcome" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selamat datang"
+          }
+        }
+      }
+    },
     "While connected" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6049,6 +6627,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nirkabel"
+          }
+        }
+      }
+    },
+    "You can start mirroring now." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can start mirroring now."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anda bisa mulai mirroring sekarang."
           }
         }
       }
