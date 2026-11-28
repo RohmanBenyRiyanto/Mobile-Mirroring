@@ -104,6 +104,15 @@ public final class AppearanceStore: ObservableObject {
 
     static func dockImage(for icon: AppearanceSettings.DockIcon) -> NSImage? {
         guard let variant = icon.brandVariant else { return nil }
+        // The 3D glass renders from the design are in the app's asset catalog; drawing the tile is only the fallback (tests, previews).
+        let asset: String
+        switch icon {
+        case .standard: return nil
+        case .darkBlue: asset = "DockIconDarkBlue"
+        case .clearBlue: asset = "DockIconClearBlue"
+        case .light: asset = "DockIconLight"
+        }
+        if let image = NSImage(named: asset) { return image }
         let renderer = ImageRenderer(content: BrandTile(size: 512, variant: variant, style: .glass))
         renderer.scale = 2
         return renderer.nsImage
