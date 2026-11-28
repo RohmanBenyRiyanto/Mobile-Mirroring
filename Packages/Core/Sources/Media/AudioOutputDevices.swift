@@ -2,7 +2,6 @@ import AudioToolbox
 import CoreAudio
 import Foundation
 
-/// The Mac's sound outputs, so the phone's audio can be sent somewhere other than the system default (headphones, an interface).
 public enum AudioOutputDevices {
     public struct Device: Identifiable, Equatable, Sendable {
         public let uid: String
@@ -22,7 +21,6 @@ public enum AudioOutputDevices {
         }
     }
 
-    /// The CoreAudio id for a saved UID, or nil if that device is not connected any more.
     public static func deviceID(forUID uid: String) -> AudioDeviceID? {
         var cfUID = uid as CFString
         var device = AudioDeviceID(0)

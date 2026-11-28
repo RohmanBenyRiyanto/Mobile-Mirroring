@@ -1,6 +1,5 @@
 import Foundation
 
-/// An app the user can pick: its package name, a readable guess at its name, and whether it was opened recently.
 public struct AppChoice: Identifiable, Equatable, Sendable {
     public let package: String
     public let name: String
@@ -8,7 +7,6 @@ public struct AppChoice: Identifiable, Equatable, Sendable {
     public var id: String { package }
 }
 
-/// Reads the phone's list of launchable and recent apps. Shell output only; the commands are fixed text.
 public enum InstalledApps {
     public static let launchableCommand = "cmd package query-activities --brief -a android.intent.action.MAIN -c android.intent.category.LAUNCHER"
     public static let recentsCommand = "dumpsys activity recents | grep -E 'A=[0-9]+:'"
@@ -32,7 +30,6 @@ public enum InstalledApps {
         return all.map { AppChoice(package: $0, name: displayName(for: $0), isRecent: recentSet.contains($0)) }
     }
 
-    /// The shell cannot read the label an app shows on the home screen, so this guesses from the package name.
     public static func displayName(for package: String) -> String {
         let generic: Set<String> = ["com", "org", "net", "io", "android", "app", "apps", "mobile", "gp", "google", "sec", "samsung", "main", "client", "release", "prod"]
         let parts = package.split(separator: ".").map(String.init)
@@ -41,7 +38,6 @@ public enum InstalledApps {
         return word.prefix(1).uppercased() + word.dropFirst()
     }
 
-    /// Every typed word must appear in the name or the package.
     public static func filter(_ apps: [AppChoice], query: String) -> [AppChoice] {
         let words = query.lowercased().split(separator: " ").map(String.init)
         guard !words.isEmpty else { return apps }

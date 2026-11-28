@@ -3,7 +3,6 @@ import DomainModels
 import SwiftUI
 import Theme
 
-/// The docked inspector: the element tree with a filter, and the details of the chosen element.
 public struct InspectorPanel: View {
     public static let width: CGFloat = 320
     @ObservedObject public var inspector: InspectorModel

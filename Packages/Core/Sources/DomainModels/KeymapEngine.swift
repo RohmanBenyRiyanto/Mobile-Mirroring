@@ -1,29 +1,25 @@
 import CoreGraphics
 import Foundation
 
-/// Turns key presses into touches for a keymap. It is a pure state machine: the caller feeds it key events and
-/// `tick`, and carries out the returned `Action`s, so it can be tested without a phone.
 public struct KeymapEngine {
     public enum Action: Equatable {
         case send(ControlMessage)
-        /// Send later (the lift of a tap). `releasing` is the pointer slot to hand back once it has been sent.
         case sendAfter(TimeInterval, ControlMessage, releasing: Int)
     }
 
-    /// How long a tap keeps the finger down. Very short taps can be dropped by games.
     public static let tapDuration: TimeInterval = 0.03
 
     private enum Direction { case up, left, down, right }
 
     private struct Stick {
         let slot: Int
-        var deflection = CGVector.zero // -1…1 on each axis, length at most 1
+        var deflection = CGVector.zero
         var lastSent: TouchPosition
     }
 
     private struct Look {
         let slot: Int
-        var offset = CGVector.zero // frame pixels from the area's centre
+        var offset = CGVector.zero
         var lastSent: TouchPosition
     }
 
@@ -36,14 +32,12 @@ public struct KeymapEngine {
         var index = 0
         var elapsed = 0.0
         var fingers: [Int: (slot: Int, last: TouchPosition)] = [:]
-        /// Fingers whose touches are skipped because no pointer slot was free when they went down.
         var dropped: Set<Int> = []
     }
 
     public private(set) var keymap: Keymap
     private var macros: [UUID: MacroRun] = [:]
     private var skills: [UUID: Skill] = [:]
-    /// Where the mouse pointer is, as a fraction of the screen (nil until it has moved over the phone).
     private var pointer: CGPoint?
     private var elementsByKey: [UInt16: [KeymapElement]] = [:]
     private var elementsByMouseButton: [Int: [KeymapElement]] = [:]
@@ -69,21 +63,18 @@ public struct KeymapEngine {
         }
     }
 
-    /// True while free-look is on: the mouse should be captured and its movement and buttons come here.
     public private(set) var isAiming = false
 
     public func handlesMouseButton(_ button: Int) -> Bool { elementsByMouseButton[button] != nil }
 
-    /// Whether the keymap uses this key (the key event should then not reach the phone as typing).
     public func handles(_ key: UInt16) -> Bool { elementsByKey[key] != nil }
 
-    /// True while a stick or macro is active: the caller should keep calling `tick`.
     public var isAnimating: Bool { !sticks.isEmpty || !macros.isEmpty }
 
     // MARK: Events
 
     public mutating func keyDown(_ key: UInt16, frameSize: CGSize) -> [Action] {
-        guard handles(key), pressedKeys.insert(key).inserted else { return [] } // auto-repeat is ignored
+        guard handles(key), pressedKeys.insert(key).inserted else { return [] }
         return elementsByKey[key, default: []].flatMap { press($0, key: key, frameSize: frameSize) }
     }
 
@@ -92,14 +83,12 @@ public struct KeymapEngine {
         return elementsByKey[key, default: []].flatMap { release($0, key: key, frameSize: frameSize) }
     }
 
-    /// Moves time forward: joysticks ease towards (or back from) their target.
     public mutating func tick(deltaTime: TimeInterval, frameSize: CGSize) -> [Action] {
         let stickActions = sticks.keys.compactMap { elementsByID[$0] }.flatMap { updateStick($0, deltaTime: deltaTime, frameSize: frameSize) }
         let macroActions = macros.keys.compactMap { elementsByID[$0] }.flatMap { advanceMacro($0, by: deltaTime, frameSize: frameSize) }
         return stickActions + macroActions
     }
 
-    /// Lifts every finger and forgets pressed keys (focus lost, keymap switched off, screen rotated).
     public mutating func releaseAll(frameSize: CGSize) -> [Action] {
         var actions: [Action] = []
         for (id, run) in macros { actions += liftFingers(of: run, macro: id) }
@@ -125,7 +114,6 @@ public struct KeymapEngine {
         return actions
     }
 
-    /// Hands a tap's pointer slot back once its lift has been sent.
     public mutating func finishTap(slot: Int) {
         giveBack(slot)
     }
@@ -160,11 +148,11 @@ public struct KeymapEngine {
         case let .skillShot(_, cast, _, _, _):
             return cast == .onRelease ? releaseSkill(element) : []
         case let .macro(_, _, loop, _):
-            return loop ? cancelMacro(element) : [] // a one-shot macro plays on to its end
+            return loop ? cancelMacro(element) : []
         case .turbo:
-            return cancelMacro(element) // tapping stops with the key
+            return cancelMacro(element)
         case .swipe:
-            return [] // a swipe plays on to its end
+            return []
         case .joystick:
             guard let direction = direction(of: key, in: element) else { return [] }
             heldDirections[element.id]?.remove(direction)
@@ -204,8 +192,6 @@ public struct KeymapEngine {
 
     // MARK: Joystick
 
-    /// Brings one joystick up to date: puts its finger down when a key is held, eases the finger towards the
-    /// keys' direction, and lifts it once the stick is back at the centre with no key held.
     private mutating func updateStick(_ element: KeymapElement, deltaTime: TimeInterval, frameSize: CGSize) -> [Action] {
         guard case let .joystick(_, _, _, _, radius, response) = element.action else { return [] }
         let target = targetVector(for: heldDirections[element.id] ?? [])
@@ -235,7 +221,6 @@ public struct KeymapEngine {
         return actions
     }
 
-    /// W+D gives a diagonal of length 1, not √2, so diagonals are not faster; opposite keys cancel.
     private func targetVector(for directions: Set<Direction>) -> CGVector {
         let x = (directions.contains(.right) ? 1.0 : 0) - (directions.contains(.left) ? 1.0 : 0)
         let y = (directions.contains(.down) ? 1.0 : 0) - (directions.contains(.up) ? 1.0 : 0)
@@ -243,7 +228,6 @@ public struct KeymapEngine {
         return length == 0 ? .zero : CGVector(dx: x / length, dy: y / length)
     }
 
-    /// Moves the stick towards `target` at a speed that crosses the full radius in `response` seconds.
     private func moved(from current: CGVector, towards target: CGVector, over deltaTime: TimeInterval, response: Double) -> CGVector {
         let step = response <= 0 ? 2.0 : deltaTime / response
         let dx = target.dx - current.dx, dy = target.dy - current.dy
@@ -274,7 +258,6 @@ public struct KeymapEngine {
 
     // MARK: Helpers
 
-    /// The lowest free pointer slot, so ids stay small and predictable.
     private mutating func takeSlot() -> Int? { freeSlots.isEmpty ? nil : freeSlots.removeFirst() }
 
     private mutating func giveBack(_ slot: Int) {
@@ -295,8 +278,6 @@ public struct KeymapEngine {
 // MARK: - Free-look and mouse buttons
 
 extension KeymapEngine {
-    /// Mouse movement while aiming drags the look finger. Past the edge of the area the finger is lifted and put
-    /// back in the middle, so the camera can keep turning in one direction.
     public mutating func mouseMoved(deltaX: Double, deltaY: Double, frameSize: CGSize) -> [Action] {
         guard isAiming, let element = aimElement, case let .aim(_, sensitivity, radius) = element.action,
               frameSize.width > 0, frameSize.height > 0,
@@ -318,7 +299,6 @@ extension KeymapEngine {
         current.offset = CGVector(dx: current.offset.dx + deltaX * scale, dy: current.offset.dy + deltaY * scale)
         let distance = (current.offset.dx * current.offset.dx + current.offset.dy * current.offset.dy).squareRoot()
         if distance > radius * shorterEdge {
-            // Put the finger back in the middle: lift where it is, touch down again at the centre.
             actions.append(.send(touch(.up, current.lastSent, current.slot)))
             actions.append(.send(touch(.down, centre, current.slot)))
             current.offset = .zero
@@ -347,7 +327,6 @@ extension KeymapEngine {
         }
     }
 
-    /// Switches free-look on or off. Turning it off lifts the look finger and any mouse button still held.
     public mutating func toggleAim(frameSize: CGSize) -> [Action] {
         guard aimElement != nil else { return [] }
         guard isAiming else {
@@ -382,8 +361,6 @@ extension KeymapEngine {
 // MARK: - Aimed skills
 
 extension KeymapEngine {
-    /// The mouse pointer moved over the phone (position as a fraction of the screen). Fingers of skills that are
-    /// being aimed follow it.
     public mutating func pointerMoved(to ratio: CGPoint, frameSize: CGSize) -> [Action] {
         pointer = ratio
         return skills.keys.compactMap { elementsByID[$0] }.compactMap { element -> Action? in
@@ -416,8 +393,6 @@ extension KeymapEngine {
         return [.send(touch(.up, skill.lastSent, skill.slot))]
     }
 
-    /// Where the finger of an aimed skill should be: the button, pushed in the direction of the mouse from the hero.
-    /// Distances are measured in screen pixels, so a tall screen does not bend the direction.
     private func skillPosition(of element: KeymapElement, frameSize: CGSize) -> TouchPosition? {
         guard case let .skillShot(_, _, radius, range, hero) = element.action, let pointer, frameSize.width > 0, frameSize.height > 0 else {
             return position(of: element, frameSize: frameSize)
@@ -435,14 +410,12 @@ extension KeymapEngine {
         return CoordinateMapper(viewSize: frameSize, frameSize: frameSize).touchPosition(forRatio: ratio)
     }
 
-    /// A mouse this close to the hero (in pixels) gives no direction.
     public static var skillDeadZone: Double { 2 }
 }
 
 // MARK: - Macros
 
 extension KeymapEngine {
-    /// What a macro-like element plays: its recorded steps, or steps generated for a rapid-tap button or a swipe from the element's own position.
     static func plan(for element: KeymapElement) -> (steps: [MacroStep], loop: Bool, speed: Double)? {
         let start = element.position
         switch element.action {
@@ -451,7 +424,6 @@ extension KeymapEngine {
         case let .turbo(_, rate):
             let period = 1 / max(rate, 1)
             let hold = min(0.04, period * 0.4)
-            // The last step does nothing (no finger is down then); it only makes the cycle exactly one period long.
             return ([MacroStep(time: 0, kind: .down, finger: 0, position: start), MacroStep(time: hold, kind: .up, finger: 0, position: start),
                      MacroStep(time: period, kind: .move, finger: 0, position: start)], true, 1)
         case let .swipe(_, end, duration):
@@ -469,7 +441,6 @@ extension KeymapEngine {
         }
     }
 
-    /// Starts playing a macro. One that is already playing is left alone.
     fileprivate mutating func startMacro(_ element: KeymapElement, frameSize: CGSize) -> [Action] {
         guard macros[element.id] == nil else { return [] }
         macros[element.id] = MacroRun()
@@ -498,7 +469,7 @@ extension KeymapEngine {
                 macros[element.id] = nil
                 return actions + liftFingers(of: run, macro: element.id)
             }
-            actions += liftFingers(of: run, macro: element.id) // a recording that ended with a finger down
+            actions += liftFingers(of: run, macro: element.id)
             run = MacroRun(index: 0, elapsed: run.elapsed - duration)
         }
         macros[element.id] = run

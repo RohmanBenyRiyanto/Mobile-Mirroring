@@ -2,7 +2,6 @@ import Foundation
 
 public struct ForegroundApp: Equatable {
     public let package: String
-    /// As printed by Android; may be relative to the package (".MainActivity").
     public let activity: String
 
     public init(package: String, activity: String) {
@@ -10,8 +9,6 @@ public struct ForegroundApp: Equatable {
         self.activity = activity
     }
 
-    /// Android package names: dot-separated segments of letters, digits and underscores.
-    /// Packages end up in file names and adb arguments, so anything else is rejected.
     public static func isValidPackage(_ name: String) -> Bool {
         let segments = name.split(separator: ".", omittingEmptySubsequences: false)
         return name.count <= 255 && segments.count >= 2 && segments.allSatisfy { segment in
@@ -22,11 +19,8 @@ public struct ForegroundApp: Equatable {
 }
 
 public enum ForegroundAppParser {
-    /// The shell command whose output `parse` understands. Fixed text: nothing user-supplied.
     public static let command = "dumpsys window displays | grep -E 'mCurrentFocus|mFocusedApp'"
 
-    /// Reads `dumpsys window` output. `mFocusedApp` wins because it keeps naming the app (or game) while a system
-    /// window such as the notification shade has focus; `mCurrentFocus` is the fallback.
     public static func parse(_ output: String) -> ForegroundApp? {
         for key in ["mFocusedApp=", "mCurrentFocus="] {
             for line in output.split(whereSeparator: \.isNewline) {
@@ -37,8 +31,6 @@ public enum ForegroundAppParser {
         return nil
     }
 
-    /// Finds `u<user> <package>/<activity>` in text such as
-    /// `ActivityRecord{147039174 u0 com.sec.android.app.launcher/.activities.LauncherActivity t738}`.
     private static func component(in text: Substring) -> ForegroundApp? {
         let words = text.split(whereSeparator: { $0 == " " || $0 == "{" || $0 == "}" })
         guard let userIndex = words.firstIndex(where: { isUserToken($0) }), userIndex + 1 < words.count else { return nil }
@@ -53,8 +45,6 @@ public enum ForegroundAppParser {
     }
 }
 
-/// Watches which app is in front on the phone. Keeps the last known app through brief moments with no focus
-/// (a transition), and only publishes when the app actually changes.
 @MainActor
 public final class ForegroundAppDetector: ObservableObject {
     public init() {}

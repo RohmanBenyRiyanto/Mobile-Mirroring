@@ -17,7 +17,6 @@ public struct PickerItem: Identifiable, Equatable, Sendable {
     public static func == (lhs: PickerItem, rhs: PickerItem) -> Bool { lhs.id == rhs.id && lhs.title == rhs.title && lhs.subtitle == rhs.subtitle }
 }
 
-/// A button that shows the current choice and opens a searchable list, so long lists never have to be typed out.
 public struct SearchPicker: View {
     private let items: [PickerItem]
     private let isLoading: Bool

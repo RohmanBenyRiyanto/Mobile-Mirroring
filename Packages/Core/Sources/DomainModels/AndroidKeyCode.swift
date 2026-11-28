@@ -22,10 +22,8 @@ public enum AndroidKeyCode: UInt32 {
     case moveHome = 122
     case moveEnd = 123
     case appSwitch = 187
-    // Letters used with Ctrl for editing shortcuts.
     case letterA = 29, letterC = 31, letterV = 50, letterX = 52, letterY = 53, letterZ = 54
 
-    /// Maps non-printable macOS key codes; printable characters go through text input so layouts and IMEs work.
     public init?(macKeyCode: UInt16) {
         switch macKeyCode {
         case 36, 76: self = .enter
@@ -47,8 +45,6 @@ public enum AndroidKeyCode: UInt32 {
     }
 }
 
-
-/// Android's meta-state bits, so Shift, Alt and Ctrl travel with a key press (selection with Shift+arrows, Ctrl+A, and so on).
 public struct KeyMeta: OptionSet, Sendable {
     public let rawValue: UInt32
     public init(rawValue: UInt32) { self.rawValue = rawValue }

@@ -8,15 +8,11 @@ import Networking
 import Theme
 
 public struct ContentView: View {
-
     public init() {
-
     }
     @EnvironmentObject private var model: AppModel
 
-    /// The window's width with no panel open, remembered while any panel is open so closing them returns to exactly that.
     @State private var widthWithoutPanels: CGFloat?
-    /// What the last sync set, to tell a width the user dragged to from one the app set.
     @State private var syncedWindowWidth: CGFloat?
     @State private var syncedPanelWidth: CGFloat = 0
     @State private var host = HostWindow()
@@ -26,16 +22,12 @@ public struct ContentView: View {
             + (model.showsInspectorPanel ? InspectorPanel.width : 0) + (model.editor != nil ? KeymapEditorPanel.width : 0)
     }
 
-    /// Gives the window the width of the picture plus every open panel, so panels sit beside the picture instead of covering it.
-    /// It grows to the right; if the screen has no room there, the window slides left just enough to stay fully visible.
     @MainActor private func syncWindowToPanels() {
         guard let window = host.window else { return }
-        // The user resized the window since the last sync: the width without panels is whatever they left, minus the panels that were open.
         if let synced = syncedWindowWidth, abs(window.frame.width - synced) > 1, widthWithoutPanels != nil { widthWithoutPanels = max(window.frame.width - syncedPanelWidth, 200) }
         if openPanelWidth > 0, widthWithoutPanels == nil { widthWithoutPanels = window.frame.width }
         let base = widthWithoutPanels ?? window.frame.width
         if openPanelWidth == 0 { widthWithoutPanels = nil }
-        // A locked aspect ratio would refuse the new frame, so it is released first; the styler locks it again once the state settles.
         window.resizeIncrements = NSSize(width: 1, height: 1)
         var frame = window.frame
         frame.size.width = max(base + openPanelWidth, window.minSize.width)
@@ -171,7 +163,6 @@ struct PhoneTab: Equatable, Identifiable {
     let isRecording: Bool
     let isOffline: Bool
 
-    /// One tab per mirrored phone, then a dimmed tab for each known phone that is not responding.
     static func tabs(mirrored: [(serial: String, name: String, isRecording: Bool)], devices: [AndroidDevice], activeSerial: String?) -> [PhoneTab] {
         let live = mirrored.map {
             PhoneTab(id: $0.serial, title: $0.name.isEmpty ? $0.serial : $0.name, isActive: $0.serial == activeSerial, isRecording: $0.isRecording, isOffline: false)
@@ -237,7 +228,6 @@ private struct StatsOverlay: View {
         .allowsHitTesting(false)
     }
 }
-
 
 private struct ConnectionLostSheet: View {
     @EnvironmentObject private var model: AppModel

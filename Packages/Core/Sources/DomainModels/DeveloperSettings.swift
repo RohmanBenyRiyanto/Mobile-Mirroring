@@ -2,7 +2,6 @@ import Foundation
 
 // MARK: State
 
-/// The phone's developer switches that the Quick Toggles panel can change. Pure, so reading and writing are tested without a phone.
 public struct DeveloperState: Equatable, Sendable, Codable {
     public enum NightMode: String, CaseIterable, Sendable, Codable { case auto, yes, no }
 
@@ -13,7 +12,6 @@ public struct DeveloperState: Equatable, Sendable, Codable {
     public var nightMode = NightMode.auto
     public var wifiOn = true
     public var mobileDataOn = true
-    /// Interruptions silenced (the phone's Do Not Disturb, with priority exceptions), for playing without calls and banners.
     public var doNotDisturb = false
 
     public init() {}
@@ -39,7 +37,6 @@ public enum DeveloperSettings {
         state.layoutBounds = sections["LAYOUT"]?.first == "true"
         state.gpuOverdraw = sections["OVERDRAW"]?.first == "show"
         state.dontKeepActivities = sections["FINISH"]?.first == "1"
-        // The three scales are normally equal; the window scale stands for all of them.
         if let first = sections["ANIM"]?.first, let value = Double(first) { state.animationScale = value }
         if let night = sections["NIGHT"]?.first?.lowercased() {
             if night.hasSuffix("yes") { state.nightMode = .yes } else if night.hasSuffix("no") { state.nightMode = .no }
@@ -50,7 +47,6 @@ public enum DeveloperSettings {
         return state
     }
 
-    /// Shell commands that move the phone from `old` to `new`, touching only what differs. Every value is built here, never taken from outside.
     public static func commands(from old: DeveloperState, to new: DeveloperState) -> [String] {
         var commands: [String] = []
         if old.layoutBounds != new.layoutBounds { commands.append("setprop debug.layout \(new.layoutBounds ? "true" : "''")") }
@@ -70,11 +66,7 @@ public enum DeveloperSettings {
     }
 }
 
-
-/// Things the app changes on a phone and must never leave behind, even if it was killed before it could put them back.
 public enum LeftoverSettings {
-    /// A proxy that points at this Mac's loopback (the API log's) can only be ours. With nothing listening, every app that honours the
-    /// system proxy (browsers, TikTok…) loses its internet while games and chat apps still work, so a new session removes it.
     public static let clearLoopbackProxyCommand =
         "p=$(settings get global http_proxy); case \"$p\" in 127.0.0.1:*) settings put global http_proxy :0; settings delete global http_proxy; echo cleared;; esac"
 

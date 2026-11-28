@@ -7,7 +7,6 @@ public struct AndroidDevice: Identifiable, Hashable {
     public let serial: String
     public let state: State
     public let model: String?
-    /// The device code name from `adb devices -l` (such as "dm1q"), a fallback when the model is not in the name list.
     public let codename: String?
 
     public init(serial: String, state: State, model: String?, codename: String? = nil) {
@@ -23,7 +22,6 @@ public struct AndroidDevice: Identifiable, Hashable {
         DeviceNameDirectory.bundled.name(model: model, codename: codename) ?? model?.replacingOccurrences(of: "_", with: " ") ?? serial
     }
 
-    /// Serials end up as arguments to `adb -s`, so accept only the characters adb itself emits.
     public static func isValidSerial(_ serial: String) -> Bool {
         !serial.isEmpty && serial.count <= 128
             && serial.allSatisfy { $0.isASCII && ($0.isLetter || $0.isNumber || "._:-".contains($0)) }
@@ -48,8 +46,6 @@ public enum ADBError: LocalizedError {
     }
 }
 
-/// Thin wrapper around the `adb` executable. Commands are always passed as an argument
-/// array to `Process`; no shell is ever involved.
 public struct ADB: Sendable {
     public let executable: URL
 
@@ -57,7 +53,6 @@ public struct ADB: Sendable {
         self.executable = executable
     }
 
-    /// An adb the user chose, if it is an executable file that answers `version`.
     public static func custom(path: String) -> ADB? {
         guard FileManager.default.isExecutableFile(atPath: path) else { return nil }
         let adb = ADB(executable: URL(fileURLWithPath: path))
@@ -65,7 +60,6 @@ public struct ADB: Sendable {
         return adb
     }
 
-    /// The chosen adb when there is one that works, otherwise the first adb found in the usual places.
     public static func locate(preferring path: String?) -> ADB? {
         if let path, !path.isEmpty, let chosen = custom(path: path) { return chosen }
         return locate()
@@ -90,7 +84,6 @@ public struct ADB: Sendable {
 
     // MARK: Running commands
 
-    /// Runs adb to completion and returns its raw stdout.
     @discardableResult
     public func run(_ arguments: [String], input: Data? = nil, timeout: TimeInterval = 30) throws -> Data {
         let process = makeProcess(arguments)
@@ -103,7 +96,7 @@ public struct ADB: Sendable {
         let outputDrain = PipeDrain(stdout)
         let errorDrain = PipeDrain(stderr)
         try process.run()
-        if let input { // secrets such as pairing codes go through stdin, never the visible argument list
+        if let input {
             stdin.fileHandleForWriting.write(input)
             try? stdin.fileHandleForWriting.close()
         }
@@ -130,7 +123,6 @@ public struct ADB: Sendable {
         return output
     }
 
-    /// Creates a not-yet-started process, for long-running commands such as the server.
     public func makeProcess(_ arguments: [String]) -> Process {
         let process = Process()
         process.executableURL = executable
@@ -161,7 +153,6 @@ private final class Flag: @unchecked Sendable {
     var isSet: Bool { lock.withLock { value } }
 }
 
-/// Reads a pipe to EOF on a background queue so a full pipe can never stall the child.
 private final class PipeDrain: @unchecked Sendable {
     private var data = Data()
     private let group = DispatchGroup()

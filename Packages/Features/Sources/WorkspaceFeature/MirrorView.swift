@@ -12,13 +12,11 @@ public struct MirrorView: NSViewRepresentable {
     public let inspector: InspectorModel
     public let design: DesignModel
     public let videoSize: CGSize
-    /// The picture is a virtual display: tell the phone the window's size whenever it changes.
     public let flexibleDisplay: Bool
     public var maxDisplayEdge = 1920
     public var initialLandscape = false
     public var onDrag: (DropSummary?) -> Void = { _ in }
     public var onDrop: ([URL]) -> Void = { _ in }
-    /// Return true when the app used Esc; otherwise it is sent to the phone.
     public var onEscape: () -> Bool = { false }
     public var isStreamMode: () -> Bool = { false }
     public var onExitStreamMode: () -> Void = {}
@@ -76,7 +74,6 @@ public final class MirrorNSView: NSView {
     private var trackpadPinch: PinchGesture?
     var flexibleDisplay = false
     var maxDisplayEdge = 1920
-    /// What the phone was last told, so a resize is only sent when the window really moved on. Starts as the display's opening size.
     var lastDisplaySize: (width: UInt16, height: UInt16)?
     private var resizeTimer: Timer?
     private var stroke = ScrollStroke()
@@ -97,7 +94,7 @@ public final class MirrorNSView: NSView {
         self.inspector = inspector
         self.design = design
         super.init(frame: .zero)
-        layer = session.decoder.layer // layer-hosting: the video is drawn straight by AVFoundation
+        layer = session.decoder.layer
         wantsLayer = true
         registerForDraggedTypes([.fileURL])
     }
@@ -108,7 +105,6 @@ public final class MirrorNSView: NSView {
     public override func layout() {
         super.layout()
         guard flexibleDisplay else { return }
-        // A window drag fires many layouts; the phone only hears about the size once the drag settles.
         resizeTimer?.invalidate()
         resizeTimer = Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false) { [weak self] _ in MainActor.assumeIsolated { self?.sendDisplaySize() } }
     }
@@ -131,7 +127,6 @@ public final class MirrorNSView: NSView {
 
     public override func viewDidMoveToWindow() {
         window?.makeFirstResponder(self)
-        // A finger held by a keymap must not stay down when the window loses focus.
         if let focusObserver { NotificationCenter.default.removeObserver(focusObserver) }
         focusObserver = NotificationCenter.default.addObserver(forName: NSWindow.didResignKeyNotification, object: window, queue: .main) { [keymap] _ in
             MainActor.assumeIsolated { keymap.releaseAll() }
@@ -171,10 +166,8 @@ public final class MirrorNSView: NSView {
 
     // MARK: Pointer → touch
 
-
-    /// Option + drag pinches around the screen center: the second finger mirrors the pointer.
     public override func mouseDown(with event: NSEvent) {
-        if isInspecting { // a tool is using the pointer: clicks do not reach the phone
+        if isInspecting {
             if inspector.isOn { inspector.copyHovered() } else { design.copyColor() }
             return
         }
@@ -197,7 +190,6 @@ public final class MirrorNSView: NSView {
         isMirroredPinch = false
     }
 
-    /// Free-look follows the mouse even when no button is held.
     public override func mouseMoved(with event: NSEvent) {
         reportPointer(event)
         _ = keymap.mouseMoved(deltaX: event.deltaX, deltaY: event.deltaY)
@@ -235,7 +227,6 @@ public final class MirrorNSView: NSView {
         }
     }
 
-    /// Right click = Back, middle click = Home (same convention as scrcpy).
     public override func rightMouseDown(with event: NSEvent) {
         if isStreamMode() {
             swallowsRightButtonUp = true
@@ -276,7 +267,6 @@ public final class MirrorNSView: NSView {
     }
 
     public override func scrollWheel(with event: NSEvent) {
-        // A trackpad (or Magic Mouse) reports phases: drag a real finger so the app flings on release like under a hand.
         if event.hasPreciseScrollingDeltas, !event.phase.isEmpty || !event.momentumPhase.isEmpty {
             smoothScroll(event)
             return
@@ -289,7 +279,6 @@ public final class MirrorNSView: NSView {
     }
 
     private func smoothScroll(_ event: NSEvent) {
-        // The phone does its own momentum from the release, so the Mac's inertia events are dropped.
         guard event.momentumPhase.isEmpty else { return }
         let mapper = CoordinateMapper(viewSize: bounds.size, frameSize: videoSize)
         let origin = mapper.viewPoint(forRatio: .zero), corner = mapper.viewPoint(forRatio: CGPoint(x: 1, y: 1))
@@ -322,13 +311,12 @@ public final class MirrorNSView: NSView {
     // MARK: Arrow keys scroll
 
     private static let arrowDirections: [UInt16: CGVector] = [
-        126: CGVector(dx: 0, dy: 1), // up arrow: content moves down, so the finger does too
+        126: CGVector(dx: 0, dy: 1),
         125: CGVector(dx: 0, dy: -1),
         123: CGVector(dx: 1, dy: 0),
         124: CGVector(dx: -1, dy: 0),
     ]
 
-    /// Plain arrow keys scroll; hold Option to send the real D-pad keys (for moving a text cursor).
     private func startArrowScroll(_ event: NSEvent) -> Bool {
         guard let direction = Self.arrowDirections[event.keyCode],
               event.modifierFlags.intersection([.command, .control, .option, .shift]).isEmpty else { return false }
@@ -354,7 +342,7 @@ public final class MirrorNSView: NSView {
         held.travelled = travel
         heldArrow = held
         let outputs = stroke.move(by: CGVector(dx: held.direction.dx * step, dy: held.direction.dy * step))
-        if outputs.isEmpty, step > 0.001 { // reached the edge of the safe band: lift and take a fresh grip
+        if outputs.isEmpty, step > 0.001 {
             send(stroke.end())
             send(stroke.begin(at: arrowStart(for: held.direction)))
         } else {
@@ -390,7 +378,6 @@ public final class MirrorNSView: NSView {
 
     private func pressure(for action: TouchAction) -> Float { action == .up ? 0 : 1 }
 
-    /// Tells the keymap where the pointer is on the phone's screen, for skills that are aimed with the mouse.
     private func reportPointer(_ event: NSEvent) {
         let point = convert(event.locationInWindow, from: nil)
         let topLeftOrigin = CGPoint(x: point.x, y: bounds.height - point.y)
@@ -405,7 +392,7 @@ public final class MirrorNSView: NSView {
 
     private func devicePosition(of event: NSEvent) -> TouchPosition? {
         let point = convert(event.locationInWindow, from: nil)
-        let topLeftOrigin = CGPoint(x: point.x, y: bounds.height - point.y) // AppKit's y grows upward
+        let topLeftOrigin = CGPoint(x: point.x, y: bounds.height - point.y)
         return CoordinateMapper(viewSize: bounds.size, frameSize: videoSize).touchPosition(forViewPoint: topLeftOrigin)
     }
 
@@ -432,20 +419,16 @@ public final class MirrorNSView: NSView {
         }
     }
 
-    /// Shift, Option and Control go to the phone with the key, so Shift+arrows select text and Option+Delete removes a word.
     private static func meta(of event: NSEvent) -> KeyMeta {
         var meta: KeyMeta = []
         if event.modifierFlags.contains(.shift) { meta.insert(.shift) }
         if event.modifierFlags.contains(.option) { meta.insert(.alt) }
-        // ⌘Return is "send" in chat apps (Ctrl+Enter on Android); a multi-line chat field makes plain Return a new line, as on the phone itself.
         if event.modifierFlags.contains(.control) || (event.modifierFlags.contains(.command) && [36, 76].contains(event.keyCode)) { meta.insert(.ctrl) }
         return meta
     }
 
-    /// True while the phone's picture has the keyboard, which decides whether Edit → Copy and friends act on the phone or on a text field.
     @MainActor static var hasKeyboardFocus: Bool { NSApp.keyWindow?.firstResponder is MirrorNSView }
 
-    /// Shift, Control and Option arrive as flag changes rather than key presses.
     public override func flagsChanged(with event: NSEvent) {
         guard let modifier = KeyNames.modifier(for: event.keyCode) else { return }
         let flag: NSEvent.ModifierFlags
@@ -457,7 +440,6 @@ public final class MirrorNSView: NSView {
         if event.modifierFlags.contains(flag) { _ = keymap.keyDown(event.keyCode) } else { _ = keymap.keyUp(event.keyCode) }
     }
 
-    /// Printable characters only; Command/Control chords belong to the menu bar.
     private func typedText(from event: NSEvent) -> String? {
         guard event.modifierFlags.isDisjoint(with: [.command, .control]),
               let characters = event.characters, !characters.isEmpty,

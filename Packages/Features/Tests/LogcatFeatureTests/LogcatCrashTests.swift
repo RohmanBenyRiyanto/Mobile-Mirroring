@@ -4,7 +4,6 @@ import TestSupport
 @testable import DomainModels
 @testable import LogcatFeature
 
-/// Lines captured from a Samsung SM-S911B (Android 17) when Settings was crashed with `am crash`.
 private enum Real {
     static let lines = [
         "11-27 16:22:43.880  2651  2651 D AndroidRuntime: Shutting down VM",
@@ -31,7 +30,6 @@ private enum Real {
 }
 
 private func line(_ pid: Int, _ tag: String, _ message: String, level: Character = "I", tid: Int? = nil) -> String {
-    // logcat pads short tags to 8 characters and never cuts long ones
     let paddedTag = tag + String(repeating: " ", count: max(0, 8 - tag.count))
     return "11-27 16:30:00.000 \(String(format: "%5d", pid)) \(String(format: "%5d", tid ?? pid)) \(level) \(paddedTag): \(message)"
 }
@@ -197,7 +195,7 @@ final class LogcatModelScopeTests: XCTestCase {
     }
 
     func testACrashAtLaunchFromAnUnknownProcessIsStillCaught() {
-        let model = model(knownProcesses: nil) // the app started and died before its pid was ever listed
+        let model = model(knownProcesses: nil)
         model.ingest([line(8123, "AndroidRuntime", "Shutting down VM", level: "D"),
                       line(8123, "AndroidRuntime", "FATAL EXCEPTION: main", level: "E"),
                       line(8123, "AndroidRuntime", "Process: com.android.settings, PID: 8123", level: "E"),

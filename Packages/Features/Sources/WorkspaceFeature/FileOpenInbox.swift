@@ -1,6 +1,5 @@
 import Foundation
 
-/// Holds files that arrive before a handler is set, such as a Finder double-click that launches the app.
 public final class FileOpenInbox {
     public var handler: (([URL]) -> Void)? {
         didSet {

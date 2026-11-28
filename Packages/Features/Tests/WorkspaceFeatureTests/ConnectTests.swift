@@ -90,7 +90,6 @@ final class ConnectTextTests: XCTestCase {
     }
 }
 
-/// Both languages must be complete: every text the Connect window uses has an English and an Indonesian entry.
 final class LocalizationCatalogTests: XCTestCase {
     private func catalog() throws -> [String: [String: Any]] {
         let data = try Data(contentsOf: projectFile("Resources/Localizable.xcstrings"))
@@ -132,7 +131,6 @@ final class LocalizationCatalogTests: XCTestCase {
             return (FileManager.default.enumerator(at: folder, includingPropertiesForKeys: nil)?.allObjects as? [URL] ?? []).filter { $0.pathExtension == "swift" }
         }
         XCTAssertGreaterThan(files.count, 5)
-        // Literals passed straight to the common SwiftUI text initialisers and to String(localized:).
         let pattern = try NSRegularExpression(pattern: #"(?:\b(?:Text|Button|Toggle|Menu|CommandMenu|Picker|Section|Label|SectionLabel|SettingsRow|SettingsCard|PresetCard|LabeledContent)\(|footer:|String\(localized:|\.help\(|\.accessibilityLabel\(|RailButton\(title:)\s*"([^"\\]+(?:\\.[^"\\]*)*)""#)
         var missing: Set<String> = []
         for file in files {
@@ -141,12 +139,11 @@ final class LocalizationCatalogTests: XCTestCase {
                 guard let range = Range(match.range(at: 1), in: source) else { continue }
                 var key = String(source[range])
                 key = key.replacingOccurrences(of: #"\\\([^)]*\)"#, with: "%lld", options: .regularExpression)
-                // An interpolation may be a number (%lld) or text (%@); the catalog keeps whichever the type gives.
                 if key.contains("%lld"), strings[key] == nil {
                     let shape = NSRegularExpression.escapedPattern(for: key).replacingOccurrences(of: "%lld", with: "(?:%lld|%@)")
                     if strings.keys.contains(where: { $0.range(of: "^" + shape + "$", options: .regularExpression) != nil }) { continue }
                 }
-                if key.contains("%lld") && !key.contains(" ") { continue } // "\(number)" alone
+                if key.contains("%lld") && !key.contains(" ") { continue }
                 if strings[key] == nil { missing.insert(key) }
             }
         }
@@ -193,7 +190,6 @@ final class ConnectRenderTests: XCTestCase {
     }
 }
 
-/// A throw-away preferences store, so a test never changes what the app (or another test) remembers.
 func isolatedDefaults() -> UserDefaults {
     let name = "benzmirror.tests.\(UUID().uuidString)"
     let defaults = UserDefaults(suiteName: name)!

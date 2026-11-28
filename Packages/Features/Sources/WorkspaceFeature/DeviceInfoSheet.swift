@@ -32,7 +32,6 @@ struct DeviceInfoSheet: View {
         }
         .frame(width: 440, height: 400)
         .task {
-            // Before mirroring starts there is no session, so ask the selected phone directly.
             defer { isLoading = false }
             guard model.deviceInfo == nil, let adb = model.adb, let serial = model.targetSerial else { return }
             fetched = try? await Task.detached { try DeviceInfo.fetch(adb: adb, serial: serial) }.value

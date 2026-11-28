@@ -5,9 +5,6 @@ import TestSupport
 @testable import DomainModels
 @testable import CoreTestSupport
 
-/// Runs a real mirroring session against a connected phone. Opt-in, because it needs hardware:
-///
-///     BENZMIRROR_TEST_SERIAL=<adb serial> swift test --filter DeviceIntegrationTests
 final class DeviceIntegrationTests: XCTestCase {
     private final class EventLog: @unchecked Sendable {
         private let lock = NSLock()
@@ -67,7 +64,6 @@ final class DeviceIntegrationTests: XCTestCase {
         try await Task.sleep(for: .seconds(2))
         let idle = session.statistics.snapshot().framesPerSecond
         let size = try XCTUnwrap(log.snapshot.size)
-        // Settings' search bar sits near the top; a tap there animates the screen, which shows up as a burst of frames.
         let point = TouchPosition(x: Int32(size.width * 0.5), y: Int32(size.height * 0.12), frameWidth: UInt16(size.width), frameHeight: UInt16(size.height))
         session.send(.touch(.down, point, pressure: 1))
         try await Task.sleep(for: .milliseconds(80))
@@ -115,7 +111,6 @@ final class DeviceIntegrationTests: XCTestCase {
         XCTAssertGreaterThan(fps, 8, "a drag then release should scroll and keep flinging")
     }
 
-    /// Measures the virtual display at several sizes and codecs. Prints a table; asserts only that frames flow.
     func testVirtualDisplaySizeAndCodecTable() async throws {
         guard let serial = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_SERIAL"], ProcessInfo.processInfo.environment["BENZMIRROR_TEST_VD_TABLE"] != nil else { throw XCTSkip("Set BENZMIRROR_TEST_SERIAL and BENZMIRROR_TEST_VD_TABLE") }
         let app = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_VD_APP"] ?? "com.android.settings"
@@ -134,7 +129,6 @@ final class DeviceIntegrationTests: XCTestCase {
                 session.send(.resizeDisplay(width: UInt16(w), height: UInt16(h)))
                 try await Task.sleep(for: .seconds(1.5))
                 _ = session.statistics.snapshot()
-                // Keep the picture moving so there is something to encode.
                 let end = Date().addingTimeInterval(4)
                 var up = true
                 while Date() < end {
@@ -177,7 +171,7 @@ final class DeviceIntegrationTests: XCTestCase {
         settings.quality = try XCTUnwrap(VideoQuality.values(for: preset))
         let expectsNativeSize = preset == .gaming
         settings.obsStreamEnabled = true
-        settings.obsStreamPort = 0 // any free port
+        settings.obsStreamPort = 0
 
         let session = ScrcpySession(adb: adb, serial: serial, settings: settings)
         let log = EventLog()
@@ -192,7 +186,6 @@ final class DeviceIntegrationTests: XCTestCase {
         viewer.setTimeouts(seconds: 3)
         try viewer.write(Data("GET /live.ts HTTP/1.1\r\nHost: localhost\r\n\r\n".utf8))
 
-        // A still screen sends few frames, so the notification shade is toggled to keep the stream moving.
         var received = Data()
         let deadline = Date().addingTimeInterval(6)
         var nextToggle = Date()
@@ -223,7 +216,7 @@ final class DeviceIntegrationTests: XCTestCase {
 
         let headerEnd = try XCTUnwrap(received.range(of: Data("\r\n\r\n".utf8)), "no HTTP response")
         var body = Data(received[headerEnd.upperBound...])
-        body.removeLast(body.count % 188) // the last packet may still be in flight
+        body.removeLast(body.count % 188)
         XCTAssertGreaterThan(body.count, 188 * 100)
 
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)

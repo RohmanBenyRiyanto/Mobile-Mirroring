@@ -2,7 +2,6 @@ import CoreGraphics
 import Foundation
 import SwiftUI
 
-/// Parses SVG path data into a SwiftUI `Path`. Only absolute commands are supported (M, L, H, V, C, A, Z).
 public enum SVGPath {
     public static func parse(_ data: String) -> Path? {
         var scanner = Scanner(string: data)
@@ -49,7 +48,6 @@ public enum SVGPath {
         return path
     }
 
-    /// Converts an SVG arc, given by its endpoints, into cubic curves.
     private static func addArc(to path: inout Path, from p0: CGPoint, to p1: CGPoint, rx rxIn: CGFloat, ry ryIn: CGFloat,
                                rotation: CGFloat, largeArc: Bool, sweep: Bool) {
         guard p0 != p1 else { return }

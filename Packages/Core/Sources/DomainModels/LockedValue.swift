@@ -1,6 +1,5 @@
 import Foundation
 
-/// A value that may be read and written from several threads.
 public final class LockedValue<Value>: @unchecked Sendable {
     private let lock = NSLock()
     private var value: Value

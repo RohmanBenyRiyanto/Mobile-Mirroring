@@ -102,7 +102,6 @@ final class SettingsCompatibilityTests: XCTestCase {
     }
 }
 
-/// The whole chain, with the phone replaced by a script of "which app is in front".
 @MainActor
 final class AutoKeymapSessionTests: XCTestCase {
     private final class Script: @unchecked Sendable {
@@ -125,7 +124,7 @@ final class AutoKeymapSessionTests: XCTestCase {
     }
 
     private func makeRig(settings: MirrorSettings = MirrorSettings(), loadSucceeds: Bool = true) -> Rig {
-        let adb = ADB(executable: URL(fileURLWithPath: "/usr/bin/false")) // never used: nothing is connected
+        let adb = ADB(executable: URL(fileURLWithPath: "/usr/bin/false"))
         let session = DeviceSession(adb: adb, serial: "fake", settings: settings, cursorCapture: FakeCursorCapture())
         let loads = LoadLog()
         session.keymapIndex = { ["com.game.one": "one", "com.game.two": "two"] }
@@ -177,7 +176,7 @@ final class AutoKeymapSessionTests: XCTestCase {
         let rig = makeRig()
         defer { rig.session.stop() }
         rig.session.keymap.load(Keymap(), profile: ProfileSummary(id: "mine", name: "Mine", modified: Date()))
-        rig.session.keymap.isEnabled = true // by hand
+        rig.session.keymap.isEnabled = true
 
         rig.script.set("com.android.settings")
         try? await Task.sleep(for: .milliseconds(200))
@@ -229,7 +228,7 @@ final class AutoKeymapSessionTests: XCTestCase {
         defer { rig.session.stop() }
         rig.script.set("com.game.one")
         await waitUntil("on") { rig.session.keymap.isEnabled }
-        rig.script.set(nil) // a transition between screens
+        rig.script.set(nil)
         try? await Task.sleep(for: .milliseconds(200))
         XCTAssertTrue(rig.session.keymap.isEnabled)
     }

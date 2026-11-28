@@ -6,7 +6,6 @@ import TestSupport
 @testable import InspectorFeature
 
 final class DesignTests: XCTestCase {
-    /// A PNG whose left half is pure red and right half pure blue, 10×20 pixels.
     private func twoColorPNG() throws -> Data {
         let rep = try XCTUnwrap(NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 10, pixelsHigh: 20, bitsPerSample: 8, samplesPerPixel: 4,
                                                  hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0))
@@ -19,12 +18,11 @@ final class DesignTests: XCTestCase {
     // MARK: Grid
 
     func testGridLinesAreEveryStepInDP() {
-        // 1080 px wide at 2.5 (400 dpi) = 432 dp. An 8 dp step is 20 px.
         let lines = DesignGrid.lines(extentPixels: 1080, densityScale: 2.5, stepDP: 8, viewLength: 432)
-        XCTAssertEqual(lines.count, 53) // 8, 16 … 424 (432 itself is the edge)
+        XCTAssertEqual(lines.count, 53)
         XCTAssertEqual(lines[0].ratio, 20.0 / 1080, accuracy: 1e-9)
         XCTAssertFalse(lines[0].isMajor)
-        XCTAssertTrue(lines[3].isMajor) // every 4th: 32 dp
+        XCTAssertTrue(lines[3].isMajor)
         XCTAssertEqual(lines[3].ratio, 80.0 / 1080, accuracy: 1e-9)
     }
 
@@ -74,7 +72,7 @@ final class DesignTests: XCTestCase {
         XCTAssertEqual(red.hex, "#FF0000")
         XCTAssertEqual(red.rgbText, "rgb(255, 0, 0)")
         XCTAssertEqual(image.color(atRatio: CGPoint(x: 0.9, y: 0.5))?.hex, "#0000FF")
-        XCTAssertEqual(image.color(atRatio: CGPoint(x: 1, y: 1))?.x, 9) // the far edge is the last pixel, not past it
+        XCTAssertEqual(image.color(atRatio: CGPoint(x: 1, y: 1))?.x, 9)
         XCTAssertNil(image.color(atRatio: CGPoint(x: 1.01, y: 0.5)))
         XCTAssertNil(image.color(atRatio: CGPoint(x: -0.1, y: 0.5)))
     }
@@ -125,7 +123,7 @@ final class DesignTests: XCTestCase {
         XCTAssertTrue(design.capturesPointer)
         XCTAssertEqual(fetches, 0)
         design.pointerMoved(to: CGPoint(x: 0.5, y: 0.5))
-        XCTAssertNil(design.copyColor()) // only the colour picker copies
+        XCTAssertNil(design.copyColor())
     }
 
     @MainActor

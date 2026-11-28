@@ -3,7 +3,6 @@ import XCTest
 @testable import Persistence
 
 final class DeviceInfoTests: XCTestCase {
-    /// Captured from a Samsung SM-S911B on Android 17.
     private let real = """
     Physical size: 1080x2340
     Physical density: 480
@@ -110,7 +109,6 @@ final class CoordinateMapperTests: XCTestCase {
     }
 
     func testTheSameRatioLandsOnTheSameSpotOnADifferentPhone() throws {
-        // A keymap stored as a ratio must follow the phone, not the pixel grid.
         let small = CoordinateMapper(viewSize: CGSize(width: 360, height: 640), frameSize: CGSize(width: 720, height: 1280))
         let large = CoordinateMapper(viewSize: CGSize(width: 800, height: 1280), frameSize: CGSize(width: 1600, height: 2560))
         let button = CGPoint(x: 0.85, y: 0.9)
@@ -132,7 +130,6 @@ final class CoordinateMapperTests: XCTestCase {
 
     func testDensityIndependentPixelsUseThePhonesRealScreenNotTheDownscaledFrame() throws {
         let info = try XCTUnwrap(DeviceInfoParser.parse("Physical size: 1080x2340\nPhysical density: 480"))
-        // The stream is downscaled to 540x1170, but the phone is still 360 x 780 dp.
         let mapper = CoordinateMapper(viewSize: CGSize(width: 540, height: 1170), frameSize: CGSize(width: 540, height: 1170), device: info)
         let dp = try XCTUnwrap(mapper.dp(forRatio: CGPoint(x: 0.5, y: 0.5)))
         XCTAssertEqual(dp.x, 180, accuracy: 0.001)

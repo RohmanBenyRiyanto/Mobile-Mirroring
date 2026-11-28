@@ -29,11 +29,9 @@ final class TransportStreamTests: XCTestCase {
         XCTAssertEqual(tables.count, 376)
         XCTAssertEqual(tables[0], 0x47)
         XCTAssertEqual(tables[188], 0x47)
-        // A PSI section ending with its CRC must itself have a CRC of zero.
-        XCTAssertEqual(TransportStreamMuxer.crc32(tables[5..<21]), 0) // the 16-byte PAT section, CRC included
+        XCTAssertEqual(TransportStreamMuxer.crc32(tables[5..<21]), 0)
     }
 
-    /// Every size around the 184-byte payload boundary must pack into whole packets and read back unchanged.
     func testPacketizationRoundTripsForEveryPayloadSize() throws {
         for size in 1...700 {
             var muxer = TransportStreamMuxer(codec: .h264, includesAudio: true)
@@ -76,7 +74,7 @@ final class TransportStreamTests: XCTestCase {
         for index in 0..<10 {
             frames += encoder.encode(Data(count: 1_024 * 4), presentationTime: Int64(index) * 21_333)
         }
-        XCTAssertGreaterThanOrEqual(frames.count, 8) // the encoder holds back one block of priming
+        XCTAssertGreaterThanOrEqual(frames.count, 8)
         for frame in frames {
             XCTAssertEqual(frame.adts[0], 0xFF)
             XCTAssertEqual(frame.adts[1] & 0xF0, 0xF0)
@@ -108,9 +106,9 @@ final class TransportStreamTests: XCTestCase {
         for (index, slice) in slices.enumerated() {
             let time = Int64(index) * 33_333
             server.submitVideo(annexBStartCode + slice, presentationTime: time, isKeyFrame: slice[0] & 0x1F == 5)
-            server.submitAudio(Data(count: 1_600 * 4), presentationTime: time) // 33 ms of silence per frame
+            server.submitAudio(Data(count: 1_600 * 4), presentationTime: time)
         }
-        try await Task.sleep(for: .milliseconds(600)) // let the queues drain
+        try await Task.sleep(for: .milliseconds(600))
         server.stop()
 
         var response = Data()
@@ -166,7 +164,6 @@ final class TransportStreamTests: XCTestCase {
         let body = Data(response[headerEnd.upperBound...])
         XCTAssertEqual(body.first, 0x47)
         XCTAssertEqual(body.count % 188, 0)
-        // PAT, PMT, then the key frame: three packets minimum, and nothing before the PAT.
         XCTAssertGreaterThanOrEqual(body.count, 188 * 3)
         XCTAssertEqual(Int(body[1] & 0x1F) << 8 | Int(body[2]), 0)
     }
@@ -192,7 +189,6 @@ final class TransportStreamTests: XCTestCase {
 
     // MARK: Helpers
 
-    /// Concatenates the payload bytes of every packet on `pid`, validating framing along the way.
     private func extractPayload(from stream: Data, pid: UInt16) throws -> Data {
         var payload = Data()
         for start in stride(from: 0, to: stream.count, by: 188) {

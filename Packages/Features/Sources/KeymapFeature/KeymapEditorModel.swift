@@ -4,7 +4,6 @@ import Persistence
 
 @MainActor
 public final class KeymapEditorModel: ObservableObject {
-    /// Macros come from recording, so they are not listed here.
     public enum ElementKind: CaseIterable, Identifiable {
         case button, joystick, freeLook, mouseButton, skillShot, turbo, swipe
 
@@ -30,14 +29,12 @@ public final class KeymapEditorModel: ObservableObject {
     @Published public private(set) var isDirty = false
     @Published public private(set) var canUndo = false
     @Published public private(set) var canRedo = false
-    /// The saved profile being edited; nil until the keymap is first saved.
     public private(set) var profileID: String?
 
     private var undoStack: [Keymap] = []
     private var redoStack: [Keymap] = []
     private static let undoLimit = 100
 
-    /// What was last saved (or loaded), for Revert.
     private var saved: (keymap: Keymap, name: String, package: String) = (Keymap(), "", "")
 
     public init(profile: Profile<Keymap>?) {
@@ -48,7 +45,6 @@ public final class KeymapEditorModel: ObservableObject {
         saved = (keymap, name, package)
     }
 
-    /// An empty keymap for a game that has none yet.
     public convenience init(newFor package: String, name: String) {
         self.init(profile: nil)
         self.package = package
@@ -57,7 +53,6 @@ public final class KeymapEditorModel: ObservableObject {
         isDirty = true
     }
 
-    /// Goes back to what was last saved. It is one undo step, so it can itself be undone.
     public func revert() {
         guard isDirty else { return }
         checkpoint()
@@ -74,7 +69,6 @@ public final class KeymapEditorModel: ObservableObject {
 
     // MARK: Adding and removing
 
-    /// Adds an element and selects it. Only one free-look area is allowed, so adding another selects the existing one.
     @discardableResult
     public func add(_ kind: ElementKind) -> UUID {
         if kind == .freeLook, let existing = keymap.elements.first(where: { if case .aim = $0.action { return true } else { return false } }) {
@@ -88,7 +82,6 @@ public final class KeymapEditorModel: ObservableObject {
         return element.id
     }
 
-    /// Menu choices; tap, hold and toggle are separate entries for the same button.
     public enum Choice: CaseIterable {
         case tap, hold, toggle, joystick, aim, skillShot, turbo, swipe
     }
@@ -123,7 +116,7 @@ public final class KeymapEditorModel: ObservableObject {
     @discardableResult
     public func duplicate(_ id: UUID) -> UUID? {
         guard var copy = element(id) else { return nil }
-        if case .aim = copy.action { return nil } // only one free-look area
+        if case .aim = copy.action { return nil }
         checkpoint()
         copy.id = UUID()
         copy.position = NormalizedPoint(x: copy.position.x + 0.03, y: copy.position.y + 0.03).clamped
@@ -134,7 +127,6 @@ public final class KeymapEditorModel: ObservableObject {
 
     // MARK: Changing
 
-    /// Records an undo step. Call once when a drag or slider begins, then use the continuous setters.
     public func checkpoint() {
         undoStack.append(keymap)
         if undoStack.count > Self.undoLimit { undoStack.removeFirst() }
@@ -147,7 +139,6 @@ public final class KeymapEditorModel: ObservableObject {
         change(id) { $0.position = point.clamped }
     }
 
-    /// Moves the end of a swipe.
     public func moveSwipeEnd(of id: UUID, to point: NormalizedPoint) {
         change(id) { element in
             guard case let .swipe(key, _, duration) = element.action else { return }
@@ -162,21 +153,18 @@ public final class KeymapEditorModel: ObservableObject {
         }
     }
 
-    /// Applies a change without adding an undo step (the caller has called `checkpoint()`).
     public func change(_ id: UUID, _ transform: (inout KeymapElement) -> Void) {
         guard let index = keymap.elements.firstIndex(where: { $0.id == id }) else { return }
         transform(&keymap.elements[index])
         isDirty = true
     }
 
-    /// A one-off change with its own undo step (pickers, key choices, text).
     public func update(_ id: UUID, _ transform: (inout KeymapElement) -> Void) {
         guard element(id) != nil else { return }
         checkpoint()
         change(id, transform)
     }
 
-    /// Binds a controller button to one of the keyboard keys this keymap uses, or clears the binding.
     public func setGamepad(_ input: GamepadInput, key: UInt16?) {
         checkpoint()
         var bindings = keymap.gamepad ?? [:]
@@ -186,7 +174,6 @@ public final class KeymapEditorModel: ObservableObject {
 
     public func gamepadKey(for input: GamepadInput) -> UInt16? { keymap.key(for: input) }
 
-    /// Every key the keymap's elements use, with the name of the element, for the controller pickers.
     public var usableKeys: [(key: UInt16, label: String)] {
         var seen = Set<UInt16>(), list: [(UInt16, String)] = []
         for element in keymap.elements {
@@ -251,7 +238,6 @@ public final class KeymapEditorModel: ObservableObject {
 
     // MARK: Saving
 
-    /// The keymap as it would be saved, with the package trimmed and the result validated.
     public func validatedKeymap() throws -> Keymap {
         var result = keymap
         let trimmed = package.trimmingCharacters(in: .whitespaces)
@@ -259,7 +245,6 @@ public final class KeymapEditorModel: ObservableObject {
         return try result.validated()
     }
 
-    /// Saves into `store`: a new profile gets an id made from the package or the name; an existing one keeps its id.
     @discardableResult
     public func save(into store: ProfileStore<Keymap>) throws -> Profile<Keymap> {
         let validated = try validatedKeymap()
@@ -273,7 +258,6 @@ public final class KeymapEditorModel: ObservableObject {
         return saved
     }
 
-    /// An id for a new profile: the game's package if set, otherwise the name in lower-case letters and dashes.
     public func suggestedID(avoiding taken: Set<String>) -> String {
         let trimmedPackage = package.trimmingCharacters(in: .whitespaces)
         var base = ForegroundApp.isValidPackage(trimmedPackage) ? trimmedPackage : Self.slug(name)
@@ -320,7 +304,6 @@ public final class KeymapEditorModel: ObservableObject {
         }
     }
 
-    /// The first of a list of handy keys (Q, E, R, F, …) that nothing uses yet.
     public static func freeKey(avoiding used: Set<UInt16>) -> UInt16 {
         let candidates: [UInt16] = [12, 14, 15, 3, 8, 9, 7, 6, 5, 4, 17, 16, 18, 19, 20, 21]
         return candidates.first { !used.contains($0) } ?? 12

@@ -10,8 +10,6 @@ import CoreTestSupport
 @testable import Persistence
 @testable import WorkspaceFeature
 
-/// Runs every feature against a real phone. Opt in with `BENZMIRROR_TEST_SERIAL=<adb serial>`.
-/// Only reversible actions are used.
 final class DeviceFeatureTests: XCTestCase {
     private final class Events: @unchecked Sendable {
         private let lock = NSLock()
@@ -97,7 +95,6 @@ final class DeviceFeatureTests: XCTestCase {
         let shade = try screenshotDigest()
         XCTAssertNotEqual(home, shade, "the swipe did not change the screen")
 
-        // Harmless inside the open shade.
         session.send(.scroll(position(540, 900), horizontal: 0, vertical: -4))
         var pinch = PinchGesture(center: position(540, 900))
         session.send(.touch(.down, pinch.fingers.first, pressure: 1, pointer: .finger))
@@ -114,7 +111,6 @@ final class DeviceFeatureTests: XCTestCase {
         try await pause(1.2)
         XCTAssertNotEqual(try screenshotDigest(), shade, "Back did not close the shade")
 
-        // The panel messages and the remaining keys must be accepted without ending the session.
         session.send(.expandSettingsPanel)
         try await pause(0.8)
         XCTAssertNotEqual(try screenshotDigest(), home)
@@ -209,7 +205,6 @@ final class DeviceFeatureTests: XCTestCase {
 
         let url = workDirectory.appendingPathComponent("recording.mp4")
         try session.startRecording(to: url)
-        // Some motion so frames keep coming.
         session.send(.expandNotificationPanel)
         try await pause(1.5)
         session.send(.collapsePanels)
@@ -230,7 +225,6 @@ final class DeviceFeatureTests: XCTestCase {
         if !events.audioUnavailable {
             XCTAssertTrue(streams.contains { $0["codec_type"] as? String == "audio" }, "recording has no audio track")
         }
-        // Use the file's own timebase; the default null output rounds frame times and warns about non-monotonic dts.
         let decode = try runTool("ffmpeg", ["-v", "error", "-i", url.path, "-fps_mode", "passthrough", "-enc_time_base", "-1", "-f", "null", "-"])
         let packets = try runTool("ffprobe", ["-v", "error", "-select_streams", "v", "-show_entries", "packet=dts", "-of", "csv=p=0", url.path])
         let stamps = packets.output.split(whereSeparator: \.isNewline).compactMap { Int($0) }
@@ -267,7 +261,7 @@ final class DeviceFeatureTests: XCTestCase {
         let originalNight = try shell(["cmd", "uimode", "night"])
         let originalAnimation = try shell(["settings", "get", "global", "window_animation_scale"])
         let originalPointer = try shell(["settings", "get", "system", "pointer_location"])
-        defer { // always put the phone back exactly as it was
+        defer {
             let mode = originalNight.contains("yes") ? "yes" : originalNight.contains("no") ? "no" : "auto"
             _ = try? shell(["cmd", "uimode", "night", mode])
             for key in ["window_animation_scale", "transition_animation_scale", "animator_duration_scale"] {
@@ -345,7 +339,6 @@ final class DeviceFeatureTests: XCTestCase {
         print("DEVICE>> foreground settings=\(String(describing: detector.current))")
         XCTAssertTrue(settingsFound, "Settings not detected: \(String(describing: detector.current))")
 
-        // A system window over the app must not change the answer.
         _ = try shell(["cmd", "statusbar", "expand-notifications"])
         try await Task.sleep(for: .milliseconds(1200))
         XCTAssertEqual(detector.current?.package, "com.android.settings", "the notification shade must not hide the app")
@@ -403,7 +396,6 @@ final class DeviceFeatureTests: XCTestCase {
         XCTAssertNil(model.active)
     }
 
-    /// The same phone reached over USB and over Wi-Fi counts as two devices, so it exercises two sessions at once.
     @MainActor
     func testTwoSessionsRunAtOnce() async throws {
         guard ProcessInfo.processInfo.environment["BENZMIRROR_TEST_WIRELESS"] == "1" else {
@@ -449,7 +441,6 @@ final class DeviceFeatureTests: XCTestCase {
 
     // MARK: Keymap
 
-    /// The centre of Settings' search field as a fraction of the screen, found with uiautomator.
     private func settingsSearchFieldRatio() throws -> NormalizedPoint {
         _ = try shell(["am", "start", "-a", "android.settings.SETTINGS"])
         Thread.sleep(forTimeInterval: 2)
@@ -522,8 +513,6 @@ final class DeviceFeatureTests: XCTestCase {
         model.connect()
         try await waitUntil("mirroring starts") { model.isMirroring }
 
-        // A stick centred on the top edge with a long reach: holding "down" drags a finger from the status bar
-        // downwards, which pulls the notification shade open.
         let stick = KeymapElement(label: "Pull", position: NormalizedPoint(x: 0.5, y: 0.004),
                                   action: .joystick(up: 13, left: 0, down: 1, right: 2, radius: 0.4, response: 0.15))
         try XCTUnwrap(model.keymapStore).save(Profile(id: "live.stick", name: "Live stick", payload: Keymap(elements: [stick])))
@@ -534,7 +523,7 @@ final class DeviceFeatureTests: XCTestCase {
         let controller = try XCTUnwrap(model.active?.keymap)
         let home = try screenshotDigest()
         XCTAssertTrue(controller.keyDown(1))
-        try await Task.sleep(for: .seconds(1.2)) // eases down over ~0.15 s, then holds
+        try await Task.sleep(for: .seconds(1.2))
         let pulled = try screenshotDigest()
         XCTAssertTrue(controller.keyUp(1))
         try await Task.sleep(for: .seconds(0.8))
@@ -553,14 +542,13 @@ final class DeviceFeatureTests: XCTestCase {
         _ = try shell(["input", "keyevent", "KEYCODE_HOME"])
         try await Task.sleep(for: .seconds(1))
 
-        let cursor = FakeCursorCapture() // never lock the real pointer in a test
+        let cursor = FakeCursorCapture()
         let model = AppModel(keymapRoot: workDirectory.appendingPathComponent("keymaps"), cursorCapture: cursor)
         model.selectedSerial = serial
         try await waitUntil("the phone is listed") { model.selectedDevice?.isReady == true }
         model.connect()
         try await waitUntil("mirroring starts") { model.isMirroring }
 
-        // The look area sits on the top edge, so moving the mouse down drags a finger down from the status bar.
         let look = KeymapElement(label: "Look", position: NormalizedPoint(x: 0.5, y: 0.004),
                                  action: .aim(toggleKey: 50, sensitivity: 2, radius: 0.4))
         try XCTUnwrap(model.keymapStore).save(Profile(id: "live.aim", name: "Live aim", payload: Keymap(elements: [look])))
@@ -575,7 +563,7 @@ final class DeviceFeatureTests: XCTestCase {
         XCTAssertTrue(controller.keyDown(50))
         XCTAssertTrue(controller.isAiming)
         XCTAssertTrue(cursor.isCaptured)
-        for _ in 0..<5 { // 5 x 40 points x 2 px = 400 px of the 432 px reach
+        for _ in 0..<5 {
             XCTAssertTrue(controller.mouseMoved(deltaX: 0, deltaY: 40))
             try await Task.sleep(for: .milliseconds(30))
         }
@@ -609,8 +597,6 @@ final class DeviceFeatureTests: XCTestCase {
         model.connect()
         try await waitUntil("mirroring starts") { model.isMirroring }
 
-        // The skill button sits on the top edge and the hero just below it: a mouse further down makes the
-        // finger drag downwards, which pulls the notification shade open.
         let skill = KeymapElement(label: "Pull", position: NormalizedPoint(x: 0.5, y: 0.004),
                                   action: .skillShot(key: 12, cast: .onRelease, radius: 0.4, range: 0.2, hero: NormalizedPoint(x: 0.5, y: 0.05)))
         try XCTUnwrap(model.keymapStore).save(Profile(id: "live.skill", name: "Live skill", payload: Keymap(elements: [skill])))
@@ -758,7 +744,6 @@ final class DeviceFeatureTests: XCTestCase {
         try await Task.sleep(for: .seconds(1))
 
         let model = AppModel(keymapRoot: workDirectory.appendingPathComponent("keymaps"), cursorCapture: FakeCursorCapture())
-        // Two keymaps, each for a different "game". Settings and the Clock stand in for games.
         let store = try XCTUnwrap(model.keymapStore)
         try store.save(Profile(id: "settings-keys", name: "Settings keys", payload: Keymap(package: "com.android.settings")))
         try store.save(Profile(id: "no-package", name: "Unrelated", payload: Keymap()))
@@ -802,7 +787,6 @@ final class DeviceFeatureTests: XCTestCase {
         logcat.setForegroundPackage("com.android.settings")
         try await waitUntil("the app's processes are known") { logcat.knownProcessCount > 0 }
 
-        // Crash the app in front (the shell may report a permission problem for a second user; the crash still happens).
         _ = try? shell(["am", "crash", "com.android.settings"])
         try await waitUntil("the crash is flagged", timeout: 20) { !logcat.crashIDs.isEmpty }
         try await waitUntil("the system's note that the process died arrives", timeout: 10) { logcat.entries.contains { $0.kind == .processDied } }
@@ -816,7 +800,6 @@ final class DeviceFeatureTests: XCTestCase {
         XCTAssertTrue(block.contains { $0.message.contains("Process: com.android.settings") })
 
         XCTAssertGreaterThan(logcat.entries.count, 5)
-        // Lines of another process (the launcher, say) are kept only when they mention the app, as system notes about it do.
         let others = logcat.entries.filter { $0.pid.map(launcherPIDs.contains) == true }
         XCTAssertTrue(others.allSatisfy { $0.message.contains("com.android.settings") }, "a line of another app leaked through")
         print("DEVICE>> logcat scoped to Settings: kept=\(logcat.entries.count) crashes=\(logcat.crashIDs.count) blockLines=\(block.count)")
@@ -825,14 +808,13 @@ final class DeviceFeatureTests: XCTestCase {
     // MARK: Wireless
 
     func testWirelessRefusesWhenPhoneAndMacAreOnDifferentNetworks() throws {
-        let elsewhere = IPv4Interface(name: "en0", address: 0xC0A8_0105, prefix: 24) // 192.168.1.5
+        let elsewhere = IPv4Interface(name: "en0", address: 0xC0A8_0105, prefix: 24)
         XCTAssertThrowsError(try adb.enableWireless(serial: serial, macNetworks: [elsewhere])) { error in
             XCTAssertTrue(error.localizedDescription.contains("same network"), error.localizedDescription)
         }
         XCTAssertThrowsError(try adb.connect(address: "10.255.255.1:5555"))
     }
 
-    /// Drives the shade open and closed for a few seconds so the encoder has real motion, then reports the rates.
     private func measureUnderMotion(_ session: ScrcpySession) async throws -> StreamStatistics.Snapshot {
         _ = session.statistics.snapshot()
         for _ in 0..<5 {
@@ -844,8 +826,6 @@ final class DeviceFeatureTests: XCTestCase {
         return session.statistics.snapshot()
     }
 
-    /// Needs the Mac on the phone's network (for example its hotspot). Opt-in because it briefly puts adbd in
-    /// TCP mode; the test switches the phone back to USB mode afterwards.
     func testWirelessAdbWorksOverThePhonesNetwork() async throws {
         guard ProcessInfo.processInfo.environment["BENZMIRROR_TEST_WIRELESS"] == "1" else {
             throw XCTSkip("Set BENZMIRROR_TEST_WIRELESS=1 to switch the phone to wireless adb")

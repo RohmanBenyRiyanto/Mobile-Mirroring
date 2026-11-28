@@ -9,13 +9,11 @@ import UniformTypeIdentifiers
 
 // MARK: Model
 
-/// Sends the phone's traffic through a logging proxy on this Mac. The phone's own proxy setting is put back when it stops.
 @MainActor
 public final class TrafficModel: ObservableObject {
     @Published public private(set) var log = APICallLog()
     @Published public private(set) var isOn = false
     @Published public private(set) var failure: String?
-    /// The pretend network speed; applies while traffic goes through this Mac.
     @Published public var profile: NetworkProfile = .unlimited {
         didSet { proxy?.setProfile(profile) }
     }
@@ -26,7 +24,6 @@ public final class TrafficModel: ObservableObject {
     private let buffer = LockedValue<[LoggingProxy.Report]>([])
     private var flushTask: Task<Void, Never>?
 
-    // Looking inside a debuggable app (HTTPS contents), a second source for the same log.
     public enum InspectorStatus: Equatable { case idle, starting, running, failed(String) }
     @Published public private(set) var inspectorStatus = InspectorStatus.idle
     @Published public private(set) var inspectedApp: String?
@@ -36,7 +33,6 @@ public final class TrafficModel: ObservableObject {
     private let adb: ADB?
     private let serial: String?
 
-    /// `run` executes adb arguments for this phone (the serial is already included). `adb` and `serial` enable looking inside apps.
     public init(run: @escaping @Sendable ([String]) throws -> String, adb: ADB? = nil, serial: String? = nil) {
         self.run = run
         self.adb = adb
@@ -45,7 +41,6 @@ public final class TrafficModel: ObservableObject {
 
     public var canInspectApps: Bool { adb != nil && serial != nil }
 
-    /// Debug apps installed on the phone, for the menu.
     public func loadDebuggableApps() {
         let run = self.run
         Task {
@@ -90,7 +85,6 @@ public final class TrafficModel: ObservableObject {
         }
     }
 
-    /// For the end of a session or quitting: the proxy and the inspector both leave the phone as it was.
     public func stopEverything() {
         stop()
         inspector?.cleanUpPhoneNow()

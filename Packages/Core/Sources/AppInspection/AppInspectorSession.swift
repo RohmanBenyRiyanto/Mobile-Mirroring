@@ -27,9 +27,6 @@ public enum AppInspectorError: LocalizedError, Equatable {
     }
 }
 
-/// Looks inside one running, debuggable app: pushes Android Studio's profiler daemon and agent to the phone, attaches the agent to the app and
-/// starts the network inspector. HTTP and HTTPS calls arrive as `APICall`s with headers and bodies, because the agent sees them before they
-/// are encrypted. Nothing is installed in the app and no certificate is needed.
 public final class AppInspectorSession: @unchecked Sendable {
     public let package: String
     private let adb: ADB
@@ -68,7 +65,6 @@ public final class AppInspectorSession: @unchecked Sendable {
 
     // MARK: Start and stop
 
-    /// `opensApp`: if the app is not running, it is opened on the phone first (picking the app in the list is the user's request to look into it).
     public func start(opensApp: Bool = false) async throws {
         let abiText = try shell("getprop ro.product.cpu.abi")
         guard let abi = PhoneABI(abi: abiText) else { throw AppInspectorError.unsupportedPhone(abiText.trimmingCharacters(in: .whitespacesAndNewlines)) }
@@ -109,8 +105,6 @@ public final class AppInspectorSession: @unchecked Sendable {
         failPending(AppInspectorError.noAnswer(String(localized: "stopping")))
     }
 
-    /// Puts the phone back without waiting for anything async: the daemon this session started stops and the port forward goes away.
-    /// For quitting, when there is no time left for `stop()`.
     public func cleanUpPhoneNow() {
         if ownsDaemon { _ = try? shell("pkill -x transport; true", timeout: 5) }
         if let forwardPort { _ = try? adb.run(["-s", serial, "forward", "--remove", "tcp:\(forwardPort)"], timeout: 5) }
@@ -123,7 +117,6 @@ public final class AppInspectorSession: @unchecked Sendable {
         String(decoding: try adb.run(["-s", serial, "shell", command], timeout: timeout), as: UTF8.self)
     }
 
-    /// Pushes the files the profiler needs, skipping the ones already there with the same size (Android Studio may have put them there).
     private func prepare(files: InspectorFiles, abi: PhoneABI) throws {
         _ = try shell("mkdir -p \(PhoneInspectorPaths.directory)")
         let uploads: [(URL, String, Bool)] = [
@@ -181,7 +174,6 @@ public final class AppInspectorSession: @unchecked Sendable {
         var request = Profiler_Proto_ExecuteRequest()
         request.command = command
         var lastError: Error?
-        // The daemon needs a moment to open its socket after it was started.
         for _ in 0..<10 {
             do {
                 _ = try await client.execute(request, callOptions: CallOptions(timeLimit: .timeout(.seconds(Int64(timeout)))))
@@ -209,7 +201,6 @@ public final class AppInspectorSession: @unchecked Sendable {
         command.beginSession = begin
         try await execute(command)
 
-        // An app that already has the agent from an earlier look does not announce it again, so waiting has an end.
         let status = await withTaskGroup(of: Profiler_Proto_AgentData.Status?.self) { group in
             group.addTask { [self] in await waitForAgent() }
             group.addTask { try? await Task.sleep(for: .seconds(8)); return nil }
@@ -220,7 +211,6 @@ public final class AppInspectorSession: @unchecked Sendable {
         if status == .unattachable { throw AppInspectorError.notDebuggable(package) }
     }
 
-    /// Waits until the agent announces itself; ends early when the caller cancels.
     private func waitForAgent() async -> Profiler_Proto_AgentData.Status? {
         while !Task.isCancelled {
             if let found = state.withLock({ $0.agentStatus }) { return found }
@@ -315,7 +305,6 @@ public final class AppInspectorSession: @unchecked Sendable {
         }
     }
 
-    /// Large events arrive as numbered chunks in separate events; they are joined here and decoded once all are there.
     private func storeChunk(id: Int64, payload: Profiler_Proto_AppInspectionPayload) {
         let complete = state.withLock { s -> Data? in
             s.chunks[id, default: [:]][payload.chunkIndex] = payload.chunk
@@ -329,7 +318,6 @@ public final class AppInspectorSession: @unchecked Sendable {
     }
 
     private func decodePayload(_ id: Int64) {
-        // The chunks normally come first; if they are not all here yet, they decode themselves when the last one arrives.
         let ready = state.withLock { s -> Data? in
             guard let count = s.chunkCounts[id], UInt32(s.chunks[id]?.count ?? 0) >= count else { return nil }
             let joined = (0..<count).reduce(into: Data()) { $0.append(s.chunks[id]?[$1] ?? Data()) }
@@ -346,7 +334,6 @@ public final class AppInspectorSession: @unchecked Sendable {
     }
 }
 
-/// Single-quotes a value for the phone's shell.
 enum PhoneTransferQuote {
     static func quote(_ text: String) -> String { PhoneTransfer.shellQuoted(text) }
 }

@@ -2,7 +2,6 @@ import DomainModels
 import Foundation
 import Networking
 
-/// Pure logic, so every screen state can be tested without a phone.
 public struct ConnectStatus: Equatable {
     public enum Banner: Equatable {
         case adbMissing
@@ -12,7 +11,6 @@ public struct ConnectStatus: Equatable {
         case failed(String)
     }
 
-    /// A failed start is shown even when the phone is ready, so the user can try again.
     public var banner: Banner?
     public var canStart: Bool
     public var isStarting: Bool
@@ -48,7 +46,6 @@ public enum ConnectText {
         "\(transport(of: device)) · \(device.serial)"
     }
 
-    /// Wireless serials contain a colon (host:port); USB serials never do.
     public static func transport(of device: AndroidDevice) -> String {
         device.serial.contains(":") ? String(localized: "Wi-Fi") : String(localized: "USB")
     }
@@ -73,7 +70,6 @@ public enum ConnectText {
         return "\(quality.codec.shortName) · \(resolution) · \(quality.maxFPS) fps"
     }
 
-    /// The usual choices, plus the current value when it is not one of them so the picker never shows nothing.
     public static func options(_ usual: [Int], including current: Int) -> [Int] {
         usual.contains(current) ? usual : (usual + [current]).sorted()
     }

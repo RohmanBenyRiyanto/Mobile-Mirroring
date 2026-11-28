@@ -3,13 +3,11 @@ import DomainModels
 import SwiftUI
 import Theme
 
-/// Detailed video controls, used by the Connect window's Advanced section and Settings › Video.
 public struct QualityRows: View {
     @Binding public var settings: MirrorSettings
 
     public init(settings: Binding<MirrorSettings>) { _settings = settings }
 
-    /// Every control sits in the same right-aligned column, so the rows line up whatever they hold.
     private static let controlWidth: CGFloat = 150
 
     private func stepperValue(_ value: String, unit: LocalizedStringKey, @ViewBuilder stepper: () -> some View) -> some View {

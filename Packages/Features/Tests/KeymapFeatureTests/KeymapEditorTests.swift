@@ -58,7 +58,7 @@ final class KeymapEditorModelTests: XCTestCase {
         editor.checkpoint()
         editor.move(id, to: NormalizedPoint(x: 1.5, y: -0.3))
         XCTAssertEqual(editor.element(id)?.position, NormalizedPoint(x: 1, y: 0))
-        editor.moveHero(of: id, to: NormalizedPoint(x: 0.4, y: 0.4)) // not a skill-shot: ignored
+        editor.moveHero(of: id, to: NormalizedPoint(x: 0.4, y: 0.4))
         XCTAssertEqual(editor.element(id)?.position, NormalizedPoint(x: 1, y: 0))
     }
 
@@ -114,14 +114,14 @@ final class KeymapEditorModelTests: XCTestCase {
         XCTAssertEqual(editor.element(id)?.label, "Reload")
 
         editor.undo()
-        editor.add(.joystick) // a new change forgets what could have been redone
+        editor.add(.joystick)
         XCTAssertFalse(editor.canRedo)
     }
 
     func testOneDragIsOneUndoStep() {
         let editor = newEditor()
         let id = editor.add(.button)
-        editor.checkpoint() // what a drag does once, at its start
+        editor.checkpoint()
         for step in 1...30 { editor.move(id, to: NormalizedPoint(x: 0.5 + Double(step) / 100, y: 0.5)) }
         editor.undo()
         XCTAssertEqual(editor.element(id)?.position, NormalizedPoint(x: 0.85, y: 0.8), "the whole drag came back in one step")
@@ -202,7 +202,7 @@ final class KeymapEditorModelTests: XCTestCase {
         let (store, root) = try makeStore()
         defer { try? FileManager.default.removeItem(at: root) }
         try store.save(Profile(id: "my-keymap", name: "Other", payload: Keymap()))
-        let editor = newEditor() // also called "My keymap"
+        let editor = newEditor()
         XCTAssertEqual(try editor.save(into: store).id, "my-keymap-2")
         XCTAssertEqual(store.list().count, 2)
     }
@@ -212,7 +212,7 @@ final class KeymapEditorModelTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: root) }
         let editor = newEditor()
         let id = editor.add(.joystick)
-        editor.update(id) { $0.action = .joystick(up: 13, left: 13, down: 1, right: 2, radius: 0.1, response: 0.1) } // a key twice
+        editor.update(id) { $0.action = .joystick(up: 13, left: 13, down: 1, right: 2, radius: 0.1, response: 0.1) }
         XCTAssertThrowsError(try editor.save(into: store)) { XCTAssertTrue($0.localizedDescription.contains("four different keys")) }
         XCTAssertTrue(store.list().isEmpty, "nothing was written")
         XCTAssertTrue(editor.isDirty)
@@ -271,7 +271,7 @@ final class KeymapMenuChoiceTests: XCTestCase {
 final class KeymapEditorRevertTests: XCTestCase {
     func testRevertGoesBackToWhatWasSavedAndCanBeUndone() {
         let editor = KeymapEditorModel(newFor: "com.example.game", name: "Game")
-        editor.revert() // a new keymap counts as unsaved; nothing was added yet, so it comes back empty
+        editor.revert()
         XCTAssertTrue(editor.keymap.elements.isEmpty)
         editor.addElement(.tap)
         XCTAssertEqual(editor.keymap.elements.count, 1)

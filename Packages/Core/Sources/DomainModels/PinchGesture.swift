@@ -1,13 +1,11 @@
 import Foundation
 
-/// Geometry of a two-finger pinch on the device screen, driven by a trackpad pinch or Option + drag.
 public struct PinchGesture: Equatable {
     private let frameWidth: UInt16
     private let frameHeight: UInt16
     private let centerX: Int32
     private let centerY: Int32
     private let minimumSpread = 12.0
-    /// Half the distance between the two fingers, in frame pixels.
     public private(set) var spread: Double
 
     public init(center: TouchPosition) {
@@ -18,7 +16,6 @@ public struct PinchGesture: Equatable {
         spread = max(Double(min(center.frameWidth, center.frameHeight)) * 0.1, minimumSpread)
     }
 
-    /// Positions of the two fingers, kept inside the frame.
     public var fingers: (first: TouchPosition, second: TouchPosition) {
         let offset = Int32(spread.rounded())
         return (point(x: centerX - offset), point(x: centerX + offset))
@@ -29,7 +26,6 @@ public struct PinchGesture: Equatable {
         spread = min(max(spread * max(factor, 0.1), minimumSpread), limit)
     }
 
-    /// The point opposite `position` through the center of the frame (second finger of an Option + drag pinch).
     public static func mirrored(_ position: TouchPosition) -> TouchPosition {
         TouchPosition(x: Int32(position.frameWidth) - 1 - position.x,
                       y: Int32(position.frameHeight) - 1 - position.y,

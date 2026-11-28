@@ -22,7 +22,6 @@ public func connectLoopback(port: UInt16) throws -> TCPStream {
     return TCPStream(fd: fd)
 }
 
-/// Encodes an ffmpeg test pattern without B-frames, matching the Android encoder.
 public func makeH264NALUnits(in directory: URL, seconds: Int, fps: Int) throws -> [Data] {
     let clip = directory.appendingPathComponent("clip-\(UUID().uuidString).h264")
     let result = try runTool("ffmpeg", ["-v", "error", "-f", "lavfi", "-i", "testsrc=size=320x240:rate=\(fps)", "-t", "\(seconds)",

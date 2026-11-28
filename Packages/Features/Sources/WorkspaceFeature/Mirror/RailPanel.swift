@@ -1,8 +1,6 @@
 import AppKit
 import SwiftUI
 
-/// Hosts the rail in a borderless child panel, since a SwiftUI window cannot draw outside its own frame.
-/// The panel never takes focus, so the keyboard stays with the phone.
 @MainActor
 final class RailPanelController: NSObject {
     private let panel: NSPanel
@@ -10,7 +8,6 @@ final class RailPanelController: NSObject {
     private weak var parent: NSWindow?
     private var observers: [NSObjectProtocol] = []
     private let tooltips = RailTooltipPresenter()
-    /// Whether the rail lies along the top of the window (a landscape picture) instead of standing beside it.
     private var isHorizontal = false
     private static let gap: CGFloat = 12
 
@@ -25,7 +22,7 @@ final class RailPanelController: NSObject {
         hosting.rootView = AnyView(content.environment(\.railTooltip, RailTooltipAction(show: { [weak self] tip, frame in self?.showTooltip(tip, frame) })))
         panel.isOpaque = false
         panel.backgroundColor = .clear
-        panel.hasShadow = false // the rail draws its own
+        panel.hasShadow = false
         panel.isReleasedWhenClosed = false
         panel.hidesOnDeactivate = false
         panel.collectionBehavior = [.fullScreenAuxiliary, .moveToActiveSpace]
@@ -36,14 +33,12 @@ final class RailPanelController: NSObject {
                 MainActor.assumeIsolated { self?.reposition() }
             })
         }
-        // In full screen there is no room beside the window: the rail goes away (it returns with the window).
         observers.append(center.addObserver(forName: NSWindow.didEnterFullScreenNotification, object: parent, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.setVisible(false) }
         })
         observers.append(center.addObserver(forName: NSWindow.didExitFullScreenNotification, object: parent, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.setVisible(true) }
         })
-        // The rail belongs to the phone window: it goes into the Dock with it and comes back with it.
         observers.append(center.addObserver(forName: NSWindow.didMiniaturizeNotification, object: parent, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.setVisible(false) }
         })
@@ -73,7 +68,6 @@ final class RailPanelController: NSObject {
         reposition()
     }
 
-    /// `frame` is the hovered button in the rail view's coordinates (origin top-left); the bubble opens to its left.
     private func showTooltip(_ content: RailTooltipContent?, _ frame: CGRect) {
         guard let content, frame != .zero else { tooltips.hide(); return }
         let panelFrame = panel.frame
@@ -94,7 +88,6 @@ final class RailPanelController: NSObject {
         hosting.layoutSubtreeIfNeeded()
         let size = hosting.fittingSize
         guard size.width > 0, size.height > 0 else { return }
-        // The hosted view includes 20 pt of transparent room for the shadow; the visible capsule sits inside it.
         let room: CGFloat = 20
         var origin = CGPoint(x: parent.frame.maxX + Self.gap - room, y: parent.frame.midY - size.height / 2)
         if isHorizontal {
@@ -102,7 +95,6 @@ final class RailPanelController: NSObject {
         }
         if let visible = (parent.screen ?? NSScreen.main)?.visibleFrame {
             if isHorizontal {
-                // No room above the window: float it below instead.
                 if origin.y + size.height - room > visible.maxY { origin.y = parent.frame.minY - Self.gap + room - size.height }
                 origin.x = min(max(origin.x, visible.minX - room), visible.maxX - size.width + room)
             } else {
@@ -114,7 +106,6 @@ final class RailPanelController: NSObject {
     }
 }
 
-/// A small bubble in its own panel, so it can sit outside the rail's frame. It never takes the mouse or the keyboard.
 @MainActor
 final class RailTooltipPresenter {
     private var panel: NSPanel?
@@ -123,7 +114,6 @@ final class RailTooltipPresenter {
 
     func show(_ content: RailTooltipContent, besideButtonAt button: CGRect, below: Bool = false, parent: NSWindow?) {
         pending?.cancel()
-        // The first tooltip waits a moment so moving across the rail does not flash bubbles; moving between buttons is instant.
         let delay: Duration = isShowing ? .milliseconds(0) : .milliseconds(450)
         pending = Task { [weak self] in
             try? await Task.sleep(for: delay)
@@ -155,12 +145,10 @@ final class RailTooltipPresenter {
         }()
         self.panel = panel
         panel.contentView = hosting
-        // The rail's own padding (20 pt of shadow room) sits left of the button, so the bubble keeps a little extra distance.
         var origin = CGPoint(x: button.minX - size.width - 18, y: button.midY - size.height / 2)
         if below { origin = CGPoint(x: button.midX - size.width / 2, y: button.minY - size.height - 6) }
         if let visible = (parent?.screen ?? NSScreen.main)?.visibleFrame {
             origin.x = min(max(origin.x, visible.minX + 8), visible.maxX - size.width - 8)
-            // Below the rail would cover the window's title bar only; if the screen's bottom is reached the bubble goes above instead.
             if below, origin.y < visible.minY { origin.y = button.maxY + 6 }
         }
         panel.setFrame(CGRect(origin: origin, size: size), display: true)
@@ -193,7 +181,6 @@ private struct RailTooltipBubble: View {
     }
 }
 
-/// A panel that can be clicked without becoming the key window.
 private final class RailPanel: NSPanel {
     override var canBecomeKey: Bool { false }
     override var canBecomeMain: Bool { false }
@@ -210,7 +197,6 @@ struct RailPanelAttacher: NSViewRepresentable {
 
     func updateNSView(_ view: NSView, context: Context) {
         let coordinator = context.coordinator
-        // The window only exists once the view is attached, so continue on the next turn of the run loop.
         DispatchQueue.main.async { [content, isVisible, isHorizontal] in
             guard let window = view.window else { return }
             if coordinator.controller == nil {

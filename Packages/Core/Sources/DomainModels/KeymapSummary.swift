@@ -1,18 +1,14 @@
 import Foundation
 import Persistence
 
-/// What an imported keymap contains, in words, so the user can decide before it is saved. A keymap from somebody
-/// else is not trusted: it can replay recorded touches and switch itself on for a game.
 public struct KeymapSummary: Equatable {
     public let name: String
     public let package: String?
-    /// How many of each kind of element, in a fixed order, kinds with none left out.
     public let counts: [(kind: String, count: Int)]
     public let macroCount: Int
     public let macroSteps: Int
     public let macroSeconds: Double
     public let usesFreeLook: Bool
-    /// The id the keymap will be saved under if it differs from its own (the name was taken).
     public let savedAs: String?
 
     public init(profile: Profile<Keymap>, existingIDs: Set<String>) {

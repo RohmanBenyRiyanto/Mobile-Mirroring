@@ -1,6 +1,5 @@
 import Foundation
 
-/// Readable names for macOS virtual key codes (the physical key, whatever the keyboard layout).
 public enum KeyNames {
     private static let names: [UInt16: String] = [
         0: "A", 1: "S", 2: "D", 3: "F", 4: "H", 5: "G", 6: "Z", 7: "X", 8: "C", 9: "V", 11: "B", 12: "Q", 13: "W", 14: "E", 15: "R",
@@ -14,7 +13,6 @@ public enum KeyNames {
 
     public static func name(for keyCode: UInt16) -> String { names[keyCode] ?? "Key \(keyCode)" }
 
-    /// Modifier keys only produce `flagsChanged` events; this says which flag a key code stands for.
     public enum Modifier: Equatable { case shift, control, option }
 
     public static func modifier(for keyCode: UInt16) -> Modifier? {

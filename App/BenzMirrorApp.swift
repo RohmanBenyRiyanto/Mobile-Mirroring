@@ -18,7 +18,6 @@ struct BenzMirrorApp: App {
                 .themed(model.appearance)
                 .onAppear {
                     delegate.model = model
-                    // Finder-opened keymap files arrive through the app delegate.
                     delegate.fileInbox.handler = { urls in
                         for url in urls where url.pathExtension.lowercased() == KeymapFile.fileExtension { model.importKeymap(from: url) }
                     }

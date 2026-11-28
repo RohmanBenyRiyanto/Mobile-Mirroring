@@ -2,8 +2,6 @@ import DomainModels
 import Foundation
 import GameController
 
-/// Listens to every connected game controller and reports its buttons and stick directions as `GamepadInput` presses.
-/// It keeps working while the app is in the background, so a game can be played with the Mac window behind other windows.
 @MainActor
 public final class GamepadBridge {
     public private(set) var controllerNames: [String] = []

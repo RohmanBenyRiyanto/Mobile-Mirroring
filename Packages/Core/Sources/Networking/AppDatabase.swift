@@ -19,7 +19,6 @@ public enum AppDatabaseError: LocalizedError, Equatable {
     }
 }
 
-/// What the database browser needs from a source of SQLite files, so it can be tested without a phone.
 public protocol DatabaseBackend: AnyObject, Sendable {
     func listFiles() throws -> [String]
     func pull(_ name: String) throws -> URL
@@ -27,7 +26,6 @@ public protocol DatabaseBackend: AnyObject, Sendable {
     func cleanUp()
 }
 
-/// Reads a debug app's SQLite files. They are copied to a private folder on the Mac and queried there read-only; nothing is written back.
 public final class AppDatabase: DatabaseBackend, @unchecked Sendable {
     private let adb: ADB
     private let serial: String
@@ -60,7 +58,6 @@ public final class AppDatabase: DatabaseBackend, @unchecked Sendable {
         return text.split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) }.filter(SQLiteQuery.isValidFileName).sorted()
     }
 
-    /// Copies the file (and its write-ahead log, if any) so recent changes are included.
     public func pull(_ name: String) throws -> URL {
         guard SQLiteQuery.isValidFileName(name) else { throw AppDatabaseError.invalidName }
         let target = workFolder.appendingPathComponent(name)
@@ -79,7 +76,6 @@ public final class AppDatabase: DatabaseBackend, @unchecked Sendable {
         return target
     }
 
-    /// Returns the header row followed by at most `rowLimit` rows.
     public func query(_ sql: String, in file: URL) throws -> [[String]] {
         guard SQLiteQuery.isReadOnly(sql) else { throw AppDatabaseError.notReadOnly }
         guard file.deletingLastPathComponent().standardizedFileURL == workFolder.standardizedFileURL else { throw AppDatabaseError.invalidName }

@@ -6,10 +6,8 @@ public struct DeviceInfo: Equatable {
     public var model: String
     public var androidRelease: String
     public var sdk: Int
-    /// What the hardware is, in pixels and dpi (portrait).
     public var physicalSize: CGSize
     public var physicalDensity: Int
-    /// Set when `wm size` / `wm density` has been overridden on the phone.
     public var overrideSize: CGSize?
     public var overrideDensity: Int?
 
@@ -24,17 +22,14 @@ public struct DeviceInfo: Equatable {
         self.overrideDensity = overrideDensity
     }
 
-    /// The size and density the phone is actually using now.
     public var screenSize: CGSize { overrideSize ?? physicalSize }
     public var density: Int { overrideDensity ?? physicalDensity }
 
-    /// Android's reference density is 160 dpi: 1 dp = `densityScale` px.
     public var densityScale: Double { Double(density) / 160 }
 
     public func dp(fromPixels pixels: Double) -> Double { pixels / densityScale }
     public func pixels(fromDP dp: Double) -> Double { dp * densityScale }
 
-    /// `screenSize` in the orientation of a video frame (the frame is wider than tall in landscape).
     public func screenSize(matching frame: CGSize) -> CGSize {
         let landscape = frame.width > frame.height
         let isLandscape = screenSize.width > screenSize.height
@@ -43,7 +38,6 @@ public struct DeviceInfo: Equatable {
 }
 
 public enum DeviceInfoParser {
-    /// One round trip for everything. Fixed text: nothing user-supplied reaches the phone's shell.
     public static let command = "wm size; wm density; echo release=$(getprop ro.build.version.release); echo sdk=$(getprop ro.build.version.sdk); echo maker=$(getprop ro.product.manufacturer); echo model=$(getprop ro.product.model)"
 
     public static func parse(_ output: String) -> DeviceInfo? {
@@ -74,7 +68,6 @@ public enum DeviceInfoParser {
         line.hasPrefix(prefix) ? line.dropFirst(prefix.count).trimmingCharacters(in: .whitespaces) : nil
     }
 
-    /// `1080x2340`, within sane bounds.
     private static func size(from text: String) -> CGSize? {
         let parts = text.split(separator: "x")
         guard parts.count == 2, let width = Int(parts[0]), let height = Int(parts[1]),
@@ -88,7 +81,6 @@ public enum DeviceInfoParser {
         return value
     }
 
-    /// Phone-provided text is shown in the UI; keep it short and printable.
     private static func clean(_ text: String?) -> String {
         String((text ?? "").unicodeScalars.filter { $0.value >= 0x20 && $0.value != 0x7F }.map(Character.init).prefix(64))
     }

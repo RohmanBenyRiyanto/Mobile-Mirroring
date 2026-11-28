@@ -3,8 +3,6 @@ import Networking
 import XCTest
 @testable import AppInspection
 
-/// Needs a phone, Android Studio and a running debug app: `BENZMIRROR_TEST_SERIAL` and `BENZMIRROR_TEST_DEBUG_APP` (a package name).
-/// It prints only host names and counts, never contents.
 final class AppInspectorLiveTests: XCTestCase {
     func testLooksInsideARunningDebugApp() async throws {
         let env = ProcessInfo.processInfo.environment
@@ -16,7 +14,6 @@ final class AppInspectorLiveTests: XCTestCase {
         try await session.start()
         defer { Task { await session.stop() } }
 
-        // Bring the app to the front again so that it does what it does when it comes back.
         _ = try? adb.run(["-s", serial, "shell", "monkey -p \(package) -c android.intent.category.LAUNCHER 1"], timeout: 10)
         let deadline = Date().addingTimeInterval(90)
         while calls.get().values.filter(\.isFinished).count < 3, Date() < deadline { try await Task.sleep(for: .milliseconds(500)) }

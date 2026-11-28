@@ -1,7 +1,6 @@
 import SwiftUI
 import DomainModels
 
-/// Draws the keymap's elements over the phone screen for dragging. It takes every click so editing never reaches the phone.
 public struct KeymapEditorOverlay: View {
     @ObservedObject public var editor: KeymapEditorModel
     public let videoSize: CGSize
@@ -32,7 +31,7 @@ public struct KeymapEditorOverlay: View {
                 }
             }
             .coordinateSpace(name: Self.space)
-            .clipped() // a chip near the edge must not spill over the side panel
+            .clipped()
         }
     }
 }
@@ -70,7 +69,6 @@ private struct ElementMarker: View {
         }
     }
 
-    /// The key shown inside the round cap, and a short caption below it (the element's own name, or its kind).
     private var summary: (key: String, caption: String, symbol: String) {
         func caption(_ fallback: String) -> String { element.label.isEmpty ? fallback : element.label }
         switch element.action {
@@ -94,7 +92,7 @@ private struct ElementMarker: View {
                 let moved = hypot(value.translation.width, value.translation.height) > 2
                 if moved, !isDragging {
                     isDragging = true
-                    editor.checkpoint() // the whole drag is one undo step
+                    editor.checkpoint()
                 }
                 if isDragging, let ratio = mapper.clampedRatio(forViewPoint: value.location) {
                     editor.move(element.id, to: NormalizedPoint(x: ratio.x, y: ratio.y))
@@ -104,7 +102,6 @@ private struct ElementMarker: View {
     }
 }
 
-/// A round key cap with the key inside and a small caption under it, as in the design. Colours are fixed so it stays readable on any game.
 private struct KeyCapMarker: View {
     let key: String
     let caption: String
@@ -171,7 +168,6 @@ private struct HeroHandle: View {
     }
 }
 
-/// The tip of a swipe: drag it to where the swipe should end. A dashed line shows the path from the chip.
 private struct SwipeHandle: View {
     @ObservedObject var editor: KeymapEditorModel
     let id: UUID

@@ -1,9 +1,7 @@
 import SwiftUI
 
 public enum SurfaceMode: String, CaseIterable, Identifiable, Codable {
-    /// Liquid Glass on macOS 26 and later, a material before.
     case automatic
-    /// Liquid Glass always, imitated on systems without it.
     case glass
     case solid
 
@@ -15,9 +13,7 @@ public enum SurfaceRendering: Equatable {
 }
 
 public enum SurfaceStyle {
-    /// The user's choice, set at launch and whenever the setting changes.
     nonisolated(unsafe) public static var mode = SurfaceMode.automatic
-    /// Lets tests exercise the pre-macOS 26 fallback on a Mac that has glass.
     nonisolated(unsafe) public static var allowsGlass = true
 
     public static var rendering: SurfaceRendering {
@@ -31,7 +27,6 @@ public enum SurfaceStyle {
     }
 }
 
-/// Identifies a glass surface so it can morph into another one.
 public struct GlassMorph {
     let id: String
     let namespace: Namespace.ID
@@ -42,7 +37,6 @@ public struct GlassMorph {
     }
 }
 
-/// Groups glass surfaces that appear together. Real glass uses a `GlassEffectContainer` so they blend and morph; elsewhere it does nothing.
 public struct GlassGroup<Content: View>: View {
     private let spacing: CGFloat
     private let content: Content
@@ -62,10 +56,6 @@ public struct GlassGroup<Content: View>: View {
 }
 
 extension View {
-    /// A floating or navigation surface (rail, toolbar group, toast, tooltip).
-    ///
-    /// Apply it after the modifiers that change how the view looks (padding, frame): glass captures what is drawn so far.
-    /// - Parameter morph: lets this surface morph into another one with the same id inside a `GlassGroup`.
     @ViewBuilder
     public func glassSurface<S: InsettableShape>(in shape: S, interactive: Bool = false, tint: Color? = nil, morph: GlassMorph? = nil) -> some View {
         switch SurfaceStyle.rendering {
@@ -117,7 +107,6 @@ extension View {
         }
     }
 
-    /// Uses a solid scrim rather than glass, since blur over moving video costs GPU time.
     public func overVideo<S: Shape>(in shape: S) -> some View {
         self.foregroundStyle(Theme.OverVideo.text).background(Theme.OverVideo.scrim, in: shape)
     }
@@ -127,7 +116,6 @@ extension View {
     }
 }
 
-/// Imitates Liquid Glass with a blurred body, a highlight along the top and a hairline rim.
 struct EmulatedGlass<S: InsettableShape>: View {
     let shape: S
 

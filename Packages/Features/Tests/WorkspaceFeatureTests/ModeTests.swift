@@ -22,12 +22,10 @@ final class ModeAutoSwitchTests: XCTestCase {
     }
 
     func testAModeTheUserChoseIsNeverTakenAway() {
-        // Entered Gaming automatically, then the user chose Developer by hand: closing the game must not move them.
         var state = ModeAutoSwitch(mode: .normal).keymapTurnedOnAutomatically(enabled: true)
         state = state.chosen(.developer)
         XCTAssertNil(state.restoreTo)
         XCTAssertEqual(state.keymapTurnedOffAutomatically().mode, .developer)
-        // Already in Gaming by hand: opening a game changes nothing and closing it does not leave Gaming.
         let manual = ModeAutoSwitch(mode: .gaming)
         XCTAssertEqual(manual.keymapTurnedOnAutomatically(enabled: true), manual)
         XCTAssertEqual(manual.keymapTurnedOffAutomatically().mode, .gaming)

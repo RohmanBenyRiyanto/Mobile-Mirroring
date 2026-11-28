@@ -5,7 +5,6 @@ import Media
 import SwiftUI
 import Theme
 
-/// A small always-on-top copy of the phone's picture. It only shows; the main window stays the place to touch and type.
 public struct MiniMirrorView: View {
     @EnvironmentObject private var model: AppModel
     @Environment(\.openWindow) private var openWindow

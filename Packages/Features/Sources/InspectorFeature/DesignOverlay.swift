@@ -1,7 +1,6 @@
 import SwiftUI
 import DomainModels
 
-/// The grid, crosshair and colour readout drawn over the mirror. It passes clicks through.
 public struct DesignOverlay: View {
     @ObservedObject public var design: DesignModel
     public let videoSize: CGSize

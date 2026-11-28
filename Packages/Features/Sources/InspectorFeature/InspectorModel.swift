@@ -4,7 +4,6 @@ import Foundation
 import DomainModels
 import Networking
 
-/// Highlights the element under the pointer using a `uiautomator dump` snapshot, refreshed on request rather than live.
 @MainActor
 public final class InspectorModel: ObservableObject {
     public enum Status: Equatable {
@@ -18,7 +17,6 @@ public final class InspectorModel: ObservableObject {
     @Published public private(set) var hierarchy: UIHierarchy?
     @Published public private(set) var hovered: UINode?
     @Published public private(set) var selected: UINode?
-    /// False when the dump holds only a full-screen element, as in games that draw themselves.
     public var hasDetail: Bool { (hierarchy?.nodes.count ?? 0) > 3 }
 
     public var isOn: Bool { status != .off }
@@ -89,7 +87,6 @@ public final class InspectorModel: ObservableObject {
         if node != hovered { hovered = node }
     }
 
-    /// Copies the hovered element's resource id, falling back to its text, description, then class name.
     @discardableResult
     public func copyHovered() -> String? {
         guard let node = hovered else { return nil }

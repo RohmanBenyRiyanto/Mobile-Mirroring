@@ -5,7 +5,6 @@ import Theme
 
 // MARK: Model
 
-/// Reads and changes the phone's developer switches. Whatever was changed is put back by Reset All and when the phone is disconnected.
 @MainActor
 public final class DeveloperToolsModel: ObservableObject {
     @Published public private(set) var state = DeveloperState()
@@ -19,14 +18,11 @@ public final class DeveloperToolsModel: ObservableObject {
     private var baseline: DeveloperState?
     private var beforeLastChange: DeveloperState?
     private let run: @Sendable (String) throws -> String
-    /// Told about what the phone is owed, so a crash or a pulled cable cannot leave the changes behind for good.
-    /// Asked before Wi-Fi or mobile data is switched off; returning false cancels the change.
     public var confirmNetworkOff: (() -> Bool)?
     public var onOwed: ((_ baseline: DeveloperState) -> Void)?
     public var onSettled: (() -> Void)?
     public var onMockChanged: ((_ active: Bool) -> Void)?
 
-    /// Wi-Fi and mobile data are only offered over USB: switching Wi-Fi off would also cut a wireless connection to the phone.
     public init(allowsNetworkSwitches: Bool = true, run: @escaping @Sendable (String) throws -> String) {
         self.allowsNetworkSwitches = allowsNetworkSwitches
         self.run = run
@@ -50,7 +46,7 @@ public final class DeveloperToolsModel: ObservableObject {
         var new = state
         edit(&new)
         if (state.wifiOn && !new.wifiOn) || (state.mobileDataOn && !new.mobileDataOn), confirmNetworkOff?() == false {
-            objectWillChange.send() // the switch jumps back to where it was
+            objectWillChange.send()
             return
         }
         beforeLastChange = state
@@ -73,7 +69,6 @@ public final class DeveloperToolsModel: ObservableObject {
         apply(baseline)
     }
 
-    /// Called when the session ends. Best effort: if the cable is already gone nothing can be sent.
     public func restoreOnEnd() {
         mockTask?.cancel()
         if mockLocation != nil { _ = try? run(MockLocation.stopCommand); mockLocation = nil; onMockChanged?(false) }

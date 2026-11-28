@@ -1,9 +1,7 @@
 import Darwin
 import Foundation
 
-/// Validation for what the user types into the wireless-debugging fields.
 public enum WirelessInput {
-    /// `host:port` with a hostname or IPv4 address, and a port in 1...65535.
     public static func isValidAddress(_ text: String) -> Bool {
         let parts = text.split(separator: ":", omittingEmptySubsequences: false)
         guard parts.count == 2, let port = Int(parts[1]), (1...65535).contains(port) else { return false }
@@ -16,7 +14,6 @@ public enum WirelessInput {
         text.count == 6 && text.allSatisfy { $0.isASCII && $0.isNumber }
     }
 
-    /// IPv4 interfaces listed by `ip -o -f inet addr show` on the phone (loopback excluded).
     public static func interfaces(inIPOutput output: String) -> [IPv4Interface] {
         output.split(whereSeparator: \.isNewline).compactMap { line in
             let fields = line.split(whereSeparator: \.isWhitespace)
@@ -30,8 +27,6 @@ public enum WirelessInput {
         }
     }
 
-    /// For an `ip:port` typed by the user: the two addresses to show when the phone's address is on none of this Mac's networks.
-    /// Names and unparsable text return nil, since nothing can be said about them.
     public static func networkMismatch(address: String, mac: [IPv4Interface]) -> (phone: String, mac: String)? {
         guard isValidAddress(address), let host = address.split(separator: ":").first.map(String.init),
               let ip = IPv4Interface.parse(host), let reference = mac.first(where: { $0.name.hasPrefix("en") }) ?? mac.first else { return nil }
@@ -39,8 +34,6 @@ public enum WirelessInput {
         return mac.contains { $0.shares(networkWith: phone) } ? nil : (host, reference.text)
     }
 
-    /// The phone's address on a network this Mac is also on. That works for a shared Wi-Fi and for
-    /// the phone's own hotspot, and it skips mobile-data interfaces, which the Mac can never reach.
     public static func reachableAddress(phone: [IPv4Interface], mac: [IPv4Interface]) -> IPv4Interface? {
         phone.first { candidate in mac.contains { $0.shares(networkWith: candidate) } }
     }
@@ -95,27 +88,24 @@ public struct IPv4Interface: Equatable {
 extension ADB {
     public static let defaultTCPPort = 5555
 
-    /// Switches a USB-connected phone to adb-over-Wi-Fi and connects to it. Returns its `ip:port`.
     public func enableWireless(serial: String, macNetworks: [IPv4Interface] = IPv4Interface.ofThisMac()) throws -> String {
         let output = String(decoding: try run(["-s", serial, "shell", "ip", "-o", "-f", "inet", "addr", "show"], timeout: 10), as: UTF8.self)
         guard let phone = WirelessInput.reachableAddress(phone: WirelessInput.interfaces(inIPOutput: output), mac: macNetworks) else {
             throw ADBError.failed(command: "wireless", message: "The phone and this Mac are not on the same network. Join the same Wi-Fi, or turn on the phone's hotspot and connect this Mac to it.")
         }
         try run(["-s", serial, "tcpip", String(Self.defaultTCPPort)], timeout: 10)
-        Thread.sleep(forTimeInterval: 1.5) // adbd restarts in TCP mode
+        Thread.sleep(forTimeInterval: 1.5)
         let address = "\(phone.text):\(Self.defaultTCPPort)"
         try connect(address: address)
         return address
     }
 
-    /// Puts a phone that is connected over Wi-Fi back into USB mode and drops the wireless connection.
     public func switchToUSB(serial: String) throws {
         guard serial.contains(":"), AndroidDevice.isValidSerial(serial) else { throw ADBError.failed(command: "usb", message: "This phone is not connected over Wi-Fi.") }
         try run(["-s", serial, "usb"], timeout: 10)
         _ = try? run(["disconnect", serial], timeout: 5)
     }
 
-    /// `adb pair`, with the code sent on stdin so it never shows in the process list.
     public func pair(address: String, code: String) throws {
         guard WirelessInput.isValidAddress(address), WirelessInput.isValidPairingCode(code) else {
             throw ADBError.failed(command: "pair", message: "Enter the address as host:port and the 6-digit code.")
@@ -126,7 +116,6 @@ extension ADB {
         }
     }
 
-    /// `adb connect` exits successfully even when it fails, so the message has to be checked.
     public func connect(address: String) throws {
         guard WirelessInput.isValidAddress(address) else {
             throw ADBError.failed(command: "connect", message: "Enter the address as host:port.")

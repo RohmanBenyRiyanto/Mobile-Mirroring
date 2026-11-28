@@ -1,7 +1,5 @@
 import Foundation
 
-/// Records the touches sent to the phone as macro steps. It sees every touch whatever its source (the mouse on the
-/// mirror, a trackpad pinch, a keymap button), so a macro can capture a real combo as it was played.
 public final class MacroRecorder: @unchecked Sendable {
     public init() {}
 
@@ -9,7 +7,6 @@ public final class MacroRecorder: @unchecked Sendable {
         var isRecording = false
         var origin: TimeInterval?
         var steps: [MacroStep] = []
-        /// The phone's pointer for each finger being recorded, numbered 0, 1, … in order of arrival.
         var fingers: [PointerID: Int] = [:]
         var lastPosition: [Int: NormalizedPoint] = [:]
         var lastTime = 0.0
@@ -24,7 +21,6 @@ public final class MacroRecorder: @unchecked Sendable {
         state.set(State(isRecording: true))
     }
 
-    /// Records one message. Anything that is not a touch is ignored. The clock is a parameter so tests can control time.
     public func observe(_ message: ControlMessage, at time: TimeInterval = ProcessInfo.processInfo.systemUptime) {
         guard case let .touch(action, position, _, pointer) = message else { return }
         state.withLock { state in
@@ -37,7 +33,7 @@ public final class MacroRecorder: @unchecked Sendable {
                       let free = (0..<PointerID.slotCount).first(where: { !state.fingers.values.contains($0) }) else { return }
                 finger = free
             case .move, .up:
-                guard let known = state.fingers[pointer] else { return } // a touch that began before recording
+                guard let known = state.fingers[pointer] else { return }
                 finger = known
             }
 
@@ -60,7 +56,6 @@ public final class MacroRecorder: @unchecked Sendable {
         }
     }
 
-    /// Ends the recording and returns the steps. A finger still down is lifted where it was, at the last moment.
     public func stop() -> [MacroStep] {
         state.withLock { state in
             var steps = state.steps

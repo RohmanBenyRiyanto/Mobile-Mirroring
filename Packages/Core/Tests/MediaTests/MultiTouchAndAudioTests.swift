@@ -67,7 +67,7 @@ final class MultiTouchAndAudioTests: XCTestCase {
     }
 
     func testAudioSampleBufferCarriesWholeFrames() throws {
-        let pcm = Data(count: 4_800 * SampleBuffers.PCM.bytesPerFrame + 3) // trailing partial frame is ignored
+        let pcm = Data(count: 4_800 * SampleBuffers.PCM.bytesPerFrame + 3)
         let sample = try XCTUnwrap(SampleBuffers.audio(pcm, presentationTime: 1_000_000))
         XCTAssertEqual(CMSampleBufferGetNumSamples(sample), 4_800)
         XCTAssertEqual(CMSampleBufferGetPresentationTimeStamp(sample).seconds, 1, accuracy: 1e-9)
@@ -89,7 +89,7 @@ final class AudioBacklogTests: XCTestCase {
         do { try player.start() } catch { throw XCTSkip("no audio output on this machine: \(error)") }
         defer { player.stop() }
         player.isMuted = true
-        let chunk = Data(count: 4_800 * SampleBuffers.PCM.bytesPerFrame) // 100 ms
+        let chunk = Data(count: 4_800 * SampleBuffers.PCM.bytesPerFrame)
         for _ in 0..<3 { player.enqueue(chunk) }
         XCTAssertEqual(player.droppedBacklogs, 1, "300 ms queued: dropped once, then playing from the newest audio")
     }

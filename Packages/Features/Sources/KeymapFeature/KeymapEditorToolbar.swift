@@ -2,8 +2,6 @@ import SwiftUI
 import DomainModels
 import Theme
 
-/// The strip over the picture while editing: choose what to place, then click the screen. As in the design: Tap, Hold, Toggle, Joystick, Aim,
-/// Skill Shot, Macro on the left, Revert and Done on the right.
 public struct KeymapEditorToolbar: View {
     @ObservedObject public var editor: KeymapEditorModel
     public let isRecordingMacro: Bool

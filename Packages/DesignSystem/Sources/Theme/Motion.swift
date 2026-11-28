@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Animates changes to `value`, or applies them instantly when Reduce Motion is on.
 private struct Animated<Value: Equatable>: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let animation: Animation

@@ -7,17 +7,14 @@ public struct HTTPHeader: Equatable, Hashable, Sendable {
     public init(name: String, value: String) { self.name = name; self.value = value }
 }
 
-/// Reads the parts of an HTTP/1.1 message the API log shows: headers, status line and a readable body.
 public enum HTTPMessage {
     public static let bodyCapture = 64 << 10
 
-    /// Splits a captured message at the blank line that ends its head.
     public static func split(_ data: Data) -> (head: String, body: Data)? {
         guard let range = data.range(of: Data("\r\n\r\n".utf8)) else { return nil }
         return (String(decoding: data[..<range.lowerBound], as: UTF8.self), data[range.upperBound...])
     }
 
-    /// Header lines after the first (request or status) line.
     public static func headers(inHead head: String) -> [HTTPHeader] {
         head.components(separatedBy: "\r\n").dropFirst().compactMap { line in
             guard let colon = line.firstIndex(of: ":"), colon != line.startIndex else { return nil }
@@ -31,7 +28,6 @@ public enum HTTPMessage {
         headers.first { $0.name.caseInsensitiveCompare(name) == .orderedSame }?.value
     }
 
-    /// The body as it was sent: chunked framing removed, and gzip or deflate undone.
     public static func decodedBody(_ raw: Data, headers: [HTTPHeader]) -> Data {
         var body = raw
         if value(of: "Transfer-Encoding", in: headers)?.localizedCaseInsensitiveContains("chunked") == true, let plain = dechunk(body) { body = plain }
@@ -49,7 +45,6 @@ public enum HTTPMessage {
         case binary(bytes: Int, type: String?)
     }
 
-    /// A body worth showing: text (JSON pretty-printed) or a note that it is binary.
     public static func preview(of raw: Data, headers: [HTTPHeader], truncated: Bool = false) -> Preview {
         guard !raw.isEmpty else { return .empty }
         let body = decodedBody(raw, headers: headers)
@@ -65,7 +60,6 @@ public enum HTTPMessage {
         return .text(text, truncated: truncated)
     }
 
-    /// A curl command that repeats the request. Values are single-quoted for the shell.
     public static func curl(method: String, url: String, headers: [HTTPHeader], body: Data) -> String {
         func quote(_ text: String) -> String { "'" + text.replacingOccurrences(of: "'", with: "'\\''") + "'" }
         var parts = ["curl", "-X", method, quote(url)]

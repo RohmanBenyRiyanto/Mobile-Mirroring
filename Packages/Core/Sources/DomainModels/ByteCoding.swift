@@ -1,7 +1,6 @@
 import Foundation
 
 extension Data {
-    /// Appends `value` in network byte order (big-endian), as the scrcpy protocol requires.
     public mutating func appendBigEndian<T: FixedWidthInteger>(_ value: T) {
         Swift.withUnsafeBytes(of: value.bigEndian) { append(contentsOf: $0) }
     }
@@ -13,7 +12,6 @@ extension Data {
 }
 
 extension String {
-    /// UTF-8 bytes truncated to at most `maxBytes`, never splitting a character.
     public func utf8Prefix(maxBytes: Int) -> Data {
         var result = Data()
         for character in self {

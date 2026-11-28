@@ -6,7 +6,6 @@ import Theme
 
 // MARK: Monitor
 
-/// Samples the phone once a second while the HUD is on screen. Nothing runs when it is hidden.
 @MainActor
 public final class PerformanceMonitor: ObservableObject {
     @Published public private(set) var latest: PerformanceSample?
@@ -45,7 +44,6 @@ public final class PerformanceMonitor: ObservableObject {
     }
 
     func ingest(_ reading: PerformanceReading, package name: String, now: ContinuousClock.Instant = .now) {
-        // A different app has different counters, so the comparison and the history start over.
         if name != package { reset(); package = name }
         if let previous {
             let seconds = Double((now - previous.at).components.seconds) + Double((now - previous.at).components.attoseconds) / 1e18
@@ -116,7 +114,6 @@ struct PerformancePanel: View {
     private func metric(_ title: LocalizedStringKey, value: String?, series: [Double?], ceiling: Double) -> some View {
         VStack(alignment: .leading, spacing: Theme.Space.s1) {
             LabeledContent(title) { number(value) }
-            // A line needs at least two points; before that the row stays as compact as the plain ones.
             if series.compactMap({ $0 }).count >= 2 { Sparkline(values: series, ceiling: ceiling).frame(height: 16).transition(.opacity) }
         }
         .animated(value: series.compactMap { $0 }.count >= 2)
@@ -149,7 +146,6 @@ private struct Sparkline: View {
     var body: some View {
         GeometryReader { proxy in
             Path { path in
-                // Grows from the left across a 30-sample window, then scrolls; a line that hugged the right edge looked like a stray mark.
                 let window = max(values.count, 30)
                 let step = proxy.size.width / CGFloat(max(window - 1, 1))
                 let offset: CGFloat = 0

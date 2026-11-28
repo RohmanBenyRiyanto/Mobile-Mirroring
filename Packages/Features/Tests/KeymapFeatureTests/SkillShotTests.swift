@@ -32,14 +32,13 @@ private func touches(_ actions: [KeymapEngine.Action]) -> [Seen] {
 
 final class SkillShotEngineTests: XCTestCase {
     private let phone = CGSize(width: 1080, height: 2340)
-    /// The skill button (0.8, 0.8) in frame pixels, and a full drag (radius 0.1 of the shorter edge).
     private let buttonX = 0.8 * 1079, buttonY = 0.8 * 2339, fullReach = 108.0
 
     private func engine(_ elements: [KeymapElement]) -> KeymapEngine { KeymapEngine(keymap: Keymap(elements: elements)) }
 
     func testHoldingTheKeyPutsAFingerOnTheButtonAndReleasingCasts() throws {
         var engine = engine([skill()])
-        _ = engine.pointerMoved(to: CGPoint(x: 0.5, y: 0.5), frameSize: phone) // on the hero: no direction yet
+        _ = engine.pointerMoved(to: CGPoint(x: 0.5, y: 0.5), frameSize: phone)
 
         let down = touches(engine.keyDown(keyQ, frameSize: phone))
         XCTAssertEqual(down.map(\.action), [.down])
@@ -52,20 +51,17 @@ final class SkillShotEngineTests: XCTestCase {
     }
 
     func testTheFingerFollowsTheMouseWhileTheKeyIsHeld() throws {
-        var engine = engine([skill(range: 0.2)]) // full range = 0.2 of the 1080 px shorter edge = 216 px
+        var engine = engine([skill(range: 0.2)])
         _ = engine.keyDown(keyQ, frameSize: phone)
 
-        // 108 px (0.1 of the width) to the right of the hero: half range -> half reach
         let right = try XCTUnwrap(touches(engine.pointerMoved(to: CGPoint(x: 0.6, y: 0.5), frameSize: phone)).first)
         XCTAssertEqual(right.action, .move)
         XCTAssertEqual(right.x - buttonX, fullReach / 2, accuracy: 1.1)
         XCTAssertEqual(right.y, buttonY, accuracy: 1.1)
 
-        // far beyond the range: full reach, never more
         let far = try XCTUnwrap(touches(engine.pointerMoved(to: CGPoint(x: 1.0, y: 0.5), frameSize: phone)).first)
         XCTAssertEqual(far.x - buttonX, fullReach, accuracy: 1.1)
 
-        // above the hero: the finger goes up (screen y grows downwards)
         let up = try XCTUnwrap(touches(engine.pointerMoved(to: CGPoint(x: 0.5, y: 0.0), frameSize: phone)).first)
         XCTAssertEqual(up.x, buttonX, accuracy: 1.1)
         XCTAssertEqual(up.y - buttonY, -fullReach, accuracy: 1.1)
@@ -75,9 +71,8 @@ final class SkillShotEngineTests: XCTestCase {
     }
 
     func testDirectionIsMeasuredInPixelsNotInRatios() throws {
-        var engine = engine([skill(range: 0.5)]) // range 540 px
+        var engine = engine([skill(range: 0.5)])
         _ = engine.keyDown(keyQ, frameSize: phone)
-        // equal ratio offsets are very different pixel offsets on a tall screen: (0.1, 0.1) -> (108, 234) px
         let diagonal = try XCTUnwrap(touches(engine.pointerMoved(to: CGPoint(x: 0.6, y: 0.6), frameSize: phone)).first)
         let dx = diagonal.x - buttonX, dy = diagonal.y - buttonY
         XCTAssertEqual(atan2(dy, dx), atan2(234.0, 108.0), accuracy: 0.03, "the angle follows the real pixel offset")

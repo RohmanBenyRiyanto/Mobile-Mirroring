@@ -40,7 +40,7 @@ final class ControlMessageTests: XCTestCase {
     }
 
     func testTextIsTruncatedWithoutSplittingCharacters() {
-        let data = ControlMessage.text(String(repeating: "é", count: 400)).serialized // 2 bytes each
+        let data = ControlMessage.text(String(repeating: "é", count: 400)).serialized
         let length = Int(data.readBigEndian(UInt32.self, at: 1))
         XCTAssertEqual(length, 300)
         XCTAssertEqual(data.count, 5 + length)

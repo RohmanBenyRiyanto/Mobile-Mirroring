@@ -41,11 +41,10 @@ final class SVGPathTests: XCTestCase {
 
 final class BrandMarkTests: XCTestCase {
     func testMarkMatchesTheSVGLayers() {
-        // Expected values come from the SVG layers' coordinates and transform.
         let bounds = BrandMark.artworkBounds
         XCTAssertEqual(bounds.minX, 301.72 + 14 * 0.79327, accuracy: 1.5)
         XCTAssertEqual(bounds.maxX, 301.72 + 496 * 0.79327, accuracy: 1.5)
-        XCTAssertEqual(bounds.minY, 168.51 + 21.5 * 0.79327, accuracy: 4) // Corner arcs reach above the first point, hence the wider tolerance.
+        XCTAssertEqual(bounds.minY, 168.51 + 21.5 * 0.79327, accuracy: 4)
         XCTAssertEqual(bounds.maxY, 168.51 + 846.1 * 0.79327, accuracy: 1.5)
         XCTAssertEqual(bounds.width / bounds.height, 382.0 / 654.0, accuracy: 0.01)
     }
@@ -116,7 +115,7 @@ final class SurfaceRenderingTests: XCTestCase {
     }
 
     func testOnAnOlderSystemAutomaticIsAMaterialAndGlassIsImitated() {
-        SurfaceStyle.allowsGlass = false // as if macOS 14–25
+        SurfaceStyle.allowsGlass = false
         SurfaceStyle.mode = .automatic
         XCTAssertEqual(SurfaceStyle.rendering, .material)
         SurfaceStyle.mode = .glass

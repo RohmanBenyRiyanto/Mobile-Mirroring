@@ -2,7 +2,6 @@ import Foundation
 
 // MARK: Raw reading
 
-/// One reading of the phone's counters. Counters only mean something as a difference between two readings.
 public struct PerformanceReading: Equatable, Sendable {
     public var cpuTotalTicks: Int
     public var cpuIdleTicks: Int
@@ -36,7 +35,6 @@ public struct PerformanceReading: Equatable, Sendable {
 public enum PerformanceProbe {
     public static let pageSizeKB = 4
 
-    /// One shell round trip. Sections are marked so the output can be split without guessing.
     public static func command(package: String) -> String {
         precondition(package.allSatisfy { $0.isLetter || $0.isNumber || $0 == "." || $0 == "_" }, "package name")
         return "echo '##STAT'; head -1 /proc/stat; "
@@ -61,7 +59,6 @@ public enum PerformanceProbe {
             if ticks.count > 4 { reading.cpuIdleTicks = ticks[3] + ticks[4] }
         }
         if let lines = sections["PROC"], let stat = lines.first {
-            // The process name sits in parentheses and may itself contain spaces, so fields are counted after the closing one.
             if let close = stat.lastIndex(of: ")") {
                 let fields = stat[stat.index(after: close)...].split(separator: " ")
                 if fields.count > 12, let user = Int(fields[11]), let system = Int(fields[12]) { reading.appCPUTicks = user + system }
@@ -147,7 +144,6 @@ public enum PerformanceWarning: Equatable, Sendable {
     }
 }
 
-/// Fixed-size history for sparklines and the CSV export.
 public struct PerformanceHistory: Equatable, Sendable {
     public static let capacity = 120
     public private(set) var samples: [PerformanceSample] = []

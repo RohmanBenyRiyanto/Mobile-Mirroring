@@ -2,9 +2,6 @@ import XCTest
 import DomainModels
 @testable import Networking
 
-/// Needs a phone with a debug app that has databases:
-///
-///     BENZMIRROR_TEST_SERIAL=<serial> BENZMIRROR_TEST_DEBUG_PACKAGE=<package> swift test --filter AppDatabaseTests
 final class AppDatabaseTests: XCTestCase {
     func testRefusesWritesAndBadNamesWithoutAPhone() throws {
         let adb = try XCTUnwrap(ADB.locate(), "adb is needed to build the object")

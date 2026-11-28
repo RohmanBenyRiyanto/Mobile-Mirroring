@@ -1,7 +1,6 @@
 import Foundation
 import SwiftUI
 
-/// Disconnect and the hide button are not listed here: they are always on the rail.
 public enum RailItemID: String, Codable, CaseIterable, Identifiable {
     case back, home, recents
     case volumeUp, volumeDown, power
@@ -61,7 +60,6 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         }
     }
 
-    /// One line saying what the button does, shown in the tooltip under its name.
     public var explanation: String {
         switch self {
         case .back: return String(localized: "Go back one screen")
@@ -93,7 +91,6 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         }
     }
 
-    /// The menu shortcut shown in the tooltip, kept in step with the menu bar.
     public var shortcutHint: String? {
         switch self {
         case .back: return "⌘["
@@ -185,7 +182,6 @@ public struct RailLayout: Codable, Equatable {
 
     public func items(for mode: WorkspaceMode) -> [RailItemID] { lists[mode.rawValue] ?? Self.defaultItems(for: mode) }
 
-    /// Rows in display order, with a separator wherever the group changes.
     public func rows(for mode: WorkspaceMode) -> [RailRow] {
         var rows: [RailRow] = []
         var previous: RailItemID.Group?
@@ -207,7 +203,6 @@ public struct RailLayout: Codable, Equatable {
     public mutating func add(_ item: RailItemID, to mode: WorkspaceMode) {
         var list = items(for: mode)
         guard !list.contains(item) else { return }
-        // Next to the tools of its own group when there are any, else at the end.
         if let last = list.lastIndex(where: { $0.group == item.group }) { list.insert(item, at: last + 1) } else { list.append(item) }
         lists[mode.rawValue] = list
     }
@@ -235,10 +230,8 @@ public struct RailLayout: Codable, Equatable {
 
     public var isStandard: Bool { self == Self.standard }
 
-    /// Largest saved layout that is read. A real one is a few hundred bytes; anything bigger is not ours and is ignored.
     public static let maxSavedBytes = 64 * 1024
 
-    /// Nil when the data is too big or is not a layout; the standard layout is used then.
     public static func decode(_ data: Data) -> RailLayout? {
         guard data.count <= maxSavedBytes else { return nil }
         return try? JSONDecoder().decode(RailLayout.self, from: data)
@@ -253,8 +246,6 @@ public struct RailLayout: Codable, Equatable {
 
     private enum CodingKeys: String, CodingKey { case lists }
 
-    /// Settings saved by another version may name tools this version does not have, or miss a mode: unknown names are dropped
-    /// and a missing mode gets its standard set.
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let raw = (try? container.decode([String: [String]].self, forKey: .lists)) ?? [:]

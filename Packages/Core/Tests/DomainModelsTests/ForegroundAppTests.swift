@@ -3,7 +3,6 @@ import XCTest
 @testable import Persistence
 
 final class ForegroundAppParserTests: XCTestCase {
-    /// Captured from a Samsung SM-S911B on Android 17.
     private let launcher = """
       mCurrentFocus=Window{d3d3625 u0 com.sec.android.app.launcher/com.sec.android.app.launcher.activities.LauncherActivity}
       mFocusedApp=ActivityRecord{147039174 u0 com.sec.android.app.launcher/.activities.LauncherActivity t738}

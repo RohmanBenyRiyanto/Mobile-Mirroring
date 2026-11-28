@@ -1,21 +1,14 @@
 import AVFoundation
 import DomainModels
 
-/// Plays the phone's raw PCM audio through the Mac's output.
-///
-/// Latency stays bounded: if playback ever falls more than `maxQueuedFrames` behind (a stall on the Mac, or a burst
-/// after a Wi-Fi hiccup), the backlog is dropped in one go and playback continues from the newest audio. That is one
-/// short gap instead of a stream of small ones, and the delay goes back to a few milliseconds.
 public final class AudioPlayer: @unchecked Sendable {
     public init(bufferMillis: Int = 120, outputDeviceUID: String? = nil) {
         maxQueuedFrames = AVAudioFrameCount(max(bufferMillis, 20) * 48)
         self.outputDeviceUID = outputDeviceUID
     }
 
-    /// nil follows the system's default output.
     private let outputDeviceUID: String?
 
-    /// The most that may queue before the backlog is dropped (48 frames per millisecond).
     public let maxQueuedFrames: AVAudioFrameCount
     private let volumeLevel = LockedValue(1.0)
 
@@ -23,7 +16,6 @@ public final class AudioPlayer: @unchecked Sendable {
     private let node = AVAudioPlayerNode()
     private let format = AVAudioFormat(standardFormatWithSampleRate: SampleBuffers.PCM.sampleRate, channels: 2)!
     private let queuedFrames = LockedValue<AVAudioFrameCount>(0)
-    /// Buffers scheduled before a reset must not subtract from the new count when they are cleared.
     private let generation = LockedValue(0)
     public private(set) var droppedBacklogs = 0
 
@@ -32,7 +24,6 @@ public final class AudioPlayer: @unchecked Sendable {
         set { node.volume = newValue ? 0 : Float(volumeLevel.get()) }
     }
 
-    /// 0…1; ignored while muted, and restored when unmuted.
     public func setVolume(_ volume: Double) {
         let clamped = min(max(volume, 0), 1)
         volumeLevel.set(clamped)
@@ -55,7 +46,6 @@ public final class AudioPlayer: @unchecked Sendable {
         engine.stop()
     }
 
-    /// `pcm` is interleaved little-endian signed 16-bit stereo.
     public func enqueue(_ pcm: Data) {
         let frames = AVAudioFrameCount(pcm.count / SampleBuffers.PCM.bytesPerFrame)
         guard frames > 0, let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frames) else { return }

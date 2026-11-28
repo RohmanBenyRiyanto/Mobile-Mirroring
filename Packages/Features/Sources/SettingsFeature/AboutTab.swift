@@ -3,7 +3,6 @@ import SwiftUI
 import Theme
 import WorkspaceFeature
 
-/// Who made the app, which version this is, and what it is built on.
 struct AboutTab: View {
     var body: some View {
         SettingsCard {

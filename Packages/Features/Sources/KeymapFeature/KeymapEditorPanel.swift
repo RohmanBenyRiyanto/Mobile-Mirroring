@@ -86,7 +86,6 @@ public struct KeymapEditorPanel: View {
         }
     }
 
-    /// The game in front on the phone, found automatically, with a way to make a keymap for it.
     @ViewBuilder
     private var currentGameCard: some View {
         if let app = foreground.current {
@@ -191,7 +190,6 @@ public struct KeymapEditorPanel: View {
 
     @State private var showsController = false
 
-    /// Bind each controller button or stick direction to a key the keymap already uses, so the controller drives the same on-screen buttons.
     private var controllerSection: some View {
         DisclosureGroup(isExpanded: $showsController) {
             VStack(alignment: .leading, spacing: Theme.Space.s1) {
@@ -373,7 +371,6 @@ private struct ElementInspector: View {
         }
     }
 
-    /// A slider that is one undo step per drag, not one per pixel.
     private func slider(_ title: String, value: Double, range: ClosedRange<Double>, apply: @escaping (Double) -> Void) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack {

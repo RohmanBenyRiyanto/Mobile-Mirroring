@@ -25,11 +25,9 @@ public final class LogcatModel: ObservableObject {
 
     @Published public private(set) var entries: [LogEntry] = []
     @Published public private(set) var isRunning = false
-    /// Ids of the lines that open a crash, an ANR or a native crash, oldest first.
     @Published public private(set) var crashIDs: [Int] = []
     @Published public private(set) var foregroundPackage: String?
     @Published public var scope = Scope.foregroundApp { didSet { if scope != oldValue { retarget() } } }
-    /// The app picked by hand for the "Choose an app" scope.
     @Published public var chosenPackage: String? { didSet { if chosenPackage != oldValue, scope == .chosenApp { retarget() } } }
     @Published public var minimumLevel = LogLevel.verbose
     @Published public var filter = ""
@@ -41,14 +39,11 @@ public final class LogcatModel: ObservableObject {
     private let incoming = LockedValue<[String]>([])
     private var nextID = 0
     private var grouper = CrashGrouper()
-    /// Every process id seen for the app in front (a crashed app comes back with a new one, and its old lines still matter).
     private var processIDs: Set<Int> = []
     private var acceptedBlocks: Set<Int> = []
     private var held: HeldCrash?
     private var fetchProcesses: (@Sendable () throws -> String)?
 
-    /// A crash that started in a process not yet known to be the app's. Its lines wait for the report's
-    /// `Process: <package>, PID: n` line, which says whether it is.
     private struct HeldCrash {
         let block: Int
         let pid: Int?
@@ -57,7 +52,6 @@ public final class LogcatModel: ObservableObject {
 
     public var knownProcessCount: Int { processIDs.count }
 
-    /// The app whose lines are kept: the one in front, the one chosen, or none (everything).
     public var targetPackage: String? {
         switch scope {
         case .foregroundApp: return foregroundPackage
@@ -66,7 +60,6 @@ public final class LogcatModel: ObservableObject {
         }
     }
 
-    /// A new app to follow starts with an empty process list, which is refreshed at once.
     private func retarget() {
         processIDs = []
         acceptedBlocks = []
@@ -98,7 +91,7 @@ public final class LogcatModel: ObservableObject {
             guard !lines.isEmpty else { return }
             incoming.withLock {
                 $0.append(contentsOf: lines)
-                if $0.count > LogcatModel.capacity { $0.removeFirst($0.count - LogcatModel.capacity) } // bounded while paused
+                if $0.count > LogcatModel.capacity { $0.removeFirst($0.count - LogcatModel.capacity) }
             }
         }
         process.terminationHandler = { [weak self] _ in
@@ -110,7 +103,6 @@ public final class LogcatModel: ObservableObject {
         isRunning = true
         fetchProcesses = { String(decoding: try adb.run(["-s", serial, "shell", ProcessList.command], timeout: 5), as: UTF8.self) }
 
-        // Lines are applied in batches so a busy device cannot flood the UI.
         flushTask = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: .milliseconds(150))
@@ -145,7 +137,6 @@ public final class LogcatModel: ObservableObject {
 
     // MARK: The app in front
 
-    /// Follows another app; its process list starts empty and is refreshed at once.
     public func setForegroundPackage(_ package: String?) {
         guard package != foregroundPackage else { return }
         foregroundPackage = package
@@ -198,7 +189,7 @@ public final class LogcatModel: ObservableObject {
         if var pending = held {
             if entry.crashBlock == pending.block {
                 if entry.pid == pending.pid, let pid = LogScope.crashPID(in: entry.message, package: package) {
-                    processIDs.insert(pid) // the report names the app: it was ours after all
+                    processIDs.insert(pid)
                     acceptedBlocks.insert(pending.block)
                     held = nil
                     return pending.lines + [entry]
@@ -206,7 +197,7 @@ public final class LogcatModel: ObservableObject {
                 if pending.lines.count < Self.maxHeldCrashLines { pending.lines.append(entry); held = pending }
                 return []
             }
-            if entry.pid == pending.pid { held = nil } // the process went on logging: not a crash report of the app
+            if entry.pid == pending.pid { held = nil }
         }
 
         if entry.kind.startsCrash, !belongs, let block = entry.crashBlock {

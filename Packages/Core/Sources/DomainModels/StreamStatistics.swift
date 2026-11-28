@@ -1,11 +1,9 @@
 import Foundation
 
-/// Live numbers about the incoming video, for the on-screen overlay.
 public final class StreamStatistics: @unchecked Sendable {
     public struct Snapshot: Equatable {
         public var framesPerSecond = 0.0
         public var megabitsPerSecond = 0.0
-        /// How unevenly frames arrive compared with how they were captured, in milliseconds (smoothed as in RFC 3550).
         public var jitterMillis = 0.0
 
         public init(framesPerSecond: Double = 0, megabitsPerSecond: Double = 0, jitterMillis: Double = 0) {
@@ -27,7 +25,6 @@ public final class StreamStatistics: @unchecked Sendable {
         var value = 0.0
     }
 
-    /// Gaps longer than this are a still screen sending nothing, not unevenness.
     private static let longestGapMicros: Int64 = 250_000
 
     private let window = LockedValue(Window())
@@ -51,7 +48,6 @@ public final class StreamStatistics: @unchecked Sendable {
         }
     }
 
-    /// Rates since the previous snapshot; starts a new measurement window.
     public func snapshot(now: Date = Date()) -> Snapshot {
         window.withLock { current in
             defer { current = Window(start: now) }

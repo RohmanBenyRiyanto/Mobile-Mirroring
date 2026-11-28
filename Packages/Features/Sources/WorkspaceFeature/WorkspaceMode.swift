@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// The phone window's purpose, which decides the control rail tools offered.
 public enum WorkspaceMode: String, CaseIterable, Identifiable, Codable {
     case normal, gaming, developer
 
@@ -31,10 +30,8 @@ public enum WorkspaceMode: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-/// Switches to Gaming mode by itself when a keymap turns on, and back when it turns off. A chosen mode is never changed.
 public struct ModeAutoSwitch: Equatable {
     public var mode: WorkspaceMode
-    /// The mode to return to when the game closes, set only while Gaming was entered automatically.
     public var restoreTo: WorkspaceMode?
 
     public init(mode: WorkspaceMode, restoreTo: WorkspaceMode? = nil) {
@@ -52,6 +49,5 @@ public struct ModeAutoSwitch: Equatable {
         return ModeAutoSwitch(mode: restoreTo, restoreTo: nil)
     }
 
-    /// The user chose a mode: from now on it is theirs, nothing returns it anywhere.
     public func chosen(_ newMode: WorkspaceMode) -> ModeAutoSwitch { ModeAutoSwitch(mode: newMode, restoreTo: nil) }
 }

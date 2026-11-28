@@ -43,7 +43,7 @@ final class MacroRecorderTests: XCTestCase {
     func testTimeStartsAtTheFirstTouchNotAtTheStartOfRecording() {
         let recorder = MacroRecorder()
         recorder.start()
-        recorder.observe(message(.down, 10, 10), at: 50) // the user took 50 s to begin
+        recorder.observe(message(.down, 10, 10), at: 50)
         recorder.observe(message(.up, 10, 10), at: 50.1)
         XCTAssertEqual(recorder.stop().map { ($0.time * 1000).rounded() / 1000 }, [0, 0.1])
     }
@@ -54,7 +54,7 @@ final class MacroRecorderTests: XCTestCase {
         recorder.observe(message(.down, 1, 1, pointer: .slot(3)), at: 0)
         recorder.observe(message(.down, 2, 2, pointer: .slot(7)), at: 0.1)
         recorder.observe(message(.up, 1, 1, pointer: .slot(3)), at: 0.2)
-        recorder.observe(message(.down, 3, 3, pointer: .slot(5)), at: 0.3) // takes finger 0 again
+        recorder.observe(message(.down, 3, 3, pointer: .slot(5)), at: 0.3)
 
         let steps = recorder.stop()
         XCTAssertEqual(steps.filter { $0.kind == .down }.map(\.finger), [0, 1, 0], "phone pointer ids become 0, 1, … and a freed number is reused")
@@ -64,11 +64,11 @@ final class MacroRecorderTests: XCTestCase {
 
     func testIgnoresEverythingButTouchesAndOnlyWhileRecording() {
         let recorder = MacroRecorder()
-        recorder.observe(message(.down, 1, 1), at: 0) // not recording yet
+        recorder.observe(message(.down, 1, 1), at: 0)
         recorder.start()
         recorder.observe(.keycode(.down, .home), at: 0)
         recorder.observe(.scroll(position(1, 1), horizontal: 1, vertical: 1), at: 0)
-        recorder.observe(message(.move, 5, 5), at: 0.1) // a move with no down is from before the recording
+        recorder.observe(message(.move, 5, 5), at: 0.1)
         XCTAssertEqual(recorder.stop(), [])
     }
 
@@ -193,7 +193,7 @@ final class MacroEngineTests: XCTestCase {
     func testALoopingMacroRepeatsWhileHeldAndStopsOnRelease() {
         var engine = KeymapEngine(keymap: Keymap(elements: [macro(swipe, loop: true)]))
         var all = seen(engine.keyDown(keyQ, frameSize: phone))
-        for _ in 0..<10 { all += seen(engine.tick(deltaTime: 0.1, frameSize: phone)) } // 1 s = five rounds
+        for _ in 0..<10 { all += seen(engine.tick(deltaTime: 0.1, frameSize: phone)) }
         XCTAssertGreaterThanOrEqual(all.filter { $0.action == .down }.count, 4)
         XCTAssertEqual(all.filter { $0.action == .down }.count - all.filter { $0.action == .up }.count, all.last?.action == .up ? 0 : 1)
 
@@ -225,7 +225,7 @@ final class MacroEngineTests: XCTestCase {
     func testAFingerWithNoFreeSlotIsSkippedWithoutBreakingTheRest() {
         let holds = (0..<10).map { KeymapElement(position: NormalizedPoint(x: 0.5, y: 0.5), action: .button(key: UInt16(100 + $0), mode: .hold)) }
         var engine = KeymapEngine(keymap: Keymap(elements: holds + [macro(swipe)]))
-        for index in 0..<10 { _ = engine.keyDown(UInt16(100 + index), frameSize: phone) } // every slot taken
+        for index in 0..<10 { _ = engine.keyDown(UInt16(100 + index), frameSize: phone) }
         XCTAssertEqual(engine.keyDown(keyQ, frameSize: phone), [])
         XCTAssertEqual(engine.tick(deltaTime: 1, frameSize: phone), [], "its moves and lift are skipped too")
         XCTAssertFalse(engine.isAnimating)
@@ -237,7 +237,6 @@ final class MacroEngineTests: XCTestCase {
         XCTAssertEqual(seen(engine.tick(deltaTime: 0.2, frameSize: phone)).map(\.action), [.move, .up])
     }
 
-    /// Record real-looking touches, turn them into a macro, play it: the touches that come out match the ones that went in.
     func testRecordedTouchesPlayBackIdentically() throws {
         let original: [(TouchAction, Int32, Int32, Double)] = [(.down, 100, 2000, 0), (.move, 300, 1700, 0.05), (.move, 600, 1200, 0.12),
                                                                (.move, 900, 800, 0.2), (.up, 900, 800, 0.25)]

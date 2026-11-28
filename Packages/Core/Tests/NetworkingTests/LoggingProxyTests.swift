@@ -10,7 +10,6 @@ final class LoggingProxyTests: XCTestCase {
         var all: [LoggingProxy.Report] { lock.withLock { items } }
     }
 
-    /// A one-shot upstream: reads the request head, answers, and closes.
     private func upstream(answer: @escaping @Sendable (Data) -> Data) throws -> (LoopbackListener, Thread) {
         let listener = try LoopbackListener()
         let thread = Thread {
@@ -66,7 +65,6 @@ final class LoggingProxyTests: XCTestCase {
             return Date().timeIntervalSince(started)
         }
         let fast = try timeOneCall(.unlimited)
-        // 12 kB at 96 kbit/s (12 kB/s) is about a second, plus 300 ms before the call starts.
         let slow = try timeOneCall(NetworkProfile(id: "t", title: "t", latencyMillis: 300, downKbps: 96, upKbps: 0))
         XCTAssertLessThan(fast, 0.5)
         XCTAssertGreaterThan(slow, 1.0)

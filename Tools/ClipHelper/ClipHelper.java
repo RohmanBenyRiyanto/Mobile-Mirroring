@@ -7,7 +7,6 @@ import android.os.IBinder;
 
 import java.lang.reflect.Method;
 
-/** Puts a file reference on the phone's clipboard so an app can paste it. Run by `app_process` as the shell user. */
 public final class ClipHelper {
     public static void main(String[] args) throws Exception {
         if (args.length == 1 && args[0].equals("get")) { printClip(); return; }
@@ -37,7 +36,6 @@ public final class ClipHelper {
         System.exit(3);
     }
 
-    /** Prints what the clipboard holds (mime types and uris), so the Mac can check that a file really is there. */
     private static void printClip() throws Exception {
         IBinder binder = (IBinder) Class.forName("android.os.ServiceManager").getMethod("getService", String.class).invoke(null, "clipboard");
         Object manager = Class.forName("android.content.IClipboard$Stub").getMethod("asInterface", IBinder.class).invoke(null, binder);

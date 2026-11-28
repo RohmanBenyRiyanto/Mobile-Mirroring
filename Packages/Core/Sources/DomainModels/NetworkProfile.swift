@@ -1,6 +1,5 @@
 import Foundation
 
-/// A pretend network for testing how an app behaves on a slow connection: extra delay before a call starts, and a speed limit each way.
 public struct NetworkProfile: Equatable, Hashable, Sendable, Identifiable {
     public var id: String
     public var title: String
@@ -20,7 +19,6 @@ public struct NetworkProfile: Equatable, Hashable, Sendable, Identifiable {
 
     public static let unlimited = NetworkProfile(id: "none", title: "No limit", latencyMillis: 0, downKbps: 0, upKbps: 0)
 
-    /// Values follow the common Android emulator and Chrome DevTools presets.
     public static let presets: [NetworkProfile] = [
         .unlimited,
         NetworkProfile(id: "4g", title: "4G", latencyMillis: 50, downKbps: 9_000, upKbps: 9_000),
@@ -32,7 +30,6 @@ public struct NetworkProfile: Equatable, Hashable, Sendable, Identifiable {
 
     public static func preset(id: String) -> NetworkProfile { presets.first { $0.id == id } ?? .unlimited }
 
-    /// How long sending `bytes` should take at `kbps` (0 means no limit). Capped so one chunk never stalls a connection for long.
     public static func transferDelay(bytes: Int, kbps: Int) -> TimeInterval {
         guard kbps > 0, bytes > 0 else { return 0 }
         return min(5, Double(bytes) * 8 / (Double(kbps) * 1000))

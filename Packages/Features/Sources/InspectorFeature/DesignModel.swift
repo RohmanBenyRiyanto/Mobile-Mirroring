@@ -4,7 +4,6 @@ import Foundation
 import DomainModels
 import Networking
 
-/// The colour picker reads a `screencap` still so colours match the phone's real pixels, not the compressed video.
 @MainActor
 public final class DesignModel: ObservableObject {
     public enum Tool: Equatable {
@@ -73,7 +72,6 @@ public final class DesignModel: ObservableObject {
 
     public var color: PickedColor? { pointer.flatMap { snapshot?.color(atRatio: $0) } }
 
-    /// Copies the colour under the pointer and returns its hex value, or nil when there is none.
     @discardableResult
     public func copyColor() -> String? {
         guard tool == .colorPicker, let color else { return nil }

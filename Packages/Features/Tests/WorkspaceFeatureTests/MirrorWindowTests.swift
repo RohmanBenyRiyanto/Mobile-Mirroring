@@ -35,7 +35,7 @@ final class RailTests: XCTestCase {
 
     func testPanelSitsBesideTheWindowAndNeverTakesFocus() throws {
         let window = NSWindow(contentRect: CGRect(x: 200, y: 150, width: 300, height: 560), styleMask: [.titled, .resizable], backing: .buffered, defer: false)
-        window.isReleasedWhenClosed = false // a window made in code would otherwise be released twice
+        window.isReleasedWhenClosed = false
         defer { window.close() }
         let controller = RailPanelController(parent: window, content: AnyView(Color.clear.frame(width: 92, height: 500)))
         let panel = try XCTUnwrap(window.childWindows?.first)
@@ -43,7 +43,6 @@ final class RailTests: XCTestCase {
         XCTAssertFalse(panel.canBecomeKey)
         XCTAssertFalse(panel.canBecomeMain)
         XCTAssertFalse(panel.isOpaque)
-        // 12 pt beside the window, less the 20 pt of transparent room the rail keeps for its shadow.
         XCTAssertEqual(panel.frame.minX, window.frame.maxX + 12 - 20, accuracy: 1)
         XCTAssertEqual(panel.frame.midY, window.frame.midY, accuracy: 1, "centered on the window's height")
 
@@ -164,7 +163,7 @@ final class WindowSizeMemoryTests: XCTestCase {
     func testDisconnectingGoesBackToTheConnectSizeTheUserHad() throws {
         var memory = WindowSizeMemory()
         _ = memory.update(isPhoneShaped: false, currentContentSize: connect, availableHeight: 1000, pictureRatio: nil)
-        let userSize = CGSize(width: 900, height: 600) // the user made the Connect window bigger
+        let userSize = CGSize(width: 900, height: 600)
         _ = memory.update(isPhoneShaped: false, currentContentSize: userSize, availableHeight: 1000, pictureRatio: nil)
         _ = memory.update(isPhoneShaped: true, currentContentSize: userSize, availableHeight: 1000, pictureRatio: ratio)
         let back = try XCTUnwrap(memory.update(isPhoneShaped: false, currentContentSize: CGSize(width: 340, height: 740), availableHeight: 1000, pictureRatio: nil))
@@ -226,7 +225,6 @@ final class WindowPlacementTests: XCTestCase {
     private let screen = CGRect(x: 0, y: 0, width: 1512, height: 940)
 
     func testATallWindowSlidesUpInsteadOfLeavingTheScreen() {
-        // A 870 pt window whose top is 200 pt below the top of the screen would hang off the bottom.
         let old = CGRect(x: 376, y: 940 - 200 - 564, width: 760, height: 564)
         let frame = WindowPlacement.resized(old, to: CGSize(width: 387, height: 870), in: screen)
         XCTAssertGreaterThanOrEqual(frame.minY, screen.minY)

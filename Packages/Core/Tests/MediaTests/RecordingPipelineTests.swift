@@ -4,8 +4,6 @@ import XCTest
 @testable import DomainModels
 @testable import CoreTestSupport
 
-/// Feeds a real H.264 clip through the same path the device stream takes:
-/// Annex-B packets → `VideoDecoder` → display layer, and → `ScreenRecorder` → MP4.
 final class RecordingPipelineTests: XCTestCase {
     private var workDirectory: URL!
 
@@ -35,7 +33,7 @@ final class RecordingPipelineTests: XCTestCase {
         for (index, slice) in slices.enumerated() {
             let presentationTime = Int64(index) * 33_333
             decoder.decode(Self.startCode + slice, presentationTime: presentationTime, isKeyFrame: slice[0] & 0x1F == 5)
-            if index % 3 == 0 { // 16 ms of silence per packet
+            if index % 3 == 0 {
                 recorder.appendAudio(Data(count: 768 * SampleBuffers.PCM.bytesPerFrame), presentationTime: presentationTime)
             }
         }
@@ -66,7 +64,6 @@ final class RecordingPipelineTests: XCTestCase {
                                           videoFormat: try XCTUnwrap(decoder.currentFormat), includesAudio: false)
         decoder.setFrameTap { sample, isKeyFrame in recorder.appendVideo(sample, isKeyFrame: isKeyFrame) }
 
-        // Only delta frames: nothing may be written, and finishing must clean up.
         for (index, slice) in slices.enumerated() where slice[0] & 0x1F == 1 {
             decoder.decode(Self.startCode + slice, presentationTime: Int64(index) * 33_333, isKeyFrame: false)
         }
@@ -82,7 +79,6 @@ final class RecordingPipelineTests: XCTestCase {
 
     private static let startCode = Data([0, 0, 0, 1])
 
-    /// Encodes an ffmpeg test pattern without B-frames, matching the Android encoder.
     private func makeH264Clip(seconds: Int, fps: Int) throws -> [Data] {
         let ffmpeg = ["/opt/homebrew/bin/ffmpeg", "/usr/local/bin/ffmpeg"].first { FileManager.default.isExecutableFile(atPath: $0) }
         guard let ffmpeg else { throw XCTSkip("ffmpeg is not installed") }

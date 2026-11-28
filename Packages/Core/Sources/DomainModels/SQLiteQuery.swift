@@ -1,7 +1,6 @@
 import Foundation
 
 public enum SQLiteQuery {
-    /// Only plain reads are allowed: one SELECT/WITH/EXPLAIN statement or a table-info PRAGMA. The database is also opened read-only.
     public static func isReadOnly(_ sql: String) -> Bool {
         var text = sql.trimmingCharacters(in: .whitespacesAndNewlines)
         while text.hasSuffix(";") { text.removeLast(); text = text.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -17,10 +16,8 @@ public enum SQLiteQuery {
         return !["-journal", "-wal", "-shm"].contains { name.hasSuffix($0) }
     }
 
-    /// A table name safe to put inside double quotes.
     public static func quoted(_ identifier: String) -> String { "\"" + identifier.replacingOccurrences(of: "\"", with: "\"\"") + "\"" }
 
-    /// RFC 4180 style CSV as printed by `sqlite3 -csv`: quoted fields, doubled quotes, line breaks inside quotes.
     public static func parseCSV(_ text: String) -> [[String]] {
         var rows: [[String]] = [], row: [String] = [], field = ""
         var inQuotes = false, sawContent = false
@@ -58,14 +55,12 @@ public enum SQLiteQuery {
 extension SQLiteQuery {
     public static let pageSize = 100
 
-    /// One page of a table, optionally sorted. Names are quoted, numbers are plain integers: nothing typed by the user is spliced in.
     public static func pageSQL(table: String, sortColumn: String?, ascending: Bool, page: Int) -> String {
         var sql = "SELECT * FROM \(quoted(table))"
         if let sortColumn { sql += " ORDER BY \(quoted(sortColumn)) \(ascending ? "ASC" : "DESC")" }
         return sql + " LIMIT \(pageSize) OFFSET \(max(page, 0) * pageSize)"
     }
 
-    /// Row counts for several tables in one go: `table name, count`.
     public static func countsSQL(tables: [String]) -> String? {
         guard !tables.isEmpty else { return nil }
         return tables.map { "SELECT \(quotedLiteral($0)) AS name, COUNT(*) AS rows FROM \(quoted($0))" }.joined(separator: " UNION ALL ")
@@ -73,13 +68,11 @@ extension SQLiteQuery {
 
     public static let schemaSQL = "SELECT name, type FROM sqlite_master WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY type, name"
 
-    /// A string literal for SQL (single quotes doubled).
     static func quotedLiteral(_ text: String) -> String { "'" + text.replacingOccurrences(of: "'", with: "''") + "'" }
 }
 
 // MARK: Filters, structure and helpers for the query form
 
-/// A "column operator value" condition built from form fields. The column is quoted and the value is a quoted literal.
 public struct TableFilter: Equatable, Sendable {
     public enum Operation: String, CaseIterable, Identifiable, Sendable {
         case equals, notEquals, contains, startsWith, greater, less, isNull, isNotNull
@@ -111,7 +104,6 @@ public struct TableFilter: Equatable, Sendable {
 
     public var isComplete: Bool { !column.isEmpty && (!operation.needsValue || !value.isEmpty) }
 
-    /// `WHERE …` for this filter, or an empty string when it is not complete.
     public var clause: String {
         guard isComplete else { return "" }
         let name = SQLiteQuery.quoted(column)
@@ -130,7 +122,6 @@ public struct TableFilter: Equatable, Sendable {
 }
 
 extension SQLiteQuery {
-    /// `%`, `_` and the escape character are matched literally in a LIKE pattern.
     static func escapeLike(_ text: String) -> String {
         text.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "%", with: "\\%").replacingOccurrences(of: "_", with: "\\_")
     }
@@ -145,13 +136,11 @@ extension SQLiteQuery {
 
     public static func structureSQL(table: String) -> String { "PRAGMA table_info(\(quoted(table)))" }
 
-    /// Tables Room and Android create for themselves; shown dimmed so app tables stand out.
     public static func isSystemTable(_ name: String) -> Bool {
         name == "android_metadata" || name == "room_master_table" || name == "sqlite_sequence" || name.hasPrefix("sqlite_") || name.hasPrefix("room_")
             || name.hasSuffix("_fts_content") || name.hasSuffix("_fts_segments") || name.hasSuffix("_fts_segdir") || name.hasSuffix("_fts_docsize") || name.hasSuffix("_fts_stat")
     }
 
-    /// Ready-made queries for a starting point; the table and column names are quoted.
     public static func templates(table: String?, columns: [String]) -> [(title: String, sql: String)] {
         guard let table else { return [("Tables and views", "SELECT name, type FROM sqlite_master ORDER BY type, name")] }
         let t = quoted(table)
@@ -169,7 +158,6 @@ extension SQLiteQuery {
         return list
     }
 
-    /// A plain-language hint for the errors people hit most when writing a query.
     public static func hint(forError message: String) -> String? {
         let lower = message.lowercased()
         if lower.contains("no such table") { return "That table does not exist in this database. Pick one from the list on the left." }

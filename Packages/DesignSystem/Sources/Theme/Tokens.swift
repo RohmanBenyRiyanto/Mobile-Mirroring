@@ -1,7 +1,6 @@
 import AppKit
 import SwiftUI
 
-/// An sRGB colour parsed from `#RRGGBB`, with WCAG luminance and contrast.
 public struct HexColor: Equatable {
     public let red: Double, green: Double, blue: Double
 
@@ -25,7 +24,6 @@ public struct HexColor: Equatable {
         return 0.2126 * linear(red) + 0.7152 * linear(green) + 0.0722 * linear(blue)
     }
 
-    /// WCAG contrast ratio, from 1 to 21.
     public static func contrast(_ a: HexColor, _ b: HexColor) -> Double {
         let (light, dark) = (max(a.luminance, b.luminance), min(a.luminance, b.luminance))
         return (light + 0.05) / (dark + 0.05)
@@ -34,11 +32,9 @@ public struct HexColor: Equatable {
     public var nsColor: NSColor { NSColor(srgbRed: red, green: green, blue: blue, alpha: 1) }
 }
 
-/// A colour that follows the appearance, either a system colour or a brand colour from two hex values.
 public struct ThemeColor {
     public let nsColor: NSColor
 
-    /// The system handles appearance, increased contrast and vibrancy for this colour.
     public init(system color: NSColor) { nsColor = color }
 
     public init(light: String, dark: String) {
@@ -61,7 +57,6 @@ public struct ThemeColor {
     }
 }
 
-/// Design tokens: colours, spacing, type and motion. Colours come from the system except for brand and glass imitation.
 public enum Theme {
     // MARK: Colour
 
@@ -83,16 +78,13 @@ public enum Theme {
         public static let glassHighlight = alpha(light: (255, 255, 255, 0.95), dark: (255, 255, 255, 0.40))
         public static let glassRim = alpha(light: (10, 30, 70, 0.14), dark: (255, 255, 255, 0.18))
 
-        /// Values are 0…255 for RGB and 0…1 for alpha.
         static func alpha(light: (Double, Double, Double, Double), dark: (Double, Double, Double, Double)) -> Color {
             func ns(_ v: (Double, Double, Double, Double)) -> NSColor { NSColor(srgbRed: v.0 / 255, green: v.1 / 255, blue: v.2 / 255, alpha: v.3) }
             let (l, d) = (ns(light), ns(dark))
             return Color(nsColor: NSColor(name: nil) { $0.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua ? d : l })
         }
-
     }
 
-    /// Fixed colours for content over video, the same in both appearances.
     public enum OverVideo {
         public static let scrim = Color(red: 12 / 255, green: 14 / 255, blue: 20 / 255).opacity(0.72)
         public static let text = Color(red: 245 / 255, green: 245 / 255, blue: 247 / 255)
@@ -127,14 +119,12 @@ public enum Theme {
 
     // MARK: Type
 
-    /// Built on the system's text styles, so size and tracking adapt like any Mac app.
     public enum Font {
         public static let caption = SwiftUI.Font.subheadline
         public static let body = SwiftUI.Font.body
         public static let emphasized = SwiftUI.Font.body.weight(.medium)
         public static let headline = SwiftUI.Font.title3.weight(.medium)
         public static let title = SwiftUI.Font.title.weight(.medium)
-        /// Fixed-width digits so values such as timers do not jitter.
         public static let mono = SwiftUI.Font.system(.body, design: .monospaced).monospacedDigit()
         public static let monoCaption = SwiftUI.Font.system(.subheadline, design: .monospaced).monospacedDigit()
     }

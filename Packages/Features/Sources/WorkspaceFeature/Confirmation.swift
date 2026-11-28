@@ -1,6 +1,5 @@
 import AppKit
 
-/// A standard confirmation sheet with a "Don't ask again" box. Used for actions that are hard to take back or that capture something.
 @MainActor
 enum Confirmation {
     struct Answer {

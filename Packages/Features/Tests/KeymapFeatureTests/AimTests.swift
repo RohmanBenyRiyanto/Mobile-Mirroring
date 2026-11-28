@@ -29,7 +29,6 @@ private func touches(_ actions: [KeymapEngine.Action]) -> [Seen] {
 
 final class AimEngineTests: XCTestCase {
     private let phone = CGSize(width: 1080, height: 2340)
-    /// Centre of the look area (0.7, 0.5) in frame pixels, and its reach (a tenth of the shorter edge).
     private let centreX = 0.7 * 1079, centreY = 0.5 * 2339, reach = 108.0
 
     private func engine(_ elements: [KeymapElement]) -> KeymapEngine { KeymapEngine(keymap: Keymap(elements: elements)) }
@@ -57,7 +56,6 @@ final class AimEngineTests: XCTestCase {
         XCTAssertEqual(seen.map(\.action), [.down, .move])
         XCTAssertEqual(seen[0].x, centreX, accuracy: 0.6)
         XCTAssertEqual(seen[0].y, centreY, accuracy: 0.6)
-        // sensitivity 2 on a 1080-wide screen: 2 px per mouse point; positive y is down
         XCTAssertEqual(seen[1].x, centreX + 20, accuracy: 1.1)
         XCTAssertEqual(seen[1].y, centreY + 10, accuracy: 1.1)
 
@@ -83,11 +81,11 @@ final class AimEngineTests: XCTestCase {
     }
 
     func testGoingPastTheEdgePutsTheFingerBackInTheMiddle() throws {
-        var engine = engine([aim(sensitivity: 2, radius: 0.1)]) // reach 108 px = 54 mouse points
+        var engine = engine([aim(sensitivity: 2, radius: 0.1)])
         _ = engine.keyDown(keyTilde, frameSize: phone)
         _ = engine.mouseMoved(deltaX: 40, deltaY: 0, frameSize: phone)
 
-        let wrap = touches(engine.mouseMoved(deltaX: 20, deltaY: 0, frameSize: phone)) // 60 points = 120 px > 108
+        let wrap = touches(engine.mouseMoved(deltaX: 20, deltaY: 0, frameSize: phone))
         XCTAssertEqual(wrap.map(\.action), [.up, .down], "lift and touch down again at the centre")
         XCTAssertEqual(wrap[1].x, centreX, accuracy: 0.6)
         XCTAssertEqual(wrap[0].slot, wrap[1].slot, "the same finger")
@@ -246,7 +244,7 @@ final class AimControllerTests: XCTestCase {
     func testLoosingFocusAndRotationFreeThePointer() {
         let (controller, _, cursor) = makeController([aim()])
         _ = controller.keyDown(keyTilde)
-        controller.releaseAll() // what the view does when the window stops being key
+        controller.releaseAll()
         XCTAssertFalse(cursor.isCaptured)
 
         _ = controller.keyUp(keyTilde)

@@ -1,7 +1,5 @@
 import Foundation
 
-/// A button or stick direction on a game controller. A keymap can bind each to a keyboard key it already uses,
-/// so the same buttons on screen are driven by the controller too.
 public enum GamepadInput: String, CaseIterable, Codable, Identifiable, Sendable {
     case buttonA, buttonB, buttonX, buttonY
     case leftShoulder, rightShoulder, leftTrigger, rightTrigger
@@ -42,8 +40,6 @@ public enum GamepadInput: String, CaseIterable, Codable, Identifiable, Sendable 
     }
 }
 
-/// Turns an analog stick position into pressed directions. A direction presses past 0.5 and releases below 0.3, so a stick resting near the
-/// edge does not flicker.
 public struct StickDirections: Equatable, Sendable {
     public struct Pressed: OptionSet, Sendable {
         public let rawValue: Int
@@ -61,7 +57,6 @@ public struct StickDirections: Equatable, Sendable {
             if value < -pressAt || (previous.contains(negative) && value < -releaseAt) { result.insert(negative) }
             return result
         }
-        // GameController reports up as positive y.
         return axis(x, negative: .left, positive: .right).union(axis(y, negative: .down, positive: .up))
     }
 }
@@ -69,10 +64,8 @@ public struct StickDirections: Equatable, Sendable {
 extension Keymap {
     public static let maxGamepadBindings = 32
 
-    /// The keyboard key a controller input stands for in this keymap, if it is bound.
     public func key(for input: GamepadInput) -> UInt16? { gamepad?[input.rawValue] }
 
-    /// Drops bindings that name an unknown button, a key outside the keyboard range, or too many entries.
     func cleanedGamepad() -> [String: UInt16]? {
         guard let gamepad else { return nil }
         let valid = gamepad.filter { GamepadInput(rawValue: $0.key) != nil && $0.value <= 255 }

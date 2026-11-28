@@ -9,7 +9,6 @@ public enum DesignGrid: Int, CaseIterable, Identifiable {
     public var stepDP: Double? { self == .off ? nil : Double(rawValue) }
     public var majorEvery: Int { 4 }
 
-    /// Returns no lines when they would be packed closer than `minimumSpacing` view points, since they would blur.
     public static func lines(extentPixels: Double, densityScale: Double, stepDP: Double, viewLength: Double,
                       majorEvery: Int = 4, minimumSpacing: Double = 3) -> [(ratio: Double, isMajor: Bool)] {
         guard extentPixels > 0, densityScale > 0, stepDP > 0, viewLength > 0 else { return [] }
@@ -25,13 +24,11 @@ public enum DesignGrid: Int, CaseIterable, Identifiable {
     }
 }
 
-/// One still picture of the phone's screen, read pixel by pixel (for the colour picker).
 public struct PixelImage {
     public let width: Int
     public let height: Int
     private let rgba: [UInt8]
 
-    /// Largest picture accepted; a 4K phone screen is far below this.
     public static let maxPixels = 64 * 1024 * 1024
 
     public init?(png data: Data) {
@@ -52,7 +49,6 @@ public struct PixelImage {
         rgba = buffer
     }
 
-    /// The colour under a point given as a 0…1 ratio across the picture. Nil outside it.
     public func color(atRatio ratio: CGPoint) -> PickedColor? {
         guard ratio.x >= 0, ratio.x <= 1, ratio.y >= 0, ratio.y <= 1 else { return nil }
         let x = min(Int(ratio.x * Double(width)), width - 1)

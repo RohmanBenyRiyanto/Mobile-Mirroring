@@ -1,6 +1,5 @@
 import AppKit
 
-// Draws the DMG window background: light (Finder always draws icon names in dark text over a picture), a soft blue glow, and an arrow from the app to Applications. 660×400 pt, written at 2×.
 let size = NSSize(width: 660, height: 400)
 let scale: CGFloat = 2
 let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(size.width * scale), pixelsHigh: Int(size.height * scale), bitsPerSample: 8,
@@ -23,7 +22,6 @@ func centered(_ text: String, y: CGFloat, attributes: [NSAttributedString.Key: A
 centered("Install Benz Mirror", y: 332, attributes: title)
 centered("Drag the app onto Applications", y: 306, attributes: hint)
 
-// The arrow sits between the two icons (app at x=180, Applications at x=480, both at y=190 from the top).
 let arrow = NSBezierPath()
 arrow.lineWidth = 5
 arrow.lineCapStyle = .round

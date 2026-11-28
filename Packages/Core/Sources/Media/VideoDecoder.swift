@@ -2,18 +2,13 @@ import AVFoundation
 import CoreMedia
 import DomainModels
 
-/// Decodes and displays the encoded stream with the hardware decoder.
-///
-/// Packet-handling methods must be called from a single (the video) thread.
 public final class VideoDecoder: @unchecked Sendable {
     public typealias FrameTap = @Sendable (CMSampleBuffer, _ isKeyFrame: Bool) -> Void
 
     public let layer = AVSampleBufferDisplayLayer()
 
-    /// Extra places the picture is shown (the mini mirror). They are fed the same frames as `layer`.
     private let extraRenderers = LockedValue<[(layer: AVSampleBufferDisplayLayer, renderer: AVSampleBufferVideoRenderer)]>([])
 
-    /// Creates another layer showing the same picture. Call from the main thread; it starts at the next key frame.
     public func makeMirrorLayer() -> AVSampleBufferDisplayLayer {
         let extra = AVSampleBufferDisplayLayer()
         extra.videoGravity = .resizeAspect
@@ -27,11 +22,9 @@ public final class VideoDecoder: @unchecked Sendable {
         extraRenderers.withLock { $0.removeAll { $0.layer === layer } }
     }
 
-    /// Called when decoding broke and a fresh key frame is needed.
     public var onNeedsKeyFrame: (() -> Void)?
 
     private let codec: VideoCodec
-    /// Fetched once, where the decoder is created (the main thread); enqueueing is thread-safe.
     private let renderer: AVSampleBufferVideoRenderer
     private let format = LockedValue<CMVideoFormatDescription?>(nil)
     private let frameTap = LockedValue<FrameTap?>(nil)
@@ -45,21 +38,16 @@ public final class VideoDecoder: @unchecked Sendable {
         layer.backgroundColor = CGColor(gray: 0, alpha: 1)
     }
 
-    /// The current stream format, once the device has sent its parameter sets.
     public var currentFormat: CMVideoFormatDescription? { format.get() }
 
-    /// True if the display pipeline rejected a frame and is waiting for a key frame.
     public var hasDisplayError: Bool { renderer.status == .failed }
 
-    /// Receives an independent copy of every frame while set.
     public func setFrameTap(_ tap: FrameTap?) { frameTap.set(tap) }
 
-    /// A new capture session starts (the device rotated): drop everything until its first key frame.
     public func beginSession() {
         waitingForKeyFrame = true
     }
 
-    /// Handles the config packet carrying the parameter sets (SPS/PPS, plus VPS for H.265).
     public func configure(with payload: Data) throws {
         let sets = AnnexB.nalUnits(in: payload).filter(isParameterSet)
         guard !sets.isEmpty else { throw DecoderError.noParameterSets }

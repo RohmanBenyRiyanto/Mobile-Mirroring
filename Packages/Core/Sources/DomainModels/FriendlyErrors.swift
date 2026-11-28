@@ -1,6 +1,5 @@
 import Foundation
 
-/// Plain-language explanations for the failures adb reports most often, so a toast says what to do instead of quoting adb.
 public enum FriendlyErrors {
     private static let rules: [(needle: String, text: String)] = [
         ("unauthorized", "This Mac is not allowed on the phone yet. Unlock the phone and tap Allow."),
@@ -21,10 +20,8 @@ public enum FriendlyErrors {
         ("protocol fault", "The connection to the phone was interrupted. Try again."),
     ]
 
-    /// Every sentence this can produce, so a test can check that each one is translated.
     public static var allTexts: [String] { rules.map(\.text) }
 
-    /// The friendly text for a raw adb message, or nil when nothing matches (the raw text is then shown as is).
     public static func explain(_ raw: String) -> String? {
         rules.first { raw.localizedCaseInsensitiveContains($0.needle) }?.text
     }

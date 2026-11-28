@@ -1,6 +1,5 @@
 import Foundation
 
-/// Position of a pointer event in video-frame pixels, plus the frame size it refers to.
 public struct TouchPosition: Equatable {
     public var x: Int32
     public var y: Int32
@@ -30,7 +29,6 @@ public enum MouseButton {
     public static let primary: UInt32 = 1 << 0
 }
 
-/// Identifies the pointer a touch belongs to. The server tracks up to 10 distinct ids at once.
 public struct PointerID: RawRepresentable, Hashable {
     public let rawValue: UInt64
 
@@ -38,12 +36,10 @@ public struct PointerID: RawRepresentable, Hashable {
         self.rawValue = rawValue
     }
 
-    /// A mouse; with only the primary button held the server injects it as a finger.
     public static let mouse = PointerID(rawValue: 0xFFFF_FFFF_FFFF_FFFF)
     public static let finger = PointerID(rawValue: 0xFFFF_FFFF_FFFF_FFFE)
     public static let virtualFinger = PointerID(rawValue: 0xFFFF_FFFF_FFFF_FFFD)
 
-    /// The server tracks at most this many simultaneous pointers.
     public static let slotCount = 10
 
     public static func slot(_ slot: Int) -> PointerID {
@@ -52,7 +48,6 @@ public struct PointerID: RawRepresentable, Hashable {
     }
 }
 
-/// Client-to-device messages in scrcpy's wire format (v5.0.1).
 public enum ControlMessage: Equatable {
     case keycode(KeyAction, AndroidKeyCode, meta: KeyMeta = [])
     case text(String)
@@ -67,9 +62,7 @@ public enum ControlMessage: Equatable {
     case setDisplayPower(Bool)
     case rotateDevice
     case resetVideo
-    /// Asks a flexible virtual display to take a new size (pixels).
     case resizeDisplay(width: UInt16, height: UInt16)
-    /// Opens an app (a package name, at most 255 bytes) on the display being mirrored.
     case startApp(String)
 
     public static let maxTextBytes = 300
@@ -91,7 +84,7 @@ public enum ControlMessage: Equatable {
             data.append(TypeID.keycode.rawValue)
             data.append(action.rawValue)
             data.appendBigEndian(code.rawValue)
-            data.appendBigEndian(UInt32(0)) // repeat count
+            data.appendBigEndian(UInt32(0))
             data.appendBigEndian(meta.rawValue)
 
         case let .text(text):
@@ -142,7 +135,7 @@ public enum ControlMessage: Equatable {
 
         case let .setClipboard(text, paste):
             data.append(TypeID.setClipboard.rawValue)
-            data.appendBigEndian(UInt64(0)) // sequence 0: no acknowledgement requested
+            data.appendBigEndian(UInt64(0))
             data.append(paste ? 1 : 0)
             let bytes = text.utf8Prefix(maxBytes: Self.maxClipboardBytes)
             data.appendBigEndian(UInt32(bytes.count))
@@ -157,12 +150,10 @@ public enum ControlMessage: Equatable {
 
     // MARK: Fixed-point encodings used by the protocol
 
-    /// Encodes a [0, 1] value as an unsigned 16-bit fixed-point number, as scrcpy expects.
     public static func unsignedFixedPoint(_ value: Float) -> UInt16 {
         UInt16(min(min(max(value, 0), 1) * 65536, 65535))
     }
 
-    /// Encodes a [-1, 1] value as a signed 16-bit fixed-point number, as scrcpy expects.
     public static func signedFixedPoint(_ value: Float) -> Int16 {
         Int16(min(max(min(max(value, -1), 1) * 32768, -32768), 32767))
     }

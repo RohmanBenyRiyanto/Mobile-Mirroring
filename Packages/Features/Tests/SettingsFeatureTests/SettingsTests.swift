@@ -98,7 +98,6 @@ final class SettingsPersistenceTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: folder) }
         let chosen = try OutputFiles.newURL(in: .picturesDirectory, prefix: "Shot", pathExtension: "png", custom: folder.path)
         XCTAssertEqual(chosen.deletingLastPathComponent().path, folder.path)
-        // A missing or relative folder falls back to the default instead of creating something unexpected.
         let missing = try OutputFiles.newURL(in: .picturesDirectory, prefix: "Shot", pathExtension: "png", custom: "/no/such/folder")
         XCTAssertTrue(missing.path.contains("/Pictures/\(AppInfo.name)/"), missing.path)
         let relative = try OutputFiles.newURL(in: .picturesDirectory, prefix: "Shot", pathExtension: "png", custom: "Documents")
@@ -144,7 +143,7 @@ final class ShortcutBookTests: XCTestCase {
         var book = ShortcutBook()
         XCTAssertEqual(book.combo(for: "Mirror.Screenshot")?.display, "⌘S")
         book.set(KeyCombo("S", [.command, .option]), for: "Mirror.Screenshot")
-        book.set(nil, for: "Device.Home") // removed
+        book.set(nil, for: "Device.Home")
         let defaults = try XCTUnwrap(UserDefaults(suiteName: "benz-shortcut-test"))
         defer { defaults.removePersistentDomain(forName: "benz-shortcut-test") }
         book.save(to: defaults)
@@ -184,7 +183,6 @@ final class LanguageCompletenessTests: XCTestCase {
         return pattern.matches(in: text, range: range).map { String(text[Range($0.range, in: text)!]) }.sorted()
     }
 
-    /// Every language offered in Settings has every string, and keeps the same %@ and %lld as the English text.
     func testEveryOfferedLanguageIsComplete() throws {
         let data = try Data(contentsOf: projectFile("Resources/Localizable.xcstrings"))
         let json = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])

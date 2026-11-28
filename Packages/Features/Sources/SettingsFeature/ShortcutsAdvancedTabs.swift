@@ -85,9 +85,9 @@ struct ShortcutsTab: View {
     }
 
     private func handle(_ event: NSEvent, for id: String) {
-        if event.keyCode == 53 { return stopRecording() } // Esc
+        if event.keyCode == 53 { return stopRecording() }
         if event.keyCode == 51 || event.keyCode == 117, event.modifierFlags.intersection([.command, .control, .option, .shift]).isEmpty {
-            model.shortcuts.set(nil, for: id) // Delete removes the shortcut
+            model.shortcuts.set(nil, for: id)
             return stopRecording()
         }
         guard let combo = KeyCombo(event: event) else { return }

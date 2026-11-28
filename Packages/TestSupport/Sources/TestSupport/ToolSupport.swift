@@ -1,7 +1,6 @@
 import Foundation
 import XCTest
 
-/// Runs an executable from Homebrew and returns its status and stderr, or skips the test if it is missing.
 public func runTool(_ name: String, _ arguments: [String]) throws -> (status: Int32, output: String, errors: String) {
     guard let path = ["/opt/homebrew/bin/\(name)", "/usr/local/bin/\(name)"].first(where: { FileManager.default.isExecutableFile(atPath: $0) }) else {
         throw XCTSkip("\(name) is not installed")

@@ -1,9 +1,6 @@
 import CryptoKit
 import Foundation
 
-/// The scrcpy server that is pushed to the device and run as the `shell` user.
-/// Because it runs with elevated privileges, its SHA-256 is pinned and verified
-/// before every push; a swapped or corrupted file is never sent to the phone.
 public enum ServerBundle {
     public static let version = "5.0.1"
     public static let fileName = "scrcpy-server-v\(version)"
@@ -34,9 +31,6 @@ public enum ServerBundle {
         return url
     }
 
-    /// Candidate locations for the server file, most likely first: the app bundle, then `Resources/` in the working
-    /// folder, its parents, and the executable's parents (for development builds and package tests). Each candidate is
-    /// checked against `sha256`, so the location is not trusted.
     public static func candidateURLs(resources: URL?, executable: URL?, workingDirectory: URL, searchDepth: Int = 8) -> [URL] {
         var candidates = [resources?.appendingPathComponent(fileName)]
         for start in [workingDirectory, executable?.deletingLastPathComponent()] {

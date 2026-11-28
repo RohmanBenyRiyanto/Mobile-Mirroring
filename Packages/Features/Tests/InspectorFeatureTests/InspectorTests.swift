@@ -5,7 +5,6 @@ import TestSupport
 @testable import InspectorFeature
 
 final class InspectorTests: XCTestCase {
-    /// Same attribute layout as a real Android 17 dump, including the sentence the tool prints afterwards.
     private func dump(extra: String = "") -> Data {
         func node(bounds: String, cls: String = "android.view.View", id: String = "", text: String = "", desc: String = "",
                   clickable: Bool = false, _ children: String = "") -> String {
@@ -60,7 +59,6 @@ final class InspectorTests: XCTestCase {
 
     func testPicksTheDeepestElementUnderThePointer() throws {
         let hierarchy = try XCTUnwrap(UIHierarchyParser.parse(dump()))
-        // Inside the button (40…240, 60…160) → 0.1, 0.05 of a 1000×2000 screen.
         XCTAssertEqual(hierarchy.node(atRatio: CGPoint(x: 0.1, y: 0.05))?.shortResourceID, "play")
         XCTAssertEqual(hierarchy.node(atRatio: CGPoint(x: 0.8, y: 0.05))?.shortResourceID, "toolbar")
         XCTAssertEqual(hierarchy.node(atRatio: CGPoint(x: 0.5, y: 0.9))?.id, 0)
@@ -68,7 +66,6 @@ final class InspectorTests: XCTestCase {
 
     func testLaterSiblingWinsWhereElementsOverlapAndEmptyElementsNeverMatch() throws {
         let hierarchy = try XCTUnwrap(UIHierarchyParser.parse(dump()))
-        // The overlay is deeper than the toolbar, so it wins where they overlap.
         let hit = hierarchy.node(atRatio: CGPoint(x: 0.15, y: 0.075))
         XCTAssertEqual(hit?.shortResourceID, "play")
         XCTAssertEqual(hierarchy.node(atRatio: CGPoint(x: 0.28, y: 0.14))?.contentDescription, "Overlay")
@@ -105,7 +102,7 @@ final class InspectorTests: XCTestCase {
         model.setOn(true)
         XCTAssertEqual(model.status, .reading)
         try await waitUntil { model.status == .ready }
-        XCTAssertEqual(model.hovered?.shortResourceID, "play") // the earlier position is remembered
+        XCTAssertEqual(model.hovered?.shortResourceID, "play")
 
         model.pointerMoved(to: CGPoint(x: 0.8, y: 0.05))
         XCTAssertEqual(model.hovered?.shortResourceID, "toolbar")

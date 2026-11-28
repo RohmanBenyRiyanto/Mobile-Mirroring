@@ -1,7 +1,6 @@
 import DomainModels
 import Foundation
 
-/// Keeps the ledger of owed phone changes in UserDefaults, written at once so it survives a crash or a kill.
 @MainActor
 public final class PhoneLedgerStore {
     private let defaults: UserDefaults

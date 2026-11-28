@@ -65,7 +65,6 @@ public enum LibraryFolder {
 }
 
 extension AppModel {
-    /// Creates the folder first so it can be opened while still empty.
     public func revealLibrary(_ folder: LibraryFolder) {
         let directory: FileManager.SearchPathDirectory = folder == .screenshots ? .picturesDirectory : .moviesDirectory
         let url = FileManager.default.urls(for: directory, in: .userDomainMask)[0].appendingPathComponent(AppInfo.name, isDirectory: true)

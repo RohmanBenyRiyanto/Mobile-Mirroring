@@ -14,11 +14,6 @@ public enum SessionError: LocalizedError {
     }
 }
 
-/// One mirroring session with one device.
-///
-/// Flow (scrcpy's default "reverse" tunnel, so there is no connect race):
-/// push the verified server → listen on loopback → `adb reverse` → start the server →
-/// accept the video, audio and control sockets → one reader thread per socket.
 public final class ScrcpySession: @unchecked Sendable {
     public enum Event {
         case started(deviceName: String)
@@ -29,7 +24,6 @@ public final class ScrcpySession: @unchecked Sendable {
         case ended(reason: String?)
     }
 
-    /// Hard limits so a faulty or hostile peer cannot make us allocate without bound.
     private enum Limit {
         static let videoPacketBytes = 16 << 20
         static let audioPacketBytes = 1 << 20
@@ -38,15 +32,13 @@ public final class ScrcpySession: @unchecked Sendable {
     }
 
     private enum AudioCodecID {
-        static let raw: UInt32 = 0x0072_6177 // "raw"
+        static let raw: UInt32 = 0x0072_6177
         static let disabledByServer: ClosedRange<UInt32> = 0...1
     }
 
     public let decoder: VideoDecoder
     public let statistics = StreamStatistics()
-    /// Delivered from background threads.
     public var onEvent: (@Sendable (Event) -> Void)?
-    /// Sees every control message as it is sent. Set once, before the first send.
     public var messageObserver: (@Sendable (ControlMessage) -> Void)?
 
     private let adb: ADB
@@ -60,7 +52,6 @@ public final class ScrcpySession: @unchecked Sendable {
     private var streamServer: TransportStreamServer?
     private var lastFrameSize: CGSize?
 
-    // Guarded by `lock`.
     private let lock = NSLock()
     private var isFinished = false
     private var didStart = false
@@ -84,7 +75,6 @@ public final class ScrcpySession: @unchecked Sendable {
     public var streamURL: String? { streamServer?.url }
     public var streamViewerCount: Int { streamServer?.viewerCount ?? 0 }
 
-    /// Changes the Mac-side volume while mirroring (0…1).
     public func setVolume(_ volume: Double) { player?.setVolume(volume) }
 
     public var isMuted: Bool {
@@ -94,7 +84,6 @@ public final class ScrcpySession: @unchecked Sendable {
 
     // MARK: Lifecycle
 
-    /// Blocks until the device is streaming; throws on any setup failure. Call from a background thread.
     public func start() throws {
         do {
             try startStreamServer()
@@ -126,7 +115,6 @@ public final class ScrcpySession: @unchecked Sendable {
         guard settings.obsStreamEnabled else { return }
         let server = try TransportStreamServer(codec: settings.quality.codec, port: UInt16(settings.obsStreamPort),
                                                includesAudio: settings.audioEnabled)
-        // A viewer can only start on a key frame; ask the phone for one right away.
         server.onViewerConnected = { [weak self] in self?.send(.resetVideo) }
         server.start()
         streamServer = server
@@ -168,7 +156,6 @@ public final class ScrcpySession: @unchecked Sendable {
         let server = try launchServer()
         let alive = { server.isRunning }
 
-        // The server connects in a fixed order: video, audio (if enabled), control.
         let video = try accept(from: listener, serverIsAlive: alive)
         let audio = settings.audioEnabled ? try accept(from: listener, serverIsAlive: alive) : nil
         let control = try accept(from: listener, serverIsAlive: alive)
@@ -178,7 +165,6 @@ public final class ScrcpySession: @unchecked Sendable {
             self.control = control
         }
 
-        // The device name arrives on the first socket, followed by the video codec id.
         let name = try video.readExactly(64)
         let deviceName = String(decoding: name.prefix { $0 != 0 }, as: UTF8.self)
         guard try video.readExactly(4).readBigEndian(UInt32.self, at: 0) == settings.quality.codec.wireID else {
@@ -245,7 +231,6 @@ public final class ScrcpySession: @unchecked Sendable {
         lastFrameSize = size
         onEvent?(.resized(size))
 
-        // A file cannot change frame size midway, so a real size change (rotation) ends the recording.
         if sizeChanged, let recorder = takeRecorder() {
             Task { [onEvent] in
                 let url = try? await recorder.finish()
@@ -280,7 +265,7 @@ public final class ScrcpySession: @unchecked Sendable {
         guard let audio = lock.withLock({ self.audio }), let player else { return }
 
         let codecID = try audio.readExactly(4).readBigEndian(UInt32.self, at: 0)
-        if AudioCodecID.disabledByServer.contains(codecID) { // phone cannot capture audio (before Android 11)
+        if AudioCodecID.disabledByServer.contains(codecID) {
             streamServer?.disableAudio()
             onEvent?(.audioUnavailable)
             return
@@ -310,18 +295,17 @@ public final class ScrcpySession: @unchecked Sendable {
 
     // MARK: Device messages
 
-    /// Device → client messages arrive on the control socket; they must be drained or the server stalls.
     private func readDeviceMessages() throws {
         guard let control = lock.withLock({ self.control }) else { return }
         while true {
             switch try control.readExactly(1)[0] {
-            case 0: // clipboard content
+            case 0:
                 let length = Int(try control.readExactly(4).readBigEndian(UInt32.self, at: 0))
                 guard length <= Limit.clipboardBytes else { throw SessionError.protocolViolation("clipboard size") }
                 onEvent?(.clipboard(String(decoding: try control.readExactly(length), as: UTF8.self)))
-            case 1: // clipboard set acknowledgement
+            case 1:
                 _ = try control.readExactly(8)
-            case 2: // UHID output, not used
+            case 2:
                 let size = Int(try control.readExactly(4).readBigEndian(UInt16.self, at: 2))
                 _ = try control.readExactly(size)
             default:
@@ -336,8 +320,6 @@ public final class ScrcpySession: @unchecked Sendable {
         do { try body() } catch { finish(reason: error.localizedDescription, notify: true) }
     }
 
-    /// Idempotent. Closes sockets, stops the server and audio, finalizes any recording,
-    /// and (optionally) reports why the session ended.
     private func finish(reason: String?, notify: Bool) {
         let teardown: (sockets: [TCPStream?], server: Process?, wasStarted: Bool)? = lock.withLock {
             guard !isFinished else { return nil }
@@ -351,7 +333,6 @@ public final class ScrcpySession: @unchecked Sendable {
         player?.stop()
         streamServer?.stop()
         if let recorder = takeRecorder() { Task { _ = try? await recorder.finish() } }
-        // Failures during setup are reported by `start()` throwing, not by an event.
         if notify, teardown.wasStarted { onEvent?(.ended(reason: reason)) }
     }
 
@@ -363,7 +344,6 @@ public final class ScrcpySession: @unchecked Sendable {
     }
 }
 
-/// Keeps the last few KB of the server's output, for error messages.
 private final class LogTail: @unchecked Sendable {
     private let limit: Int
     private let lock = NSLock()

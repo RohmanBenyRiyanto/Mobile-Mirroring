@@ -4,7 +4,6 @@ import DomainModels
 import Foundation
 import Networking
 
-/// What the database window needs from its host.
 @MainActor
 public protocol DatabaseSource: ObservableObject {
     var adb: ADB? { get }
@@ -24,7 +23,6 @@ public struct TableInfo: Identifiable, Equatable, Sendable {
     public var isSystem: Bool { SQLiteQuery.isSystemTable(name) }
 }
 
-/// One database file of the app (an app can have several, as Room apps often do) with its tables once they are read.
 public struct DatabaseEntry: Identifiable, Equatable {
     public let file: String
     public var tables: [TableInfo] = []
@@ -33,7 +31,6 @@ public struct DatabaseEntry: Identifiable, Equatable {
     public var id: String { file }
 }
 
-/// One open tab, as in Android Studio's Database Inspector: a table (browsable, filterable, sortable, paged) or a query.
 public struct InspectorTab: Identifiable, Equatable {
     public enum Kind: Equatable { case table(file: String, name: String), query(file: String) }
 
@@ -47,7 +44,6 @@ public struct InspectorTab: Identifiable, Equatable {
     public var ascending = true
     public var filter: TableFilter?
     public var showsStructure = false
-    /// Column names from the table's structure, so an empty table still shows its columns (a query with no rows prints no header).
     public var knownColumns: [String] = []
     public var error: String?
     public var isTruncated = false
@@ -84,7 +80,6 @@ public final class DatabaseModel: ObservableObject {
 
     // MARK: Opening
 
-    /// Lists the app's database files and reads the schema of each, so every database and table is in the sidebar at once.
     public func open(package name: String) async {
         reset()
         package = name
@@ -133,7 +128,6 @@ public final class DatabaseModel: ObservableObject {
 
     public func openTable(_ name: String, in file: String) async {
         if let existing = tabs.first(where: { $0.kind == .table(file: file, name: name) }) { selectedTabID = existing.id; return await refresh(existing.id) }
-        // With several databases the tab also names its file, shortened; the full name is in the sidebar.
         let short = file.count > 14 ? String(file.prefix(13)) + "…" : file
         let title = databases.count > 1 ? "\(name) · \(short)" : name
         let tab = InspectorTab(kind: .table(file: file, name: name), title: title)
@@ -157,14 +151,12 @@ public final class DatabaseModel: ObservableObject {
 
     public func setSQL(_ sql: String, for id: UUID) { update(id) { $0.sql = sql } }
 
-    /// Adds text to the query being written: a table or column name, or a ready-made template.
     public func insert(_ text: String, into id: UUID, replacing: Bool = false) {
         update(id) { tab in
             if replacing || tab.sql.isEmpty { tab.sql = text } else { tab.sql += (tab.sql.hasSuffix(" ") || tab.sql.hasSuffix("\n") ? "" : " ") + text }
         }
     }
 
-    /// Points a query tab at another database of the same app.
     public func moveQuery(_ id: UUID, to file: String) { update(id) { if $0.isQuery { $0.kind = .query(file: file) } } }
 
     public func columns(of tab: InspectorTab) -> [String] { tab.isQuery ? [] : tab.header }
@@ -173,7 +165,6 @@ public final class DatabaseModel: ObservableObject {
 
     // MARK: Running
 
-    /// Runs what the tab shows: the generated page (or structure) for a table, or the typed text for a query.
     public func refresh(_ id: UUID) async {
         guard let backend, let tab = tabs.first(where: { $0.id == id }), let url = urls[tab.file] else { return }
         var sql = tab.sql
@@ -246,7 +237,6 @@ public final class DatabaseModel: ObservableObject {
 
     // MARK: Live updates
 
-    /// While on, every file is copied again every two seconds and what changed is refreshed.
     public func setLive(_ on: Bool) {
         isLive = on
         liveTask?.cancel()

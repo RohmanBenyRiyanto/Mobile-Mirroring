@@ -6,8 +6,6 @@ import TestSupport
 @testable import KeymapFeature
 @testable import Persistence
 
-/// Renders the editor's views to images. They always have to render without trouble; set
-/// `BENZMIRROR_SNAPSHOT_DIR` to also write the PNGs there for a look.
 @MainActor
 final class KeymapEditorSnapshotTests: XCTestCase {
     private func exampleEditor() throws -> KeymapEditorModel {

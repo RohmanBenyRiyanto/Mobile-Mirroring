@@ -5,8 +5,6 @@ import SwiftUI
 import Theme
 import UniformTypeIdentifiers
 
-/// A database browser modelled on Android Studio's Database Inspector: pick an app, open its tables in tabs, sort and page them,
-/// run read-only queries, and optionally watch the file for changes.
 public struct DatabaseView<Source: DatabaseSource>: View {
     @ObservedObject var source: Source
     @StateObject private var model = DatabaseModel()
@@ -185,7 +183,6 @@ private struct TabContent: View {
         .padding(.horizontal, Theme.Space.s3).padding(.vertical, Theme.Space.s2)
     }
 
-    /// A form instead of typing SQL: pick a column and a condition, and the table is filtered.
     @State private var filterColumn = ""
     @State private var filterOperation = TableFilter.Operation.contains
     @State private var filterValue = ""
@@ -294,7 +291,6 @@ private struct ResultGrid: View {
     let sort: (String) -> Void
     let sortable: Bool
 
-    /// Wide enough for the longest value in a column (capped), so columns look like a table rather than equal slabs.
     private func widths() -> [CGFloat] {
         tab.header.indices.map { column in
             let longest = ([tab.header[column]] + tab.rows.prefix(60).map { $0.indices.contains(column) ? $0[column] : "" }).map(\.count).max() ?? 4

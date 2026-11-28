@@ -1,6 +1,5 @@
 import Foundation
 
-/// The user-facing product name; the project and module are named `BenzMirror`.
 public enum AppInfo {
     public static let name = "Benz Mirror"
     public static let creator = "Rohman Beny Riyanto"
@@ -11,6 +10,5 @@ public enum AppInfo {
         return "\(short) (\(build))"
     }
 
-    /// The text of the About panel and the credits line.
     public static var creditLine: String { "Created by \(creator)" }
 }

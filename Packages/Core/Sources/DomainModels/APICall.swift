@@ -1,16 +1,12 @@
 import Foundation
 
-/// The first line and headers of a request that reached the logging proxy.
 public struct ProxyRequest: Equatable, Sendable {
     public var method: String
     public var host: String
     public var port: Int
-    /// Full address for plain HTTP; "host:port" for a tunnel.
     public var url: String
     public var isTunnel: Bool
-    /// The request head to send on to the server: origin-form path, no proxy headers, connection closed after one answer.
     public var forwardedHead: Data
-    /// The head exactly as the phone sent it, for the log's header view.
     public var originalHead: String
 }
 
@@ -60,7 +56,6 @@ public enum ProxyRequestParser {
     }
 }
 
-/// What was seen of one call, kept small: heads in full, bodies cut at `HTTPMessage.bodyCapture`.
 public struct APICallDetails: Equatable, Sendable {
     public var requestHeaders: [HTTPHeader] = []
     public var responseHeaders: [HTTPHeader] = []
@@ -84,7 +79,6 @@ public struct APICall: Identifiable, Equatable, Sendable {
     public var sentBytes = 0
     public var receivedBytes = 0
     public var details: APICallDetails?
-    /// Seen from inside a debuggable app, so even an HTTPS call has its headers and body.
     public var isInspected = false
 
     public init(id: Int, startedAt: Date, method: String, host: String, url: String, isTunnel: Bool) {
@@ -100,7 +94,6 @@ public struct APICall: Identifiable, Equatable, Sendable {
     public var isError: Bool { (status ?? 0) >= 400 }
 }
 
-/// Newest calls last, capped so a chatty app cannot grow it without bound.
 public struct APICallLog: Equatable, Sendable {
     public static let capacity = 500
     public private(set) var calls: [APICall] = []
@@ -121,7 +114,6 @@ public struct APICallLog: Equatable, Sendable {
         calls[index].details = details
     }
 
-    /// Adds the call or replaces the one with the same id (an inspected call is updated as its parts arrive).
     public mutating func upsert(_ call: APICall) {
         if let index = calls.lastIndex(where: { $0.id == call.id && $0.isInspected == call.isInspected }) { calls[index] = call } else { begin(call) }
     }

@@ -2,7 +2,6 @@ import AppKit
 import SwiftUI
 import Theme
 
-/// A glass notice that can offer to show a saved file.
 struct ToastView: View {
     let text: String
     var file: URL?
@@ -50,7 +49,6 @@ struct NoticeToast: View {
     }
 }
 
-/// Solid scrim rather than glass, since glass over live video costs GPU time.
 struct RecordingPill: View {
     let startedAt: Date
 
@@ -93,8 +91,6 @@ struct StreamHint: View {
     }
 }
 
-
-/// "Playing · name  ⌘E to edit": shown over the picture while a keymap is on, so it is clear the keyboard drives the game.
 struct PlayingPill: View {
     let name: String
 

@@ -17,7 +17,6 @@ public enum SocketError: LocalizedError {
     }
 }
 
-/// A connected TCP stream with blocking, exact-length reads and writes.
 public final class TCPStream: @unchecked Sendable {
     private let fd: Int32
 
@@ -25,7 +24,7 @@ public final class TCPStream: @unchecked Sendable {
         self.fd = fd
         var enabled: Int32 = 1
         let size = socklen_t(MemoryLayout<Int32>.size)
-        setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &enabled, size) // no Nagle: lowest input latency
+        setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &enabled, size)
         setsockopt(fd, SOL_SOCKET, SO_NOSIGPIPE, &enabled, size)
     }
 
@@ -64,7 +63,6 @@ public final class TCPStream: @unchecked Sendable {
         }
     }
 
-    /// Makes a stalled `read` or `write` fail after `seconds` instead of blocking forever.
     public func setTimeouts(seconds: Int) {
         var timeout = timeval(tv_sec: seconds, tv_usec: 0)
         let size = socklen_t(MemoryLayout<timeval>.size)
@@ -72,7 +70,6 @@ public final class TCPStream: @unchecked Sendable {
         setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, size)
     }
 
-    /// Reads whatever is available (at least one byte) up to `limit`; empty data means the peer closed.
     public func readSome(limit: Int) throws -> Data {
         var data = Data(count: limit)
         let received = data.withUnsafeMutableBytes { Darwin.read(fd, $0.baseAddress!, limit) }
@@ -80,7 +77,6 @@ public final class TCPStream: @unchecked Sendable {
         return data.prefix(received)
     }
 
-    /// Opens a connection to a host, trying each address the name resolves to. Blocks for up to `timeout` seconds per address.
     public static func connect(host: String, port: Int, timeout: Int = 10) throws -> TCPStream {
         var hints = addrinfo(ai_flags: 0, ai_family: AF_UNSPEC, ai_socktype: SOCK_STREAM, ai_protocol: 0, ai_addrlen: 0, ai_canonname: nil, ai_addr: nil, ai_next: nil)
         var found: UnsafeMutablePointer<addrinfo>?
@@ -100,12 +96,9 @@ public final class TCPStream: @unchecked Sendable {
         throw SocketError.system("connect")
     }
 
-    /// Unblocks any thread stuck in `readExactly`. The descriptor is closed on deinit.
     public func shutdown() { Darwin.shutdown(fd, SHUT_RDWR) }
 }
 
-/// A TCP listener bound to the loopback interface only (port 0 = OS-assigned).
-/// Nothing outside this Mac can ever reach it.
 public final class LoopbackListener {
     public let port: UInt16
     private let fd: Int32
@@ -148,8 +141,6 @@ public final class LoopbackListener {
 
     deinit { Darwin.close(fd) }
 
-    /// Waits for one connection. Polls in short slices so the caller can abort early
-    /// (for example when the server process has already exited).
     public func accept(timeout: TimeInterval, shouldContinue: () -> Bool = { true }) throws -> TCPStream {
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline, shouldContinue() {

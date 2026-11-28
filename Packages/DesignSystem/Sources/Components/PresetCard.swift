@@ -7,7 +7,6 @@ public struct PresetCard: View {
     private let isSelected: Bool
     private let action: () -> Void
 
-    /// `detail` is shown as is, without a string catalog lookup.
     public init(_ title: LocalizedStringKey, detail: String, isSelected: Bool, action: @escaping () -> Void) {
         self.title = title
         self.detail = detail

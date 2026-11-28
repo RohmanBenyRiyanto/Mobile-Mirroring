@@ -36,7 +36,6 @@ final class ComponentsTests: XCTestCase {
     }
 
     func testPresetCardReportsItsSelectionToAssistiveTechnology() {
-        // Only checks that both states build; the traits are not asserted here.
         _ = PresetCard("A", detail: "x", isSelected: true) {}
         _ = PresetCard("B", detail: "y", isSelected: false) {}
     }

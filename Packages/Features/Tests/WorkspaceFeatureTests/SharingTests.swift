@@ -62,7 +62,6 @@ final class KeymapSummaryTests: XCTestCase {
         XCTAssertNil(summary(Keymap(), id: "fresh", existing: ["pubg"]).savedAs)
     }
 
-    /// The app shell declares the file type in `project.yml` (which generates the Info.plist).
     func testFileTypeDeclarationsMatchTheAppShell() throws {
         let spec = try String(contentsOf: projectFile("project.yml"), encoding: .utf8)
         XCTAssertTrue(spec.contains(KeymapFile.typeIdentifier), "the app must declare the type it exports")
@@ -100,7 +99,6 @@ final class KeymapImportFlowTests: XCTestCase {
         var summaries: [KeymapSummary] = []
     }
 
-    /// A shared keymap, as another person's copy of the app would export it.
     private func sharedFile(id: String = "friend", name: String = "Friend's keymap", package: String? = "com.game.one", elements: [KeymapElement]? = nil) throws -> Data {
         let other = try ProfileStore<Keymap>(kind: "keymap", root: root.appendingPathComponent("friend-store"))
         try other.save(Profile(id: id, name: name, payload: Keymap(package: package, elements: elements ?? [button(), macro(steps: 5, seconds: 1)])))
@@ -191,7 +189,7 @@ final class KeymapImportFlowTests: XCTestCase {
         let (model, asked) = makeModel()
         let file = root.appendingPathComponent("notes.json")
         try sharedFile().write(to: file)
-        model.handleDrop([file]) // no phone is selected here, so the copy is simply skipped
+        model.handleDrop([file])
         XCTAssertTrue(asked.summaries.isEmpty, "only .benzkeymap files are treated as keymaps")
     }
 
@@ -233,7 +231,7 @@ final class KeymapImportFlowTests: XCTestCase {
     func testFilesOpenedFromFinderWaitForTheAppToBeReady() {
         let inbox = FileOpenInbox()
         let first = URL(fileURLWithPath: "/tmp/a.benzkeymap"), second = URL(fileURLWithPath: "/tmp/b.benzkeymap")
-        inbox.receive([first]) // arrives while the app is still starting
+        inbox.receive([first])
 
         var received: [URL] = []
         inbox.handler = { received += $0 }

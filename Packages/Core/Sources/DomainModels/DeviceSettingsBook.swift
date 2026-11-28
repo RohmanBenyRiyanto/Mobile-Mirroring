@@ -1,7 +1,5 @@
 import Foundation
 
-/// The mirroring choices that belong to one phone (quality, sound, touches…), remembered by serial number.
-/// Everything else in `MirrorSettings` is about the app and stays shared.
 public struct DeviceSettingsBook: Codable, Equatable, Sendable {
     public struct Entry: Codable, Equatable, Sendable {
         public var serial: String
@@ -30,7 +28,6 @@ public struct DeviceSettingsBook: Codable, Equatable, Sendable {
         return result
     }
 
-    /// The newest phone is kept last; when there are too many, the one used longest ago is forgotten.
     public mutating func record(_ settings: MirrorSettings, serial: String) {
         let entry = Entry(serial: serial, quality: settings.quality, audioEnabled: settings.audioEnabled, showTouches: settings.showTouches,
                           stayAwake: settings.stayAwake, turnScreenOffOnStart: settings.turnScreenOffOnStart)

@@ -1,12 +1,9 @@
 import AVFoundation
 
-/// Encodes the phone's 48 kHz 16-bit stereo PCM to AAC-LC and wraps each frame in an ADTS header,
-/// the form MPEG transport streams carry.
 public final class AACEncoder {
     public static let framesPerPacket = 1_024
     public static let bitRate = 128_000
 
-    /// One encoded frame and the time of its first sample, in microseconds on the device clock.
     public struct Frame {
         public let adts: Data
         public let presentationTime: Int64
@@ -20,7 +17,6 @@ public final class AACEncoder {
     private let converter: AVAudioConverter
     private let inputFormat: AVAudioFormat
     private var pending = Data()
-    /// Device time of the first sample ever received; frame times count from here.
     private var anchor: Int64?
     private var blocksEncoded: Int64 = 0
 
@@ -37,8 +33,6 @@ public final class AACEncoder {
         self.converter = converter
     }
 
-    /// Feeds PCM; returns every AAC frame that is now complete. Timestamps follow the sample count,
-    /// so they stay smooth even when packets arrive in uneven bursts.
     public func encode(_ pcm: Data, presentationTime: Int64) -> [Frame] {
         let anchor = self.anchor ?? presentationTime
         self.anchor = anchor
@@ -73,19 +67,17 @@ public final class AACEncoder {
             status.pointee = .haveData
             return input
         }
-        // The encoder needs one block of priming before it emits its first packet.
         guard error == nil, output.packetCount > 0, let descriptions = output.packetDescriptions else { return nil }
 
         let payload = Data(bytes: output.data, count: Int(descriptions[0].mDataByteSize))
         return Self.adtsHeader(payloadLength: payload.count) + payload
     }
 
-    /// 7-byte ADTS header: AAC-LC, 48 kHz, stereo, no CRC.
     public static func adtsHeader(payloadLength: Int) -> Data {
         let length = payloadLength + 7
         return Data([0xFF, 0xF1,
-                     0x4C, // profile LC (1), sample-rate index 3 (48 kHz), channel config high bit 0
-                     UInt8(0x80 | ((length >> 11) & 0x03)), // channel config low bits 10 (stereo)
+                     0x4C,
+                     UInt8(0x80 | ((length >> 11) & 0x03)),
                      UInt8((length >> 3) & 0xFF),
                      UInt8(((length & 0x07) << 5) | 0x1F),
                      0xFC])

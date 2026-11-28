@@ -2,7 +2,6 @@ import AppKit
 import SwiftUI
 import Theme
 
-/// Appearance preferences. Every setting defaults to following the system.
 public struct AppearanceSettings: Codable, Equatable {
     public enum Mode: String, Codable, CaseIterable, Identifiable {
         case system, light, dark
@@ -41,7 +40,6 @@ public struct AppearanceSettings: Codable, Equatable {
         self.dockIcon = dockIcon
     }
 
-    /// Saved settings may miss fields or hold unknown values from other versions; those fall back to defaults.
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         mode = (try? values.decodeIfPresent(Mode.self, forKey: .mode)) ?? .system
@@ -63,7 +61,6 @@ public struct AppearanceSettings: Codable, Equatable {
     }
 }
 
-/// Stores the appearance choice in UserDefaults and applies it to the app.
 @MainActor
 public final class AppearanceStore: ObservableObject {
     @Published public var settings: AppearanceSettings {
@@ -78,7 +75,6 @@ public final class AppearanceStore: ObservableObject {
     private let apply: (AppearanceSettings) -> Void
     private static let key = "appearance.v1"
 
-    /// `apply` is injectable so tests do not change the real appearance.
     public init(defaults: UserDefaults = .standard, apply: ((AppearanceSettings) -> Void)? = nil) {
         self.defaults = defaults
         self.apply = apply ?? Self.applyToApp
@@ -104,7 +100,6 @@ public final class AppearanceStore: ObservableObject {
 
     static func dockImage(for icon: AppearanceSettings.DockIcon) -> NSImage? {
         guard let variant = icon.brandVariant else { return nil }
-        // The 3D glass renders from the design are in the app's asset catalog; drawing the tile is only the fallback (tests, previews).
         let asset: String
         switch icon {
         case .standard: return nil
@@ -126,7 +121,6 @@ private struct Themed: ViewModifier {
         content
             .tint(store.settings.accentColor)
             .preferredColorScheme(store.settings.colorScheme)
-            // Surfaces read their style when drawn, so a new style needs a rebuild.
             .id(store.settings.surface)
     }
 }

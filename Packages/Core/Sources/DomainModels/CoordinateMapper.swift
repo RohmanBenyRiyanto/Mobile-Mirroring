@@ -1,14 +1,10 @@
 import CoreGraphics
 import Foundation
 
-/// Converts between view, ratio, frame and dp coordinates. Conversions go through the ratio because the video
-/// is letterboxed inside the view and the frame may be downscaled from the phone's screen.
 public struct CoordinateMapper: Equatable {
     public var viewSize: CGSize
     public var frameSize: CGSize
-    /// Phone screen size in pixels for the current orientation. Only needed for dp conversions.
     public var screenSize: CGSize?
-    /// Android density scale (dpi / 160). Only needed for dp conversions.
     public var densityScale: Double?
 
     public init(viewSize: CGSize, frameSize: CGSize, screenSize: CGSize? = nil, densityScale: Double? = nil) {
@@ -37,14 +33,12 @@ public struct CoordinateMapper: Equatable {
 
     // MARK: View ↔ ratio
 
-    /// The ratio under a view point, or nil if the point is on the black bars.
     public func ratio(forViewPoint point: CGPoint) -> CGPoint? {
         let rect = videoRect
         guard rect.width > 0, rect.contains(point) else { return nil }
         return unclampedRatio(forViewPoint: point)
     }
 
-    /// Like `ratio(forViewPoint:)`, but clamps points outside the video to its edge, for drags that leave the picture.
     public func clampedRatio(forViewPoint point: CGPoint) -> CGPoint? {
         guard videoRect.width > 0 else { return nil }
         let ratio = unclampedRatio(forViewPoint: point)
@@ -64,7 +58,6 @@ public struct CoordinateMapper: Equatable {
 
     // MARK: Ratio ↔ frame (touch events)
 
-    /// The touch position for a ratio. Nil when the frame size does not fit the protocol's 16-bit fields.
     public func touchPosition(forRatio ratio: CGPoint) -> TouchPosition? {
         guard isUsable, frameSize.width <= CGFloat(UInt16.max), frameSize.height <= CGFloat(UInt16.max) else { return nil }
         let width = Int32(frameSize.width), height = Int32(frameSize.height)
@@ -73,7 +66,6 @@ public struct CoordinateMapper: Equatable {
         return TouchPosition(x: Int32(x), y: Int32(y), frameWidth: UInt16(width), frameHeight: UInt16(height))
     }
 
-    /// Mouse position → touch position, clamped to the picture.
     public func touchPosition(forViewPoint point: CGPoint) -> TouchPosition? {
         clampedRatio(forViewPoint: point).flatMap(touchPosition(forRatio:))
     }
@@ -85,7 +77,6 @@ public struct CoordinateMapper: Equatable {
 
     // MARK: Ratio ↔ dp
 
-    /// Position on the phone's screen in dp, or nil when the screen size or density is unknown.
     public func dp(forRatio ratio: CGPoint) -> CGPoint? {
         guard let screenSize, let densityScale, densityScale > 0 else { return nil }
         return CGPoint(x: ratio.x * screenSize.width / densityScale, y: ratio.y * screenSize.height / densityScale)

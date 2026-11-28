@@ -4,7 +4,6 @@ import LogcatFeature
 import Persistence
 import SwiftUI
 
-/// Items whose feature is not built yet are shown but disabled.
 public struct AppCommands: Commands {
     @ObservedObject public var model: AppModel
     @FocusedValue(\.logcatActions) private var logcat

@@ -1,7 +1,6 @@
 import DomainModels
 import Foundation
 
-/// Turns the network inspector's wire events into the plain events the assembler understands.
 enum NetworkEventMapper {
     static func map(_ event: Studio_Network_Inspection_Event, at now: Date = Date()) -> InspectionEvent? {
         guard case let .httpConnectionEvent(http)? = event.union else { return nil }

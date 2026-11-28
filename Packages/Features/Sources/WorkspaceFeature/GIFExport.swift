@@ -4,7 +4,6 @@ import Media
 import UniformTypeIdentifiers
 
 extension AppModel {
-    /// File → Export Recording as GIF…: pick a recording, say which part, and a GIF appears next to it.
     public func exportRecordingAsGIF() {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [.mpeg4Movie, .quickTimeMovie]

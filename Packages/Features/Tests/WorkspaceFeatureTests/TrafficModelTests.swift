@@ -54,7 +54,6 @@ final class TrafficModelTests: XCTestCase {
 
 @MainActor
 final class TrafficLiveTests: XCTestCase {
-    /// BENZMIRROR_TEST_SERIAL=<serial> swift test --filter TrafficLiveTests
     func testRealPhoneReachesTheMacProxyAndSettingIsRestored() async throws {
         guard let serial = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_SERIAL"] else { throw XCTSkip("Set BENZMIRROR_TEST_SERIAL") }
         let adb = try XCTUnwrap(ADB.locate())

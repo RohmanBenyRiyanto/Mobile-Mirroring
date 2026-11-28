@@ -1,7 +1,6 @@
 import SwiftUI
 import Theme
 
-/// A soft moving highlight over a placeholder. It stands still when Reduce Motion is on.
 private struct Shimmer: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var phase: CGFloat = -1
@@ -26,7 +25,6 @@ private struct Shimmer: ViewModifier {
     }
 }
 
-/// A grey bar that stands in for a value that has not arrived yet.
 public struct SkeletonBar: View {
     private let width: CGFloat
 
@@ -41,7 +39,6 @@ public struct SkeletonBar: View {
     }
 }
 
-/// Shows a skeleton while `isLoading`, then fades the real value in, so a field never just appears out of nothing.
 public struct LoadedValue<Content: View>: View {
     private let isLoading: Bool
     private let skeletonWidth: CGFloat
@@ -65,7 +62,6 @@ public struct LoadedValue<Content: View>: View {
     }
 }
 
-/// A small spinner with a line of text, for a list or panel that is still filling in.
 public struct LoadingLabel: View {
     private let text: LocalizedStringKey
 

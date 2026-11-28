@@ -1,6 +1,5 @@
 import Foundation
 
-/// A named, versioned document the user can keep, share and import.
 public struct Profile<Payload: Codable & Equatable>: Equatable {
     public var id: String
     public var name: String
@@ -30,12 +29,9 @@ public struct ProfileSummary: Equatable, Identifiable {
 public enum ProfileFormat {
     public static let name = "benzmirror.profile"
     public static let version = 1
-    /// Profiles are small; anything bigger is a mistake or an attack.
     public static let maxBytes = 1 << 20
     public static let maxNameLength = 120
 
-    /// Used for profile ids and kinds, which become file and folder names:
-    /// ASCII letters, digits, `.`, `_` and `-`; never a leading dot or a `..`.
     public static func isValidIdentifier(_ text: String) -> Bool {
         (1...128).contains(text.count) && !text.hasPrefix(".") && !text.contains("..")
             && text.allSatisfy { $0.isASCII && ($0.isLetter || $0.isNumber || $0 == "." || $0 == "_" || $0 == "-") }
@@ -70,11 +66,6 @@ public enum ProfileError: LocalizedError, Equatable {
     }
 }
 
-/// Stores profiles of one kind as JSON files in `<root>/<kind>/<id>.json`.
-///
-/// Files are written atomically and readable only by the user. Reading is strict: size is capped, the format
-/// and version are checked before the payload is decoded, and ids are validated so an imported profile can
-/// never name a path outside its folder.
 public final class ProfileStore<Payload: Codable & Equatable> {
     public let kind: String
     public let directory: URL
@@ -96,7 +87,6 @@ public final class ProfileStore<Payload: Codable & Equatable> {
         var payload: Payload
     }
 
-    /// `~/Library/Application Support/<app name>/Profiles`
     public static func defaultRoot(appName: String) -> URL {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent(appName, isDirectory: true)
@@ -116,13 +106,12 @@ public final class ProfileStore<Payload: Codable & Equatable> {
         return names.compactMap { fileName -> ProfileSummary? in
             guard fileName.hasSuffix(".json") else { return nil }
             let id = String(fileName.dropLast(".json".count))
-            guard let profile = try? load(id: id) else { return nil } // damaged files are skipped, not fatal
+            guard let profile = try? load(id: id) else { return nil }
             return ProfileSummary(id: id, name: profile.name, modified: profile.modified)
         }
         .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
     }
 
-    /// Every readable profile (damaged files are skipped).
     public func loadAll() -> [Profile<Payload>] {
         ((try? files.contentsOfDirectory(atPath: directory.path)) ?? []).compactMap { fileName in
             fileName.hasSuffix(".json") ? try? load(id: String(fileName.dropLast(".json".count))) : nil
@@ -139,7 +128,6 @@ public final class ProfileStore<Payload: Codable & Equatable> {
 
     // MARK: Writing
 
-    /// Saves (replacing any profile with the same id) and returns it stamped with the save time.
     @discardableResult
     public func save(_ profile: Profile<Payload>) throws -> Profile<Payload> {
         let url = try fileURL(for: profile.id)
@@ -165,12 +153,10 @@ public final class ProfileStore<Payload: Codable & Equatable> {
         try encode(try load(id: id))
     }
 
-    /// Reads a shared profile without saving it, so it can be shown to the user first. Throws what `importData` would.
     public func inspect(_ data: Data) throws -> Profile<Payload> {
         try decode(data)
     }
 
-    /// The ids of every profile file in the folder, readable or not.
     public func identifiers() -> Set<String> {
         Set(((try? files.contentsOfDirectory(atPath: directory.path)) ?? []).compactMap {
             $0.hasSuffix(".json") ? String($0.dropLast(".json".count)) : nil
@@ -182,7 +168,6 @@ public final class ProfileStore<Payload: Codable & Equatable> {
         return files.fileExists(atPath: url.path)
     }
 
-    /// Imports a shared profile. If the id is taken, the copy gets a free id (`name-2`) unless `overwrite` is set.
     @discardableResult
     public func importData(_ data: Data, overwrite: Bool = false) throws -> Profile<Payload> {
         var profile = try decode(data)
@@ -205,7 +190,6 @@ public final class ProfileStore<Payload: Codable & Equatable> {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
 
-        // Check what the file claims to be before trusting the shape of its payload.
         guard let header = try? decoder.decode(Header.self, from: data), header.format == ProfileFormat.name else {
             throw ProfileError.notAProfile
         }

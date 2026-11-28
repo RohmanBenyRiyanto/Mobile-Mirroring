@@ -11,7 +11,6 @@ import Networking
 import Persistence
 import SystemServices
 
-/// App-wide state: the connectable and mirrored phones, and window switches. Per-phone state lives in `DeviceSession`.
 @MainActor
 public final class AppModel: ObservableObject {
     public enum State: Equatable {
@@ -52,15 +51,12 @@ public final class AppModel: ObservableObject {
             if let data = try? JSONEncoder().encode(deviceSettings) { defaults.set(data, forKey: "deviceSettings.v1") }
         }
     }
-    /// Menu shortcuts the user changed in Settings › Shortcuts.
     @Published public var shortcuts: ShortcutBook {
         didSet { shortcuts.save(to: defaults) }
     }
     private var deviceSettings = DeviceSettingsBook()
     private lazy var phoneLedger = PhoneLedgerStore(defaults: defaults)
-    /// Game controllers drive the front phone's keymap; the names are shown in the keymap menu.
     public private(set) lazy var gamepad = GamepadBridge { [weak self] input, down in self?.active?.keymap.gamepad(input, isDown: down) }
-    /// For each app opened on a separate display, whether it ended up wide. Bounded, and only valid package names are kept.
     private var displayShapes: [String: Bool] {
         get { defaults.dictionary(forKey: "displayShapes.v1") as? [String: Bool] ?? [:] }
         set { defaults.set(newValue, forKey: "displayShapes.v1") }
@@ -75,7 +71,6 @@ public final class AppModel: ObservableObject {
     }
     @Published public private(set) var sessions: [DeviceSession] = []
     @Published public private(set) var activeSerial: String?
-    /// True while the user is picking another phone to add; the connect screen shows instead of the mirror.
     @Published public var isAddingDevice = false
     @Published public var isStreamMode = false
     @Published public var alwaysOnTop = false
@@ -91,7 +86,6 @@ public final class AppModel: ObservableObject {
     @Published public var railLayout = RailLayout.standard {
         didSet { if let data = try? JSONEncoder().encode(railLayout) { defaults.set(data, forKey: "railLayout.v1") } }
     }
-    /// The mode a new phone window starts in (remembered between launches).
     @Published public var defaultMode: WorkspaceMode {
         didSet { defaults.set(defaultMode.rawValue, forKey: "workspaceMode") }
     }
@@ -101,7 +95,6 @@ public final class AppModel: ObservableObject {
     @Published public var notice: String? {
         didSet { if notice == nil { noticeFile = nil } }
     }
-    /// A file the current notice is about (a screenshot, a recording): the toast offers to show it in Finder.
     @Published public var noticeFile: URL?
 
     @Published public var editor: KeymapEditorModel?
@@ -111,26 +104,21 @@ public final class AppModel: ObservableObject {
     @Published public private(set) var keymapProfiles: [ProfileSummary] = []
 
     @Published public private(set) var adb: ADB?
-    /// Windows apply this with `themed(_:)`.
     public let appearance: AppearanceStore
     public let keymapStore: ProfileStore<Keymap>?
-    /// Asks the user before a keymap from outside is saved. Replaceable, so tests need no dialog.
     public var confirmKeymapImport: (KeymapSummary) -> Bool = { ImportPrompt.ask($0) }
-    /// Asks before quitting during a recording. Replaceable, so tests need no dialog.
     public var confirmQuitWhileRecording: () -> Bool = { QuitPrompt.ask() }
     public private(set) var keymapPackageIndex: [String: String] = [:]
     private var pollTask: Task<Void, Never>?
     private var launchTask: Task<Void, Never>?
     private let recordingStatusItem = RecordingStatusItem()
     private var statusObserver: AnyCancellable?
-    /// False until adb has answered once, so the sidebar can show that it is still looking.
     @Published public private(set) var hasListedDevices = false
     private var pendingSession: DeviceSession?
     private var observers: [String: AnyCancellable] = [:]
     private let noForeground = ForegroundAppDetector()
 
     private let cursorCapture: CursorCapturing
-    /// Where settings and window preferences are remembered. Replaceable, so tests never write to the real ones.
     private let defaults: UserDefaults
     private var reconnectTask: Task<Void, Never>?
 
@@ -159,7 +147,6 @@ public final class AppModel: ObservableObject {
         statusObserver = objectWillChange.receive(on: RunLoop.main).sink { [weak self] _ in self?.refreshRecordingStatusItem() }
     }
 
-    /// Keymaps shipped inside the app (Resources/DefaultKeymaps) are added once. A keymap the user deleted or edited is never put back or overwritten.
     static func seedBundledKeymaps(into store: ProfileStore<Keymap>?, defaults: UserDefaults, folder: URL? = Bundle.main.url(forResource: "DefaultKeymaps", withExtension: nil)) {
         guard let store, let folder, let files = try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil) else { return }
         var seeded = Set(defaults.stringArray(forKey: "seededKeymaps.v1") ?? [])
@@ -173,7 +160,6 @@ public final class AppModel: ObservableObject {
 
     deinit { pollTask?.cancel() }
 
-    /// Puts back everything the developer tools changed on the phones (quick toggles, mock location, proxy). Called when the app quits.
     public func restorePhoneChanges() {
         for session in sessions {
             session.developerTools.restoreOnEnd()
@@ -181,10 +167,8 @@ public final class AppModel: ObservableObject {
         }
     }
 
-    /// The language the app was started in, to know whether a changed choice still needs a restart.
     public let launchLanguage = AppLanguage.chosen()
 
-    /// Asks whether to restart now when the saved language differs from the one the app started in.
     public func offerRestart(forLanguage choice: AppLanguage?) {
         guard AppLanguage.needsRestart(started: launchLanguage, now: choice) else { return }
         let answer = Confirmation.ask(title: String(localized: "Restart to change the language?"),
@@ -193,8 +177,6 @@ public final class AppModel: ObservableObject {
         if answer.confirmed { relaunchApp() }
     }
 
-    /// Starts a fresh copy of the app and quits this one, so a new language (or anything read at launch) takes effect.
-    /// Quitting goes through the normal path, so a recording in progress is saved first.
     public func relaunchApp() {
         let task = Process()
         task.executableURL = URL(fileURLWithPath: "/bin/sh")
@@ -242,7 +224,6 @@ public final class AppModel: ObservableObject {
         if found != devices { devices = found }
         if selectedDevice == nil { selectedSerial = found.first(where: \.isReady)?.serial }
 
-        // A phone that shows up ready after launch is mirrored by itself when nothing else is mirrored.
         if settings.mirrorOnConnect, !isFirstLook, sessions.isEmpty, launch == .idle,
            let new = found.first(where: { $0.isReady && !previouslyReady.contains($0.serial) }) {
             selectedSerial = new.serial
@@ -254,8 +235,6 @@ public final class AppModel: ObservableObject {
 
     public var active: DeviceSession? { sessions.first { $0.serial == activeSerial } }
 
-    /// The phone that one-shot actions (screenshot, developer toggles, logcat) apply to:
-    /// the one in front, or the one chosen on the connect screen.
     public var targetSerial: String? { active?.serial ?? selectedSerial }
 
     public var state: State {
@@ -295,7 +274,7 @@ public final class AppModel: ObservableObject {
         launchTask = Task {
             do {
                 try await session.start()
-                guard !Task.isCancelled else { return session.stop() } // cancelled while the phone was still answering
+                guard !Task.isCancelled else { return session.stop() }
                 pendingSession = nil
                 add(session)
             } catch {
@@ -307,7 +286,6 @@ public final class AppModel: ObservableObject {
         }
     }
 
-    /// Settings › Advanced › Choose: uses that adb from now on. Returns false (and changes nothing) if the file is not a working adb.
     @discardableResult
     public func chooseADB(path: String?) -> Bool {
         if let path, !path.isEmpty {
@@ -352,7 +330,6 @@ public final class AppModel: ObservableObject {
         isAddingDevice = false
     }
 
-    /// Rail and menu ask first, because leaving the mirror ends the session and any recording with it.
     public func requestDisconnect() {
         guard active != nil else { return }
         guard settings.confirmDisconnect else { return disconnect() }
@@ -376,7 +353,6 @@ public final class AppModel: ObservableObject {
         remove(session, reason: nil)
     }
 
-    /// The phone window was closed: every session ends (a recording is saved first), and the app waits in the Dock.
     public func windowClosed() {
         cancelConnect()
         dismissLostConnection()
@@ -386,9 +362,8 @@ public final class AppModel: ObservableObject {
     public var quitsWhenWindowCloses: Bool { settings.quitWhenWindowCloses }
 
     private func add(_ session: DeviceSession) {
-        guard !session.hasEnded else { return launch = .idle } // it dropped while we were finishing the setup
+        guard !session.hasEnded else { return launch = .idle }
         sessions.append(session)
-        // Re-publish the phone's changes so views watching the app model refresh too.
         observers[session.serial] = session.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
         activeSerial = session.serial
         isAddingDevice = false
@@ -482,7 +457,6 @@ public final class AppModel: ObservableObject {
 
     public enum EditCommand { case undo, redo, cut, copy, paste, selectAll }
 
-    /// Edit commands act on the phone while the picture has the keyboard, and on the focused text field everywhere else.
     @MainActor public func performEdit(_ command: EditCommand) {
         guard MirrorNSView.hasKeyboardFocus, let session = active else {
             let selector: Selector
@@ -506,8 +480,6 @@ public final class AppModel: ObservableObject {
         case .selectAll: session.pressWithCtrl(.letterA)
         }
     }
-    /// Starting a recording asks first: it captures everything that appears on the phone, including notifications and passwords being typed.
-    /// Stopping never asks.
     public func toggleRecording() {
         guard let session = active else { return }
         if !session.isRecording, settings.confirmRecording {
@@ -522,7 +494,6 @@ public final class AppModel: ObservableObject {
         session.toggleRecording()
     }
     public func toggleMute() { active?.toggleMute() }
-    /// The mode of the phone in front, or the one the next phone will start in.
     public var mode: WorkspaceMode { active?.mode ?? defaultMode }
 
     public func startPerformanceMonitoring() { active?.startPerformanceMonitoring() }
@@ -534,7 +505,6 @@ public final class AppModel: ObservableObject {
         defaultMode = mode
     }
 
-    /// Esc: leaves Stream Mode, or closes the tool that is open; otherwise it belongs to the phone.
     public func handleEscape() -> Bool {
         if isStreamMode { isStreamMode = false; return true }
         if isInspectorOrDesignOn { setInspecting(false); setDesignTool(.off); return true }

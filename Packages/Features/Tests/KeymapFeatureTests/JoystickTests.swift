@@ -26,7 +26,6 @@ private func touches(_ actions: [KeymapEngine.Action]) -> [Seen] {
 
 final class JoystickEngineTests: XCTestCase {
     private let phone = CGSize(width: 1080, height: 2340)
-    /// Centre (0.5, 0.5) in frame pixels, and the reach of a radius-0.1 stick (a tenth of the shorter edge).
     private let centreX = 539.5, centreY = 1169.5, reach = 108.0
 
     func testFingerGoesDownAtTheCentreThenEasesToFullDeflection() throws {
@@ -37,7 +36,7 @@ final class JoystickEngineTests: XCTestCase {
         XCTAssertEqual(pressed[0].x, centreX, accuracy: 0.6)
         XCTAssertEqual(pressed[0].y, centreY, accuracy: 0.6)
 
-        let half = touches(engine.tick(deltaTime: 0.04, frameSize: phone)) // half of the 0.08 s response
+        let half = touches(engine.tick(deltaTime: 0.04, frameSize: phone))
         XCTAssertEqual(half.map(\.action), [.move])
         XCTAssertEqual(half[0].y, centreY - reach / 2, accuracy: 1.1)
         XCTAssertEqual(half[0].x, centreX, accuracy: 0.6)
@@ -116,7 +115,7 @@ final class JoystickEngineTests: XCTestCase {
 
     func testReachFollowsTheShorterEdgeAndNeverLeavesTheScreen() throws {
         var landscape = KeymapEngine(keymap: Keymap(elements: [stick(radius: 0.1, response: 0)]))
-        let wide = CGSize(width: 2340, height: 1080) // shorter edge is now 1080 again
+        let wide = CGSize(width: 2340, height: 1080)
         let move = try XCTUnwrap(touches(landscape.keyDown(keyD, frameSize: wide)).last)
         XCTAssertEqual(move.x - 1169.5, reach, accuracy: 1.1, "same physical reach in landscape")
 

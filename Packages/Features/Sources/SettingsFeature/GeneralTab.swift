@@ -14,7 +14,6 @@ struct GeneralTab: View {
 
     @State private var chosenLanguage = AppLanguage.chosen()
 
-    /// Saves the choice at once (it is read when the app starts), then offers to restart so it shows now.
     private var languageBinding: Binding<String> {
         Binding(get: { chosenLanguage?.code ?? "system" }, set: { code in
             let choice = code == "system" ? nil : AppLanguage(code)
@@ -143,7 +142,6 @@ struct AppearanceCard: View {
 }
 
 enum FolderChoice {
-    /// `~/Pictures/Benz Mirror` for the default; the chosen folder otherwise, with the home folder as `~`.
     static func displayPath(_ custom: String?, fallback: FileManager.SearchPathDirectory) -> String {
         let path = custom ?? FileManager.default.urls(for: fallback, in: .userDomainMask)[0].appendingPathComponent(AppInfo.name).path
         return (path as NSString).abbreviatingWithTildeInPath
@@ -161,7 +159,6 @@ enum FolderChoice {
     }
 }
 
-/// Open-at-login state, backed by the system's login-item service.
 enum LoginItem {
     static var isEnabled: Bool { SMAppService.mainApp.status == .enabled }
 

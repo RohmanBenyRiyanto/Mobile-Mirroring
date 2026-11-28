@@ -5,7 +5,6 @@ import Components
 import Networking
 import Theme
 
-/// What the logcat window needs from its host: the phone, how to reach it, and the app in front, re-read on change.
 @MainActor
 public protocol LogcatSource: ObservableObject {
     var adb: ADB? { get }
@@ -46,7 +45,6 @@ public struct LogcatView<Source: LogcatSource>: View {
             logcat.setForegroundPackage(frontPackage)
         }
         .onChange(of: frontPackage) { _, package in logcat.setForegroundPackage(package) }
-        // Choosing another app re-reads the phone's log buffer, so that app's earlier lines show up too.
         .onChange(of: logcat.chosenPackage) { _, _ in if logcat.scope == .chosenApp { logcat.clear(); restart() } }
         .onChange(of: logcat.scope) { _, scope in if scope == .chosenApp, logcat.chosenPackage != nil { logcat.clear(); restart() } }
         .onDisappear { logcat.stop() }
@@ -100,7 +98,6 @@ public struct LogcatView<Source: LogcatSource>: View {
         .padding(.horizontal, Theme.Space.s3).padding(.vertical, Theme.Space.s2)
     }
 
-    /// Icon-only so the whole bar fits at the window's minimum width; the name is in the tooltip and for VoiceOver.
     private func iconButton(_ symbol: String, _ title: LocalizedStringKey, action: @escaping () -> Void) -> some View {
         Button(action: action) { Image(systemName: symbol).frame(width: 18, height: 18) }
             .buttonStyle(.bordered).controlSize(.small)

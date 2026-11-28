@@ -7,7 +7,6 @@ import KeymapFeature
 import Networking
 import SystemServices
 
-/// Per-phone mirroring state; the app can hold several of these at once.
 @MainActor
 public final class DeviceSession: ObservableObject {
     public enum State: Equatable {
@@ -31,7 +30,6 @@ public final class DeviceSession: ObservableObject {
     @Published public private(set) var recordingStartedAt: Date?
     @Published public private(set) var isMuted = false
 
-    /// The mode this phone is in now, which can change automatically with the keymap.
     @Published public private(set) var modeState: ModeAutoSwitch
     public var mode: WorkspaceMode { modeState.mode }
 
@@ -48,12 +46,10 @@ public final class DeviceSession: ObservableObject {
     @Published public private(set) var isRecordingMacro = false
 
     public var onNotice: ((String) -> Void)?
-    /// Called when a virtual display takes a shape (landscape or not), so the next start can open that way.
     public var onVirtualDisplayShape: ((_ package: String, _ landscape: Bool) -> Void)?
     public var onSavedFile: ((URL) -> Void)?
     public var keymapIndex: () -> [String: String] = { [:] }
     public var loadKeymapProfile: (String) -> Bool = { _ in false }
-    /// Called once when the connection ends by itself (cable pulled, server stopped), with the reason if it was a failure.
     public var onEnded: ((DeviceSession, String?) -> Void)?
 
     private let adb: ADB
@@ -63,7 +59,6 @@ public final class DeviceSession: ObservableObject {
     private var foregroundForwarder: AnyCancellable?
     private var inspectorObserver: AnyCancellable?
     private var designObserver: AnyCancellable?
-    /// True while the keymap is on because the app switched it on (so leaving the game switches it off again).
     private var autoEnabledKeymap = false
     public private(set) var hasEnded = false
 
@@ -87,7 +82,6 @@ public final class DeviceSession: ObservableObject {
         inspectorObserver = inspector.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
         designObserver = design.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
         foregroundObserver = foreground.$current.removeDuplicates().sink { [weak self] app in self?.foregroundChanged(app) }
-        // Re-publish foreground changes so views watching this session (such as the logcat window) refresh.
         foregroundForwarder = foreground.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
     }
 
@@ -98,7 +92,6 @@ public final class DeviceSession: ObservableObject {
         try await Task.detached { [scrcpy] in try scrcpy.start() }.value
     }
 
-    /// Stops on request. Unlike a connection that ends by itself, this does not call `onEnded`.
     public func stop() {
         removePasteFolder()
         scrcpy.stop()
@@ -134,7 +127,6 @@ public final class DeviceSession: ObservableObject {
         }
     }
 
-    /// A different app came to the front: load, switch on or switch off the keymap as the rules say.
     private func foregroundChanged(_ app: ForegroundApp?) {
         guard settings.autoKeymap, !keymap.isEditing, !hasEnded else { return }
         let actions = KeymapAutoSwitch.actions(foreground: app?.package, index: keymapIndex(), loadedProfileID: keymap.profile?.id,
@@ -143,7 +135,7 @@ public final class DeviceSession: ObservableObject {
         for action in actions {
             switch action {
             case let .load(id):
-                guard loadKeymapProfile(id) else { return } // nothing to switch on if it did not load
+                guard loadKeymapProfile(id) else { return }
             case .enable:
                 keymap.isEnabled = true
                 autoEnabledKeymap = true
@@ -159,7 +151,6 @@ public final class DeviceSession: ObservableObject {
         }
     }
 
-    /// A previous run may have been killed with the API log's proxy still set; a fresh session removes it.
     private func connectLedger() {
         let serial = self.serial
         developerTools.confirmNetworkOff = { [weak self] in self?.askBeforeNetworkOff() ?? true }
@@ -168,7 +159,6 @@ public final class DeviceSession: ObservableObject {
         developerTools.onMockChanged = { [weak self] active in self?.ledger?.setMockLocation(active, for: serial) }
     }
 
-    /// Set by the app model: whether to ask, and the answer to remember.
     var shouldConfirmNetworkOff: () -> Bool = { false }
     var stopAskingAboutNetworkOff: () -> Void = {}
 
@@ -181,7 +171,6 @@ public final class DeviceSession: ObservableObject {
         return answer.confirmed
     }
 
-    /// Anything an earlier run changed on this phone and never put back (it was killed, the cable was pulled, the battery died) is undone now.
     private func restoreWhatWasLeftBehind() {
         removePasteFolder()
         guard let entry = ledger?.entry(for: serial) else { return }
@@ -196,7 +185,6 @@ public final class DeviceSession: ObservableObject {
                 _ = await Task.detached { try? adb.run(["-s", serial, "shell", commands.joined(separator: "; ")], timeout: 10) }.value
                 if !hasEnded { onNotice?(String(localized: "Put back settings that an earlier session had changed on the phone")) }
             }
-            // Only if nothing newer was written meanwhile: this session may already have made changes of its own.
             if ledger?.entry(for: serial) == entry { ledger?.clear(serial) }
         }
     }
@@ -247,7 +235,6 @@ public final class DeviceSession: ObservableObject {
         isRecording = false
     }
 
-    /// Flips the phone's Do Not Disturb; the current state is read first when the Quick Toggles panel has not done so yet.
     public func toggleDoNotDisturb() {
         Task {
             if !developerTools.isLoaded { await developerTools.load() }
@@ -266,7 +253,6 @@ public final class DeviceSession: ObservableObject {
 
     // MARK: Input
 
-    /// The inspector and the design tools both take over the pointer, so only one is on at a time.
     public func setInspecting(_ on: Bool) {
         if on { design.setTool(.off) }
         inspector.setOn(on)
@@ -282,7 +268,6 @@ public final class DeviceSession: ObservableObject {
         design.refresh()
     }
 
-    /// True while a tool is using the pointer (clicks must not reach the phone).
     public var toolCapturesPointer: Bool { inspector.isOn || design.capturesPointer }
 
     public func send(_ message: ControlMessage) { scrcpy.send(message) }
@@ -292,7 +277,6 @@ public final class DeviceSession: ObservableObject {
         send(.keycode(.up, key))
     }
 
-    /// Copied files go to the phone's Download folder; copied text is pasted into the field that has focus.
     public var onFilesPasted: (([URL]) -> Void)?
 
     public func pasteToPhone() {
@@ -305,8 +289,6 @@ public final class DeviceSession: ObservableObject {
         send(.setClipboard(text, paste: true))
     }
 
-    /// Finder files become the phone's clipboard, so ⌘V in WhatsApp, Gmail and the like attaches them. An .apk or keymap, a folder,
-    /// or a phone that refuses the helper falls back to the normal Download copy.
     private func pasteFiles(_ files: [URL]) {
         let isFile = { (url: URL) -> Bool in
             var directory: ObjCBool = false
@@ -349,7 +331,7 @@ public final class DeviceSession: ObservableObject {
             }.value
             guard !hasEnded else { return }
             if copied > 0 {
-                pressWithCtrl(.letterV) // paste straight into the focused field; the clipboard still holds the files if the app ignores it
+                pressWithCtrl(.letterV)
                 onNotice?(copied == 1 ? String(localized: "File pasted into the phone. It is also on the phone's clipboard") : String(localized: "\(copied) files pasted into the phone. They are also on the phone's clipboard"))
             } else {
                 onNotice?(String(localized: "Could not use the phone's clipboard, copying to Download instead"))
@@ -358,7 +340,6 @@ public final class DeviceSession: ObservableObject {
         }
     }
 
-    /// The files waited in a folder of their own; they are removed when the session ends and again before the next one.
     private func removePasteFolder() {
         let adb = self.adb, serial = self.serial
         Task.detached { _ = try? adb.run(["-s", serial, "shell", PhoneClipboardPlan.removeFolderCommand + "; rm -f " + PhoneClipboardPlan.helperPath], timeout: 8) }
@@ -367,7 +348,6 @@ public final class DeviceSession: ObservableObject {
     public func copyFromPhone() { send(.getClipboard(.copy)) }
     public func cutFromPhone() { send(.getClipboard(.cut)) }
 
-    /// A shortcut the phone understands with Ctrl held (Ctrl+A selects all, Ctrl+Z undoes).
     public func pressWithCtrl(_ key: AndroidKeyCode, extra: KeyMeta = []) {
         send(.keycode(.down, key, meta: [.ctrl, extra]))
         send(.keycode(.up, key, meta: [.ctrl, extra]))

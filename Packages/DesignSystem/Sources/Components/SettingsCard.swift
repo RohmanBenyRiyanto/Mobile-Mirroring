@@ -60,7 +60,6 @@ public struct SettingsRow<Trailing: View>: View {
     }
 }
 
-/// A row without the card's background, separator or inset, for content such as a grid of cards.
 public struct PlainRow<Content: View>: View {
     private let content: Content
 

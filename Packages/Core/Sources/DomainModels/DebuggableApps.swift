@@ -1,11 +1,9 @@
 import Foundation
 
-/// Finds the apps that can be looked into: installed from outside the Play Store and built as debuggable.
 public enum DebuggableApps {
     public static let thirdPartyCommand = "pm list packages -3"
     public static let detailsCommand = "dumpsys package packages"
 
-    /// `package:com.example` lines to a set of names.
     public static func parsePackageList(_ output: String) -> Set<String> {
         Set(output.split(whereSeparator: \.isNewline).compactMap { line -> String? in
             let text = line.trimmingCharacters(in: .whitespaces)
@@ -15,7 +13,6 @@ public enum DebuggableApps {
         })
     }
 
-    /// The packages in `dumpsys package packages` output whose flags include DEBUGGABLE, sorted by name.
     public static func parse(details: String, among allowed: Set<String>? = nil) -> [String] {
         var current: String?
         var found = Set<String>()

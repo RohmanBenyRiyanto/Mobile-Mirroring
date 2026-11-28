@@ -1,7 +1,6 @@
 import AppKit
 import SwiftUI
 
-/// A key with modifiers, as shown in the menu bar and stored when the user changes a shortcut.
 public struct KeyCombo: Hashable, Codable, Sendable {
     public struct Modifiers: OptionSet, Hashable, Codable, Sendable {
         public let rawValue: Int
@@ -12,7 +11,6 @@ public struct KeyCombo: Hashable, Codable, Sendable {
         public static let command = Modifiers(rawValue: 8)
     }
 
-    /// A single upper-case character, or one of ↩ ↑ ↓ ← → ⇥ Space ⌫.
     public let key: String
     public let modifiers: Modifiers
 
@@ -21,7 +19,6 @@ public struct KeyCombo: Hashable, Codable, Sendable {
         self.modifiers = modifiers
     }
 
-    /// Formats the shortcut in macOS order: control, option, shift, command, then the key.
     public var display: String {
         var text = ""
         if modifiers.contains(.control) { text += "⌃" }
@@ -54,7 +51,6 @@ public struct KeyCombo: Hashable, Codable, Sendable {
         return result
     }
 
-    /// The combination of a key press, or nil for a key that cannot be a shortcut (a bare modifier).
     public init?(event: NSEvent) {
         var modifiers: Modifiers = []
         let flags = event.modifierFlags
@@ -73,7 +69,6 @@ public struct KeyCombo: Hashable, Codable, Sendable {
     }
 }
 
-/// Every menu shortcut the user can change, with its original combination. The menu and Settings both read this list.
 public enum ShortcutRegistry {
     public struct Item: Identifiable, Equatable, Sendable {
         public let id: String
@@ -140,14 +135,12 @@ public enum ShortcutRegistry {
         ("Window.Show Next Phone", "Window", "Show Next Phone", KeyCombo("⇥", [.control])),
     ]
 
-    /// Shortcuts the system or this app's standard Edit menu already owns; a custom one may not take them.
     public static let reserved: Set<KeyCombo> = [
         KeyCombo("Q"), KeyCombo("H"), KeyCombo("M"), KeyCombo(","), KeyCombo("Z"), KeyCombo("Z", [.command, .shift]),
         KeyCombo("X"), KeyCombo("C"), KeyCombo("V"), KeyCombo("A"), KeyCombo("H", [.command, .option]), KeyCombo("M", [.command, .option]),
     ]
 }
 
-/// The user's changed shortcuts, saved in UserDefaults. An entry of `nil` means the shortcut was removed.
 public struct ShortcutBook: Equatable, Codable, Sendable {
     public var overrides: [String: KeyCombo?] = [:]
 
@@ -160,7 +153,6 @@ public struct ShortcutBook: Equatable, Codable, Sendable {
 
     public func isChanged(_ id: String) -> Bool { overrides[id] != nil }
 
-    /// Another item that already uses `combo` (nil if free, or if `combo` is nil).
     public func conflict(for combo: KeyCombo?, excluding id: String) -> ShortcutRegistry.Item? {
         guard let combo else { return nil }
         return ShortcutRegistry.items.first { $0.id != id && self.combo(for: $0.id) == combo }
@@ -184,7 +176,6 @@ public struct ShortcutBook: Equatable, Codable, Sendable {
 }
 
 extension View {
-    /// Gives a menu item the shortcut the user chose for `id` (or its original one); none if the user removed it.
     @ViewBuilder
     func appShortcut(_ id: String, model: AppModel) -> some View {
         if let combo = model.shortcuts.combo(for: id), let key = combo.keyEquivalent {

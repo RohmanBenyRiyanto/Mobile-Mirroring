@@ -1,6 +1,5 @@
 import Foundation
 
-/// One-click developer switches. Each runs fixed `adb shell` commands; nothing is user-supplied.
 public enum DeviceTool: CaseIterable, Identifiable {
     case darkModeOn, darkModeOff, darkModeAuto
     case animationsOff, animationsOn

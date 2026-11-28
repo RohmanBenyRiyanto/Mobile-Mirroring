@@ -1,6 +1,5 @@
 import AppKit
 
-/// A recording timer in the menu bar, shown while Stream Mode hides the window's own. It keeps the timer out of a window capture.
 @MainActor
 final class RecordingStatusItem {
     private var item: NSStatusItem?

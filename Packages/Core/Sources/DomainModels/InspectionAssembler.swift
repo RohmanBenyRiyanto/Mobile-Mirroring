@@ -1,7 +1,5 @@
 import Foundation
 
-/// What an agent inside a debuggable app reports about its HTTP calls, in plain values. The wire format is mapped to this elsewhere, so the
-/// rules for putting a call together are plain code that is tested without a phone.
 public enum InspectionEvent: Equatable, Sendable {
     case requestStarted(id: Int64, url: String, method: String, headers: [HTTPHeader], at: Date)
     case requestPayload(id: Int64, data: Data)
@@ -12,10 +10,7 @@ public enum InspectionEvent: Equatable, Sendable {
     case closed(id: Int64, completed: Bool)
 }
 
-/// Joins the events of each call into an `APICall` with its headers and bodies, as the API log shows it.
-/// Unlike the proxy, this sees the contents of HTTPS calls: the agent reports them before they are encrypted.
 public struct InspectionAssembler: Sendable {
-    /// Calls that were not closed when this many others were open are dropped, so a leaky app cannot grow memory without bound.
     public static let maxOpenCalls = 256
 
     private struct Open {
@@ -30,7 +25,6 @@ public struct InspectionAssembler: Sendable {
 
     public init(clock: @escaping @Sendable () -> Date = { Date() }) { self.clock = clock }
 
-    /// The call as it stands after `event`, to show or update in the log; nil for an event of a call that was never started.
     public mutating func apply(_ event: InspectionEvent) -> APICall? {
         switch event {
         case let .requestStarted(id, url, method, headers, at):
@@ -72,7 +66,7 @@ public struct InspectionAssembler: Sendable {
         case let .closed(id, completed):
             guard var entry = open[id] else { return nil }
             entry.call.durationMillis = max(0, Int(clock().timeIntervalSince(entry.started) * 1000))
-            if !completed, entry.call.status == nil { entry.call.status = nil } // closed before an answer: shown as unfinished-with-time
+            if !completed, entry.call.status == nil { entry.call.status = nil }
             open[id] = entry
             let finished = snapshot(id)
             open[id] = nil

@@ -84,7 +84,6 @@ struct WirelessSheet: View {
     }
 }
 
-/// Six digit boxes over one hidden text field, so typing, pasting and deleting all behave like a normal field.
 private struct CodeBoxes: View {
     @Binding var code: String
     @FocusState private var isFocused: Bool

@@ -2,13 +2,7 @@ import Foundation
 import DomainModels
 import Media
 
-/// Serves the phone's stream as an MPEG transport stream over HTTP on the loopback interface,
-/// so OBS can read it as a Media Source (`http://127.0.0.1:<port>/live.ts`, format `mpegts`).
-///
-/// Video is not re-encoded. A viewer is only sent data from a key frame onward, and each new
-/// viewer triggers `onViewerConnected` so the caller can ask the phone for a fresh key frame.
 public final class TransportStreamServer: @unchecked Sendable {
-    /// A viewer that falls this far behind is dropped rather than allowed to hold memory.
     private static let maxPendingBytes = 8 << 20
     private static let maxRequestBytes = 8 << 10
 
@@ -16,7 +10,7 @@ public final class TransportStreamServer: @unchecked Sendable {
         let stream: TCPStream
         let queue = DispatchQueue(label: "benzmirror.stream.viewer")
         let pendingBytes = LockedValue(0)
-        var hasKeyFrame = false // only touched on the muxing queue
+        var hasKeyFrame = false
 
         init(stream: TCPStream) { self.stream = stream }
     }
@@ -31,7 +25,6 @@ public final class TransportStreamServer: @unchecked Sendable {
     private let audioEncoder: AACEncoder?
     private let codec: VideoCodec
 
-    // Only touched on `muxQueue`.
     private var muxer: TransportStreamMuxer
     private var parameterSets = Data()
     private var timeOrigin: Int64?
@@ -61,14 +54,12 @@ public final class TransportStreamServer: @unchecked Sendable {
         }
     }
 
-    /// The phone has no audio (before Android 11): stop advertising an audio stream.
     public func disableAudio() {
         muxQueue.async { [self] in muxer.includesAudio = false }
     }
 
     // MARK: Input from the session
 
-    /// Parameter sets (SPS/PPS, plus VPS for H.265) in Annex-B form; repeated before every key frame.
     public func submitConfig(_ annexB: Data) {
         muxQueue.async { [self] in parameterSets = annexB }
     }
@@ -98,7 +89,6 @@ public final class TransportStreamServer: @unchecked Sendable {
 
     // MARK: Output
 
-    /// Timestamps start one second after zero so that a PCR placed before them never goes negative.
     private func ticks(_ microseconds: Int64) -> UInt64 {
         let origin = timeOrigin ?? microseconds
         timeOrigin = origin
@@ -108,7 +98,7 @@ public final class TransportStreamServer: @unchecked Sendable {
     private func broadcast(_ data: Data, isKeyFrame: Bool, isVideo: Bool) {
         for viewer in viewers.get().values {
             if !viewer.hasKeyFrame {
-                guard isVideo, isKeyFrame else { continue } // a viewer starts on a key frame
+                guard isVideo, isKeyFrame else { continue }
                 viewer.hasKeyFrame = true
             }
             guard viewer.pendingBytes.get() < Self.maxPendingBytes else {
@@ -137,7 +127,6 @@ public final class TransportStreamServer: @unchecked Sendable {
         }
     }
 
-    /// Reads the HTTP request line, answers with a never-ending `video/mp2t` body, and registers the viewer.
     private func welcome(_ stream: TCPStream) {
         stream.setTimeouts(seconds: 2)
         var request = Data()

@@ -16,10 +16,6 @@ public enum RecordingError: LocalizedError {
     }
 }
 
-/// Writes the device's stream to an MP4 file.
-///
-/// The phone's H.264/H.265 packets are stored as-is (no re-encoding, so no quality loss and
-/// almost no CPU); audio is encoded to AAC. Every input is appended on one serial queue.
 public final class ScreenRecorder: @unchecked Sendable {
     public let url: URL
 
@@ -31,8 +27,6 @@ public final class ScreenRecorder: @unchecked Sendable {
     private var lastVideoTime = CMTime.invalid
     private var isFinished = false
 
-    /// MP4 stores times in ticks of this size. The writer's default (1/600 s) is coarser than the
-    /// gap between two quickly repeated frames, which would give them the same timestamp.
     private static let videoTimescale: Int32 = 90_000
 
     public init(url: URL, videoFormat: CMVideoFormatDescription, includesAudio: Bool) throws {
@@ -64,7 +58,6 @@ public final class ScreenRecorder: @unchecked Sendable {
         }
     }
 
-    /// The first frame written must be a key frame, so earlier frames are skipped.
     public func appendVideo(_ sample: CMSampleBuffer, isKeyFrame: Bool) {
         queue.async { [self] in
             guard !isFinished, writer.status == .writing else { return }
@@ -78,7 +71,6 @@ public final class ScreenRecorder: @unchecked Sendable {
         }
     }
 
-    /// Container formats need strictly increasing timestamps; nudge a frame that does not advance.
     private func strictlyIncreasing(_ sample: CMSampleBuffer) -> CMSampleBuffer? {
         var time = CMSampleBufferGetPresentationTimeStamp(sample)
         defer { lastVideoTime = time }
@@ -103,7 +95,6 @@ public final class ScreenRecorder: @unchecked Sendable {
         }
     }
 
-    /// Closes the file. Throws `nothingRecorded` (and deletes the file) if no key frame ever arrived.
     public func finish() async throws -> URL {
         try await withCheckedThrowingContinuation { continuation in
             queue.async { [self] in

@@ -8,7 +8,6 @@ public struct DropSummary: Equatable {
     public let action: Action
     public let detail: String
 
-    /// Reads only file names and sizes, never opening the files. Nil when no file is dragged.
     public static func make(from urls: [URL]) -> DropSummary? {
         let files = urls.filter(\.isFileURL)
         guard let first = files.first else { return nil }
@@ -25,7 +24,6 @@ public struct DropSummary: Equatable {
     }
 }
 
-/// Solid rather than glass, because it sits on live video.
 struct DropOverlay: View {
     let summary: DropSummary
 

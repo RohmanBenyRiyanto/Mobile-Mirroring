@@ -3,7 +3,6 @@ import DomainModels
 import SwiftUI
 import Theme
 
-/// What a rail tooltip shows, and where (in the rail view's own coordinates).
 struct RailTooltipContent: Equatable {
     let title: String
     let detail: String?
@@ -66,7 +65,6 @@ struct RailButton: View {
         .accessibilityLabel(title)
     }
 
-    /// A LocalizedStringKey holds its catalog key; looking it up gives the text in the current language.
     private static func text(_ key: LocalizedStringKey) -> String {
         let raw = Mirror(reflecting: key).children.first { $0.label == "key" }?.value as? String ?? ""
         return String(localized: String.LocalizationValue(raw))
@@ -93,13 +91,11 @@ public struct ModePicker: View {
 struct RailView: View {
     @ObservedObject var model: AppModel
     @Binding var isCollapsed: Bool
-    /// A landscape picture gets a horizontal rail above the window instead of a vertical one beside it, as in the design.
     var isHorizontal = false
     var openLogcat: () -> Void = {}
     var customize: () -> Void = {}
 
     private static let divider = Theme.Palette.hairline.color
-    /// Expanded and collapsed are the same piece of glass, so folding the rail morphs it instead of swapping two views.
     @Namespace private var glassSpace
 
     var body: some View {
@@ -108,7 +104,7 @@ struct RailView: View {
                 if isCollapsed { collapsed } else { expanded }
             }
         }
-        .padding(Theme.Space.s5) // room for the shadow; the panel is transparent
+        .padding(Theme.Space.s5)
         .fixedSize()
     }
 
@@ -205,7 +201,6 @@ struct RailView: View {
             .padding(isHorizontal ? .horizontal : .vertical, Theme.Space.s1)
     }
 
-    /// A red dot stays visible while recording.
     private var collapsed: some View {
         Button { withAnimation(Theme.Motion.smooth) { isCollapsed = false } } label: {
             VStack(spacing: Theme.Space.s2) {

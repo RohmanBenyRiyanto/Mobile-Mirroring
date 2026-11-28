@@ -1,8 +1,6 @@
 import DomainModels
 import Foundation
 
-/// A small HTTP proxy on the loopback interface that the phone reaches through `adb reverse`.
-/// It forwards plain HTTP and HTTPS tunnels and reports each call. HTTPS contents are never opened: only the host is known.
 public final class LoggingProxy: @unchecked Sendable {
     public struct Report: Sendable {
         public var id: Int
@@ -25,10 +23,8 @@ public final class LoggingProxy: @unchecked Sendable {
     private let onReport: @Sendable (Report) -> Void
     private let profile = LockedValue(NetworkProfile.unlimited)
 
-    /// Slows every call from now on (a call already running picks up the new speed on its next chunk).
     public func setProfile(_ new: NetworkProfile) { profile.set(new) }
 
-    /// `onReport` is called once when a call starts (no duration yet) and once when it ends.
     public init(port: UInt16 = 0, onReport: @escaping @Sendable (Report) -> Void) throws {
         listener = try LoopbackListener(port: port)
         self.port = listener.port
@@ -96,7 +92,6 @@ public final class LoggingProxy: @unchecked Sendable {
         let sent = LockedValue(0), received = LockedValue(0)
         let limits = profile
         let firstBytes = LockedValue(Data())
-        // Plain HTTP is kept for the log's detail view (cut at a size limit); a tunnel's contents are encrypted and are not.
         let requestCapture = LockedValue(Data(leftover.prefix(HTTPMessage.bodyCapture)))
         let responseCapture = LockedValue(Data())
         do {
@@ -110,7 +105,6 @@ public final class LoggingProxy: @unchecked Sendable {
             }
         } catch { return }
 
-        // Client to server runs on its own thread; the call ends when the server side closes.
         Thread.detachNewThread {
             while let chunk = try? client.readSome(limit: 16 << 10), !chunk.isEmpty {
                 let wait = NetworkProfile.transferDelay(bytes: chunk.count, kbps: limits.get().upKbps)

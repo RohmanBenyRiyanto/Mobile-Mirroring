@@ -8,30 +8,24 @@ import SystemServices
 @MainActor
 public final class KeymapController: ObservableObject {
     @Published public private(set) var profile: ProfileSummary?
-    /// Free-look is on: the pointer is captured and mouse movement steers the camera.
     @Published public private(set) var isAiming = false
-    /// While editing, the keymap is switched off so keys do not reach the phone.
     @Published public var isEditing = false {
         didSet { if isEditing { isEnabled = false } }
     }
-    /// Turning this off lifts any finger still held down.
     @Published public var isEnabled = false {
         didSet { if !isEnabled { releaseAll() } }
     }
 
     private var engine: KeymapEngine?
     private var keymap: Keymap?
-    /// Bumped whenever the engine is replaced, so a delayed lift from the old one is not applied to the new one.
     private var generation = 0
     private var frameSize = CGSize(width: 9, height: 16)
     private let send: (ControlMessage) -> Void
     private let cursor: CursorCapturing
-    /// Drives joystick movement; runs only while a joystick finger is down.
     private var ticker: Timer?
     private var lastTick: CFTimeInterval = 0
 
     private static let tickRate = 120.0
-    /// A stalled run loop must not make the stick jump: time per step is capped.
     private static let maxStep = 0.1
 
     public init(send: @escaping (ControlMessage) -> Void, cursor: CursorCapturing) {
@@ -58,7 +52,6 @@ public final class KeymapController: ObservableObject {
         isEnabled = false
     }
 
-    /// Lifts fingers placed for the old frame when the phone rotates.
     public func updateFrameSize(_ size: CGSize) {
         guard size != frameSize else { return }
         releaseAll()
@@ -84,7 +77,6 @@ public final class KeymapController: ObservableObject {
         return true
     }
 
-    /// A controller button or stick direction, passed on as the keyboard key the keymap bound it to. Returns true if the keymap took it.
     @discardableResult
     public func gamepad(_ input: GamepadInput, isDown: Bool) -> Bool {
         guard isEnabled, let key = keymap?.key(for: input) else { return false }
@@ -99,7 +91,6 @@ public final class KeymapController: ObservableObject {
 
     // MARK: Pointer (aimed skills)
 
-    /// Aimed skills follow the pointer. The event is never consumed.
     public func pointerMoved(to ratio: CGPoint) {
         guard isEnabled else { return }
         run(engine?.pointerMoved(to: ratio, frameSize: frameSize) ?? [])
@@ -113,7 +104,6 @@ public final class KeymapController: ObservableObject {
         return true
     }
 
-    /// While aiming, every click belongs to the keymap so the hidden pointer never taps the phone by accident.
     public func mouseDown(button: Int) -> Bool {
         guard isAiming else { return false }
         run(engine?.mouseDown(button: button, frameSize: frameSize) ?? [])
@@ -146,7 +136,7 @@ public final class KeymapController: ObservableObject {
         let timer = Timer(timeInterval: 1 / Self.tickRate, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated { self?.tick() }
         }
-        RunLoop.main.add(timer, forMode: .common) // keep moving while menus are open
+        RunLoop.main.add(timer, forMode: .common)
         ticker = timer
     }
 
@@ -169,7 +159,7 @@ public final class KeymapController: ObservableObject {
                 let expected = generation
                 DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
                     guard let self else { return }
-                    send(message) // the lift is always sent, even if the keymap changed meanwhile
+                    send(message)
                     if generation == expected { engine?.finishTap(slot: slot) }
                 }
             }

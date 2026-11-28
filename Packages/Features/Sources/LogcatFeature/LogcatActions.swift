@@ -19,7 +19,6 @@ private struct LogcatActionsKey: FocusedValueKey {
 }
 
 extension FocusedValues {
-    /// Nil when no logcat window is in front, which disables the Logcat menu.
     public var logcatActions: LogcatActions? {
         get { self[LogcatActionsKey.self] }
         set { self[LogcatActionsKey.self] = newValue }

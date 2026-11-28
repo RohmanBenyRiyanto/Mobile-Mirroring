@@ -6,7 +6,6 @@ import KeymapFeature
 import Persistence
 import SystemServices
 
-/// Shared keymaps are JSON with their own extension, so drops and double-clicks can recognise them.
 public enum KeymapFile {
     public static let fileExtension = "benzkeymap"
     public static let typeIdentifier = "dev.benz.mirror.keymap"
@@ -33,13 +32,11 @@ extension AppModel {
     public var isKeymapEnabled: Bool { active?.keymap.isEnabled ?? false }
     public var currentKeymap: ProfileSummary? { active?.keymap.profile }
 
-    /// Makes a saved keymap the front phone's keymap (it still has to be switched on).
     public func loadKeymap(id: String) {
         guard let active else { return }
         loadKeymap(id: id, for: active, announce: true)
     }
 
-    /// Returns false when the keymap fails to load; the reason is shown as a notice.
     @discardableResult
     public func loadKeymap(id: String, for session: DeviceSession, announce: Bool) -> Bool {
         guard let keymapStore else { return false }
@@ -100,14 +97,13 @@ extension AppModel {
         importKeymap(data: Data(text.utf8), source: "the clipboard")
     }
 
-    /// Validates the keymap and asks the user before saving anything.
     @discardableResult
     public func importKeymap(data: Data, source: String) -> Bool {
         guard let keymapStore else { return false }
         do {
             guard data.count <= ProfileFormat.maxBytes else { throw ProfileError.tooLarge }
             let profile = try keymapStore.inspect(data)
-            _ = try profile.payload.validated() // refuse what could not be used before asking anything
+            _ = try profile.payload.validated()
             guard confirmKeymapImport(KeymapSummary(profile: profile, existingIDs: keymapStore.identifiers())) else {
                 notice = String(localized: "Import cancelled")
                 return false
@@ -158,7 +154,6 @@ extension AppModel {
 
     public var isRecordingMacro: Bool { active?.isRecordingMacro ?? false }
 
-    /// First use starts recording the touches sent to the phone; the second stops, asks for a key, and saves the macro.
     public func toggleMacroRecording() {
         guard let active else { return }
         guard active.isRecordingMacro else {
@@ -179,7 +174,6 @@ extension AppModel {
         }
     }
 
-    /// Adds a recorded macro, bound to `key`, to the current keymap (or to a "Macros" keymap if none is loaded).
     public func saveMacro(_ steps: [MacroStep], key: UInt16) {
         guard let keymapStore, let active, let first = steps.first else { return }
         do {
@@ -189,7 +183,7 @@ extension AppModel {
             let number = profile.payload.elements.filter { if case .macro = $0.action { return true } else { return false } }.count + 1
             profile.payload.elements.append(KeymapElement(label: "Macro \(number)", position: first.position,
                                                           action: .macro(key: key, steps: steps, loop: false, speed: 1)))
-            _ = try profile.payload.validated() // never save a keymap that could not be loaded again
+            _ = try profile.payload.validated()
 
             let saved = try keymapStore.save(profile)
             refreshKeymaps()
@@ -203,7 +197,6 @@ extension AppModel {
 
     // MARK: Editor
 
-    /// The keymap is switched off while the editor is open.
     public func startEditingKeymap() {
         guard let active, editor == nil else { return }
         let profile = active.keymap.profile.flatMap { try? keymapStore?.load(id: $0.id) }
@@ -229,7 +222,6 @@ extension AppModel {
         }
     }
 
-    /// Asks before changes are thrown away (unless that was switched off). True when it is fine to go on.
     private func confirmLeavingEditedKeymap() -> Bool {
         guard settings.confirmDiscardKeymap, editor?.isDirty == true else { return true }
         let answer = Confirmation.ask(title: String(localized: "Discard your changes to this keymap?"),
@@ -238,14 +230,12 @@ extension AppModel {
         return answer.confirmed
     }
 
-    /// Opens another saved keymap in the editor.
     public func switchEditor(toProfile id: String) {
         guard editor != nil, confirmLeavingEditedKeymap(), let profile = try? keymapStore?.load(id: id) else { return }
         editorMessage = nil
         editor = KeymapEditorModel(profile: profile)
     }
 
-    /// Starts an empty keymap for a game that has none, in the editor.
     public func createEditorProfile(package: String, name: String) {
         guard editor != nil, confirmLeavingEditedKeymap() else { return }
         editorMessage = nil
@@ -255,7 +245,7 @@ extension AppModel {
     public func exportEditedKeymap() { if let id = editor?.profileID { exportKeymap(id: id) } }
 
     public func closeEditor(save: Bool) {
-        if save, !saveEditor() { return } // stay open so the problem can be fixed
+        if save, !saveEditor() { return }
         if !save, settings.confirmDiscardKeymap, editor?.isDirty == true {
             let answer = Confirmation.ask(title: String(localized: "Discard your changes to this keymap?"),
                                           message: String(localized: "What you changed since the last save is lost."), confirm: String(localized: "Discard"), destructive: true)

@@ -15,7 +15,7 @@ final class TurboAndSwipeTests: XCTestCase {
     func testRapidTapRepeatsWhileHeldAtTheChosenRateAndStopsOnRelease() {
         var engine = KeymapEngine(keymap: Keymap(elements: [KeymapElement(position: NormalizedPoint(x: 0.5, y: 0.5), action: .turbo(key: keyQ, rate: 10))]))
         var all = touches(engine.keyDown(keyQ, frameSize: frame))
-        for _ in 0..<60 { all += touches(engine.tick(deltaTime: 1.0 / 60, frameSize: frame)) } // one second
+        for _ in 0..<60 { all += touches(engine.tick(deltaTime: 1.0 / 60, frameSize: frame)) }
         let downs = all.filter { $0.0 == .down }.count
         let ups = all.filter { $0.0 == .up }.count
         XCTAssertTrue((9...11).contains(downs), "about ten taps in a second, got \(downs)")
@@ -31,7 +31,7 @@ final class TurboAndSwipeTests: XCTestCase {
         var engine = KeymapEngine(keymap: Keymap(elements: [KeymapElement(position: NormalizedPoint(x: 0.5, y: 0.8),
                                                                            action: .swipe(key: keyQ, to: NormalizedPoint(x: 0.5, y: 0.2), duration: 0.25))]))
         var all = touches(engine.keyDown(keyQ, frameSize: frame))
-        _ = engine.keyUp(keyQ, frameSize: frame) // releasing early does not cut the swipe short
+        _ = engine.keyUp(keyQ, frameSize: frame)
         for _ in 0..<30 { all += touches(engine.tick(deltaTime: 1.0 / 60, frameSize: frame)) }
         XCTAssertEqual(all.first?.0, .down)
         XCTAssertEqual(all.last?.0, .up)

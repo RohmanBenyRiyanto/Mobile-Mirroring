@@ -1,12 +1,10 @@
 import XCTest
 
-/// Requires a Mac that allows UI automation. Run: xcodebuild … test -only-testing:UITests
 final class LaunchTests: XCTestCase {
     private func launch() -> XCUIApplication {
         let app = XCUIApplication()
         app.launch()
         XCTAssertTrue(app.windows.firstMatch.waitForExistence(timeout: 10))
-        // First launch shows the welcome sheet; skip it so the tests see the Connect window.
         let skip = app.buttons["Skip Setup"]
         if skip.waitForExistence(timeout: 2) { skip.click() }
         return app

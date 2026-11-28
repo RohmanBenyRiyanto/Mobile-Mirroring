@@ -2,7 +2,6 @@ import AVFoundation
 import ImageIO
 import UniformTypeIdentifiers
 
-/// Turns a stretch of a recording into an animated GIF, for bug reports and chat. Frames are read straight from the file; nothing is re-encoded first.
 public enum GIFExporter {
     public struct Options: Equatable, Sendable {
         public var start: Double
@@ -17,7 +16,6 @@ public enum GIFExporter {
             self.maxWidth = maxWidth
         }
 
-        /// Keeps the numbers in a range that cannot exhaust memory or disk: at most 30 s, 24 fps, 960 px wide.
         public var clamped: Options {
             Options(start: max(start, 0), length: min(max(length, 0.2), 30), framesPerSecond: min(max(framesPerSecond, 2), 24), maxWidth: min(max(maxWidth, 64), 960))
         }

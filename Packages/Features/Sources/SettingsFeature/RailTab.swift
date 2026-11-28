@@ -3,7 +3,6 @@ import SwiftUI
 import Theme
 import WorkspaceFeature
 
-/// Disconnect and the hide button are always on the rail, so it can never be made unusable.
 struct RailTab: View {
     @ObservedObject var model: AppModel
     @State private var mode: WorkspaceMode

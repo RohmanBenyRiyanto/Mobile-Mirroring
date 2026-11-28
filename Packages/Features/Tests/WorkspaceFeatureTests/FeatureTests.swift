@@ -165,10 +165,10 @@ final class StatisticsTests: XCTestCase {
         let statistics = StreamStatistics()
         let start = Date()
         for _ in 0..<60 { statistics.recordVideoPacket(bytes: 25_000, isFrame: true) }
-        statistics.recordVideoPacket(bytes: 40, isFrame: false) // config packet: bytes only
+        statistics.recordVideoPacket(bytes: 40, isFrame: false)
 
         let first = statistics.snapshot(now: start.addingTimeInterval(2))
-        XCTAssertEqual(first.framesPerSecond, 30, accuracy: 3) // window started at init, slightly before `start`
+        XCTAssertEqual(first.framesPerSecond, 30, accuracy: 3)
         XCTAssertEqual(first.megabitsPerSecond, 6, accuracy: 0.6)
 
         let second = statistics.snapshot(now: start.addingTimeInterval(3))

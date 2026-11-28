@@ -3,9 +3,7 @@ import Networking
 import Foundation
 import DomainModels
 
-/// Where screenshots and recordings are saved: `<Pictures|Movies>/<app name>/<Prefix>-<timestamp>.<ext>`.
 public enum OutputFiles {
-    /// A new file name in the user's chosen folder (`custom`, when it exists), else in `<Pictures or Movies>/Benz Mirror`.
     public static func newURL(in directory: FileManager.SearchPathDirectory, prefix: String, pathExtension: String, custom: String? = nil) throws -> URL {
         let folder: URL
         var isDirectory: ObjCBool = false
@@ -21,7 +19,6 @@ public enum OutputFiles {
         return folder.appendingPathComponent("\(prefix)-\(formatter.string(from: Date())).\(pathExtension)")
     }
 
-    /// Limits the name to safe characters before it is used on the phone.
     public static func sanitizedName(_ name: String) -> String {
         let allowed = Set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-() ")
         let cleaned = String(name.map { allowed.contains($0) ? $0 : "_" }).trimmingCharacters(in: .whitespaces)
@@ -45,18 +42,16 @@ extension AppModel {
         }
     }
 
-    /// Dropped files: an `.apk` is installed, a `.benzkeymap` is imported, anything else is copied to the phone's Download folder.
     public func handleDrop(_ urls: [URL]) {
         for url in urls where url.isFileURL {
             switch url.pathExtension.lowercased() {
             case "apk": confirmThenInstall(apk: url)
-            case KeymapFile.fileExtension: importKeymap(from: url) // a shared keymap, not a file for the phone
+            case KeymapFile.fileExtension: importKeymap(from: url)
             default: push(file: url)
             }
         }
     }
 
-    /// Edit → Send Clipboard Image to Phone: saves the Mac's copied picture as a PNG and sends it to the phone's Gallery.
     public func sendClipboardImage() {
         let pasteboard = NSPasteboard.general
         guard let image = NSImage(pasteboard: pasteboard), let tiff = image.tiffRepresentation,
@@ -78,7 +73,6 @@ extension AppModel {
         push(file: file)
     }
 
-    /// A dropped file is easy to release by accident, and an install changes the phone, so it is confirmed.
     private func confirmThenInstall(apk: URL) {
         if settings.confirmInstall {
             let answer = Confirmation.ask(title: String(localized: "Install \(apk.lastPathComponent) on the phone?"),
@@ -103,7 +97,6 @@ extension AppModel {
         }
     }
 
-    /// Updates in place first; only when adb says the file is an older version does it retry with the downgrade flag. Returns true if it did.
     nonisolated private static func installAllowingDowngrade(adb: ADB, serial: String, apk: URL) throws -> Bool {
         do {
             _ = try adb.run(["-s", serial, "install", "-r", apk.path], timeout: 180)
@@ -154,7 +147,6 @@ extension AppModel {
         }
     }
 
-    /// Reads the phone's apps for the picker: recent ones first, then everything with a launcher icon.
     public func loadInstalledApps() async {
         guard let adb, let serial = targetSerial else { return }
         isLoadingApps = true
@@ -166,7 +158,6 @@ extension AppModel {
         installedApps = apps
     }
 
-    /// Fills in the separate-display app with whatever is open on the phone right now.
     public func useFrontAppForSeparateDisplay() {
         guard let adb, let serial = targetSerial else { return }
         Task {

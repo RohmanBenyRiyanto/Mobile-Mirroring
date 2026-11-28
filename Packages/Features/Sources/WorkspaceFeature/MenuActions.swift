@@ -38,7 +38,6 @@ extension AppModel {
 
     public func toggleRail() { isRailCollapsed.toggle() }
 
-    /// Sets the Settings pane to open next, by the raw value of its tab.
     public func showSettingsPane(_ pane: String) { UserDefaults.standard.set(pane, forKey: "settingsTab") }
 
     // MARK: Device
@@ -50,7 +49,6 @@ extension AppModel {
 
     // MARK: Keymap
 
-    /// Opens the editor first if it is not already open.
     public func addKeymapElement(_ choice: KeymapEditorModel.Choice) {
         if editor == nil { startEditingKeymap() }
         editor?.addElement(choice)

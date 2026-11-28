@@ -2,8 +2,6 @@ import AppKit
 import SwiftUI
 import Theme
 
-/// Styles the hosting window: chrome-free and aspect-locked in stream mode for clean OBS window capture.
-/// Points at the window hosting a view, so actions on "the mirror window" never land on a helper window that happens to have focus.
 @MainActor
 public final class HostWindow {
     public weak var window: NSWindow?
@@ -15,12 +13,9 @@ public struct WindowStyler: NSViewRepresentable {
     public let alwaysOnTop: Bool
     public let videoSize: CGSize
     public let locksAspect: Bool
-    /// A phone is being mirrored (even when a side panel means the picture may not fill the window).
     public let isMirror: Bool
-    /// The picture is a virtual display that follows the window, so the window is never aspect-locked.
     public let isFlexible: Bool
     public var host: HostWindow?
-    /// Width taken by docked panels; if they squeeze the picture, the window grows to make room.
     public let panelWidth: CGFloat
 
     public init(isStreamMode: Bool, alwaysOnTop: Bool, videoSize: CGSize, locksAspect: Bool = false, isMirror: Bool = false, isFlexible: Bool = false, host: HostWindow? = nil, panelWidth: CGFloat = 0) {
@@ -38,7 +33,6 @@ public struct WindowStyler: NSViewRepresentable {
 
     public func makeCoordinator() -> Coordinator { Coordinator() }
 
-    /// Remembers the Connect window's size and the phone window's height between switches.
     @MainActor
     public final class Coordinator {
         var memory = WindowSizeMemory()
@@ -47,7 +41,6 @@ public struct WindowStyler: NSViewRepresentable {
 
     public func updateNSView(_ view: NSView, context: Context) {
         let coordinator = context.coordinator
-        // The window only exists once the view is attached, so apply on the next turn of the run loop.
         DispatchQueue.main.async {
             guard let window = view.window else { return }
             host?.window = window
@@ -58,7 +51,6 @@ public struct WindowStyler: NSViewRepresentable {
 
     @MainActor
     private func applyChrome(to window: NSWindow, coordinator: Coordinator) {
-        // Leaving Stream Mode puts the window back exactly where and how big it was, whatever the hidden title bar did to it.
         if isStreamMode, coordinator.frameBeforeStreamMode == nil { coordinator.frameBeforeStreamMode = window.frame }
         let restoredFrame = (!isStreamMode) ? coordinator.frameBeforeStreamMode : nil
         if !isStreamMode { coordinator.frameBeforeStreamMode = nil }
@@ -87,11 +79,10 @@ public struct WindowStyler: NSViewRepresentable {
         if locked {
             window.contentAspectRatio = videoSize
         } else {
-            window.resizeIncrements = NSSize(width: 1, height: 1) // also clears the aspect ratio
+            window.resizeIncrements = NSSize(width: 1, height: 1)
         }
         if let target { resize(window, toContent: target) }
         else if panelWidth > 0, isMirror, !isStreamMode, validVideo, !window.styleMask.contains(.fullScreen) {
-            // A panel opened without the window making room (or the window was shrunk by hand): give the picture back its width.
             let content = window.contentLayoutRect.size
             let wanted = content.height * videoSize.width / videoSize.height
             let shown = content.width - panelWidth
@@ -104,7 +95,6 @@ public struct WindowStyler: NSViewRepresentable {
         }
     }
 
-    /// Animates the resize from the top-left corner so the window does not jump.
     private func resize(_ window: NSWindow, toContent size: CGSize) {
         let outer = window.frameRect(forContentRect: NSRect(origin: .zero, size: size)).size
         let frame = WindowPlacement.resized(window.frame, to: outer, in: (window.screen ?? NSScreen.main)?.visibleFrame)
@@ -112,10 +102,8 @@ public struct WindowStyler: NSViewRepresentable {
     }
 }
 
-/// Decides the window size as it moves between the Connect screen and the phone window. Pure, so it is tested without a window.
 struct WindowSizeMemory: Equatable {
     static let defaultConnectSize = Theme.Size.connectWindow
-    /// Phone window height used until one is remembered.
     static let defaultPhoneHeight: CGFloat = 818
 
     private(set) var connectSize: CGSize?
@@ -124,8 +112,6 @@ struct WindowSizeMemory: Equatable {
     private var lastPanelWidth: CGFloat = 0
     private var hasSeenAWindow = false
 
-    /// The content size to give the window now, or nil to leave it.
-    /// How a window that is already phone-shaped follows the picture.
     enum PictureFit { case locked, free, orientation }
 
     mutating func update(isPhoneShaped: Bool, currentContentSize current: CGSize, availableHeight: CGFloat, availableWidth: CGFloat = .infinity, panelWidth: CGFloat = 0, pictureRatio: CGFloat?, fit: PictureFit = .locked) -> CGSize? {
@@ -137,19 +123,16 @@ struct WindowSizeMemory: Equatable {
                 connectSize = hasSeenAWindow ? current : (connectSize ?? Self.defaultConnectSize)
                 return phoneSize(height: phoneHeight ?? Self.defaultPhoneHeight, ratio: ratio, availableHeight: availableHeight, availableWidth: availableWidth)
             }
-            // Already a phone window: only follow a change of the picture's shape (the phone rotated).
             switch fit {
             case .locked:
                 guard abs(current.width / current.height - ratio) > 0.01 else { return nil }
             case .free:
-                // A side panel is open. Right when it opens, give the window the height its picture needs so no empty bands remain (a window
-                // that cannot grow wider keeps its width). After that the user's own resizing is left alone.
                 guard panelWidth > 0, panelWidth != lastPanelWidth, current.width > panelWidth else { return nil }
                 let height = ((current.width - panelWidth) / ratio).rounded()
                 guard abs(height - current.height) > 8 else { return nil }
                 return CGSize(width: current.width, height: max(240, min(height, availableHeight - 80)))
             case .orientation:
-                guard (current.width > current.height) != (ratio > 1) else { return nil } // only a rotation changes the window's shape
+                guard (current.width > current.height) != (ratio > 1) else { return nil }
             }
             return phoneSize(height: current.height, ratio: ratio, availableHeight: availableHeight, availableWidth: availableWidth)
         }
@@ -158,23 +141,19 @@ struct WindowSizeMemory: Equatable {
             phoneHeight = current.height
             return connectSize ?? Self.defaultConnectSize
         }
-        // Always start at the Connect size, ignoring any frame restored from the last launch.
         if !hasSeenAWindow, abs(current.width - Self.defaultConnectSize.width) > 1 || abs(current.height - Self.defaultConnectSize.height) > 1 {
             return Self.defaultConnectSize
         }
         return nil
     }
 
-    /// A wide picture (a rotated phone) must not be wider than the screen, or the window would be cut and the picture left with empty bands.
     private func phoneSize(height wanted: CGFloat, ratio: CGFloat, availableHeight: CGFloat, availableWidth: CGFloat = .infinity) -> CGSize {
         let height = max(240, min(wanted, availableHeight - 80, (availableWidth - 24) / ratio))
         return CGSize(width: (height * ratio).rounded(), height: height.rounded())
     }
 }
 
-/// Keeps a window fully on screen when it changes size. Pure, so the rules are tested without a window (AppKit coordinates: origin bottom-left).
 enum WindowPlacement {
-    /// Shrinks the frame to the visible area if it is larger, then slides it the least distance needed to lie inside it.
     static func fitted(_ frame: CGRect, in visible: CGRect) -> CGRect {
         var result = frame
         result.size.width = min(result.width, visible.width)
@@ -184,7 +163,6 @@ enum WindowPlacement {
         return result
     }
 
-    /// A frame of `size` whose top-left corner stays where the old frame's was, then fitted on screen.
     static func resized(_ old: CGRect, to size: CGSize, in visible: CGRect?) -> CGRect {
         let frame = CGRect(x: old.minX, y: old.maxY - size.height, width: size.width, height: size.height)
         return visible.map { fitted(frame, in: $0) } ?? frame
@@ -192,7 +170,6 @@ enum WindowPlacement {
 }
 
 public enum StreamWindow {
-    /// Sizes the key window so one video pixel is one screen pixel, shrunk to fit the screen if needed.
     @MainActor
     public static func resizeToActualPixels(videoSize: CGSize) {
         guard let window = NSApp.keyWindow, let screen = window.screen, videoSize.width > 0, videoSize.height > 0 else { return }
