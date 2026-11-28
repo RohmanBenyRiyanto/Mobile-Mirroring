@@ -92,3 +92,23 @@ struct StreamHint: View {
         .allowsHitTesting(false)
     }
 }
+
+
+/// "Playing · name  ⌘E to edit": shown over the picture while a keymap is on, so it is clear the keyboard drives the game.
+struct PlayingPill: View {
+    let name: String
+
+    var body: some View {
+        HStack(spacing: Theme.Space.s2) {
+            Image(systemName: "gamecontroller.fill").font(.system(size: 11))
+            Text("Playing").font(Theme.Font.caption)
+            if !name.isEmpty { Text(verbatim: "· " + name).font(Theme.Font.caption).lineLimit(1) }
+            Text("⌘E to edit").font(Theme.Font.caption).foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, Theme.Space.s3)
+        .frame(height: 24)
+        .overVideo(in: Capsule())
+        .padding(.top, Theme.Space.s3)
+        .accessibilityElement(children: .combine)
+    }
+}

@@ -82,7 +82,7 @@ public struct WindowStyler: NSViewRepresentable {
         let current = window.contentLayoutRect.size
         let available = window.screen?.visibleFrame.height ?? 900
         let availableWidth = window.screen?.visibleFrame.width ?? 1600
-        let target = coordinator.memory.update(isPhoneShaped: phoneShaped, currentContentSize: current, availableHeight: available, availableWidth: availableWidth,
+        let target = coordinator.memory.update(isPhoneShaped: phoneShaped, currentContentSize: current, availableHeight: available, availableWidth: availableWidth, panelWidth: panelWidth,
                                                pictureRatio: phoneShaped ? videoSize.width / videoSize.height : nil, fit: fit)
         if locked {
             window.contentAspectRatio = videoSize
@@ -121,14 +121,15 @@ struct WindowSizeMemory: Equatable {
     private(set) var connectSize: CGSize?
     private(set) var phoneHeight: CGFloat?
     private var wasPhoneShaped = false
+    private var lastPanelWidth: CGFloat = 0
     private var hasSeenAWindow = false
 
     /// The content size to give the window now, or nil to leave it.
     /// How a window that is already phone-shaped follows the picture.
     enum PictureFit { case locked, free, orientation }
 
-    mutating func update(isPhoneShaped: Bool, currentContentSize current: CGSize, availableHeight: CGFloat, availableWidth: CGFloat = .infinity, pictureRatio: CGFloat?, fit: PictureFit = .locked) -> CGSize? {
-        defer { wasPhoneShaped = isPhoneShaped; hasSeenAWindow = true }
+    mutating func update(isPhoneShaped: Bool, currentContentSize current: CGSize, availableHeight: CGFloat, availableWidth: CGFloat = .infinity, panelWidth: CGFloat = 0, pictureRatio: CGFloat?, fit: PictureFit = .locked) -> CGSize? {
+        defer { wasPhoneShaped = isPhoneShaped; hasSeenAWindow = true; lastPanelWidth = panelWidth }
         guard current.width > 0, current.height > 0 else { return nil }
 
         if isPhoneShaped, let ratio = pictureRatio, ratio > 0 {
@@ -141,7 +142,12 @@ struct WindowSizeMemory: Equatable {
             case .locked:
                 guard abs(current.width / current.height - ratio) > 0.01 else { return nil }
             case .free:
-                return nil // a side panel is open, so the picture does not fill the window and its shape means nothing here
+                // A side panel is open. Right when it opens, give the window the height its picture needs so no empty bands remain (a window
+                // that cannot grow wider keeps its width). After that the user's own resizing is left alone.
+                guard panelWidth > 0, panelWidth != lastPanelWidth, current.width > panelWidth else { return nil }
+                let height = ((current.width - panelWidth) / ratio).rounded()
+                guard abs(height - current.height) > 8 else { return nil }
+                return CGSize(width: current.width, height: max(240, min(height, availableHeight - 80)))
             case .orientation:
                 guard (current.width > current.height) != (ratio > 1) else { return nil } // only a rotation changes the window's shape
             }

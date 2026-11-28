@@ -135,6 +135,13 @@ private struct MirrorScreen: View {
                 }
                 .overlay { if inspector.isOn { InspectorOverlay(inspector: inspector, videoSize: model.videoSize, densityScale: model.deviceInfo?.densityScale) } }
                 .overlay { if let editor = model.editor { KeymapEditorOverlay(editor: editor, videoSize: model.videoSize) } }
+                .overlay(alignment: .top) {
+                    if let editor = model.editor {
+                        KeymapEditorToolbar(editor: editor, isRecordingMacro: model.isRecordingMacro, onMacro: { model.toggleMacroRecording() }, onDone: { model.closeEditor(save: true) })
+                    } else if let active = model.active, active.keymap.isEnabled, active.keymap.hasKeymap {
+                        PlayingPill(name: active.keymap.profile?.name ?? "").transition(.opacity)
+                    }
+                }
                 .overlay { if let summary = dropSummary { DropOverlay(summary: summary) } }
             if model.showsPerformance, let session = model.active {
                 PerformancePanel(monitor: session.performance).transition(.move(edge: .trailing).combined(with: .opacity))
@@ -147,6 +154,8 @@ private struct MirrorScreen: View {
             }
             if let editor = model.editor {
                 KeymapEditorPanel(editor: editor, foreground: model.foreground, message: model.editorMessage, apps: model.appPickerItems, isLoadingApps: model.isLoadingApps, loadApps: { await model.loadInstalledApps() },
+                                  profiles: model.keymapProfiles, onSwitch: { model.switchEditor(toProfile: $0) }, onCreate: { model.createEditorProfile(package: $0, name: $1) },
+                                  onImport: { model.importKeymap() }, onExport: { model.exportEditedKeymap() },
                                   onSave: { _ = model.saveEditor() }, onClose: { model.closeEditor(save: $0) })
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             }

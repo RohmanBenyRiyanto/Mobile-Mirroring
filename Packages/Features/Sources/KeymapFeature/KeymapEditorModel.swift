@@ -37,11 +37,35 @@ public final class KeymapEditorModel: ObservableObject {
     private var redoStack: [Keymap] = []
     private static let undoLimit = 100
 
+    /// What was last saved (or loaded), for Revert.
+    private var saved: (keymap: Keymap, name: String, package: String) = (Keymap(), "", "")
+
     public init(profile: Profile<Keymap>?) {
         keymap = profile?.payload ?? Keymap()
         name = profile?.name ?? "My keymap"
         package = profile?.payload.package ?? ""
         profileID = profile?.id
+        saved = (keymap, name, package)
+    }
+
+    /// An empty keymap for a game that has none yet.
+    public convenience init(newFor package: String, name: String) {
+        self.init(profile: nil)
+        self.package = package
+        self.name = name
+        saved = (keymap, name, package)
+        isDirty = true
+    }
+
+    /// Goes back to what was last saved. It is one undo step, so it can itself be undone.
+    public func revert() {
+        guard isDirty else { return }
+        checkpoint()
+        keymap = saved.keymap
+        name = saved.name
+        package = saved.package
+        selection = nil
+        isDirty = false
     }
 
     public var selectedElement: KeymapElement? { keymap.elements.first { $0.id == selection } }
@@ -244,6 +268,7 @@ public final class KeymapEditorModel: ObservableObject {
         profileID = id
         name = saved.name
         keymap = validated
+        self.saved = (validated, saved.name, validated.package ?? "")
         isDirty = false
         return saved
     }

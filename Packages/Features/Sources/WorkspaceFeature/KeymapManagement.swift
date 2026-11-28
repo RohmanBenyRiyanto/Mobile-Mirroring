@@ -229,6 +229,31 @@ extension AppModel {
         }
     }
 
+    /// Asks before changes are thrown away (unless that was switched off). True when it is fine to go on.
+    private func confirmLeavingEditedKeymap() -> Bool {
+        guard settings.confirmDiscardKeymap, editor?.isDirty == true else { return true }
+        let answer = Confirmation.ask(title: String(localized: "Discard your changes to this keymap?"),
+                                      message: String(localized: "What you changed since the last save is lost."), confirm: String(localized: "Discard"), destructive: true)
+        if answer.dontAskAgain { settings.confirmDiscardKeymap = false }
+        return answer.confirmed
+    }
+
+    /// Opens another saved keymap in the editor.
+    public func switchEditor(toProfile id: String) {
+        guard editor != nil, confirmLeavingEditedKeymap(), let profile = try? keymapStore?.load(id: id) else { return }
+        editorMessage = nil
+        editor = KeymapEditorModel(profile: profile)
+    }
+
+    /// Starts an empty keymap for a game that has none, in the editor.
+    public func createEditorProfile(package: String, name: String) {
+        guard editor != nil, confirmLeavingEditedKeymap() else { return }
+        editorMessage = nil
+        editor = KeymapEditorModel(newFor: package, name: name)
+    }
+
+    public func exportEditedKeymap() { if let id = editor?.profileID { exportKeymap(id: id) } }
+
     public func closeEditor(save: Bool) {
         if save, !saveEditor() { return } // stay open so the problem can be fixed
         if !save, settings.confirmDiscardKeymap, editor?.isDirty == true {

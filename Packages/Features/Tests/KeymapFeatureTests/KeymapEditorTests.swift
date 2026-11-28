@@ -266,3 +266,25 @@ final class KeymapMenuChoiceTests: XCTestCase {
         XCTAssertEqual(editor.keymap.elements.count, 3)
     }
 }
+
+@MainActor
+final class KeymapEditorRevertTests: XCTestCase {
+    func testRevertGoesBackToWhatWasSavedAndCanBeUndone() {
+        let editor = KeymapEditorModel(newFor: "com.example.game", name: "Game")
+        editor.revert() // a new keymap counts as unsaved; nothing was added yet, so it comes back empty
+        XCTAssertTrue(editor.keymap.elements.isEmpty)
+        editor.addElement(.tap)
+        XCTAssertEqual(editor.keymap.elements.count, 1)
+        editor.revert()
+        XCTAssertTrue(editor.keymap.elements.isEmpty)
+        editor.undo()
+        XCTAssertEqual(editor.keymap.elements.count, 1, "Revert is one undo step")
+    }
+
+    func testNewKeymapForAGameStartsWithItsPackageAndName() {
+        let editor = KeymapEditorModel(newFor: "com.mobilechess.gp", name: "Magic Chess")
+        XCTAssertEqual(editor.package, "com.mobilechess.gp")
+        XCTAssertEqual(editor.name, "Magic Chess")
+        XCTAssertNil(editor.profileID)
+    }
+}

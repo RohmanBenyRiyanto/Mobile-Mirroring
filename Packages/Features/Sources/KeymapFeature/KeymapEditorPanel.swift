@@ -1,4 +1,5 @@
 import Components
+import Persistence
 import SwiftUI
 import DomainModels
 import SystemServices
@@ -12,10 +13,22 @@ public struct KeymapEditorPanel: View {
     public let apps: [PickerItem]
     public let isLoadingApps: Bool
     public let loadApps: () async -> Void
+    public let profiles: [ProfileSummary]
+    public let onSwitch: (String) -> Void
+    public let onCreate: (_ package: String, _ name: String) -> Void
+    public let onImport: () -> Void
+    public let onExport: () -> Void
     public let onSave: () -> Void
     public let onClose: (_ save: Bool) -> Void
 
-    public init(editor: KeymapEditorModel, foreground: ForegroundAppDetector, message: String?, apps: [PickerItem] = [], isLoadingApps: Bool = false, loadApps: @escaping () async -> Void = {}, onSave: @escaping () -> Void, onClose: @escaping (_ save: Bool) -> Void) {
+    public init(editor: KeymapEditorModel, foreground: ForegroundAppDetector, message: String?, apps: [PickerItem] = [], isLoadingApps: Bool = false, loadApps: @escaping () async -> Void = {},
+                profiles: [ProfileSummary] = [], onSwitch: @escaping (String) -> Void = { _ in }, onCreate: @escaping (String, String) -> Void = { _, _ in },
+                onImport: @escaping () -> Void = {}, onExport: @escaping () -> Void = {}, onSave: @escaping () -> Void, onClose: @escaping (_ save: Bool) -> Void) {
+        self.profiles = profiles
+        self.onSwitch = onSwitch
+        self.onCreate = onCreate
+        self.onImport = onImport
+        self.onExport = onExport
         self.editor = editor
         self.foreground = foreground
         self.message = message
@@ -30,15 +43,25 @@ public struct KeymapEditorPanel: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: Theme.Space.s4) {
-                    Text("Keymap editor").font(Theme.Font.headline)
-                    details
+                    profilesHeader
+                    currentGameCard
+                    profileList
+                    Divider()
+                    if let element = editor.selectedElement {
+                        HStack {
+                            Text("Selected: \(editor.title(of: element))").font(Theme.Font.emphasized).lineLimit(1)
+                            Spacer()
+                            Button { editor.delete(element.id) } label: { Image(systemName: "trash") }
+                                .buttonStyle(.plain).help("Delete").accessibilityLabel("Delete")
+                        }
+                        ElementInspector(editor: editor, element: element)
+                        Divider()
+                    }
+                    Text("Controls").font(Theme.Font.emphasized)
                     toolbar
                     elementList
+                    DisclosureGroup(isExpanded: $showsDetails) { details.padding(.top, Theme.Space.s1) } label: { Text("Keymap details").font(Theme.Font.emphasized) }
                     controllerSection
-                    if let element = editor.selectedElement {
-                        Divider()
-                        ElementInspector(editor: editor, element: element)
-                    }
                 }
                 .padding(Theme.Space.s4)
             }
@@ -50,6 +73,66 @@ public struct KeymapEditorPanel: View {
     }
 
     // MARK: Parts
+
+    @State private var showsDetails = false
+
+    private var profilesHeader: some View {
+        HStack(spacing: Theme.Space.s2) {
+            Text("Profiles").font(Theme.Font.headline)
+            Spacer()
+            Button("Import", action: onImport).buttonStyle(.plain).foregroundStyle(Theme.Palette.accentText.color)
+            Button("Export", action: onExport).buttonStyle(.plain).foregroundStyle(Theme.Palette.accentText.color)
+                .disabled(editor.profileID == nil)
+        }
+    }
+
+    /// The game in front on the phone, found automatically, with a way to make a keymap for it.
+    @ViewBuilder
+    private var currentGameCard: some View {
+        if let app = foreground.current {
+            let hasProfile = profiles.contains { $0.id == app.package }
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+                    Text("Current game").font(Theme.Font.caption).padding(.horizontal, 6).padding(.vertical, 2)
+                        .background(Theme.Palette.control.color, in: Capsule())
+                    Spacer()
+                    Text("auto-detected").font(Theme.Font.caption).foregroundStyle(.secondary)
+                }
+                Text(InstalledApps.displayName(for: app.package)).font(Theme.Font.emphasized).lineLimit(1)
+                Text(app.package).font(Theme.Font.monoCaption).foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle)
+                if !hasProfile && editor.package != app.package {
+                    Button("Create Profile") { onCreate(app.package, InstalledApps.displayName(for: app.package)) }.secondaryAction()
+                }
+            }
+            .padding(Theme.Space.s3)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Theme.Palette.control.color.opacity(0.6), in: RoundedRectangle(cornerRadius: Theme.Radius.field))
+        }
+    }
+
+    private var profileList: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            ForEach(profiles) { profile in
+                let isCurrent = profile.id == editor.profileID
+                Button { if !isCurrent { onSwitch(profile.id) } } label: {
+                    HStack {
+                        Image(systemName: "gamecontroller").foregroundStyle(isCurrent ? Color.white : Color.secondary)
+                        Text(profile.name).lineLimit(1)
+                        Spacer()
+                        if isCurrent { Image(systemName: "checkmark") }
+                    }
+                    .foregroundStyle(isCurrent ? Color.white : Color.primary)
+                    .padding(.horizontal, 8).padding(.vertical, 6)
+                    .background(isCurrent ? Theme.Palette.accentText.color : Color.clear, in: RoundedRectangle(cornerRadius: Theme.Radius.field))
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+            if editor.profileID == nil {
+                Text("\(editor.name) · not saved yet").font(Theme.Font.caption).foregroundStyle(.secondary).padding(.horizontal, 8)
+            }
+        }
+    }
 
     private var details: some View {
         VStack(alignment: .leading, spacing: 6) {
