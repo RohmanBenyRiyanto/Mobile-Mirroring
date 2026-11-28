@@ -1,4 +1,6 @@
 import AppKit
+import Components
+import DomainModels
 import SwiftUI
 import Theme
 import UniformTypeIdentifiers
@@ -12,9 +14,12 @@ public struct DatabaseView<Source: DatabaseSource>: View {
     public var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: Theme.Space.s2) {
-                TextField("", text: $model.package, prompt: Text("App package, for example com.example.app"))
-                    .textFieldStyle(.roundedBorder).font(Theme.Font.mono)
-                    .onSubmit(open)
+                SearchPicker(selection: Binding(get: { model.package.isEmpty ? nil : model.package }, set: { model.package = $0 ?? ""; open() }),
+                             items: source.appPickerItems, isLoading: source.isLoadingApps, placeholder: "Choose an app",
+                             selectionTitle: { InstalledApps.displayName(for: $0) },
+                             footer: source.frontPackage.map { front in (title: LocalizedStringKey("Use app in front"), action: { model.package = front; open() }) },
+                             onOpen: { await source.loadInstalledApps() })
+                Spacer()
                 Button("Open", action: open).disabled(model.package.isEmpty || model.isBusy)
             }
             .padding(Theme.Space.s3)

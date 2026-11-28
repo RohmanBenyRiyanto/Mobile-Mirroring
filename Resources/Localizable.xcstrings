@@ -1055,6 +1055,23 @@
         }
       }
     },
+    "Choose a game" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a game"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih game"
+          }
+        }
+      }
+    },
     "Choose a keymap first (Keymap menu → Profile)" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2547,6 +2564,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Overdraw GPU"
+          }
+        }
+      }
+    },
+    "Game" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game"
           }
         }
       }
@@ -4111,6 +4145,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Belum ada keymap"
+          }
+        }
+      }
+    },
+    "No matches" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No matches"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada yang cocok"
           }
         }
       }
@@ -5828,6 +5879,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tangkapan Layar"
+          }
+        }
+      }
+    },
+    "Search" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cari"
           }
         }
       }

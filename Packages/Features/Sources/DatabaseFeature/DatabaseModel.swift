@@ -1,3 +1,4 @@
+import Components
 import DomainModels
 import Foundation
 import Networking
@@ -8,6 +9,9 @@ public protocol DatabaseSource: ObservableObject {
     var adb: ADB? { get }
     var targetSerial: String? { get }
     var frontPackage: String? { get }
+    var appPickerItems: [PickerItem] { get }
+    var isLoadingApps: Bool { get }
+    func loadInstalledApps() async
 }
 
 @MainActor

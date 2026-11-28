@@ -24,6 +24,7 @@ let package = Package(
         .target(name: "KeymapFeature", dependencies: [
             .product(name: "DomainModels", package: "Core"), .product(name: "Persistence", package: "Core"),
             .product(name: "SystemServices", package: "Core"), .product(name: "Theme", package: "DesignSystem"),
+            .product(name: "Components", package: "DesignSystem"),
         ]),
         // adb logcat for the app in front, with crash blocks.
         .target(name: "LogcatFeature", dependencies: [
@@ -33,7 +34,7 @@ let package = Package(
         // Read-only browser for a debug app's SQLite databases.
         .target(name: "DatabaseFeature", dependencies: [
             .product(name: "DomainModels", package: "Core"), .product(name: "Networking", package: "Core"),
-            .product(name: "Theme", package: "DesignSystem"),
+            .product(name: "Theme", package: "DesignSystem"), .product(name: "Components", package: "DesignSystem"),
         ]),
         // UI inspector, grid, crosshair and colour picker.
         .target(name: "InspectorFeature", dependencies: [

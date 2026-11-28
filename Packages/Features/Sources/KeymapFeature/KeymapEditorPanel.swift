@@ -1,3 +1,4 @@
+import Components
 import SwiftUI
 import DomainModels
 import SystemServices
@@ -7,13 +8,19 @@ public struct KeymapEditorPanel: View {
     @ObservedObject public var editor: KeymapEditorModel
     @ObservedObject public var foreground: ForegroundAppDetector
     public let message: String?
+    public let apps: [PickerItem]
+    public let isLoadingApps: Bool
+    public let loadApps: () async -> Void
     public let onSave: () -> Void
     public let onClose: (_ save: Bool) -> Void
 
-    public init(editor: KeymapEditorModel, foreground: ForegroundAppDetector, message: String?, onSave: @escaping () -> Void, onClose: @escaping (_ save: Bool) -> Void) {
+    public init(editor: KeymapEditorModel, foreground: ForegroundAppDetector, message: String?, apps: [PickerItem] = [], isLoadingApps: Bool = false, loadApps: @escaping () async -> Void = {}, onSave: @escaping () -> Void, onClose: @escaping (_ save: Bool) -> Void) {
         self.editor = editor
         self.foreground = foreground
         self.message = message
+        self.apps = apps
+        self.isLoadingApps = isLoadingApps
+        self.loadApps = loadApps
         self.onSave = onSave
         self.onClose = onClose
     }
@@ -45,11 +52,12 @@ public struct KeymapEditorPanel: View {
     private var details: some View {
         VStack(alignment: .leading, spacing: 6) {
             TextField("Name", text: $editor.name).textFieldStyle(.roundedBorder)
-            HStack {
-                TextField("Game package", text: $editor.package).textFieldStyle(.roundedBorder)
-                Button("Use app in front") { if let app = foreground.current { editor.package = app.package } }
-                    .disabled(foreground.current == nil)
-                    .help(foreground.current.map { "Use \($0.package)" } ?? "Open the game on the phone first")
+            LabeledContent("Game") {
+                SearchPicker(selection: Binding(get: { editor.package.isEmpty ? nil : editor.package }, set: { editor.package = $0 ?? "" }),
+                             items: apps, isLoading: isLoadingApps, placeholder: "Choose a game",
+                             selectionTitle: { InstalledApps.displayName(for: $0) },
+                             footer: foreground.current.map { app in (title: LocalizedStringKey("Use app in front"), action: { editor.package = app.package }) },
+                             onOpen: loadApps)
             }
             Text("With a package, this keymap can switch on by itself when that game opens.")
                 .font(Theme.Font.caption).foregroundStyle(.secondary)

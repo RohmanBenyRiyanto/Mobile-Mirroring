@@ -120,7 +120,7 @@ private struct MirrorScreen: View {
                 QuickTogglesPanel(tools: session.developerTools, traffic: session.traffic).transition(.move(edge: .trailing).combined(with: .opacity))
             }
             if let editor = model.editor {
-                KeymapEditorPanel(editor: editor, foreground: model.foreground, message: model.editorMessage,
+                KeymapEditorPanel(editor: editor, foreground: model.foreground, message: model.editorMessage, apps: model.appPickerItems, isLoadingApps: model.isLoadingApps, loadApps: { await model.loadInstalledApps() },
                                   onSave: { _ = model.saveEditor() }, onClose: { model.closeEditor(save: $0) })
             }
         }
