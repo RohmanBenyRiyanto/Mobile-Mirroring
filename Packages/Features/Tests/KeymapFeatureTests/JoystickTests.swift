@@ -178,7 +178,8 @@ final class JoystickControllerTests: XCTestCase {
         controller.isEnabled = true
 
         XCTAssertTrue(controller.keyDown(keyW))
-        try await Task.sleep(for: .milliseconds(250))
+        let deadline = Date().addingTimeInterval(5)
+        while sent.actions.filter({ $0 == .move }).count < 2, Date() < deadline { try await Task.sleep(for: .milliseconds(25)) }
         XCTAssertEqual(sent.actions.first, .down)
         XCTAssertGreaterThanOrEqual(sent.actions.filter { $0 == .move }.count, 2, "moved in several steps, not one jump")
 

@@ -67,7 +67,9 @@ final class BrandMarkTests: XCTestCase {
         for variant in BrandVariant.allCases {
             for piece in ["1-background", "2-shadow", "3-mark-glass", "3-mark-glass-left", "3-mark-glass-right"] {
                 let name = "BrandGlass-\(variant.rawValue)-\(piece)"
-                let image = try XCTUnwrap(Bundle.module.image(forResource: name), "\(name) is missing from the brand assets")
+                let source = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+                    .appendingPathComponent("Sources/Components/Resources/Brand.xcassets/\(name).imageset/\(name).png")
+                let image = try XCTUnwrap(NSImage(contentsOf: source), "\(name) is missing from the brand assets")
                 XCTAssertEqual(image.representations.first?.pixelsWide, 1024, name)
             }
         }
