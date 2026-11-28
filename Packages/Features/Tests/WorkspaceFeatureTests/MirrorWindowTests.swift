@@ -199,3 +199,25 @@ final class RailShortcutHintTests: XCTestCase {
         XCTAssertEqual(RailItemID.streamMode.shortcutHint, "⇧⌘B")
     }
 }
+
+final class WindowFitTests: XCTestCase {
+    private func phoneWindow() -> WindowSizeMemory {
+        var memory = WindowSizeMemory()
+        _ = memory.update(isPhoneShaped: false, currentContentSize: WindowSizeMemory.defaultConnectSize, availableHeight: 1000, pictureRatio: nil)
+        _ = memory.update(isPhoneShaped: true, currentContentSize: WindowSizeMemory.defaultConnectSize, availableHeight: 1000, pictureRatio: 0.5)
+        return memory
+    }
+
+    func testOpeningASidePanelDoesNotSendTheWindowBackToTheConnectSize() {
+        var memory = phoneWindow()
+        XCTAssertNil(memory.update(isPhoneShaped: true, currentContentSize: CGSize(width: 700, height: 818), availableHeight: 1000, pictureRatio: 0.5, fit: .free))
+    }
+
+    func testAFlexibleDisplayOnlyFollowsARotation() {
+        var memory = phoneWindow()
+        XCTAssertNil(memory.update(isPhoneShaped: true, currentContentSize: CGSize(width: 500, height: 800), availableHeight: 1000, pictureRatio: 0.7, fit: .orientation))
+        let rotated = memory.update(isPhoneShaped: true, currentContentSize: CGSize(width: 500, height: 800), availableHeight: 1000, pictureRatio: 16.0 / 9, fit: .orientation)
+        XCTAssertNotNil(rotated)
+        XCTAssertGreaterThan(rotated?.width ?? 0, rotated?.height ?? 1)
+    }
+}

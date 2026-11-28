@@ -30,6 +30,28 @@ final class DeviceIntegrationTests: XCTestCase {
         var snapshot: (events: [String], size: CGSize?) { lock.withLock { (events, size) } }
     }
 
+    func testVirtualDisplayStartsAndFollowsAResize() async throws {
+        guard let serial = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_SERIAL"] else { throw XCTSkip("Set BENZMIRROR_TEST_SERIAL to run against a real phone") }
+        var settings = MirrorSettings()
+        settings.virtualDisplay = VirtualDisplaySettings(isEnabled: true, startApp: ProcessInfo.processInfo.environment["BENZMIRROR_TEST_VD_APP"] ?? "com.android.settings")
+        let session = ScrcpySession(adb: try XCTUnwrap(ADB.locate()), serial: serial, settings: settings)
+        let log = EventLog()
+        session.onEvent = { log.record($0) }
+        try await Task.detached { try session.start() }.value
+        defer { session.stop() }
+        try await Task.sleep(for: .seconds(3))
+        let first = log.snapshot.size
+        let placement = (try? String(decoding: ADB.locate()!.run(["-s", serial, "shell", "dumpsys activity activities | grep -E 'Display #|topResumedActivity' | head -8"], timeout: 10), as: UTF8.self)) ?? ""
+        print("DEVICE>> placement=\(placement)")
+        session.send(.resizeDisplay(width: 1280, height: 720))
+        try await Task.sleep(for: .seconds(3))
+        let second = log.snapshot
+        print("DEVICE>> vd first=\(String(describing: first)) after resize=\(String(describing: second.size)) events=\(second.events) fps=\(session.statistics.snapshot().framesPerSecond)")
+        XCTAssertEqual(first, CGSize(width: 1080, height: 1920))
+        XCTAssertEqual(second.size, CGSize(width: 1280, height: 720))
+        XCTAssertFalse(second.events.contains { $0.hasPrefix("ended:") }, "\(second.events)")
+    }
+
     func testPhoneMicrophoneSourceStartsWithoutAudioErrors() async throws {
         guard let serial = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_SERIAL"] else { throw XCTSkip("Set BENZMIRROR_TEST_SERIAL to run against a real phone") }
         var settings = MirrorSettings()

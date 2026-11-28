@@ -120,6 +120,19 @@ extension AppModel {
         }
     }
 
+    /// Fills in the separate-display app with whatever is open on the phone right now.
+    public func useFrontAppForSeparateDisplay() {
+        guard let adb, let serial = targetSerial else { return }
+        Task {
+            let output = await Task.detached { try? adb.run(["-s", serial, "shell", ForegroundAppParser.command], timeout: 5) }.value
+            guard let output, let app = ForegroundAppParser.parse(String(decoding: output, as: UTF8.self)) else {
+                notice = String(localized: "Open the app on the phone first")
+                return
+            }
+            settings.virtualDisplay.startApp = app.package
+        }
+    }
+
     // MARK: Wireless
 
     public func switchToWireless() {

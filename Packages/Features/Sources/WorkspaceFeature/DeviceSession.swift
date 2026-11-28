@@ -17,6 +17,7 @@ public final class DeviceSession: ObservableObject {
 
     public let serial: String
     public let settings: MirrorSettings
+    public var usesVirtualDisplay: Bool { settings.virtualDisplay.isEnabled }
 
     @Published public private(set) var state = State.connecting
     @Published public private(set) var deviceName = ""

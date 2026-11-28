@@ -37,7 +37,8 @@ public struct ContentView: View {
         .frame(minWidth: isMirrorWindow ? 200 : Theme.Size.connectMinimum.width,
                minHeight: isMirrorWindow ? 360 : Theme.Size.connectMinimum.height)
         .background(WindowStyler(isStreamMode: model.isStreamMode, alwaysOnTop: model.alwaysOnTop, videoSize: model.videoSize,
-                                 locksAspect: isMirrorWindow && model.editor == nil && !model.showsPerformance && !model.showsQuickToggles && !model.showsInspectorPanel))
+                                 locksAspect: isMirrorWindow && model.editor == nil && !model.showsPerformance && !model.showsQuickToggles && !model.showsInspectorPanel,
+                                 isMirror: isMirrorWindow, isFlexible: model.active?.usesVirtualDisplay == true))
         .overlay(alignment: .bottom) { NoticeToast().animated(value: model.notice) }
         .animated(value: isMirrorWindow)
         .animated(value: model.showsPerformance)
@@ -88,7 +89,8 @@ private struct MirrorScreen: View {
 
     private var content: some View {
         HStack(spacing: 0) {
-            MirrorView(session: session, keymap: keymap, inspector: inspector, design: design, videoSize: model.videoSize,
+            MirrorView(session: session, keymap: keymap, inspector: inspector, design: design, videoSize: model.videoSize, flexibleDisplay: model.active?.usesVirtualDisplay == true,
+                       maxDisplayEdge: model.active?.settings.quality.maxSize ?? 1920,
                        onDrag: { dropSummary = $0 }, onDrop: { model.handleDrop($0) }, onEscape: { model.handleEscape() },
                        isStreamMode: { model.isStreamMode }, onExitStreamMode: { model.isStreamMode = false })
                 .aspectRatio(model.videoSize, contentMode: .fit)

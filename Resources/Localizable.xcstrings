@@ -596,6 +596,23 @@
         }
       }
     },
+    "App" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikasi"
+          }
+        }
+      }
+    },
     "App CPU" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3741,6 +3758,23 @@
         }
       }
     },
+    "Mirror one app on a display sized to the window" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mirror one app on a display sized to the window"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerminkan satu aplikasi di layar seukuran jendela"
+          }
+        }
+      }
+    },
     "Mirror when a phone connects" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4502,6 +4536,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buka saat login"
+          }
+        }
+      }
+    },
+    "Open the app on the phone first" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the app on the phone first"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka aplikasinya di ponsel dulu"
           }
         }
       }
@@ -5798,6 +5849,23 @@
         }
       }
     },
+    "Separate display" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Separate display"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Layar terpisah"
+          }
+        }
+      }
+    },
     "Serial" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6869,6 +6937,23 @@
         }
       }
     },
+    "The app opens on its own display that follows the window size, so there are no black bars. The phone's own screen is not mirrored while this is on. When you disconnect, the app returns to the phone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app opens on its own display that follows the window size, so there are no black bars. The phone's own screen is not mirrored while this is on. When you disconnect, the app returns to the phone."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikasi dibuka di layarnya sendiri yang mengikuti ukuran jendela, jadi tanpa bar hitam. Layar ponsel sendiri tidak dicerminkan selama ini aktif. Saat Anda memutus koneksi, aplikasi kembali ke ponsel."
+          }
+        }
+      }
+    },
     "The clipboard has no text to import" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7749,6 +7834,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pakai Wi-Fi…"
+          }
+        }
+      }
+    },
+    "Use a separate display" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use a separate display"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pakai layar terpisah"
+          }
+        }
+      }
+    },
+    "Use app in front" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use app in front"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pakai aplikasi di depan"
           }
         }
       }

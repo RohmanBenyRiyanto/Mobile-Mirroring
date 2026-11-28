@@ -67,6 +67,10 @@ public enum ControlMessage: Equatable {
     case setDisplayPower(Bool)
     case rotateDevice
     case resetVideo
+    /// Asks a flexible virtual display to take a new size (pixels).
+    case resizeDisplay(width: UInt16, height: UInt16)
+    /// Opens an app (a package name, at most 255 bytes) on the display being mirrored.
+    case startApp(String)
 
     public static let maxTextBytes = 300
     public static let maxClipboardBytes = (1 << 18) - 14
@@ -76,6 +80,8 @@ public enum ControlMessage: Equatable {
         case expandNotificationPanel, expandSettingsPanel, collapsePanels
         case getClipboard, setClipboard, setDisplayPower, rotateDevice
         case resetVideo = 17
+        case startApp = 16
+        case resizeDisplay = 21
     }
 
     public var serialized: Data {
@@ -120,6 +126,15 @@ public enum ControlMessage: Equatable {
         case .collapsePanels: data.append(TypeID.collapsePanels.rawValue)
         case .rotateDevice: data.append(TypeID.rotateDevice.rawValue)
         case .resetVideo: data.append(TypeID.resetVideo.rawValue)
+        case let .startApp(package):
+            data.append(TypeID.startApp.rawValue)
+            let bytes = package.utf8Prefix(maxBytes: 255)
+            data.append(UInt8(bytes.count))
+            data.append(bytes)
+        case let .resizeDisplay(width, height):
+            data.append(TypeID.resizeDisplay.rawValue)
+            data.appendBigEndian(width)
+            data.appendBigEndian(height)
 
         case let .getClipboard(copyKey):
             data.append(TypeID.getClipboard.rawValue)

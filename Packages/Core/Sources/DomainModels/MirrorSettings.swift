@@ -98,6 +98,18 @@ public enum AudioSource: String, Codable, CaseIterable, Sendable {
     case mic
 }
 
+/// Mirrors a separate display instead of the phone's own screen, sized to the Mac window so there are no black bars.
+public struct VirtualDisplaySettings: Equatable, Codable, Sendable {
+    public var isEnabled = false
+    /// The app opened on that display (a package name). Without one the display stays empty.
+    public var startApp: String?
+
+    public init(isEnabled: Bool = false, startApp: String? = nil) {
+        self.isEnabled = isEnabled
+        self.startApp = startApp
+    }
+}
+
 public struct MirrorSettings: Equatable, Codable {
     public static let streamPortRange = 1024...65535
 
@@ -105,6 +117,7 @@ public struct MirrorSettings: Equatable, Codable {
     /// Android 11+; older devices simply stream without sound.
     public var audioEnabled = true
     public var audioSource = AudioSource.output
+    public var virtualDisplay = VirtualDisplaySettings()
     public var showTouches = false
     public var stayAwake = false
     public var turnScreenOffOnStart = false
@@ -129,6 +142,7 @@ public struct MirrorSettings: Equatable, Codable {
         let defaults = MirrorSettings()
         quality = try values.decodeIfPresent(VideoQuality.self, forKey: .quality) ?? defaults.quality
         audioEnabled = try values.decodeIfPresent(Bool.self, forKey: .audioEnabled) ?? defaults.audioEnabled
+        virtualDisplay = (try? values.decodeIfPresent(VirtualDisplaySettings.self, forKey: .virtualDisplay)).flatMap { $0 } ?? defaults.virtualDisplay
         audioSource = (try? values.decodeIfPresent(AudioSource.self, forKey: .audioSource)).flatMap { $0 } ?? defaults.audioSource
         showTouches = try values.decodeIfPresent(Bool.self, forKey: .showTouches) ?? defaults.showTouches
         stayAwake = try values.decodeIfPresent(Bool.self, forKey: .stayAwake) ?? defaults.stayAwake
@@ -150,7 +164,7 @@ public struct MirrorSettings: Equatable, Codable {
         var codecOptions = ["i-frame-interval:int=\(Self.clamp(quality.keyFrameIntervalSeconds, VideoQuality.keyFrameIntervalRange))"]
         if quality.constantBitRate { codecOptions.append("bitrate-mode:int=2") } // MediaCodecInfo BITRATE_MODE_CBR
 
-        return [
+        var arguments = [
             "scid=" + String(format: "%08x", scid),
             "log_level=warn",
             "audio=\(audioEnabled)",
@@ -166,6 +180,26 @@ public struct MirrorSettings: Equatable, Codable {
             "show_touches=\(showTouches)",
             "stay_awake=\(stayAwake)",
         ]
+        if virtualDisplay.isEnabled { arguments += virtualDisplayArguments() }
+        return arguments
+    }
+
+    /// The app to open once the display exists (a control message, not a server option), if it is a valid package name.
+    public var virtualDisplayApp: String? {
+        guard virtualDisplay.isEnabled, let app = virtualDisplay.startApp, ForegroundApp.isValidPackage(app) else { return nil }
+        return app
+    }
+
+    /// Flexible virtual display: starts phone-shaped and follows the window. Apps are moved back to the phone when it closes.
+    private func virtualDisplayArguments() -> [String] {
+        let size = VirtualDisplayMath.initialSize
+        var arguments = [
+            "new_display=\(size.width)x\(size.height)/\(VirtualDisplayMath.density(shortEdge: min(size.width, size.height)))",
+            "flex_display=true",
+            "vd_system_decorations=false",
+            "vd_destroy_content=false",
+        ]
+        return arguments
     }
 
     public static func clamp(_ value: Int, _ range: ClosedRange<Int>) -> Int {

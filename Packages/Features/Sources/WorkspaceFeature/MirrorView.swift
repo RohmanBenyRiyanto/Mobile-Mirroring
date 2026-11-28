@@ -12,6 +12,9 @@ public struct MirrorView: NSViewRepresentable {
     public let inspector: InspectorModel
     public let design: DesignModel
     public let videoSize: CGSize
+    /// The picture is a virtual display: tell the phone the window's size whenever it changes.
+    public let flexibleDisplay: Bool
+    public var maxDisplayEdge = 1920
     public var onDrag: (DropSummary?) -> Void = { _ in }
     public var onDrop: ([URL]) -> Void = { _ in }
     /// Return true when the app used Esc; otherwise it is sent to the phone.
@@ -19,7 +22,7 @@ public struct MirrorView: NSViewRepresentable {
     public var isStreamMode: () -> Bool = { false }
     public var onExitStreamMode: () -> Void = {}
 
-    public init(session: ScrcpySession, keymap: KeymapController, inspector: InspectorModel, design: DesignModel, videoSize: CGSize,
+    public init(session: ScrcpySession, keymap: KeymapController, inspector: InspectorModel, design: DesignModel, videoSize: CGSize, flexibleDisplay: Bool = false, maxDisplayEdge: Int = 1920,
                 onDrag: @escaping (DropSummary?) -> Void = { _ in }, onDrop: @escaping ([URL]) -> Void = { _ in },
                 onEscape: @escaping () -> Bool = { false}, isStreamMode: @escaping () -> Bool = { false },
                 onExitStreamMode: @escaping () -> Void = {}) {
@@ -28,6 +31,8 @@ public struct MirrorView: NSViewRepresentable {
         self.inspector = inspector
         self.design = design
         self.videoSize = videoSize
+        self.flexibleDisplay = flexibleDisplay
+        self.maxDisplayEdge = maxDisplayEdge
         self.onDrag = onDrag
         self.onDrop = onDrop
         self.onEscape = onEscape
@@ -41,6 +46,8 @@ public struct MirrorView: NSViewRepresentable {
 
     public func updateNSView(_ view: MirrorNSView, context: Context) {
         view.videoSize = videoSize
+        view.flexibleDisplay = flexibleDisplay
+        view.maxDisplayEdge = maxDisplayEdge
         view.onDrag = onDrag
         view.onDrop = onDrop
         view.onEscape = onEscape
@@ -64,6 +71,10 @@ public final class MirrorNSView: NSView {
     private var focusObserver: NSObjectProtocol?
     private var isMirroredPinch = false
     private var trackpadPinch: PinchGesture?
+    var flexibleDisplay = false
+    var maxDisplayEdge = 1920
+    private var lastDisplaySize: (width: UInt16, height: UInt16)? = (UInt16(VirtualDisplayMath.initialSize.width), UInt16(VirtualDisplayMath.initialSize.height))
+    private var resizeTimer: Timer?
     private var stroke = ScrollStroke()
     private var heldArrow: HeldArrow?
     private var arrowTimer: Timer?
@@ -89,6 +100,21 @@ public final class MirrorNSView: NSView {
 
     @available(*, unavailable)
     public required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    public override func layout() {
+        super.layout()
+        guard flexibleDisplay else { return }
+        // A window drag fires many layouts; the phone only hears about the size once the drag settles.
+        resizeTimer?.invalidate()
+        resizeTimer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false) { [weak self] _ in MainActor.assumeIsolated { self?.sendDisplaySize() } }
+    }
+
+    private func sendDisplaySize() {
+        guard let size = VirtualDisplayMath.size(forViewPoints: bounds.size, backingScale: window?.backingScaleFactor ?? 2, maxLongEdge: maxDisplayEdge),
+              VirtualDisplayMath.isWorthSending(old: lastDisplaySize, new: size) else { return }
+        lastDisplaySize = size
+        session.send(.resizeDisplay(width: size.width, height: size.height))
+    }
 
     private var isInspecting: Bool { inspector.isOn || design.capturesPointer }
 

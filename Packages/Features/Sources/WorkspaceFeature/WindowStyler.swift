@@ -8,8 +8,14 @@ public struct WindowStyler: NSViewRepresentable {
     public let alwaysOnTop: Bool
     public let videoSize: CGSize
     public let locksAspect: Bool
+    /// A phone is being mirrored (even when a side panel means the picture may not fill the window).
+    public let isMirror: Bool
+    /// The picture is a virtual display that follows the window, so the window is never aspect-locked.
+    public let isFlexible: Bool
 
-    public init(isStreamMode: Bool, alwaysOnTop: Bool, videoSize: CGSize, locksAspect: Bool = false) {
+    public init(isStreamMode: Bool, alwaysOnTop: Bool, videoSize: CGSize, locksAspect: Bool = false, isMirror: Bool = false, isFlexible: Bool = false) {
+        self.isMirror = isMirror
+        self.isFlexible = isFlexible
         self.isStreamMode = isStreamMode
         self.alwaysOnTop = alwaysOnTop
         self.videoSize = videoSize
@@ -47,11 +53,14 @@ public struct WindowStyler: NSViewRepresentable {
 
         if isStreamMode { window.styleMask.insert(.fullSizeContentView) } else { window.styleMask.remove(.fullSizeContentView) }
 
-        let locked = (isStreamMode || locksAspect) && videoSize.width > 0 && videoSize.height > 0
+        let validVideo = videoSize.width > 0 && videoSize.height > 0
+        let locked = (isStreamMode || locksAspect) && !isFlexible && validVideo
+        let phoneShaped = (isStreamMode || locksAspect || isMirror) && validVideo
+        let fit: WindowSizeMemory.PictureFit = locked ? .locked : (isFlexible ? .orientation : .free)
         let current = window.contentLayoutRect.size
         let available = window.screen?.visibleFrame.height ?? 900
-        let target = coordinator.memory.update(isPhoneShaped: locked, currentContentSize: current, availableHeight: available,
-                                               pictureRatio: locked ? videoSize.width / videoSize.height : nil)
+        let target = coordinator.memory.update(isPhoneShaped: phoneShaped, currentContentSize: current, availableHeight: available,
+                                               pictureRatio: phoneShaped ? videoSize.width / videoSize.height : nil, fit: fit)
         if locked {
             window.contentAspectRatio = videoSize
         } else {
@@ -80,7 +89,10 @@ struct WindowSizeMemory: Equatable {
     private var hasSeenAWindow = false
 
     /// The content size to give the window now, or nil to leave it.
-    mutating func update(isPhoneShaped: Bool, currentContentSize current: CGSize, availableHeight: CGFloat, pictureRatio: CGFloat?) -> CGSize? {
+    /// How a window that is already phone-shaped follows the picture.
+    enum PictureFit { case locked, free, orientation }
+
+    mutating func update(isPhoneShaped: Bool, currentContentSize current: CGSize, availableHeight: CGFloat, pictureRatio: CGFloat?, fit: PictureFit = .locked) -> CGSize? {
         defer { wasPhoneShaped = isPhoneShaped; hasSeenAWindow = true }
         guard current.width > 0, current.height > 0 else { return nil }
 
@@ -90,7 +102,14 @@ struct WindowSizeMemory: Equatable {
                 return phoneSize(height: phoneHeight ?? Self.defaultPhoneHeight, ratio: ratio, availableHeight: availableHeight)
             }
             // Already a phone window: only follow a change of the picture's shape (the phone rotated).
-            guard abs(current.width / current.height - ratio) > 0.01 else { return nil }
+            switch fit {
+            case .locked:
+                guard abs(current.width / current.height - ratio) > 0.01 else { return nil }
+            case .free:
+                return nil // a side panel is open, so the picture does not fill the window and its shape means nothing here
+            case .orientation:
+                guard (current.width > current.height) != (ratio > 1) else { return nil } // only a rotation changes the window's shape
+            }
             return phoneSize(height: current.height, ratio: ratio, availableHeight: availableHeight)
         }
 

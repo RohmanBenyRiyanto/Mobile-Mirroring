@@ -183,6 +183,7 @@ public final class ScrcpySession: @unchecked Sendable {
 
         lock.withLock { didStart = true }
         if settings.turnScreenOffOnStart { send(.setDisplayPower(false)) }
+        if let app = settings.virtualDisplayApp { send(.startApp(app)) }
         onEvent?(.started(deviceName: deviceName))
     }
 

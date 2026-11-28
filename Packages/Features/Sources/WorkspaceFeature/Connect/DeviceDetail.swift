@@ -180,6 +180,7 @@ private struct OBSGroup: View {
 // MARK: Behavior
 
 private struct BehaviorGroup: View {
+    @EnvironmentObject private var model: AppModel
     @Binding var settings: MirrorSettings
 
     var body: some View {
@@ -190,6 +191,21 @@ private struct BehaviorGroup: View {
             row("Screen off", "Mirror with the phone display dark", $settings.turnScreenOffOnStart)
             row("Switch keymaps by game", "Load the keymap that belongs to the game in front", $settings.autoKeymap)
             row("Turn the keymap on when its game opens", nil, $settings.autoEnableKeymap).disabled(!settings.autoKeymap)
+        }
+        SettingsCard("Separate display", footer: "The app opens on its own display that follows the window size, so there are no black bars. The phone's own screen is not mirrored while this is on. When you disconnect, the app returns to the phone.") {
+            row("Use a separate display", "Mirror one app on a display sized to the window", $settings.virtualDisplay.isEnabled)
+            if settings.virtualDisplay.isEnabled {
+                LabeledContent("App") {
+                    TextField("", text: Binding(get: { settings.virtualDisplay.startApp ?? "" }, set: { settings.virtualDisplay.startApp = $0.isEmpty ? nil : $0 }),
+                              prompt: Text(verbatim: "com.example.game"))
+                        .textFieldStyle(.roundedBorder).font(Theme.Font.mono).multilineTextAlignment(.trailing).frame(width: 220)
+                }
+                HStack {
+                    Spacer()
+                    Button("Use app in front") { model.useFrontAppForSeparateDisplay() }
+                        .secondaryAction().disabled(model.targetSerial == nil)
+                }
+            }
         }
     }
 
