@@ -181,6 +181,28 @@ public final class AppModel: ObservableObject {
         }
     }
 
+    /// The language the app was started in, to know whether a changed choice still needs a restart.
+    public let launchLanguage = AppLanguage.chosen()
+
+    /// Asks whether to restart now when the saved language differs from the one the app started in.
+    public func offerRestart(forLanguage choice: AppLanguage?) {
+        guard AppLanguage.needsRestart(started: launchLanguage, now: choice) else { return }
+        let answer = Confirmation.ask(title: String(localized: "Restart to change the language?"),
+                                      message: String(localized: "The app restarts and comes back in the new language. A recording in progress is saved first."),
+                                      confirm: String(localized: "Restart Now"))
+        if answer.confirmed { relaunchApp() }
+    }
+
+    /// Starts a fresh copy of the app and quits this one, so a new language (or anything read at launch) takes effect.
+    /// Quitting goes through the normal path, so a recording in progress is saved first.
+    public func relaunchApp() {
+        let task = Process()
+        task.executableURL = URL(fileURLWithPath: "/bin/sh")
+        task.arguments = ["-c", "sleep 1.2; /usr/bin/open -n \"$0\"", Bundle.main.bundlePath]
+        try? task.run()
+        NSApp.terminate(nil)
+    }
+
     public func finishOnboarding() {
         defaults.set(true, forKey: "onboardingDone")
         showsOnboarding = false

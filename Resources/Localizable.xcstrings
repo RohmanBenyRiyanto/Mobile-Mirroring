@@ -11577,6 +11577,74 @@
           }
         }
       }
+    },
+    "Anything not translated yet is shown in English": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anything not translated yet is shown in English"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yang belum diterjemahkan ditampilkan dalam bahasa Inggris"
+          }
+        }
+      }
+    },
+    "Restart to change the language?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restart to change the language?"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mulai ulang untuk mengganti bahasa?"
+          }
+        }
+      }
+    },
+    "The app restarts and comes back in the new language. A recording in progress is saved first.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app restarts and comes back in the new language. A recording in progress is saved first."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aplikasi dimulai ulang dan kembali dalam bahasa baru. Rekaman yang sedang berjalan disimpan dulu."
+          }
+        }
+      }
+    },
+    "Restart Now": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restart Now"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mulai Ulang Sekarang"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

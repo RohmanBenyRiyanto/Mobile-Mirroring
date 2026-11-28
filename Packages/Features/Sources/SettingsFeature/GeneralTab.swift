@@ -12,13 +12,31 @@ struct GeneralTab: View {
     @State private var opensAtLogin = LoginItem.isEnabled
     @State private var loginError: String?
 
+    @State private var chosenLanguage = AppLanguage.chosen()
+
+    /// Saves the choice at once (it is read when the app starts), then offers to restart so it shows now.
+    private var languageBinding: Binding<String> {
+        Binding(get: { chosenLanguage?.code ?? "system" }, set: { code in
+            let choice = code == "system" ? nil : AppLanguage(code)
+            guard choice != chosenLanguage else { return }
+            chosenLanguage = choice
+            AppLanguage.choose(choice)
+            model.offerRestart(forLanguage: choice)
+        })
+    }
+
     var body: some View {
         SettingsCard {
-            SettingsRow("Language", detail: "Set per app in Language & Region") {
-                Button("Open System Settings") {
-                    if let url = URL(string: "x-apple.systempreferences:com.apple.Localization-Settings.extension") { NSWorkspace.shared.open(url) }
+            SettingsRow("Language", detail: "Anything not translated yet is shown in English") {
+                Picker("Language", selection: languageBinding) {
+                    Text("System default").tag("system")
+                    Divider()
+                    ForEach(AppLanguage.supported.sorted { $0.nativeName.localizedCompare($1.nativeName) == .orderedAscending }) { language in
+                        Text(verbatim: language.nativeName).tag(language.code)
+                    }
                 }
-                .secondaryAction()
+                .labelsHidden()
+                .frame(width: 190)
             }
             SettingsRow("Open at login", detail: loginError.map { LocalizedStringKey($0) }) {
                 Toggle("Open at login", isOn: Binding(get: { opensAtLogin }, set: setLogin)).labelsHidden().toggleStyle(.switch)
