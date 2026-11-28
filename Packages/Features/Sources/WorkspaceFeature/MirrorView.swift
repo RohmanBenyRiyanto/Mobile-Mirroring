@@ -437,7 +437,8 @@ public final class MirrorNSView: NSView {
         var meta: KeyMeta = []
         if event.modifierFlags.contains(.shift) { meta.insert(.shift) }
         if event.modifierFlags.contains(.option) { meta.insert(.alt) }
-        if event.modifierFlags.contains(.control) { meta.insert(.ctrl) }
+        // ⌘Return is "send" in chat apps (Ctrl+Enter on Android); a multi-line chat field makes plain Return a new line, as on the phone itself.
+        if event.modifierFlags.contains(.control) || (event.modifierFlags.contains(.command) && [36, 76].contains(event.keyCode)) { meta.insert(.ctrl) }
         return meta
     }
 
