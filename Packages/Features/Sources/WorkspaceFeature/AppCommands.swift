@@ -46,18 +46,18 @@ public struct AppCommands: Commands {
         }
         CommandGroup(replacing: .newItem) {
             Button("New Tab") { model.newTab() }
-                .keyboardShortcut("t")
+                .appShortcut("File.New Tab", model: model)
                 .disabled(!mirroring)
             Button("Install APK") { model.chooseAPKToInstall() }
-                .keyboardShortcut("o")
+                .appShortcut("File.Install APK", model: model)
                 .disabled(!mirroring)
             Button("Send File") { model.chooseFileToSend() }
-                .keyboardShortcut("o", modifiers: [.command, .shift])
+                .appShortcut("File.Send File", model: model)
                 .disabled(!mirroring)
         }
         CommandGroup(replacing: .saveItem) {
             Button("Close Tab") { model.closeTab() }
-                .keyboardShortcut("w")
+                .appShortcut("File.Close Tab", model: model)
                 .disabled(!mirroring)
         }
     }
@@ -76,7 +76,7 @@ public struct AppCommands: Commands {
             Button("Select All") { model.performEdit(.selectAll) }.keyboardShortcut("a")
             Divider()
             Button("Send Clipboard Image to Phone") { model.sendClipboardImage() }
-                .keyboardShortcut("v", modifiers: [.command, .option])
+                .appShortcut("Edit.Send Clipboard Image to Phone", model: model)
                 .disabled(!mirroring)
         }
     }
@@ -87,17 +87,17 @@ public struct AppCommands: Commands {
         CommandGroup(after: .toolbar) {
             Divider()
             Button(LocalizedStringKey(model.showsStats ? "Hide Statistics" : "Show Statistics")) { model.showsStats.toggle() }
-                .keyboardShortcut("i")
+                .appShortcut("View.Statistics", model: model)
                 .disabled(!mirroring)
             Button(LocalizedStringKey(model.showsPerformance ? "Hide Developer HUD" : "Show Developer HUD")) { model.showsPerformance.toggle() }
-                .keyboardShortcut("i", modifiers: [.command, .shift])
+                .appShortcut("View.Developer HUD", model: model)
                 .disabled(!mirroring)
             Button(LocalizedStringKey(model.isRailCollapsed ? "Show Control Rail" : "Hide Control Rail")) { model.toggleRail() }
-                .keyboardShortcut("r", modifiers: [.command, .option])
+                .appShortcut("View.Control Rail", model: model)
                 .disabled(!mirroring)
             Button("Customize Control Rail") { model.showSettingsPane("rail"); openSettings() }
             Toggle("Stream Mode", isOn: $model.isStreamMode)
-                .keyboardShortcut("b", modifiers: [.command, .shift])
+                .appShortcut("View.Stream Mode", model: model)
                 .disabled(!mirroring)
         }
     }
@@ -119,34 +119,34 @@ public struct AppCommands: Commands {
             }
             Divider()
             Button("Start Mirroring") { model.connect() }
-                .keyboardShortcut(.return, modifiers: .command)
+                .appShortcut("Mirror.Start Mirroring", model: model)
                 .disabled(mirroring && !model.isAddingDevice)
             Button("Disconnect") { model.requestDisconnect() }
-                .keyboardShortcut("d", modifiers: [.command, .shift])
+                .appShortcut("Mirror.Disconnect", model: model)
                 .disabled(!mirroring)
             Divider()
             Button("Screenshot") { model.takeScreenshot() }
-                .keyboardShortcut("s")
+                .appShortcut("Mirror.Screenshot", model: model)
                 .disabled(!mirroring)
             Button("Export Recording as GIF") { model.exportRecordingAsGIF() }
             Button(LocalizedStringKey(model.isRecording ? "Stop Recording" : "Start Recording")) { model.toggleRecording() }
-                .keyboardShortcut("r", modifiers: [.command, .shift])
+                .appShortcut("Mirror.Start Recording", model: model)
                 .disabled(!mirroring)
             Button(LocalizedStringKey(model.isMuted ? "Unmute Audio" : "Mute Audio")) { model.toggleMute() }
-                .keyboardShortcut("m", modifiers: [.command, .shift])
+                .appShortcut("Mirror.Mute Audio", model: model)
                 .disabled(!mirroring)
             Divider()
             Button("Mini Mirror") { openWindow(id: "mini") }
-                .keyboardShortcut("y", modifiers: [.command, .shift])
+                .appShortcut("Mirror.Mini Mirror", model: model)
                 .disabled(!mirroring)
             Toggle("Keep on Top", isOn: $model.alwaysOnTop)
-                .keyboardShortcut("y", modifiers: [.command, .option])
+                .appShortcut("Mirror.Keep on Top", model: model)
             Divider()
             Button("Copy OBS URL") { model.copyStreamURL() }
-                .keyboardShortcut("c", modifiers: [.command, .shift])
+                .appShortcut("Mirror.Copy OBS URL", model: model)
                 .disabled(model.streamURL == nil)
             Button("Actual Pixel Size") { StreamWindow.resizeToActualPixels(videoSize: model.videoSize) }
-                .keyboardShortcut("1")
+                .appShortcut("Mirror.Actual Pixel Size", model: model)
                 .disabled(!mirroring)
         }
     }
@@ -155,28 +155,28 @@ public struct AppCommands: Commands {
 
     @CommandsBuilder private var device: some Commands {
         CommandMenu("Device") {
-            Button("Back") { model.press(.back) }.keyboardShortcut("[").disabled(!mirroring)
-            Button("Home") { model.press(.home) }.keyboardShortcut("h", modifiers: [.command, .shift]).disabled(!mirroring)
-            Button("Recents") { model.press(.appSwitch) }.keyboardShortcut("a", modifiers: [.command, .shift]).disabled(!mirroring)
-            Button("Volume Up") { model.press(.volumeUp) }.keyboardShortcut(.upArrow, modifiers: .command).disabled(!mirroring)
-            Button("Volume Down") { model.press(.volumeDown) }.keyboardShortcut(.downArrow, modifiers: .command).disabled(!mirroring)
-            Button("Power") { model.press(.power) }.keyboardShortcut("p", modifiers: [.command, .shift]).disabled(!mirroring)
-            Button("Notifications") { model.send(.expandNotificationPanel) }.keyboardShortcut("n", modifiers: [.command, .shift]).disabled(!mirroring)
-            Button("Quick Settings") { model.send(.expandSettingsPanel) }.keyboardShortcut("n", modifiers: [.command, .option]).disabled(!mirroring)
-            Button("Rotate") { model.send(.rotateDevice) }.keyboardShortcut("r").disabled(!mirroring)
+            Button("Back") { model.press(.back) }.appShortcut("Device.Back", model: model).disabled(!mirroring)
+            Button("Home") { model.press(.home) }.appShortcut("Device.Home", model: model).disabled(!mirroring)
+            Button("Recents") { model.press(.appSwitch) }.appShortcut("Device.Recents", model: model).disabled(!mirroring)
+            Button("Volume Up") { model.press(.volumeUp) }.appShortcut("Device.Volume Up", model: model).disabled(!mirroring)
+            Button("Volume Down") { model.press(.volumeDown) }.appShortcut("Device.Volume Down", model: model).disabled(!mirroring)
+            Button("Power") { model.press(.power) }.appShortcut("Device.Power", model: model).disabled(!mirroring)
+            Button("Notifications") { model.send(.expandNotificationPanel) }.appShortcut("Device.Notifications", model: model).disabled(!mirroring)
+            Button("Quick Settings") { model.send(.expandSettingsPanel) }.appShortcut("Device.Quick Settings", model: model).disabled(!mirroring)
+            Button("Rotate") { model.send(.rotateDevice) }.appShortcut("Device.Rotate", model: model).disabled(!mirroring)
             Divider()
             Button("Pair New Device") { model.pairNewDevice() }
             Button("Switch to Wi-Fi") { model.switchToWireless() }
-                .keyboardShortcut("e", modifiers: [.command, .shift])
+                .appShortcut("Device.Switch to Wi-Fi", model: model)
                 .disabled(model.selectedDevice?.isReady != true)
             Button("Device Information") { model.showsDeviceInfo = true }
                 .disabled(!mirroring)
             Divider()
             Toggle("UI Inspector", isOn: Binding(get: { model.isInspecting }, set: { model.setInspecting($0) }))
-                .keyboardShortcut("i", modifiers: [.command, .option])
+                .appShortcut("Device.UI Inspector", model: model)
                 .disabled(!mirroring)
             Toggle("Design Overlay", isOn: Binding(get: { model.designTool == .crosshair }, set: { model.setDesignTool($0 ? .crosshair : .off) }))
-                .keyboardShortcut("g", modifiers: [.command, .option])
+                .appShortcut("Device.Design Overlay", model: model)
                 .disabled(!mirroring)
             Picker("Grid", selection: $model.designGrid) {
                 ForEach(DesignGrid.allCases) { Text(LocalizedStringKey($0.title)).tag($0) }
@@ -188,16 +188,16 @@ public struct AppCommands: Commands {
                 .disabled(!model.isInspectorOrDesignOn)
             Divider()
             Button("Logcat") { openWindow(id: "logcat") }
-                .keyboardShortcut("l", modifiers: [.command, .shift])
+                .appShortcut("Device.Logcat", model: model)
             Button("API Log") { openWindow(id: "apilog") }
-                .keyboardShortcut("a", modifiers: [.command, .option])
+                .appShortcut("Device.API Log", model: model)
             Button("Database") { openWindow(id: "database") }
-                .keyboardShortcut("d", modifiers: [.command, .option])
+                .appShortcut("Device.Database", model: model)
             Button(LocalizedStringKey(model.showsInspectorPanel ? "Hide Inspector Panel" : "Show Inspector Panel")) { model.showsInspectorPanel.toggle(); if model.showsInspectorPanel { model.setInspecting(true) } }
-                .keyboardShortcut("p", modifiers: [.command, .option])
+                .appShortcut("Device.Inspector Panel", model: model)
                 .disabled(!mirroring)
             Button(LocalizedStringKey(model.showsQuickToggles ? "Hide Quick Toggles" : "Quick Toggles")) { model.showsQuickToggles.toggle() }
-                .keyboardShortcut("j", modifiers: [.command, .option])
+                .appShortcut("Device.Quick Toggles", model: model)
                 .disabled(!mirroring)
             Divider()
             ForEach(DeviceTool.allCases) { tool in
@@ -211,18 +211,18 @@ public struct AppCommands: Commands {
     @CommandsBuilder private var keymap: some Commands {
         CommandMenu("Keymap") {
             Button("Edit Keymap") { model.startEditingKeymap() }
-                .keyboardShortcut("e")
+                .appShortcut("Keymap.Edit Keymap", model: model)
                 .disabled(!mirroring || model.editor != nil)
-            Button("Add Tap") { model.addKeymapElement(.tap) }.keyboardShortcut("1", modifiers: []).disabled(!mirroring)
-            Button("Add Hold") { model.addKeymapElement(.hold) }.keyboardShortcut("2", modifiers: []).disabled(!mirroring)
-            Button("Add Toggle") { model.addKeymapElement(.toggle) }.keyboardShortcut("3", modifiers: []).disabled(!mirroring)
-            Button("Add Joystick") { model.addKeymapElement(.joystick) }.keyboardShortcut("4", modifiers: []).disabled(!mirroring)
-            Button("Add Aim") { model.addKeymapElement(.aim) }.keyboardShortcut("5", modifiers: []).disabled(!mirroring)
-            Button("Add Skill Shot") { model.addKeymapElement(.skillShot) }.keyboardShortcut("6", modifiers: []).disabled(!mirroring)
-            Button("Add Rapid Tap") { model.addKeymapElement(.turbo) }.keyboardShortcut("8", modifiers: []).disabled(!mirroring)
-            Button("Add Swipe") { model.addKeymapElement(.swipe) }.keyboardShortcut("9", modifiers: []).disabled(!mirroring)
+            Button("Add Tap") { model.addKeymapElement(.tap) }.appShortcut("Keymap.Add Tap", model: model).disabled(!mirroring)
+            Button("Add Hold") { model.addKeymapElement(.hold) }.appShortcut("Keymap.Add Hold", model: model).disabled(!mirroring)
+            Button("Add Toggle") { model.addKeymapElement(.toggle) }.appShortcut("Keymap.Add Toggle", model: model).disabled(!mirroring)
+            Button("Add Joystick") { model.addKeymapElement(.joystick) }.appShortcut("Keymap.Add Joystick", model: model).disabled(!mirroring)
+            Button("Add Aim") { model.addKeymapElement(.aim) }.appShortcut("Keymap.Add Aim", model: model).disabled(!mirroring)
+            Button("Add Skill Shot") { model.addKeymapElement(.skillShot) }.appShortcut("Keymap.Add Skill Shot", model: model).disabled(!mirroring)
+            Button("Add Rapid Tap") { model.addKeymapElement(.turbo) }.appShortcut("Keymap.Add Rapid Tap", model: model).disabled(!mirroring)
+            Button("Add Swipe") { model.addKeymapElement(.swipe) }.appShortcut("Keymap.Add Swipe", model: model).disabled(!mirroring)
             Button(LocalizedStringKey(model.isRecordingMacro ? "Stop Recording Macro" : "Record Macro")) { model.toggleMacroRecording() }
-                .keyboardShortcut("7", modifiers: [])
+                .appShortcut("Keymap.Record Macro", model: model)
                 .disabled(!mirroring)
             Button("Revert Changes") { model.revertKeymapChanges() }
                 .disabled(model.editor == nil)
@@ -232,7 +232,7 @@ public struct AppCommands: Commands {
                 .disabled(model.currentKeymap == nil)
             Divider()
             Toggle("Keymap Enabled", isOn: Binding(get: { model.isKeymapEnabled }, set: { model.setKeymapEnabled($0) }))
-                .keyboardShortcut("k", modifiers: [.command, .shift])
+                .appShortcut("Keymap.Keymap Enabled", model: model)
                 .disabled(!mirroring)
             Menu("Profile") {
                 if model.keymapProfiles.isEmpty { Text("No keymaps yet") }
@@ -258,13 +258,13 @@ public struct AppCommands: Commands {
     @CommandsBuilder private var logcatMenu: some Commands {
         CommandMenu("Logcat") {
             Button(LocalizedStringKey(logcat?.isPaused == true ? "Resume" : "Pause")) { logcat?.togglePause() }
-                .keyboardShortcut(.space, modifiers: [])
+                .appShortcut("Logcat.Pause", model: model)
                 .disabled(logcat == nil)
             Button("Clear") { logcat?.clear() }
-                .keyboardShortcut("k")
+                .appShortcut("Logcat.Clear", model: model)
                 .disabled(logcat == nil)
             Button("Filter") { logcat?.focusFilter() }
-                .keyboardShortcut("f", modifiers: [.command, .option])
+                .appShortcut("Logcat.Filter", model: model)
                 .disabled(logcat == nil)
         }
     }
@@ -275,10 +275,10 @@ public struct AppCommands: Commands {
         CommandGroup(after: .windowArrangement) {
             Divider()
             Button("Show Previous Phone") { model.showPhone(offset: -1) }
-                .keyboardShortcut(.tab, modifiers: [.control, .shift])
+                .appShortcut("Window.Show Previous Phone", model: model)
                 .disabled(model.sessions.count < 2)
             Button("Show Next Phone") { model.showPhone(offset: 1) }
-                .keyboardShortcut(.tab, modifiers: .control)
+                .appShortcut("Window.Show Next Phone", model: model)
                 .disabled(model.sessions.count < 2)
         }
     }

@@ -7,24 +7,101 @@ import Theme
 import WorkspaceFeature
 
 struct ShortcutsTab: View {
+    @ObservedObject var model: AppModel
     @State private var query = ""
-    private let catalog = ShortcutCatalog.shared
+    @State private var recordingID: String?
+    @State private var message: String?
+    @State private var monitor: Any?
+    @State private var confirmsReset = false
 
     var body: some View {
         SettingsCard {
             TextField("Search shortcuts", text: $query).textFieldStyle(.roundedBorder).labelsHidden()
         }
-        let entries = catalog.filtered(by: query)
-        SettingsCard(footer: entries.isEmpty ? "No shortcut matches." : "Shortcuts are listed as they are in the menu bar. Changing them arrives in a later version.") {
-            ForEach(entries) { entry in
-                SettingsRow(LocalizedStringKey(entry.title)) {
+        let entries = ShortcutRegistry.items.filter { matches($0) }
+        SettingsCard(footer: footer(empty: entries.isEmpty)) {
+            ForEach(entries) { item in
+                SettingsRow(LocalizedStringKey(item.title)) {
                     HStack(spacing: Theme.Space.s2) {
-                        if catalog.conflict(of: entry) != nil { Image(systemName: "exclamationmark.triangle").accessibilityLabel("Shortcut conflict") }
-                        KeyCap(entry.combo.display)
+                        if model.shortcuts.isChanged(item.id) {
+                            Button { model.shortcuts.reset(item.id) } label: { Image(systemName: "arrow.uturn.backward") }
+                                .buttonStyle(.plain).help("Back to the original shortcut").accessibilityLabel("Back to the original shortcut")
+                        }
+                        Button { toggleRecording(item.id) } label: {
+                            if recordingID == item.id {
+                                Text("Press keys").foregroundStyle(.secondary).frame(minWidth: 60)
+                            } else if let combo = model.shortcuts.combo(for: item.id) {
+                                KeyCap(combo.display)
+                            } else {
+                                Text("None").foregroundStyle(.secondary).frame(minWidth: 36)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .help("Click, then press the new shortcut. Delete removes it, Esc cancels.")
                     }
                 }
             }
         }
+        SettingsCard {
+            SettingsRow("Reset all shortcuts", detail: "Every menu shortcut goes back to its original") {
+                Button("Reset") { confirmsReset = true }.secondaryAction().disabled(model.shortcuts.overrides.isEmpty)
+            }
+        }
+        .confirmationDialog("Reset all shortcuts?", isPresented: $confirmsReset) {
+            Button("Reset", role: .destructive) { model.shortcuts = ShortcutBook() }
+            Button("Cancel", role: .cancel) {}
+        }
+        .onDisappear { stopRecording() }
+    }
+
+    private func matches(_ item: ShortcutRegistry.Item) -> Bool {
+        let text = query.trimmingCharacters(in: .whitespaces).lowercased()
+        guard !text.isEmpty else { return true }
+        let shown = model.shortcuts.combo(for: item.id)?.display.lowercased() ?? ""
+        return item.title.lowercased().contains(text) || item.menu.lowercased().contains(text) || shown.contains(text)
+    }
+
+    private func footer(empty: Bool) -> LocalizedStringKey? {
+        if empty { return "No shortcut matches." }
+        if let message { return LocalizedStringKey(message) }
+        return "Click a shortcut, then press the new keys."
+    }
+
+    private func toggleRecording(_ id: String) {
+        stopRecording()
+        message = nil
+        guard recordingID != id else { recordingID = nil; return }
+        recordingID = id
+        monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            handle(event, for: id)
+            return nil
+        }
+    }
+
+    private func stopRecording() {
+        if let monitor { NSEvent.removeMonitor(monitor) }
+        monitor = nil
+        recordingID = nil
+    }
+
+    private func handle(_ event: NSEvent, for id: String) {
+        if event.keyCode == 53 { return stopRecording() } // Esc
+        if event.keyCode == 51 || event.keyCode == 117, event.modifierFlags.intersection([.command, .control, .option, .shift]).isEmpty {
+            model.shortcuts.set(nil, for: id) // Delete removes the shortcut
+            return stopRecording()
+        }
+        guard let combo = KeyCombo(event: event) else { return }
+        if ShortcutRegistry.reserved.contains(combo) {
+            message = String(localized: "\(combo.display) is used by macOS or the Edit menu. Pick another shortcut.")
+            return
+        }
+        if let other = model.shortcuts.conflict(for: combo, excluding: id) {
+            message = String(localized: "\(combo.display) is already used by \(String(localized: String.LocalizationValue(other.title))). Pick another shortcut.")
+            return
+        }
+        model.shortcuts.set(combo, for: id)
+        message = nil
+        stopRecording()
     }
 }
 

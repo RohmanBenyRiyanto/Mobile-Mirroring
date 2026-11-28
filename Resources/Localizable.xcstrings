@@ -10897,6 +10897,176 @@
           }
         }
       }
+    },
+    "Inspector Panel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspector Panel"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Panel Inspektur"
+          }
+        }
+      }
+    },
+    "Back to the original shortcut": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back to the original shortcut"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kembali ke pintasan asli"
+          }
+        }
+      }
+    },
+    "Click, then press the new shortcut. Delete removes it, Esc cancels.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Click, then press the new shortcut. Delete removes it, Esc cancels."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klik, lalu tekan pintasan baru. Delete menghapus, Esc membatalkan."
+          }
+        }
+      }
+    },
+    "Press keys": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Press keys"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tekan tombol"
+          }
+        }
+      }
+    },
+    "Reset all shortcuts": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset all shortcuts"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset semua pintasan"
+          }
+        }
+      }
+    },
+    "Reset all shortcuts?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset all shortcuts?"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset semua pintasan?"
+          }
+        }
+      }
+    },
+    "Every menu shortcut goes back to its original": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every menu shortcut goes back to its original"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semua pintasan menu kembali ke aslinya"
+          }
+        }
+      }
+    },
+    "Click a shortcut, then press the new keys.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Click a shortcut, then press the new keys."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klik pintasan, lalu tekan tombol barunya."
+          }
+        }
+      }
+    },
+    "%@ is used by macOS or the Edit menu. Pick another shortcut.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is used by macOS or the Edit menu. Pick another shortcut."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ dipakai macOS atau menu Edit. Pilih pintasan lain."
+          }
+        }
+      }
+    },
+    "%@ is already used by %@. Pick another shortcut.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is already used by %@. Pick another shortcut."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ sudah dipakai %@. Pilih pintasan lain."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

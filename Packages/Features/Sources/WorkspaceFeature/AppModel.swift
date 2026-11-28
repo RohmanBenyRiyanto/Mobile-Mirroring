@@ -52,6 +52,10 @@ public final class AppModel: ObservableObject {
             if let data = try? JSONEncoder().encode(deviceSettings) { defaults.set(data, forKey: "deviceSettings.v1") }
         }
     }
+    /// Menu shortcuts the user changed in Settings › Shortcuts.
+    @Published public var shortcuts: ShortcutBook {
+        didSet { shortcuts.save(to: defaults) }
+    }
     private var deviceSettings = DeviceSettingsBook()
     private lazy var phoneLedger = PhoneLedgerStore(defaults: defaults)
     /// Game controllers drive the front phone's keymap; the names are shown in the keymap menu.
@@ -139,6 +143,7 @@ public final class AppModel: ObservableObject {
         defaultMode = defaults.string(forKey: "workspaceMode").flatMap(WorkspaceMode.init(rawValue:)) ?? .normal
         railLayout = defaults.data(forKey: "railLayout.v1").flatMap(RailLayout.decode) ?? .standard
         settings = SettingsStore.load(from: defaults)
+        shortcuts = ShortcutBook.load(from: defaults)
         deviceSettings = defaults.data(forKey: "deviceSettings.v1").flatMap(DeviceSettingsBook.decode) ?? DeviceSettingsBook()
         showsOnboarding = !defaults.bool(forKey: "onboardingDone")
         keymapStore = try? ProfileStore<Keymap>(kind: "keymap", root: keymapRoot)

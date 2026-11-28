@@ -62,7 +62,7 @@ public struct SettingsView: View {
             case .video: VideoTab(model: model)
             case .audio: AudioTab(model: model)
             case .rail: RailTab(model: model)
-            case .shortcuts: ShortcutsTab()
+            case .shortcuts: ShortcutsTab(model: model)
             case .advanced: AdvancedTab(model: model, appearance: appearance)
             case .about: AboutTab()
             }

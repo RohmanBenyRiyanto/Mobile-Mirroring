@@ -120,7 +120,7 @@ final class SettingsRenderTests: XCTestCase {
             ("video", AnyView(GroupedForm { VideoTab(model: model) })),
             ("audio", AnyView(GroupedForm { AudioTab(model: model) })),
             ("rail", AnyView(GroupedForm { RailTab(model: model) })),
-            ("shortcuts", AnyView(GroupedForm { ShortcutsTab() })),
+            ("shortcuts", AnyView(GroupedForm { ShortcutsTab(model: model) })),
             ("advanced", AnyView(GroupedForm { AdvancedTab(model: model, appearance: appearance) })),
         ]
         for (name, view) in tabs {
@@ -137,4 +137,42 @@ func isolatedDefaults() -> UserDefaults {
     let defaults = UserDefaults(suiteName: name)!
     defaults.removePersistentDomain(forName: name)
     return defaults
+}
+
+final class ShortcutBookTests: XCTestCase {
+    func testAChangedShortcutIsUsedAndSurvivesSaving() throws {
+        var book = ShortcutBook()
+        XCTAssertEqual(book.combo(for: "Mirror.Screenshot")?.display, "⌘S")
+        book.set(KeyCombo("S", [.command, .option]), for: "Mirror.Screenshot")
+        book.set(nil, for: "Device.Home") // removed
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "benz-shortcut-test"))
+        defer { defaults.removePersistentDomain(forName: "benz-shortcut-test") }
+        book.save(to: defaults)
+        let loaded = ShortcutBook.load(from: defaults)
+        XCTAssertEqual(loaded.combo(for: "Mirror.Screenshot")?.display, "⌥⌘S")
+        XCTAssertNil(loaded.combo(for: "Device.Home"), "a removed shortcut stays removed")
+        XCTAssertTrue(loaded.isChanged("Device.Home"))
+    }
+
+    func testSettingTheOriginalShortcutClearsTheChange() {
+        var book = ShortcutBook()
+        book.set(KeyCombo("S", [.command, .option]), for: "Mirror.Screenshot")
+        book.set(KeyCombo("S"), for: "Mirror.Screenshot")
+        XCTAssertFalse(book.isChanged("Mirror.Screenshot"))
+    }
+
+    func testConflictsAreFoundAgainstChangedShortcutsToo() {
+        var book = ShortcutBook()
+        XCTAssertEqual(book.conflict(for: KeyCombo("S"), excluding: "Device.Home")?.id, "Mirror.Screenshot")
+        book.set(KeyCombo("S", [.command, .option]), for: "Mirror.Screenshot")
+        XCTAssertNil(book.conflict(for: KeyCombo("S"), excluding: "Device.Home"), "the old combination is free after a change")
+        XCTAssertEqual(book.conflict(for: KeyCombo("S", [.command, .option]), excluding: "Device.Home")?.id, "Mirror.Screenshot")
+        XCTAssertNil(book.conflict(for: KeyCombo("S"), excluding: "Mirror.Screenshot"))
+    }
+
+    func testReservedShortcutsAreRefused() {
+        XCTAssertTrue(ShortcutRegistry.reserved.contains(KeyCombo("Q")))
+        XCTAssertTrue(ShortcutRegistry.reserved.contains(KeyCombo("C")))
+        XCTAssertFalse(ShortcutRegistry.items.contains { ShortcutRegistry.reserved.contains($0.original) }, "no original menu shortcut collides with a reserved one")
+    }
 }
