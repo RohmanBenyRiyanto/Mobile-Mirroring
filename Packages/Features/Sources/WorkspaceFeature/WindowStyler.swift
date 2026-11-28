@@ -3,6 +3,13 @@ import SwiftUI
 import Theme
 
 /// Styles the hosting window: chrome-free and aspect-locked in stream mode for clean OBS window capture.
+/// Points at the window hosting a view, so actions on "the mirror window" never land on a helper window that happens to have focus.
+@MainActor
+public final class HostWindow {
+    public weak var window: NSWindow?
+    public init() {}
+}
+
 public struct WindowStyler: NSViewRepresentable {
     public let isStreamMode: Bool
     public let alwaysOnTop: Bool
@@ -12,8 +19,10 @@ public struct WindowStyler: NSViewRepresentable {
     public let isMirror: Bool
     /// The picture is a virtual display that follows the window, so the window is never aspect-locked.
     public let isFlexible: Bool
+    public var host: HostWindow?
 
-    public init(isStreamMode: Bool, alwaysOnTop: Bool, videoSize: CGSize, locksAspect: Bool = false, isMirror: Bool = false, isFlexible: Bool = false) {
+    public init(isStreamMode: Bool, alwaysOnTop: Bool, videoSize: CGSize, locksAspect: Bool = false, isMirror: Bool = false, isFlexible: Bool = false, host: HostWindow? = nil) {
+        self.host = host
         self.isMirror = isMirror
         self.isFlexible = isFlexible
         self.isStreamMode = isStreamMode
@@ -30,6 +39,7 @@ public struct WindowStyler: NSViewRepresentable {
     @MainActor
     public final class Coordinator {
         var memory = WindowSizeMemory()
+        var frameBeforeStreamMode: CGRect?
     }
 
     public func updateNSView(_ view: NSView, context: Context) {
@@ -37,6 +47,7 @@ public struct WindowStyler: NSViewRepresentable {
         // The window only exists once the view is attached, so apply on the next turn of the run loop.
         DispatchQueue.main.async {
             guard let window = view.window else { return }
+            host?.window = window
             window.level = alwaysOnTop ? .floating : .normal
             applyChrome(to: window, coordinator: coordinator)
         }
@@ -44,6 +55,10 @@ public struct WindowStyler: NSViewRepresentable {
 
     @MainActor
     private func applyChrome(to window: NSWindow, coordinator: Coordinator) {
+        // Leaving Stream Mode puts the window back exactly where and how big it was, whatever the hidden title bar did to it.
+        if isStreamMode, coordinator.frameBeforeStreamMode == nil { coordinator.frameBeforeStreamMode = window.frame }
+        let restoredFrame = (!isStreamMode) ? coordinator.frameBeforeStreamMode : nil
+        if !isStreamMode { coordinator.frameBeforeStreamMode = nil }
         window.titlebarAppearsTransparent = isStreamMode
         window.titleVisibility = isStreamMode ? .hidden : .visible
         window.isMovableByWindowBackground = isStreamMode
@@ -53,6 +68,10 @@ public struct WindowStyler: NSViewRepresentable {
 
         if isStreamMode { window.styleMask.insert(.fullSizeContentView) } else { window.styleMask.remove(.fullSizeContentView) }
 
+        if let restoredFrame {
+            let visible = (window.screen ?? NSScreen.main)?.visibleFrame
+            window.setFrame(visible.map { WindowPlacement.fitted(restoredFrame, in: $0) } ?? restoredFrame, display: true, animate: false)
+        }
         let validVideo = videoSize.width > 0 && videoSize.height > 0
         let locked = (isStreamMode || locksAspect) && !isFlexible && validVideo
         let phoneShaped = (isStreamMode || locksAspect || isMirror) && validVideo
@@ -71,8 +90,8 @@ public struct WindowStyler: NSViewRepresentable {
 
     /// Animates the resize from the top-left corner so the window does not jump.
     private func resize(_ window: NSWindow, toContent size: CGSize) {
-        var frame = window.frameRect(forContentRect: NSRect(origin: .zero, size: size))
-        frame.origin = NSPoint(x: window.frame.minX, y: window.frame.maxY - frame.height)
+        let outer = window.frameRect(forContentRect: NSRect(origin: .zero, size: size)).size
+        let frame = WindowPlacement.resized(window.frame, to: outer, in: (window.screen ?? NSScreen.main)?.visibleFrame)
         window.setFrame(frame, display: true, animate: !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion)
     }
 }
@@ -127,6 +146,25 @@ struct WindowSizeMemory: Equatable {
     private func phoneSize(height wanted: CGFloat, ratio: CGFloat, availableHeight: CGFloat) -> CGSize {
         let height = max(360, min(wanted, availableHeight - 80))
         return CGSize(width: (height * ratio).rounded(), height: height.rounded())
+    }
+}
+
+/// Keeps a window fully on screen when it changes size. Pure, so the rules are tested without a window (AppKit coordinates: origin bottom-left).
+enum WindowPlacement {
+    /// Shrinks the frame to the visible area if it is larger, then slides it the least distance needed to lie inside it.
+    static func fitted(_ frame: CGRect, in visible: CGRect) -> CGRect {
+        var result = frame
+        result.size.width = min(result.width, visible.width)
+        result.size.height = min(result.height, visible.height)
+        result.origin.x = min(max(result.origin.x, visible.minX), visible.maxX - result.width)
+        result.origin.y = min(max(result.origin.y, visible.minY), visible.maxY - result.height)
+        return result
+    }
+
+    /// A frame of `size` whose top-left corner stays where the old frame's was, then fitted on screen.
+    static func resized(_ old: CGRect, to size: CGSize, in visible: CGRect?) -> CGRect {
+        let frame = CGRect(x: old.minX, y: old.maxY - size.height, width: size.width, height: size.height)
+        return visible.map { fitted(frame, in: $0) } ?? frame
     }
 }
 

@@ -14,11 +14,27 @@ public struct ContentView: View {
     }
     @EnvironmentObject private var model: AppModel
 
-    /// Grows or shrinks the window by the docked panel's width, keeping its top-left corner still.
-    @MainActor private static func resizeWindow(byWidth delta: CGFloat) {
-        guard let window = NSApp.keyWindow ?? NSApp.mainWindow else { return }
+    /// The window's width with no panel open, remembered while any panel is open so closing them returns to exactly that.
+    @State private var widthWithoutPanels: CGFloat?
+    @State private var host = HostWindow()
+
+    private var openPanelWidth: CGFloat {
+        (model.showsPerformance ? PerformancePanel.width : 0) + (model.showsQuickToggles ? QuickTogglesPanel.width : 0)
+            + (model.showsInspectorPanel ? InspectorPanel.width : 0)
+    }
+
+    /// Gives the window the width of the picture plus every open panel, so panels sit beside the picture instead of covering it.
+    /// It grows to the right; if the screen has no room there, the window slides left just enough to stay fully visible.
+    @MainActor private func syncWindowToPanels() {
+        guard let window = host.window else { return }
+        if openPanelWidth > 0, widthWithoutPanels == nil { widthWithoutPanels = window.frame.width }
+        let base = widthWithoutPanels ?? window.frame.width
+        if openPanelWidth == 0 { widthWithoutPanels = nil }
+        // A locked aspect ratio would refuse the new frame, so it is released first; the styler locks it again once the state settles.
+        window.resizeIncrements = NSSize(width: 1, height: 1)
         var frame = window.frame
-        frame.size.width = max(frame.width + delta, window.minSize.width)
+        frame.size.width = max(base + openPanelWidth, window.minSize.width)
+        if let visible = (window.screen ?? NSScreen.main)?.visibleFrame { frame = WindowPlacement.fitted(frame, in: visible) }
         window.setFrame(frame, display: true, animate: !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion)
     }
 
@@ -38,15 +54,15 @@ public struct ContentView: View {
                minHeight: isMirrorWindow ? 360 : Theme.Size.connectMinimum.height)
         .background(WindowStyler(isStreamMode: model.isStreamMode, alwaysOnTop: model.alwaysOnTop, videoSize: model.videoSize,
                                  locksAspect: isMirrorWindow && model.editor == nil && !model.showsPerformance && !model.showsQuickToggles && !model.showsInspectorPanel,
-                                 isMirror: isMirrorWindow, isFlexible: model.active?.usesVirtualDisplay == true))
+                                 isMirror: isMirrorWindow, isFlexible: model.active?.usesVirtualDisplay == true, host: host))
         .overlay(alignment: .bottom) { NoticeToast().animated(value: model.notice) }
         .animated(value: isMirrorWindow)
         .animated(value: model.showsPerformance)
         .animated(value: model.showsQuickToggles)
         .animated(value: model.showsInspectorPanel)
-        .onChange(of: model.showsInspectorPanel) { _, on in Self.resizeWindow(byWidth: on ? InspectorPanel.width : -InspectorPanel.width) }
-        .onChange(of: model.showsQuickToggles) { _, on in Self.resizeWindow(byWidth: on ? QuickTogglesPanel.width : -QuickTogglesPanel.width) }
-        .onChange(of: model.showsPerformance) { _, on in Self.resizeWindow(byWidth: on ? PerformancePanel.width : -PerformancePanel.width) }
+        .onChange(of: model.showsInspectorPanel) { _, _ in syncWindowToPanels() }
+        .onChange(of: model.showsQuickToggles) { _, _ in syncWindowToPanels() }
+        .onChange(of: model.showsPerformance) { _, _ in syncWindowToPanels() }
         .sheet(isPresented: $model.showsDeviceInfo) { DeviceInfoSheet() }
         .sheet(isPresented: Binding(get: { model.lostConnection != nil }, set: { if !$0 { model.dismissLostConnection() } })) { ConnectionLostSheet().environmentObject(model) }
         .sheet(isPresented: $model.showsOnboarding) { OnboardingView().environmentObject(model) }

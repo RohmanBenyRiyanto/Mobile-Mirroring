@@ -221,3 +221,34 @@ final class WindowFitTests: XCTestCase {
         XCTAssertGreaterThan(rotated?.width ?? 0, rotated?.height ?? 1)
     }
 }
+
+final class WindowPlacementTests: XCTestCase {
+    private let screen = CGRect(x: 0, y: 0, width: 1512, height: 940)
+
+    func testATallWindowSlidesUpInsteadOfLeavingTheScreen() {
+        // A 870 pt window whose top is 200 pt below the top of the screen would hang off the bottom.
+        let old = CGRect(x: 376, y: 940 - 200 - 564, width: 760, height: 564)
+        let frame = WindowPlacement.resized(old, to: CGSize(width: 387, height: 870), in: screen)
+        XCTAssertGreaterThanOrEqual(frame.minY, screen.minY)
+        XCTAssertLessThanOrEqual(frame.maxY, screen.maxY)
+        XCTAssertEqual(frame.minX, 376)
+    }
+
+    func testASmallResizeKeepsTheTopLeftCorner() {
+        let old = CGRect(x: 100, y: 300, width: 400, height: 500)
+        let frame = WindowPlacement.resized(old, to: CGSize(width: 300, height: 400), in: screen)
+        XCTAssertEqual(frame.minX, 100)
+        XCTAssertEqual(frame.maxY, 800)
+    }
+
+    func testAWiderWindowSlidesLeftWhenTheRightEdgeRunsOut() {
+        let frame = WindowPlacement.fitted(CGRect(x: 1300, y: 100, width: 600, height: 500), in: screen)
+        XCTAssertEqual(frame.maxX, screen.maxX)
+        XCTAssertEqual(frame.width, 600)
+    }
+
+    func testAWindowLargerThanTheScreenIsShrunk() {
+        let frame = WindowPlacement.fitted(CGRect(x: 0, y: 0, width: 4000, height: 3000), in: screen)
+        XCTAssertEqual(frame.size, screen.size)
+    }
+}

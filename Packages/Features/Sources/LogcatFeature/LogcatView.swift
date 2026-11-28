@@ -48,35 +48,50 @@ public struct LogcatView<Source: LogcatSource>: View {
     }
 
     private var toolbar: some View {
-        HStack {
+        HStack(spacing: Theme.Space.s2) {
             Picker("Show", selection: $logcat.scope) {
                 ForEach(LogcatModel.Scope.allCases) { Text($0.title).tag($0) }
             }
-            .frame(width: 190)
+            .labelsHidden()
+            .frame(width: 150)
+            .help("Which lines to show")
             if logcat.scope == .foregroundApp {
                 Text(logcat.foregroundPackage ?? "waiting for an app")
-                    .font(.caption.monospaced()).foregroundStyle(.secondary).lineLimit(1)
+                    .font(Theme.Font.monoCaption).foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle)
+                    .frame(maxWidth: 200, alignment: .leading)
+                    .layoutPriority(-1)
             }
-            Spacer(minLength: 8)
+            Spacer(minLength: Theme.Space.s2)
             Picker("Level", selection: $logcat.minimumLevel) {
                 ForEach(LogLevel.allCases) { Text($0.title).tag($0) }
             }
-            .frame(width: 140)
+            .labelsHidden()
+            .frame(width: 110)
+            .help("Lowest level to show")
             TextField("Filter", text: $logcat.filter)
                 .focused($filterIsFocused)
                 .textFieldStyle(.roundedBorder)
-                .frame(minWidth: 120)
+                .frame(minWidth: 110, idealWidth: 200, maxWidth: 260)
+            Divider().frame(height: 18)
+            iconButton(logcat.isPaused ? "play.fill" : "pause.fill", logcat.isPaused ? "Resume" : "Pause") { logcat.isPaused.toggle() }
+            iconButton("trash", "Clear") { logcat.clear() }
+            iconButton("doc.on.doc", "Copy") { copyVisible() }
+            iconButton(logcat.isRunning ? "arrow.clockwise" : "play.circle", logcat.isRunning ? "Restart" : "Start") { restart() }
             Button { jumpTarget = logcat.crashIDs.last } label: {
-                Label("\(logcat.crashIDs.count)", systemImage: "exclamationmark.octagon")
+                Label("\(logcat.crashIDs.count)", systemImage: "exclamationmark.octagon").labelStyle(.titleAndIcon)
             }
+            .buttonStyle(.bordered).controlSize(.small)
             .disabled(logcat.crashIDs.isEmpty)
-            .help("Jump to the last crash (\(logcat.crashIDs.count) so far)")
-            Button(logcat.isPaused ? "Resume" : "Pause") { logcat.isPaused.toggle() }
-            Button("Clear") { logcat.clear() }
-            Button("Copy") { copyVisible() }
-            Button(logcat.isRunning ? "Restart" : "Start") { restart() }
+            .help("Jump to the last crash")
         }
-        .padding(8)
+        .padding(.horizontal, Theme.Space.s3).padding(.vertical, Theme.Space.s2)
+    }
+
+    /// Icon-only so the whole bar fits at the window's minimum width; the name is in the tooltip and for VoiceOver.
+    private func iconButton(_ symbol: String, _ title: LocalizedStringKey, action: @escaping () -> Void) -> some View {
+        Button(action: action) { Image(systemName: symbol).frame(width: 18, height: 18) }
+            .buttonStyle(.bordered).controlSize(.small)
+            .help(title).accessibilityLabel(title)
     }
 
     private var statusLine: some View {
