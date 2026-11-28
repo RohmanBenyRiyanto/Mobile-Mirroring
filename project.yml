@@ -100,6 +100,10 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: dev.benz.mirror.uitests
         TEST_TARGET_NAME: BenzMirror
         GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_IDENTITY: "-"
+        DEVELOPMENT_TEAM: ""
+        ENABLE_HARDENED_RUNTIME: NO
 
 schemes:
   BenzMirror:
