@@ -54,7 +54,7 @@ public struct ContentView: View {
                minHeight: isMirrorWindow ? 360 : Theme.Size.connectMinimum.height)
         .background(WindowStyler(isStreamMode: model.isStreamMode, alwaysOnTop: model.alwaysOnTop, videoSize: model.videoSize,
                                  locksAspect: isMirrorWindow && model.editor == nil && !model.showsPerformance && !model.showsQuickToggles && !model.showsInspectorPanel,
-                                 isMirror: isMirrorWindow, isFlexible: model.active?.usesVirtualDisplay == true, host: host))
+                                 isMirror: isMirrorWindow, isFlexible: model.active?.usesVirtualDisplay == true, host: host, panelWidth: openPanelWidth))
         .overlay(alignment: .bottom) { NoticeToast().animated(value: model.notice) }
         .animated(value: isMirrorWindow)
         .animated(value: model.showsPerformance)

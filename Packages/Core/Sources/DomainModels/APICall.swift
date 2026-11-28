@@ -10,6 +10,8 @@ public struct ProxyRequest: Equatable, Sendable {
     public var isTunnel: Bool
     /// The request head to send on to the server: origin-form path, no proxy headers, connection closed after one answer.
     public var forwardedHead: Data
+    /// The head exactly as the phone sent it, for the log's header view.
+    public var originalHead: String
 }
 
 public enum ProxyRequestParser {
@@ -24,7 +26,7 @@ public enum ProxyRequestParser {
 
         if method == "CONNECT" {
             guard let (host, port) = hostAndPort(parts[1], defaultPort: 443) else { return nil }
-            return ProxyRequest(method: method, host: host, port: port, url: "\(host):\(port)", isTunnel: true, forwardedHead: Data())
+            return ProxyRequest(method: method, host: host, port: port, url: "\(host):\(port)", isTunnel: true, forwardedHead: Data(), originalHead: text)
         }
         guard let url = URL(string: parts[1]), let scheme = url.scheme?.lowercased(), scheme == "http", let host = url.host, !host.isEmpty else { return nil }
         let port = url.port ?? 80
@@ -39,7 +41,7 @@ public enum ProxyRequestParser {
         }
         rebuilt.append("Connection: close")
         let forwarded = rebuilt.joined(separator: "\r\n") + "\r\n\r\n"
-        return ProxyRequest(method: method, host: host, port: port, url: parts[1], isTunnel: false, forwardedHead: Data(forwarded.utf8))
+        return ProxyRequest(method: method, host: host, port: port, url: parts[1], isTunnel: false, forwardedHead: Data(forwarded.utf8), originalHead: text)
     }
 
     public static func status(fromResponse bytes: Data) -> Int? {
@@ -58,6 +60,18 @@ public enum ProxyRequestParser {
     }
 }
 
+/// What was seen of one call, kept small: heads in full, bodies cut at `HTTPMessage.bodyCapture`.
+public struct APICallDetails: Equatable, Sendable {
+    public var requestHeaders: [HTTPHeader] = []
+    public var responseHeaders: [HTTPHeader] = []
+    public var statusLine = ""
+    public var requestBody = Data()
+    public var responseBody = Data()
+    public var requestBodyTruncated = false
+    public var responseBodyTruncated = false
+    public init() {}
+}
+
 public struct APICall: Identifiable, Equatable, Sendable {
     public let id: Int
     public var startedAt: Date
@@ -69,6 +83,7 @@ public struct APICall: Identifiable, Equatable, Sendable {
     public var durationMillis: Int?
     public var sentBytes = 0
     public var receivedBytes = 0
+    public var details: APICallDetails?
 
     public init(id: Int, startedAt: Date, method: String, host: String, url: String, isTunnel: Bool) {
         self.id = id
@@ -95,12 +110,13 @@ public struct APICallLog: Equatable, Sendable {
         if calls.count > Self.capacity { calls.removeFirst(calls.count - Self.capacity) }
     }
 
-    public mutating func finish(id: Int, status: Int?, durationMillis: Int, sent: Int, received: Int) {
+    public mutating func finish(id: Int, status: Int?, durationMillis: Int, sent: Int, received: Int, details: APICallDetails? = nil) {
         guard let index = calls.lastIndex(where: { $0.id == id }) else { return }
         calls[index].status = status
         calls[index].durationMillis = durationMillis
         calls[index].sentBytes = sent
         calls[index].receivedBytes = received
+        calls[index].details = details
     }
 
     public mutating func clear() { calls.removeAll() }

@@ -1021,6 +1021,23 @@
         }
       }
     },
+    "Binary data, %@%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Binary data, %@%@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data biner, %@%@"
+          }
+        }
+      }
+    },
     "Bitrate" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1034,6 +1051,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bitrate"
+          }
+        }
+      }
+    },
+    "Body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Body"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isi"
           }
         }
       }
@@ -1816,6 +1850,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salin URL OBS"
+          }
+        }
+      }
+    },
+    "Copy as cURL" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy as cURL"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salin sebagai cURL"
           }
         }
       }
@@ -3108,6 +3159,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dekode video perangkat keras"
+          }
+        }
+      }
+    },
+    "Headers" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Headers"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Header"
           }
         }
       }
@@ -4642,6 +4710,23 @@
         }
       }
     },
+    "No body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No body"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanpa isi"
+          }
+        }
+      }
+    },
     "No calls yet" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4842,6 +4927,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tidak ada tabel terbuka"
+          }
+        }
+      }
+    },
+    "None" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "None"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada"
           }
         }
       }
@@ -5135,6 +5237,23 @@
         }
       }
     },
+    "Only the first 64 KB are kept." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only the first 64 KB are kept."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hanya 64 KB pertama yang disimpan."
+          }
+        }
+      }
+    },
     "Open" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5386,6 +5505,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Output, buffer, volume, dan audio rekaman hadir di versi berikutnya."
+          }
+        }
+      }
+    },
+    "Overview" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overview"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikhtisar"
           }
         }
       }
@@ -6087,6 +6223,23 @@
         }
       }
     },
+    "Received" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Received"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diterima"
+          }
+        }
+      }
+    },
     "Recent" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6325,6 +6478,40 @@
         }
       }
     },
+    "Request" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request"
+          }
+        }
+      }
+    },
+    "Request headers" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request headers"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Header request"
+          }
+        }
+      }
+    },
     "Reset" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6423,6 +6610,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reset semua pengaturan?"
+          }
+        }
+      }
+    },
+    "Response" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Response"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Response"
           }
         }
       }
@@ -6767,6 +6971,40 @@
         }
       }
     },
+    "Section" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Section"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagian"
+          }
+        }
+      }
+    },
+    "Select a call to see its request and response." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a call to see its request and response."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih panggilan untuk melihat request dan response-nya."
+          }
+        }
+      }
+    },
     "Send Clipboard Image to Phone" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6831,6 +7069,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kirim lalu lintas lewat Mac ini"
+          }
+        }
+      }
+    },
+    "Sent" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sent"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terkirim"
           }
         }
       }
@@ -8654,6 +8909,23 @@
         }
       }
     },
+    "This is an HTTPS connection. Its contents are encrypted between the app and the server, so only the address and size are known." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This is an HTTPS connection. Its contents are encrypted between the app and the server, so only the address and size are known."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ini koneksi HTTPS. Isinya terenkripsi antara aplikasi dan server, jadi hanya alamat dan ukurannya yang diketahui."
+          }
+        }
+      }
+    },
     "This lets your Mac see and control the phone." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8905,6 +9177,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inspector UI"
+          }
+        }
+      }
+    },
+    "URL" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL"
           }
         }
       }
@@ -9432,6 +9721,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Menunggu ponsel melakukan panggilan"
+          }
+        }
+      }
+    },
+    "Waiting for the response" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waiting for the response"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menunggu respons"
           }
         }
       }

@@ -47,3 +47,33 @@ final class APICallTests: XCTestCase {
         XCTAssertTrue(log.calls.isEmpty)
     }
 }
+
+final class HTTPMessageTests: XCTestCase {
+    func testHeadersStatusAndJSONPreview() {
+        let message = Data("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nSet-Cookie: a=b\r\n\r\n{\"b\":1,\"a\":[1,2]}".utf8)
+        let (head, body) = HTTPMessage.split(message)!
+        XCTAssertEqual(HTTPMessage.firstLine(of: head), "HTTP/1.1 200 OK")
+        let headers = HTTPMessage.headers(inHead: head)
+        XCTAssertEqual(headers.map(\.name), ["Content-Type", "Set-Cookie"])
+        guard case let .text(text, _) = HTTPMessage.preview(of: body, headers: headers) else { return XCTFail("expected text") }
+        XCTAssertTrue(text.contains("\"a\" : [") && text.contains("\n"), "JSON is pretty-printed with sorted keys")
+    }
+
+    func testChunkedBodiesAreJoinedAndBinaryIsNotShownAsText() {
+        let chunked = Data("5\r\nhello\r\n6\r\n world\r\n0\r\n\r\n".utf8)
+        let headers = [HTTPHeader(name: "Transfer-Encoding", value: "chunked")]
+        XCTAssertEqual(String(decoding: HTTPMessage.decodedBody(chunked, headers: headers), as: UTF8.self), "hello world")
+        XCTAssertEqual(HTTPMessage.preview(of: Data([0, 1, 2, 255]), headers: [HTTPHeader(name: "Content-Type", value: "image/png")]), .binary(bytes: 4, type: "image/png"))
+        XCTAssertEqual(HTTPMessage.preview(of: Data(), headers: []), .empty)
+    }
+
+    func testGzipBodiesAreInflated() throws {
+        let gzip = Data(base64Encoded: "H4sIAAAAAAAAA8tIzcnJVyjPL8pJAQCFEUoNCwAAAA==")!
+        XCTAssertEqual(String(decoding: HTTPMessage.decodedBody(gzip, headers: [HTTPHeader(name: "Content-Encoding", value: "gzip")]), as: UTF8.self), "hello world")
+    }
+
+    func testCurlQuotesEverything() {
+        let curl = HTTPMessage.curl(method: "POST", url: "http://x/it's", headers: [HTTPHeader(name: "Host", value: "x"), HTTPHeader(name: "A", value: "b")], body: Data("d".utf8))
+        XCTAssertEqual(curl, "curl -X POST 'http://x/it'\\''s' -H 'A: b' --data-raw 'd'")
+    }
+}

@@ -41,6 +41,13 @@ final class RailPanelController: NSObject {
         observers.append(center.addObserver(forName: NSWindow.didExitFullScreenNotification, object: parent, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.setVisible(true) }
         })
+        // The rail belongs to the phone window: it goes into the Dock with it and comes back with it.
+        observers.append(center.addObserver(forName: NSWindow.didMiniaturizeNotification, object: parent, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.setVisible(false) }
+        })
+        observers.append(center.addObserver(forName: NSWindow.didDeminiaturizeNotification, object: parent, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.setVisible(true) }
+        })
         parent.addChildWindow(panel, ordered: .above)
         reposition()
     }
@@ -48,7 +55,7 @@ final class RailPanelController: NSObject {
     deinit { observers.forEach(NotificationCenter.default.removeObserver) }
 
     func setVisible(_ visible: Bool) {
-        if visible, parent?.styleMask.contains(.fullScreen) != true {
+        if visible, parent?.styleMask.contains(.fullScreen) != true, parent?.isMiniaturized != true {
             if panel.parent == nil { parent?.addChildWindow(panel, ordered: .above) }
             panel.orderFront(nil)
             reposition()

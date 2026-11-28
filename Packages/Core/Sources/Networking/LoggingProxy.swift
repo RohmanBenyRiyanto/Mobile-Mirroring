@@ -12,6 +12,7 @@ public final class LoggingProxy: @unchecked Sendable {
         public var durationMillis: Int?
         public var sent = 0
         public var received = 0
+        public var details: APICallDetails?
     }
 
     private static let maxConnections = 64
@@ -88,6 +89,9 @@ public final class LoggingProxy: @unchecked Sendable {
 
         let sent = LockedValue(0), received = LockedValue(0)
         let firstBytes = LockedValue(Data())
+        // Plain HTTP is kept for the log's detail view (cut at a size limit); a tunnel's contents are encrypted and are not.
+        let requestCapture = LockedValue(Data(leftover.prefix(HTTPMessage.bodyCapture)))
+        let responseCapture = LockedValue(Data())
         do {
             if request.isTunnel {
                 try client.write(Data("HTTP/1.1 200 Connection Established\r\n\r\n".utf8))
@@ -103,11 +107,15 @@ public final class LoggingProxy: @unchecked Sendable {
         Thread.detachNewThread {
             while let chunk = try? client.readSome(limit: 16 << 10), !chunk.isEmpty {
                 if (try? server.write(chunk)) == nil { break }
+                if !request.isTunnel { requestCapture.withLock { if $0.count < HTTPMessage.bodyCapture { $0.append(chunk.prefix(HTTPMessage.bodyCapture - $0.count)) } } }
                 sent.withLock { $0 += chunk.count }
             }
         }
         while let chunk = try? server.readSome(limit: 16 << 10), !chunk.isEmpty {
-            if !request.isTunnel { firstBytes.withLock { if $0.count < 32 { $0.append(chunk.prefix(32 - $0.count)) } } }
+            if !request.isTunnel {
+                firstBytes.withLock { if $0.count < 32 { $0.append(chunk.prefix(32 - $0.count)) } }
+                responseCapture.withLock { if $0.count < HTTPMessage.bodyCapture + ProxyRequestParser.maxHeadBytes { $0.append(chunk.prefix(HTTPMessage.bodyCapture + ProxyRequestParser.maxHeadBytes - $0.count)) } }
+            }
             if (try? client.write(chunk)) == nil { break }
             received.withLock { $0 += chunk.count }
         }
@@ -115,6 +123,23 @@ public final class LoggingProxy: @unchecked Sendable {
         report.durationMillis = Int(Date().timeIntervalSince(started) * 1000)
         report.sent = sent.get()
         report.received = received.get()
+        if !request.isTunnel { report.details = Self.details(request: request, requestBody: requestCapture.get(), response: responseCapture.get(), totalSent: report.sent, totalReceived: report.received) }
         onReport(report)
+    }
+
+    private static func details(request: ProxyRequest, requestBody: Data, response: Data, totalSent: Int, totalReceived: Int) -> APICallDetails {
+        var details = APICallDetails()
+        details.requestHeaders = HTTPMessage.headers(inHead: request.originalHead)
+        details.requestBody = requestBody
+        details.requestBodyTruncated = totalSent - request.forwardedHead.count > requestBody.count
+        if let (head, body) = HTTPMessage.split(response) {
+            details.statusLine = HTTPMessage.firstLine(of: head)
+            details.responseHeaders = HTTPMessage.headers(inHead: head)
+            details.responseBody = body
+            details.responseBodyTruncated = totalReceived - (response.count - body.count) > body.count
+        } else {
+            details.statusLine = HTTPMessage.firstLine(of: String(decoding: response.prefix(200), as: UTF8.self))
+        }
+        return details
     }
 }

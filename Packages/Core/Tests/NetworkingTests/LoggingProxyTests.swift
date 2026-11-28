@@ -94,3 +94,34 @@ final class LoggingProxyTests: XCTestCase {
         XCTAssertTrue(String(decoding: try unreachable.readSome(limit: 200), as: UTF8.self).contains("502"))
     }
 }
+
+final class LoggingProxyDetailsTests: XCTestCase {
+    func testHeadersAndBodiesAreCapturedForPlainHTTP() throws {
+        let server = try LoopbackListener()
+        Thread {
+            guard let stream = try? server.accept(timeout: 5) else { return }
+            var head = Data()
+            while head.range(of: Data("\r\n\r\n".utf8)) == nil, let chunk = try? stream.readSome(limit: 4096), !chunk.isEmpty { head.append(chunk) }
+            try? stream.write(Data("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nX-Test: yes\r\nContent-Length: 13\r\n\r\n{\"ok\":true}\r\n".utf8))
+            stream.shutdown()
+        }.start()
+        let lock = NSLock()
+        var last: LoggingProxy.Report?
+        let proxy = try LoggingProxy { report in lock.withLock { last = report } }
+        proxy.start()
+        defer { proxy.stop() }
+
+        let client = try TCPStream.connect(host: "127.0.0.1", port: Int(proxy.port))
+        client.setTimeouts(seconds: 5)
+        try client.write(Data("POST http://127.0.0.1:\(server.port)/api?x=1 HTTP/1.1\r\nHost: h\r\nAuthorization: Bearer abc\r\nContent-Length: 7\r\n\r\nname=Ada".utf8))
+        while let chunk = try? client.readSome(limit: 4096), !chunk.isEmpty {}
+        let deadline = Date().addingTimeInterval(3)
+        while lock.withLock({ last?.details }) == nil, Date() < deadline { Thread.sleep(forTimeInterval: 0.02) }
+        let details = try XCTUnwrap(lock.withLock { last?.details })
+        XCTAssertEqual(details.statusLine, "HTTP/1.1 200 OK")
+        XCTAssertEqual(HTTPMessage.value(of: "x-test", in: details.responseHeaders), "yes")
+        XCTAssertEqual(HTTPMessage.value(of: "Authorization", in: details.requestHeaders), "Bearer abc")
+        XCTAssertEqual(String(decoding: details.requestBody, as: UTF8.self), "name=Ada")
+        XCTAssertTrue(String(decoding: details.responseBody, as: UTF8.self).hasPrefix("{\"ok\":true}"))
+    }
+}

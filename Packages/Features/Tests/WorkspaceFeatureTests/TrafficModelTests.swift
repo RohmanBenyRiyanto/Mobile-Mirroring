@@ -69,6 +69,12 @@ final class TrafficLiveTests: XCTestCase {
         try await Task.sleep(for: .seconds(1))
         traffic.flush()
         XCTAssertTrue(traffic.log.calls.contains { $0.host == "example.com" }, "calls: \(traffic.log.calls)")
+        let call = try XCTUnwrap(traffic.log.calls.last { $0.host == "example.com" })
+        let details = try XCTUnwrap(call.details, "headers and body of a plain HTTP call are kept")
+        XCTAssertTrue(details.statusLine.hasPrefix("HTTP/"), details.statusLine)
+        XCTAssertNotNil(HTTPMessage.value(of: "Content-Type", in: details.responseHeaders))
+        XCTAssertNotNil(HTTPMessage.value(of: "User-Agent", in: details.requestHeaders))
+        XCTAssertFalse(details.responseBody.isEmpty)
         traffic.stop()
         XCTAssertEqual(try run(["shell", "settings get global http_proxy"]), before)
     }

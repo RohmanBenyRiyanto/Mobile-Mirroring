@@ -20,9 +20,12 @@ public struct WindowStyler: NSViewRepresentable {
     /// The picture is a virtual display that follows the window, so the window is never aspect-locked.
     public let isFlexible: Bool
     public var host: HostWindow?
+    /// Width taken by docked panels; if they squeeze the picture, the window grows to make room.
+    public let panelWidth: CGFloat
 
-    public init(isStreamMode: Bool, alwaysOnTop: Bool, videoSize: CGSize, locksAspect: Bool = false, isMirror: Bool = false, isFlexible: Bool = false, host: HostWindow? = nil) {
+    public init(isStreamMode: Bool, alwaysOnTop: Bool, videoSize: CGSize, locksAspect: Bool = false, isMirror: Bool = false, isFlexible: Bool = false, host: HostWindow? = nil, panelWidth: CGFloat = 0) {
         self.host = host
+        self.panelWidth = panelWidth
         self.isMirror = isMirror
         self.isFlexible = isFlexible
         self.isStreamMode = isStreamMode
@@ -86,6 +89,18 @@ public struct WindowStyler: NSViewRepresentable {
             window.resizeIncrements = NSSize(width: 1, height: 1) // also clears the aspect ratio
         }
         if let target { resize(window, toContent: target) }
+        else if panelWidth > 0, isMirror, !isStreamMode, validVideo, !window.styleMask.contains(.fullScreen) {
+            // A panel opened without the window making room (or the window was shrunk by hand): give the picture back its width.
+            let content = window.contentLayoutRect.size
+            let wanted = content.height * videoSize.width / videoSize.height
+            let shown = content.width - panelWidth
+            if shown < wanted * 0.6 {
+                var frame = window.frame
+                frame.size.width += wanted - shown
+                if let visible = (window.screen ?? NSScreen.main)?.visibleFrame { frame = WindowPlacement.fitted(frame, in: visible) }
+                window.setFrame(frame, display: true, animate: !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion)
+            }
+        }
     }
 
     /// Animates the resize from the top-left corner so the window does not jump.
