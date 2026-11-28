@@ -14,8 +14,9 @@ xcuserdata/
 # macOS
 .DS_Store
 
-# Notes, QA lists, design sources and AI files stay local. To publish one file, add a line such as  !docs/README.md
+# Notes, QA lists, design sources and AI files stay local. Developer documentation is published with !docs/developers/. To publish another folder or file, add a line such as  !docs/<name>
 docs/*
+!docs/developers/
 CLAUDE.md
 .claude/
 *.local.md
