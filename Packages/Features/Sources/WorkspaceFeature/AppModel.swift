@@ -101,7 +101,8 @@ public final class AppModel: ObservableObject {
     private var launchTask: Task<Void, Never>?
     private let recordingStatusItem = RecordingStatusItem()
     private var statusObserver: AnyCancellable?
-    private var hasListedDevices = false
+    /// False until adb has answered once, so the sidebar can show that it is still looking.
+    @Published public private(set) var hasListedDevices = false
     private var pendingSession: DeviceSession?
     private var observers: [String: AnyCancellable] = [:]
     private let noForeground = ForegroundAppDetector()

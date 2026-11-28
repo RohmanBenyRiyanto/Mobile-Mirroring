@@ -3486,6 +3486,23 @@
         }
       }
     },
+    "Loading" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memuat"
+          }
+        }
+      }
+    },
     "Location" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3533,6 +3550,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Logcat…"
+          }
+        }
+      }
+    },
+    "Looking for phones…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looking for phones…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mencari ponsel…"
           }
         }
       }
@@ -5216,6 +5250,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Keluar sekarang akan membuat video tidak selesai. Hentikan rekaman dan simpan dulu?"
+          }
+        }
+      }
+    },
+    "Reading the phone…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reading the phone…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membaca ponsel…"
           }
         }
       }

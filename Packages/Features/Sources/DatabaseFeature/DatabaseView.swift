@@ -71,6 +71,8 @@ public struct DatabaseView<Source: DatabaseSource>: View {
             .padding(Theme.Space.s3)
             Divider()
             ResultGrid(header: model.header, rows: model.rows)
+                .overlay { if model.isBusy { ProgressView().controlSize(.regular).padding().background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10)) } }
+                .animation(.easeInOut(duration: 0.15), value: model.isBusy)
             if model.isTruncated {
                 Divider()
                 Text("Showing the first 1,000 rows.").font(Theme.Font.caption).foregroundStyle(.secondary).padding(Theme.Space.s2)

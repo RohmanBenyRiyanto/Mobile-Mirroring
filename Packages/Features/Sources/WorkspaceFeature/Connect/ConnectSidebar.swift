@@ -11,8 +11,10 @@ struct ConnectSidebar: View {
     var body: some View {
         List(selection: $model.selectedSerial) {
             Section("Devices") {
-                if model.devices.isEmpty {
-                    Text("No devices").foregroundStyle(Theme.Palette.textSecondary.color)
+                if !model.hasListedDevices {
+                    LoadingLabel("Looking for phones…")
+                } else if model.devices.isEmpty {
+                    Text("No devices").foregroundStyle(Theme.Palette.textSecondary.color).transition(.opacity)
                 }
                 ForEach(model.devices) { device in
                     DeviceRow(device: device).tag(Optional(device.serial))
@@ -26,6 +28,8 @@ struct ConnectSidebar: View {
             }
         }
         .listStyle(.sidebar)
+        .animated(value: model.hasListedDevices)
+        .animated(value: model.devices.count)
     }
 
     private func libraryButton(_ title: LocalizedStringKey, _ symbol: String, action: @escaping () -> Void) -> some View {

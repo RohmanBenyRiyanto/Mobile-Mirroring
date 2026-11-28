@@ -8,6 +8,7 @@ struct DeviceInfoSheet: View {
     @EnvironmentObject private var model: AppModel
     @Environment(\.dismiss) private var dismiss
     @State private var fetched: DeviceInfo?
+    @State private var isLoading = true
 
     private var info: DeviceInfo? { model.deviceInfo ?? fetched }
 
@@ -32,6 +33,7 @@ struct DeviceInfoSheet: View {
         .frame(width: 440, height: 400)
         .task {
             // Before mirroring starts there is no session, so ask the selected phone directly.
+            defer { isLoading = false }
             guard model.deviceInfo == nil, let adb = model.adb, let serial = model.targetSerial else { return }
             fetched = try? await Task.detached { try DeviceInfo.fetch(adb: adb, serial: serial) }.value
         }
@@ -39,7 +41,9 @@ struct DeviceInfoSheet: View {
 
     private func row(_ title: LocalizedStringKey, _ value: String?) -> some View {
         SettingsRow(title) {
-            Text(value ?? "—").font(Theme.Font.mono).textSelection(.enabled).foregroundStyle(.secondary)
+            LoadedValue(isLoading: isLoading && value == nil, skeletonWidth: 110) {
+                Text(value ?? "—").font(Theme.Font.mono).textSelection(.enabled).foregroundStyle(.secondary)
+            }
         }
     }
 }

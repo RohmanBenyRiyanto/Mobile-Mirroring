@@ -9,6 +9,7 @@ import Theme
 @MainActor
 public final class DeveloperToolsModel: ObservableObject {
     @Published public private(set) var state = DeveloperState()
+    @Published public private(set) var isLoaded = false
     @Published public private(set) var canUndo = false
     @Published public private(set) var failure: String?
     public let allowsNetworkSwitches: Bool
@@ -34,6 +35,7 @@ public final class DeveloperToolsModel: ObservableObject {
             return
         }
         failure = nil
+        isLoaded = true
         state = DeveloperSettings.parse(output)
         if baseline == nil { baseline = state }
     }
@@ -125,6 +127,7 @@ struct QuickTogglesPanel: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            if !tools.isLoaded && tools.failure == nil { LoadingLabel("Reading the phone…").padding(Theme.Space.s3).frame(maxWidth: .infinity, alignment: .leading) }
             GroupedForm {
                 Section {
                     Toggle("Layout bounds", isOn: binding(\.layoutBounds))
@@ -182,6 +185,7 @@ struct QuickTogglesPanel: View {
             .padding(Theme.Space.s3)
         }
         .frame(width: Self.width)
+        .animated(value: tools.isLoaded)
         .task { await tools.load() }
     }
 

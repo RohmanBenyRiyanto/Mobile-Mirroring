@@ -121,6 +121,12 @@ struct PerformancePanel: View {
     }
 
     private func number(_ text: String?) -> some View {
+        LoadedValue(isLoading: text == nil && monitor.latest == nil, skeletonWidth: 56) {
+            numberText(text)
+        }
+    }
+
+    private func numberText(_ text: String?) -> some View {
         Text(verbatim: text ?? "–").font(Theme.Font.mono).foregroundStyle(text == nil ? .secondary : .primary).monospacedDigit()
     }
 
