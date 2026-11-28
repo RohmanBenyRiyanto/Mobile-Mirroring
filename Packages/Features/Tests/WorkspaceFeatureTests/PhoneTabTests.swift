@@ -1,4 +1,7 @@
+import DomainModels
 import Networking
+import Persistence
+import TestSupport
 import XCTest
 @testable import WorkspaceFeature
 
@@ -35,7 +38,7 @@ final class ExampleKeymapTests: XCTestCase {
         let store = try ProfileStore<Keymap>(kind: "keymap", root: FileManager.default.temporaryDirectory.appendingPathComponent("mc-\(UUID().uuidString)"))
         let profile = try store.inspect(Data(contentsOf: projectFile("docs/examples/magic-chess-gogo.benzkeymap")))
         XCTAssertEqual(profile.payload.package, "com.mobilechess.gp")
-        let keys = profile.payload.elements.flatMap(\.keys)
+        let keys: [UInt16] = profile.payload.elements.flatMap { $0.keys }
         XCTAssertEqual(keys.count, Set(keys).count)
         XCTAssertEqual(profile.payload.elements.count, 18)
     }
