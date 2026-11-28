@@ -458,7 +458,12 @@ public enum SettingsStore {
     }
 }
 
-extension AppModel: DatabaseSource {}
+extension AppModel: DatabaseSource {
+    public func makeDatabaseBackend(package: String) throws -> DatabaseBackend {
+        guard let adb, let serial = targetSerial else { throw AppDatabaseError.failed("No phone is connected.") }
+        return try AppDatabase(adb: adb, serial: serial, package: package)
+    }
+}
 
 extension AppModel: LogcatSource {
     public var frontPackage: String? { foreground.current?.package }

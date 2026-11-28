@@ -74,6 +74,7 @@ public struct SearchPicker: View {
     private var list: some View {
         VStack(spacing: 0) {
             TextField("Search", text: $query).textFieldStyle(.roundedBorder).padding(Theme.Space.s3)
+                .onSubmit { if let first = results.first { selection = first.id; isOpen = false } }
             Divider()
             if isLoading && items.isEmpty {
                 LoadingLabel("Reading the phone").padding(Theme.Space.s4).frame(maxWidth: .infinity, alignment: .leading)

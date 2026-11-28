@@ -1412,6 +1412,57 @@
         }
       }
     },
+    "Column" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Column"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kolom"
+          }
+        }
+      }
+    },
+    "Columns of %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Columns of %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kolom %@"
+          }
+        }
+      }
+    },
+    "Condition" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condition"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kondisi"
+          }
+        }
+      }
+    },
     "Connect" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1803,6 +1854,23 @@
         }
       }
     },
+    "Copy the databases again every two seconds and refresh when they change" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy the databases again every two seconds and refresh when they change"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salin ulang database tiap dua detik dan segarkan saat berubah"
+          }
+        }
+      }
+    },
     "Copying %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2088,6 +2156,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mode gelap"
+          }
+        }
+      }
+    },
+    "Data" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
           }
         }
       }
@@ -3146,6 +3231,23 @@
         }
       }
     },
+    "History" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riwayat"
+          }
+        }
+      }
+    },
     "Home" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3329,6 +3431,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Info"
+          }
+        }
+      }
+    },
+    "Insert" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insert"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sisipkan"
           }
         }
       }
@@ -3788,6 +3907,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Liquid Glass bawaan sistem di macOS 26 ke atas, ditiru di versi sebelumnya"
+          }
+        }
+      }
+    },
+    "Live updates" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Live updates"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pembaruan langsung"
           }
         }
       }
@@ -4472,6 +4608,40 @@
         }
       }
     },
+    "New query" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New query"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Query baru"
+          }
+        }
+      }
+    },
+    "Next page" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next page"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halaman berikutnya"
+          }
+        }
+      }
+    },
     "No calls yet" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4608,6 +4778,40 @@
         }
       }
     },
+    "No rows" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No rows"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada baris"
+          }
+        }
+      }
+    },
+    "No rows yet. The columns are %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No rows yet. The columns are %@."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum ada baris. Kolomnya: %@."
+          }
+        }
+      }
+    },
     "No shortcut matches." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4621,6 +4825,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tidak ada pintasan yang cocok."
+          }
+        }
+      }
+    },
+    "No table open" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No table open"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada tabel terbuka"
           }
         }
       }
@@ -4706,6 +4927,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tidak ada yang direkam"
+          }
+        }
+      }
+    },
+    "Nothing yet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing yet"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum ada"
           }
         }
       }
@@ -5373,6 +5611,23 @@
         }
       }
     },
+    "Pick a table on the left, or start a new query." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick a table on the left, or start a new query."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih tabel di kiri, atau mulai query baru."
+          }
+        }
+      }
+    },
     "Pick an element, or point at one on the phone." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5624,6 +5879,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tekan tombol untuk makro ini (Esc membatalkan)"
+          }
+        }
+      }
+    },
+    "Previous page" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous page"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halaman sebelumnya"
           }
         }
       }
@@ -7379,6 +7651,23 @@
         }
       }
     },
+    "Structure" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Structure"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Struktur"
+          }
+        }
+      }
+    },
     "Style" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7685,6 +7974,40 @@
         }
       }
     },
+    "Templates" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Templates"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Templat"
+          }
+        }
+      }
+    },
+    "That column does not exist. Open the table's Structure to see its columns." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That column does not exist. Open the table's Structure to see its columns."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kolom itu tidak ada. Buka Struktur tabel untuk melihat kolomnya."
+          }
+        }
+      }
+    },
     "That file is not a valid app package." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7715,6 +8038,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nama itu tidak dapat dipakai."
+          }
+        }
+      }
+    },
+    "That table does not exist in this database. Pick one from the list on the left." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That table does not exist in this database. Pick one from the list on the left."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabel itu tidak ada di database ini. Pilih salah satu dari daftar di kiri."
           }
         }
       }
@@ -7766,6 +8106,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aplikasi sudah terpasang."
+          }
+        }
+      }
+    },
+    "The app is writing to the database right now. Try again in a moment." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app is writing to the database right now. Try again in a moment."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikasi sedang menulis ke database. Coba lagi sebentar lagi."
           }
         }
       }
@@ -7834,6 +8191,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Koneksi ke ponsel terputus. Coba lagi."
+          }
+        }
+      }
+    },
+    "The file could not be read as a database. It may be encrypted or mid-write." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file could not be read as a database. It may be encrypted or mid-write."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File tidak bisa dibaca sebagai database. Mungkin terenkripsi atau sedang ditulis."
           }
         }
       }
@@ -8106,6 +8480,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prosesor sedang penuh"
+          }
+        }
+      }
+    },
+    "The query is not valid SQL. Check commas, quotes and keywords." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The query is not valid SQL. Check commas, quotes and keywords."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Query bukan SQL yang valid. Periksa koma, tanda kutip, dan kata kunci."
           }
         }
       }
@@ -8837,6 +9228,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memakai kabel USB satu kali, setelah itu kabel boleh dicabut."
+          }
+        }
+      }
+    },
+    "Value" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Value"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nilai"
           }
         }
       }

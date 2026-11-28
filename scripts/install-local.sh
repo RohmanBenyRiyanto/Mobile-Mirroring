@@ -15,4 +15,7 @@ for _ in {1..20}; do pgrep -x BenzMirror >/dev/null || break; sleep 0.25; done
 rm -rf "/Applications/Benz Mirror.app"
 cp -R "$APP" "/Applications/Benz Mirror.app"
 open "/Applications/Benz Mirror.app"
+# The first open right after replacing the app is sometimes swallowed by the system; make sure it is really running.
+for _ in {1..12}; do pgrep -x BenzMirror >/dev/null && break; sleep 1; done
+pgrep -x BenzMirror >/dev/null || open "/Applications/Benz Mirror.app"
 echo "Installed /Applications/Benz Mirror.app"

@@ -32,3 +32,20 @@ sizes and positions were read back after every step. Live phone tests ran throug
 - macOS 14–25 appearance not run (this Mac is on 26+).
 - Trackpad scrolling, arrow-key scrolling and sound need hands-on use.
 - UI tests (`UITests`) pass when the screen is awake; they cannot see windows while the display sleeps.
+
+## Visual review (screenshots taken from the running app)
+
+Reviewed: mirror window with rail, HUD, Quick Toggles, Logcat, API Log, Database, Settings (General, About), Connect, onboarding sheet, DMG window.
+
+| Finding | Fix |
+|---|---|
+| HUD sparklines hugged the right edge and looked like stray marks; rows were too tall. | The line grows from the left across a 30-sample window and only appears with two samples; rows are compact. |
+| API Log showed empty striped rows. | Empty state with an explanation. |
+| Database: picker label right-aligned next to a left-aligned button; an error for the launcher shown on open. | Left aligned, no automatic open. Rewritten as a multi-database browser. |
+| Onboarding sheet (620 pt) was taller than the Connect window (564 pt). | 480×470. |
+| DMG icon names were unreadable on a dark background. | Light background. |
+
+## Added from the review
+
+- Logcat can follow any chosen app (not only the one in front), with a searchable app list.
+- Database Inspector modelled on Android Studio's: every database of the app in one tree (Room's own tables dimmed), tabs for tables and queries, sort by header, paging, filter form, structure view, live updates, query templates, table/column insert menus, history, error hints, CSV export. Read-only by design.

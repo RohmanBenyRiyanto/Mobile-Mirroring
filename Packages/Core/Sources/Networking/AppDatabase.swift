@@ -19,8 +19,16 @@ public enum AppDatabaseError: LocalizedError, Equatable {
     }
 }
 
+/// What the database browser needs from a source of SQLite files, so it can be tested without a phone.
+public protocol DatabaseBackend: AnyObject, Sendable {
+    func listFiles() throws -> [String]
+    func pull(_ name: String) throws -> URL
+    func query(_ sql: String, in file: URL) throws -> [[String]]
+    func cleanUp()
+}
+
 /// Reads a debug app's SQLite files. They are copied to a private folder on the Mac and queried there read-only; nothing is written back.
-public final class AppDatabase: @unchecked Sendable {
+public final class AppDatabase: DatabaseBackend, @unchecked Sendable {
     private let adb: ADB
     private let serial: String
     public let package: String
