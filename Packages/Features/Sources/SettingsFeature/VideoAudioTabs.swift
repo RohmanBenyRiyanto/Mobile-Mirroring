@@ -44,18 +44,19 @@ struct AudioTab: View {
                 Picker("Output", selection: .constant("System default")) { Text("System default").tag("System default") }
                     .labelsHidden().frame(width: 150).disabled(true)
             }
-            SettingsRow("Buffer", detail: "Lower is faster. Raise it if sound crackles.") {
-                HStack(spacing: Theme.Space.s1) {
-                    Text(verbatim: "50").font(Theme.Font.mono)
-                    Text("ms").font(Theme.Font.caption).foregroundStyle(Theme.Palette.textSecondary.color)
+            SettingsRow("Buffer", detail: "Lower is faster. Raise it if sound crackles. Applies the next time you connect.") {
+                HStack(spacing: Theme.Space.s2) {
+                    Slider(value: Binding(get: { Double(model.settings.audioBufferMillis) }, set: { model.settings.audioBufferMillis = Int($0) }),
+                           in: Double(MirrorSettings.audioBufferRange.lowerBound)...Double(MirrorSettings.audioBufferRange.upperBound), step: 10)
+                        .frame(width: 110)
+                    Text(verbatim: "\(model.settings.audioBufferMillis) ms").font(Theme.Font.mono).frame(width: 56, alignment: .trailing)
                 }
-                .disabled(true)
             }
             SettingsRow("Volume") {
-                Slider(value: .constant(0.8)).frame(width: 150).disabled(true)
+                Slider(value: $model.settings.audioVolume, in: 0...1).frame(width: 150)
             }
         }
-        SettingsCard(footer: "Output, buffer, volume and recording audio arrive in a later version.") {
+        SettingsCard(footer: "Output and recording audio arrive in a later version.") {
             SettingsRow("Mute the phone speaker", detail: "While audio plays on this Mac") {
                 Toggle("Mute the phone speaker", isOn: .constant(true)).labelsHidden().toggleStyle(.switch).disabled(true)
             }

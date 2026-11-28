@@ -7,10 +7,11 @@ import DomainModels
 /// after a Wi-Fi hiccup), the backlog is dropped in one go and playback continues from the newest audio. That is one
 /// short gap instead of a stream of small ones, and the delay goes back to a few milliseconds.
 public final class AudioPlayer: @unchecked Sendable {
-    public init() {}
+    public init(bufferMillis: Int = 120) { maxQueuedFrames = AVAudioFrameCount(max(bufferMillis, 20) * 48) }
 
-    /// 120 ms at 48 kHz.
-    public static let maxQueuedFrames: AVAudioFrameCount = 5_760
+    /// The most that may queue before the backlog is dropped (48 frames per millisecond).
+    public let maxQueuedFrames: AVAudioFrameCount
+    private let volumeLevel = LockedValue(1.0)
 
     private let engine = AVAudioEngine()
     private let node = AVAudioPlayerNode()
@@ -22,7 +23,14 @@ public final class AudioPlayer: @unchecked Sendable {
 
     public var isMuted: Bool {
         get { node.volume == 0 }
-        set { node.volume = newValue ? 0 : 1 }
+        set { node.volume = newValue ? 0 : Float(volumeLevel.get()) }
+    }
+
+    /// 0…1; ignored while muted, and restored when unmuted.
+    public func setVolume(_ volume: Double) {
+        let clamped = min(max(volume, 0), 1)
+        volumeLevel.set(clamped)
+        if node.volume != 0 || clamped == 0 { node.volume = Float(clamped) }
     }
 
     public func start() throws {
@@ -43,7 +51,7 @@ public final class AudioPlayer: @unchecked Sendable {
         let frames = AVAudioFrameCount(pcm.count / SampleBuffers.PCM.bytesPerFrame)
         guard frames > 0, let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frames) else { return }
 
-        if queuedFrames.get() >= Self.maxQueuedFrames { dropBacklog() }
+        if queuedFrames.get() >= maxQueuedFrames { dropBacklog() }
         Self.fill(buffer, fromInterleavedInt16: pcm)
         let current = generation.get()
         queuedFrames.withLock { $0 += frames }

@@ -3520,6 +3520,23 @@
         }
       }
     },
+    "Lower is faster. Raise it if sound crackles. Applies the next time you connect." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lower is faster. Raise it if sound crackles. Applies the next time you connect."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Makin rendah makin cepat. Naikkan jika suara pecah. Berlaku saat sambung berikutnya."
+          }
+        }
+      }
+    },
     "Mac" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4604,6 +4621,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Output"
+          }
+        }
+      }
+    },
+    "Output and recording audio arrive in a later version." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Output and recording audio arrive in a later version."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Output dan audio rekaman hadir di versi berikutnya."
           }
         }
       }
@@ -5798,6 +5832,23 @@
         }
       }
     },
+    "Send Clipboard Image to Phone" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Clipboard Image to Phone"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kirim Gambar Clipboard ke Ponsel"
+          }
+        }
+      }
+    },
     "Send File…" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6950,6 +7001,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aplikasi dibuka di layarnya sendiri yang mengikuti ukuran jendela, jadi tanpa bar hitam. Layar ponsel sendiri tidak dicerminkan selama ini aktif. Saat Anda memutus koneksi, aplikasi kembali ke ponsel."
+          }
+        }
+      }
+    },
+    "The clipboard has no image" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The clipboard has no image"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clipboard tidak berisi gambar"
           }
         }
       }

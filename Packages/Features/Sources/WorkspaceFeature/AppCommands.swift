@@ -56,6 +56,9 @@ public struct AppCommands: Commands {
             Button("Paste to Phone") { model.pasteToPhone() }
                 .keyboardShortcut("v")
                 .disabled(!mirroring)
+            Button("Send Clipboard Image to Phone") { model.sendClipboardImage() }
+                .keyboardShortcut("v", modifiers: [.command, .option])
+                .disabled(!mirroring)
             Button("Copy from Phone") { model.copyFromPhone() }
                 .keyboardShortcut("c")
                 .disabled(!mirroring)

@@ -46,6 +46,7 @@ public final class AppModel: ObservableObject {
     @Published public var settings: MirrorSettings {
         didSet {
             SettingsStore.save(settings, to: defaults)
+            if settings.audioVolume != oldValue.audioVolume { for session in sessions { session.scrcpy.setVolume(settings.audioVolume) } }
             guard let serial = selectedSerial else { return }
             deviceSettings.record(settings, serial: serial)
             if let data = try? JSONEncoder().encode(deviceSettings) { defaults.set(data, forKey: "deviceSettings.v1") }

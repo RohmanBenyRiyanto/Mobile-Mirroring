@@ -56,6 +56,28 @@ extension AppModel {
         }
     }
 
+    /// Edit → Send Clipboard Image to Phone: saves the Mac's copied picture as a PNG and sends it to the phone's Gallery.
+    public func sendClipboardImage() {
+        let pasteboard = NSPasteboard.general
+        guard let image = NSImage(pasteboard: pasteboard), let tiff = image.tiffRepresentation,
+              let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:]) else {
+            notice = String(localized: "The clipboard has no image")
+            return
+        }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyyMMdd-HHmmss"
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent("benzmirror-clipboard", isDirectory: true)
+        let file = folder.appendingPathComponent("Clipboard-\(formatter.string(from: Date())).png")
+        do {
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            try png.write(to: file, options: .atomic)
+        } catch {
+            notice = error.localizedDescription
+            return
+        }
+        push(file: file)
+    }
+
     private func install(apk: URL) {
         guard let adb, let serial = targetSerial else { return }
         notice = String(localized: "Installing \(apk.lastPathComponent)…")

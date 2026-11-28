@@ -76,12 +76,16 @@ public final class ScrcpySession: @unchecked Sendable {
         self.serial = serial
         self.settings = settings
         self.decoder = VideoDecoder(codec: settings.quality.codec)
-        self.player = settings.audioEnabled ? AudioPlayer() : nil
+        self.player = settings.audioEnabled ? AudioPlayer(bufferMillis: settings.audioBufferMillis) : nil
+        player?.setVolume(settings.audioVolume)
         decoder.onNeedsKeyFrame = { [weak self] in self?.send(.resetVideo) }
     }
 
     public var streamURL: String? { streamServer?.url }
     public var streamViewerCount: Int { streamServer?.viewerCount ?? 0 }
+
+    /// Changes the Mac-side volume while mirroring (0…1).
+    public func setVolume(_ volume: Double) { player?.setVolume(volume) }
 
     public var isMuted: Bool {
         get { player?.isMuted ?? false }
