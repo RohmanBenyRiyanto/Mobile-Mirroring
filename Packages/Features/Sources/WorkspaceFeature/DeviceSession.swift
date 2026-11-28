@@ -245,6 +245,15 @@ public final class DeviceSession: ObservableObject {
         isRecording = false
     }
 
+    /// Flips the phone's Do Not Disturb; the current state is read first when the Quick Toggles panel has not done so yet.
+    public func toggleDoNotDisturb() {
+        Task {
+            if !developerTools.isLoaded { await developerTools.load() }
+            developerTools.change { $0.doNotDisturb.toggle() }
+            onNotice?(developerTools.state.doNotDisturb ? String(localized: "Do Not Disturb is on") : String(localized: "Do Not Disturb is off"))
+        }
+    }
+
     public func startPerformanceMonitoring() {
         let adb = self.adb, serial = self.serial
         performance.start(package: { [weak self] in self?.foreground.current?.package },

@@ -2,7 +2,7 @@
   "format": "benzmirror.profile",
   "id": "magic-chess-gogo",
   "kind": "keymap",
-  "modified": "2026-11-28T01:55:27Z",
+  "modified": "2026-11-28T09:28:31Z",
   "name": "Magic Chess: Go Go",
   "payload": {
     "elements": [
@@ -13,7 +13,7 @@
             "mode": "tap"
           }
         },
-        "id": "AEB77D45-8E1C-4AF7-B96C-E294C7D408BF",
+        "id": "4FFBA427-C621-46E3-A6A6-7813DC7A0986",
         "label": "Buy hero 1",
         "position": {
           "x": 0.255,
@@ -27,7 +27,7 @@
             "mode": "tap"
           }
         },
-        "id": "9E6C28D4-DAF0-49FA-A7B7-D3C7FA3AEA63",
+        "id": "35040B3A-143D-41E3-807C-A6FF1B4D5534",
         "label": "Buy hero 2",
         "position": {
           "x": 0.377,
@@ -41,7 +41,7 @@
             "mode": "tap"
           }
         },
-        "id": "30EACA8B-3925-4597-BFAA-00B70DC6BD46",
+        "id": "6D834819-3541-49C6-8CE0-3DD6075CD040",
         "label": "Buy hero 3",
         "position": {
           "x": 0.4985,
@@ -55,7 +55,7 @@
             "mode": "tap"
           }
         },
-        "id": "B25B8982-31D7-43B9-97FC-6FBE3F2E185E",
+        "id": "21732412-C685-49AD-82AF-3BABFF37F598",
         "label": "Buy hero 4",
         "position": {
           "x": 0.6205,
@@ -69,7 +69,7 @@
             "mode": "tap"
           }
         },
-        "id": "071922CB-E3F8-4741-B0FC-9C7941CE59C4",
+        "id": "0B84078A-864E-49C1-AA69-8259C99E8FB3",
         "label": "Buy hero 5",
         "position": {
           "x": 0.7425,
@@ -83,7 +83,7 @@
             "mode": "tap"
           }
         },
-        "id": "597FCF40-FC64-42BD-A394-C2BB5F58F78A",
+        "id": "CF728C67-7DBD-47B1-85A0-A7A0C25E897F",
         "label": "Refresh shop",
         "position": {
           "x": 0.846,
@@ -97,7 +97,7 @@
             "mode": "tap"
           }
         },
-        "id": "B8E11C65-F254-4279-ACFA-D6FC5D977F3C",
+        "id": "1F883AF2-F4EB-48DD-8C38-6BED3357EE02",
         "label": "Lock shop",
         "position": {
           "x": 0.155,
@@ -111,7 +111,7 @@
             "mode": "tap"
           }
         },
-        "id": "CEA6EAF5-7D40-4BD0-A2D5-7A1A50013FF2",
+        "id": "2D4EB2C0-4EB0-47AB-A7B9-8CA503791934",
         "label": "Buy XP",
         "position": {
           "x": 0.07,
@@ -125,7 +125,7 @@
             "mode": "tap"
           }
         },
-        "id": "7565ECB1-ECA4-4E41-BDE8-16B267DB2CB4",
+        "id": "56213C30-2280-4DE1-9CFA-2904BA05F5AE",
         "label": "Hero list",
         "position": {
           "x": 0.831,
@@ -232,7 +232,7 @@
             ]
           }
         },
-        "id": "E8A60407-845B-4374-8636-83DAD31D03A5",
+        "id": "E8AF5C25-1DE0-48B7-81AA-3D478F87EEE0",
         "label": "Buy all heroes",
         "position": {
           "x": 0.4985,
@@ -246,7 +246,7 @@
             "mode": "tap"
           }
         },
-        "id": "B945C0CB-FB7C-4525-8D61-1802E6A9B108",
+        "id": "08880FF9-A11F-4A16-B64B-8F21787588BF",
         "label": "Bench Z",
         "position": {
           "x": 0.265,
@@ -260,7 +260,7 @@
             "mode": "tap"
           }
         },
-        "id": "C0106028-1DD4-4BE5-B0DD-D709F587C2B4",
+        "id": "417FD191-BDEA-4656-A228-9C888A1ECCCC",
         "label": "Bench X",
         "position": {
           "x": 0.332,
@@ -274,7 +274,7 @@
             "mode": "tap"
           }
         },
-        "id": "26C4A1C7-FD3C-46DD-9E3C-D30462984EA5",
+        "id": "A924B2BF-8636-4714-AB78-43B2E8C07C6E",
         "label": "Bench C",
         "position": {
           "x": 0.4,
@@ -288,7 +288,7 @@
             "mode": "tap"
           }
         },
-        "id": "14803B72-1A49-4B0F-A8D8-177B8A660384",
+        "id": "A15BD9C2-3315-47DD-BB66-4AC11C11FF6F",
         "label": "Bench V",
         "position": {
           "x": 0.4675,
@@ -302,7 +302,7 @@
             "mode": "tap"
           }
         },
-        "id": "60EF516E-2EC9-4322-A68E-8B76D0A19F94",
+        "id": "00F83FAF-C020-430A-8BA1-E81C88343029",
         "label": "Bench B",
         "position": {
           "x": 0.5345,
@@ -316,7 +316,7 @@
             "mode": "tap"
           }
         },
-        "id": "7EAE19FA-F758-4CC8-96A4-7305C47B0A88",
+        "id": "654559C0-654D-42E9-AEE5-C22A71982ECB",
         "label": "Bench N",
         "position": {
           "x": 0.6015,
@@ -330,7 +330,7 @@
             "mode": "tap"
           }
         },
-        "id": "3CB17603-8FFD-47A6-AA16-D600E7B68491",
+        "id": "6A0E1FA6-6BB3-483B-9E93-B77172B52E8F",
         "label": "Bench M",
         "position": {
           "x": 0.6685,
@@ -344,7 +344,7 @@
             "mode": "tap"
           }
         },
-        "id": "BB445D2B-DF90-4F48-8CBC-BCA75E5F785C",
+        "id": "A1972AAE-F723-49B7-9881-AEDB0C8040C4",
         "label": "Bench ,",
         "position": {
           "x": 0.7355,
@@ -352,6 +352,18 @@
         }
       }
     ],
+    "gamepad": {
+      "buttonA": 23,
+      "buttonB": 15,
+      "buttonX": 3,
+      "buttonY": 2,
+      "dpadDown": 4,
+      "dpadUp": 32,
+      "leftShoulder": 18,
+      "leftTrigger": 20,
+      "rightShoulder": 19,
+      "rightTrigger": 21
+    },
     "package": "com.mobilechess.gp"
   },
   "version": 1

@@ -34,6 +34,7 @@ public struct KeymapEditorPanel: View {
                     details
                     toolbar
                     elementList
+                    controllerSection
                     if let element = editor.selectedElement {
                         Divider()
                         ElementInspector(editor: editor, element: element)
@@ -102,6 +103,34 @@ public struct KeymapEditorPanel: View {
                 }
                 .buttonStyle(.plain)
             }
+        }
+    }
+
+    @State private var showsController = false
+
+    /// Bind each controller button or stick direction to a key the keymap already uses, so the controller drives the same on-screen buttons.
+    private var controllerSection: some View {
+        DisclosureGroup(isExpanded: $showsController) {
+            VStack(alignment: .leading, spacing: Theme.Space.s1) {
+                if editor.usableKeys.isEmpty {
+                    Text("Add buttons to the keymap first; a controller button can then be bound to any of their keys.").font(Theme.Font.caption).foregroundStyle(.secondary)
+                }
+                ForEach(GamepadInput.allCases) { input in
+                    HStack {
+                        Text(verbatim: input.title).font(Theme.Font.caption)
+                        Spacer()
+                        Menu(editor.gamepadKey(for: input).map { KeyNames.name(for: $0) } ?? String(localized: "None")) {
+                            Button("None") { editor.setGamepad(input, key: nil) }
+                            Divider()
+                            ForEach(editor.usableKeys, id: \.key) { choice in Button(choice.label) { editor.setGamepad(input, key: choice.key) } }
+                        }
+                        .fixedSize()
+                    }
+                }
+            }
+            .padding(.top, Theme.Space.s1)
+        } label: {
+            Text("Controller").font(Theme.Font.emphasized)
         }
     }
 

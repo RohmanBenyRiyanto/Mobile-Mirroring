@@ -184,6 +184,7 @@ struct RailView: View {
             RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation, isOn: model.designTool == .colorPicker) { model.setDesignTool(model.designTool == .colorPicker ? .off : .colorPicker) }
         case .grid: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation, isOn: model.designGrid != .off) { model.designGrid = Self.nextGrid(after: model.designGrid) }
         case .performanceHUD: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation, isOn: model.showsPerformance) { model.showsPerformance.toggle() }
+        case .doNotDisturb: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation, isOn: model.isDoNotDisturbOn) { model.toggleDoNotDisturb() }
         case .quickToggles: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation, isOn: model.showsQuickToggles) { model.showsQuickToggles.toggle() }
         case .logcat: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { openLogcat() }
         }

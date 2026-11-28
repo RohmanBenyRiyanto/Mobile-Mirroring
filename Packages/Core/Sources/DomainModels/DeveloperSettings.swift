@@ -13,6 +13,8 @@ public struct DeveloperState: Equatable, Sendable, Codable {
     public var nightMode = NightMode.auto
     public var wifiOn = true
     public var mobileDataOn = true
+    /// Interruptions silenced (the phone's Do Not Disturb, with priority exceptions), for playing without calls and banners.
+    public var doNotDisturb = false
 
     public init() {}
 
@@ -23,7 +25,7 @@ public enum DeveloperSettings {
     public static let readCommand = "echo '##LAYOUT'; getprop debug.layout; echo '##OVERDRAW'; getprop debug.hwui.overdraw; "
         + "echo '##FINISH'; settings get global always_finish_activities; "
         + "echo '##ANIM'; settings get global window_animation_scale; settings get global transition_animation_scale; settings get global animator_duration_scale; "
-        + "echo '##NIGHT'; cmd uimode night; echo '##WIFI'; settings get global wifi_on; echo '##DATA'; settings get global mobile_data"
+        + "echo '##NIGHT'; cmd uimode night; echo '##WIFI'; settings get global wifi_on; echo '##DATA'; settings get global mobile_data; echo '##ZEN'; settings get global zen_mode"
 
     public static func parse(_ output: String) -> DeveloperState {
         var sections: [String: [String]] = [:]
@@ -44,6 +46,7 @@ public enum DeveloperSettings {
         }
         if let wifi = sections["WIFI"]?.first { state.wifiOn = wifi != "0" }
         if let data = sections["DATA"]?.first { state.mobileDataOn = data != "0" }
+        if let zen = sections["ZEN"]?.first { state.doNotDisturb = zen != "0" && zen != "null" }
         return state
     }
 
@@ -61,6 +64,7 @@ public enum DeveloperSettings {
         }
         if old.nightMode != new.nightMode { commands.append("cmd uimode night \(new.nightMode.rawValue)") }
         if old.wifiOn != new.wifiOn { commands.append("svc wifi \(new.wifiOn ? "enable" : "disable")") }
+        if old.doNotDisturb != new.doNotDisturb { commands.append("cmd notification set_dnd \(new.doNotDisturb ? "priority" : "off")") }
         if old.mobileDataOn != new.mobileDataOn { commands.append("svc data \(new.mobileDataOn ? "enable" : "disable")") }
         return commands
     }

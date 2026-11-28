@@ -119,10 +119,13 @@ public struct Keymap: Codable, Equatable {
     /// The game this keymap belongs to, if any (used to switch keymaps automatically).
     public var package: String?
     public var elements: [KeymapElement] = []
+    /// Controller button → keyboard key code, so a gamepad drives the keys this keymap already uses. Keyed by `GamepadInput.rawValue`.
+    public var gamepad: [String: UInt16]?
 
-    public init(package: String? = nil, elements: [KeymapElement] = []) {
+    public init(package: String? = nil, elements: [KeymapElement] = [], gamepad: [String: UInt16]? = nil) {
         self.package = package
         self.elements = elements
+        self.gamepad = gamepad
     }
 
     public enum Problem: LocalizedError, Equatable {
@@ -153,6 +156,7 @@ public struct Keymap: Codable, Equatable {
         if let package, !ForegroundApp.isValidPackage(package) { throw Problem.invalidPackage(package) }
 
         var checked = self
+        checked.gamepad = cleanedGamepad()
         for index in checked.elements.indices {
             guard checked.elements[index].position.isFinite else { throw Problem.invalidPosition(label: checked.elements[index].label) }
             checked.elements[index].position = checked.elements[index].position.clamped

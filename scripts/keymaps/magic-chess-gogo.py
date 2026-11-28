@@ -45,7 +45,10 @@ for key, x in zip(["Z", "X", "C", "V", "B", "N", "M", ","], [530, 664, 800, 935,
 profile = {
     "format": "benzmirror.profile", "id": "magic-chess-gogo", "kind": "keymap", "version": 1, "name": "Magic Chess: Go Go",
     "modified": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-    "payload": {"package": "com.mobilechess.gp", "elements": elements},
+    "payload": {"package": "com.mobilechess.gp", "elements": elements,
+                # Controller: bumpers and triggers buy the first four cards, A the fifth; Y refresh, X buy XP, B lock, D-pad up buys all, down opens the hero list.
+                "gamepad": {"leftShoulder": KEY["1"], "rightShoulder": KEY["2"], "leftTrigger": KEY["3"], "rightTrigger": KEY["4"], "buttonA": KEY["5"],
+                            "buttonY": KEY["D"], "buttonX": KEY["F"], "buttonB": KEY["R"], "dpadUp": KEY["U"], "dpadDown": KEY["H"]}},
 }
 json.dump(profile, open(sys.argv[1] if len(sys.argv) > 1 else "docs/examples/magic-chess-gogo.benzkeymap", "w"), indent=2, sort_keys=True)
 print(len(elements), "elements")

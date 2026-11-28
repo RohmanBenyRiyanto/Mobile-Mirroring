@@ -41,6 +41,7 @@ final class ExampleKeymapTests: XCTestCase {
         let keys: [UInt16] = profile.payload.elements.flatMap { $0.keys }
         XCTAssertEqual(keys.count, Set(keys).count)
         XCTAssertEqual(profile.payload.elements.count, 18)
+        XCTAssertEqual(profile.payload.key(for: .buttonA), 23, "the controller buys the fifth card with A")
     }
 }
 

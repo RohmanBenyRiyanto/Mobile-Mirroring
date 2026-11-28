@@ -54,6 +54,8 @@ public final class AppModel: ObservableObject {
     }
     private var deviceSettings = DeviceSettingsBook()
     private lazy var phoneLedger = PhoneLedgerStore(defaults: defaults)
+    /// Game controllers drive the front phone's keymap; the names are shown in the keymap menu.
+    public private(set) lazy var gamepad = GamepadBridge { [weak self] input, down in self?.active?.keymap.gamepad(input, isDown: down) }
     /// For each app opened on a separate display, whether it ended up wide. Bounded, and only valid package names are kept.
     private var displayShapes: [String: Bool] {
         get { defaults.dictionary(forKey: "displayShapes.v1") as? [String: Bool] ?? [:] }
@@ -146,6 +148,9 @@ public final class AppModel: ObservableObject {
         adb = ADB.locate()
         if adb == nil { launch = .failed(ADBError.notFound.localizedDescription) }
         startPollingDevices()
+        gamepad.onConnected = { [weak self] name in self?.notice = String(localized: "Controller connected: \(name)") }
+        gamepad.onDisconnected = { [weak self] in self?.notice = String(localized: "Controller disconnected") }
+        gamepad.start()
         statusObserver = objectWillChange.receive(on: RunLoop.main).sink { [weak self] _ in self?.refreshRecordingStatusItem() }
     }
 
@@ -472,6 +477,8 @@ public final class AppModel: ObservableObject {
     public var mode: WorkspaceMode { active?.mode ?? defaultMode }
 
     public func startPerformanceMonitoring() { active?.startPerformanceMonitoring() }
+    public func toggleDoNotDisturb() { active?.toggleDoNotDisturb() }
+    public var isDoNotDisturbOn: Bool { active?.developerTools.state.doNotDisturb ?? false }
 
     public func setMode(_ mode: WorkspaceMode) {
         active?.setMode(mode)

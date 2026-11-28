@@ -140,6 +140,28 @@ public final class KeymapEditorModel: ObservableObject {
         change(id, transform)
     }
 
+    /// Binds a controller button to one of the keyboard keys this keymap uses, or clears the binding.
+    public func setGamepad(_ input: GamepadInput, key: UInt16?) {
+        checkpoint()
+        var bindings = keymap.gamepad ?? [:]
+        bindings[input.rawValue] = key
+        keymap.gamepad = bindings.isEmpty ? nil : bindings
+    }
+
+    public func gamepadKey(for input: GamepadInput) -> UInt16? { keymap.key(for: input) }
+
+    /// Every key the keymap's elements use, with the name of the element, for the controller pickers.
+    public var usableKeys: [(key: UInt16, label: String)] {
+        var seen = Set<UInt16>(), list: [(UInt16, String)] = []
+        for element in keymap.elements {
+            for key in element.keys where !seen.contains(key) {
+                seen.insert(key)
+                list.append((key, "\(title(of: element)) · \(KeyNames.name(for: key))"))
+            }
+        }
+        return list.map { (key: $0.0, label: $0.1) }
+    }
+
     public func undo() {
         guard let previous = undoStack.popLast() else { return }
         redoStack.append(keymap)

@@ -14,6 +14,16 @@ final class DeveloperSettingsTests: XCTestCase {
         XCTAssertEqual(on.nightMode, .auto)
     }
 
+    func testDoNotDisturbIsReadAndSwitched() {
+        XCTAssertTrue(DeveloperSettings.parse("##ZEN\n1\n").doNotDisturb)
+        XCTAssertFalse(DeveloperSettings.parse("##ZEN\n0\n").doNotDisturb)
+        XCTAssertFalse(DeveloperSettings.parse("##ZEN\nnull\n").doNotDisturb)
+        var on = DeveloperState()
+        on.doNotDisturb = true
+        XCTAssertEqual(DeveloperSettings.commands(from: DeveloperState(), to: on), ["cmd notification set_dnd priority"])
+        XCTAssertEqual(DeveloperSettings.commands(from: on, to: DeveloperState()), ["cmd notification set_dnd off"])
+    }
+
     func testNetworkSwitches() {
         let s = DeveloperSettings.parse("##WIFI\n0\n##DATA\n1\n")
         XCTAssertFalse(s.wifiOn)

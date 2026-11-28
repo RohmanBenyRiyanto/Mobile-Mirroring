@@ -20,6 +20,7 @@ public final class KeymapController: ObservableObject {
     }
 
     private var engine: KeymapEngine?
+    private var keymap: Keymap?
     /// Bumped whenever the engine is replaced, so a delayed lift from the old one is not applied to the new one.
     private var generation = 0
     private var frameSize = CGSize(width: 9, height: 16)
@@ -44,6 +45,7 @@ public final class KeymapController: ObservableObject {
         releaseAll()
         generation += 1
         engine = KeymapEngine(keymap: keymap)
+        self.keymap = keymap
         self.profile = profile
     }
 
@@ -51,6 +53,7 @@ public final class KeymapController: ObservableObject {
         releaseAll()
         generation += 1
         engine = nil
+        keymap = nil
         profile = nil
         isEnabled = false
     }
@@ -79,6 +82,13 @@ public final class KeymapController: ObservableObject {
         run(engine?.keyUp(key, frameSize: frameSize) ?? [])
         updateTicker()
         return true
+    }
+
+    /// A controller button or stick direction, passed on as the keyboard key the keymap bound it to. Returns true if the keymap took it.
+    @discardableResult
+    public func gamepad(_ input: GamepadInput, isDown: Bool) -> Bool {
+        guard isEnabled, let key = keymap?.key(for: input) else { return false }
+        return isDown ? keyDown(key) : keyUp(key)
     }
 
     public func releaseAll() {

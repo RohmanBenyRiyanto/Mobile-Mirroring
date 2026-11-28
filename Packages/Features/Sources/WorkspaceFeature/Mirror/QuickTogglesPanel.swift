@@ -152,6 +152,11 @@ struct QuickTogglesPanel: View {
                     Text("Layout bounds and overdraw apply to apps the next time they open.")
                 }
                 Section {
+                    Toggle("Do not disturb", isOn: binding(\.doNotDisturb))
+                } header: { Text("Game focus") } footer: {
+                    Text("Silences calls and banners while you play. Turned off again when you disconnect.")
+                }
+                Section {
                     Picker("Animation speed", selection: binding(\.animationScale)) {
                         ForEach(DeveloperState.animationScales, id: \.self) { scale in
                             Text(scale == 0 ? String(localized: "Off") : "\(scale.formatted())×").tag(scale)

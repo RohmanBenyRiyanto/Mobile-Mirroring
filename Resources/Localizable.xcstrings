@@ -443,6 +443,23 @@
         }
       }
     },
+    "Add buttons to the keymap first; a controller button can then be bound to any of their keys." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add buttons to the keymap first; a controller button can then be bound to any of their keys."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan tombol ke keymap dulu; tombol kontroler lalu bisa dihubungkan ke tombol keyboard mana pun."
+          }
+        }
+      }
+    },
     "Address" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1752,6 +1769,57 @@
         }
       }
     },
+    "Controller" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controller"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontroler"
+          }
+        }
+      }
+    },
+    "Controller connected: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controller connected: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontroler tersambung: %@"
+          }
+        }
+      }
+    },
+    "Controller disconnected" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controller disconnected"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontroler terputus"
+          }
+        }
+      }
+    },
     "Coordinates" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2670,6 +2738,74 @@
         }
       }
     },
+    "Do Not Disturb" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do Not Disturb"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jangan Ganggu"
+          }
+        }
+      }
+    },
+    "Do Not Disturb is off" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do Not Disturb is off"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jangan Ganggu mati"
+          }
+        }
+      }
+    },
+    "Do Not Disturb is on" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do Not Disturb is on"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jangan Ganggu nyala"
+          }
+        }
+      }
+    },
+    "Do not disturb" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do not disturb"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jangan ganggu"
+          }
+        }
+      }
+    },
     "Don't ask again" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3142,6 +3278,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Game"
+          }
+        }
+      }
+    },
+    "Game focus" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game focus"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fokus game"
           }
         }
       }
@@ -7838,6 +7991,23 @@
         }
       }
     },
+    "Silence calls and banners on the phone while you play" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silence calls and banners on the phone while you play"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bisukan panggilan dan banner di ponsel saat Anda bermain"
+          }
+        }
+      }
+    },
     "Silence or restore the phone's sound on this Mac" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7851,6 +8021,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bisukan atau pulihkan suara ponsel di Mac ini"
+          }
+        }
+      }
+    },
+    "Silences calls and banners while you play. Turned off again when you disconnect." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silences calls and banners while you play. Turned off again when you disconnect."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membisukan panggilan dan banner saat Anda bermain. Dimatikan lagi saat Anda memutus koneksi."
           }
         }
       }

@@ -23,3 +23,7 @@ Measured on a screenshot of a live match (phone screen 2340×1080, shop open): t
 - **Screen shape.** Positions are fractions of the picture. They match the phone's own landscape screen (19.5:9). With *Use a separate display* and a window of another shape, the game moves its buttons and the fractions no longer land on them. Keep the window close to 19.5:9, or mirror the phone's own screen.
 - **Not mapped** (positions unknown, no public source): the commander joystick, commander skill, inventory, sell, view of other players, emote, surrender. Add them with Keymap → Edit Keymap by dragging a chip onto the button.
 - **Gamepad.** This is a keyboard keymap. Reading a physical controller is not built.
+
+## Controller
+
+Bound in the keymap (editable in Keymap → Edit Keymap → Controller): left bumper, right bumper, left trigger, right trigger and A buy shop cards 1–5; Y refresh, X buy XP, B lock, D-pad up buy all, D-pad down hero list. Any controller macOS supports (Xbox, PlayStation, Switch Pro, MFi) works, even while the window is behind others.

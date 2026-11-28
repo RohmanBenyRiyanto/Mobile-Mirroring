@@ -10,7 +10,7 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
     case streamMode, statistics
     case keymapToggle, keymapProfile, editKeymap, recordMacro
     case inspector, designOverlay, colourPicker, grid
-    case logcat, performanceHUD, quickToggles
+    case logcat, performanceHUD, quickToggles, doNotDisturb
 
     public var id: String { rawValue }
 
@@ -26,6 +26,7 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         case .keymapToggle, .keymapProfile, .editKeymap, .recordMacro: return .keymap
         case .inspector, .designOverlay, .colourPicker, .grid: return .inspection
         case .logcat, .performanceHUD, .quickToggles: return .log
+        case .doNotDisturb: return .stream
         }
     }
 
@@ -56,6 +57,7 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         case .logcat: return "Logcat"
         case .performanceHUD: return "Developer HUD"
         case .quickToggles: return "Quick Toggles"
+        case .doNotDisturb: return "Do Not Disturb"
         }
     }
 
@@ -87,6 +89,7 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         case .logcat: return String(localized: "Open the phone's log")
         case .performanceHUD: return String(localized: "Show frame rate, jank, CPU, memory and temperature")
         case .quickToggles: return String(localized: "Developer switches, mock location and network")
+        case .doNotDisturb: return String(localized: "Silence calls and banners on the phone while you play")
         }
     }
 
@@ -118,6 +121,7 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         case .logcat: return "⇧⌘L"
         case .performanceHUD: return "⇧⌘I"
         case .quickToggles: return "⌥⌘J"
+        case .doNotDisturb: return nil
         }
     }
 
@@ -148,6 +152,7 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         case .logcat: return "text.alignleft"
         case .performanceHUD: return "gauge.with.dots.needle.50percent"
         case .quickToggles: return "wrench.and.screwdriver"
+        case .doNotDisturb: return "moon.fill"
         }
     }
 }
@@ -172,7 +177,7 @@ public struct RailLayout: Codable, Equatable {
             return [.back, .home, .recents, .volumeUp, .volumeDown, .power, .notifications, .quickSettings, .rotate,
                     .screenshot, .record, .mute, .streamMode, .statistics]
         case .gaming:
-            return [.keymapToggle, .keymapProfile, .editKeymap, .recordMacro, .streamMode, .statistics, .screenshot, .record, .mute, .back, .home]
+            return [.keymapToggle, .keymapProfile, .editKeymap, .recordMacro, .doNotDisturb, .streamMode, .statistics, .screenshot, .record, .mute, .back, .home]
         case .developer:
             return [.inspector, .designOverlay, .colourPicker, .grid, .logcat, .performanceHUD, .quickToggles, .statistics, .screenshot, .record, .mute, .back, .home, .recents]
         }
