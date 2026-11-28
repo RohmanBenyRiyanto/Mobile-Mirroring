@@ -7,7 +7,11 @@ set -euo pipefail
 ROOT="${0:A:h:h}"
 BUILD="$ROOT/build.noindex/release"
 APP="$BUILD/Build/Products/Release/Benz Mirror.app"
-OUT="$ROOT/build.noindex/Benz-Mirror.dmg"
+PLIST="$ROOT/Resources/Info.plist"
+SHORT="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$PLIST")"
+CHANNEL="$(/usr/libexec/PlistBuddy -c 'Print :BenzReleaseChannel' "$PLIST" 2>/dev/null || true)"
+VERSION="$SHORT${CHANNEL:+-${CHANNEL// /.}}"
+OUT="$ROOT/build.noindex/Benz-Mirror-$VERSION.dmg"
 IDENTITY="${SIGN_IDENTITY:--}"
 
 cd "$ROOT"

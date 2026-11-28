@@ -18,6 +18,7 @@
 		A994CA7235440BA47D9C8717 /* BenzMirrorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C68D746BE6AFB5D670D9C8 /* BenzMirrorApp.swift */; };
 		AF734AA80957A1A118CEDEEA /* DatabaseFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 6736FF2FF4DE9D440AF3D568 /* DatabaseFeature */; };
 		B4A7DF32F1E0B0E1CBA0113E /* DomainModels in Frameworks */ = {isa = PBXBuildFile; productRef = C948A5F1BC5B8616080DBAA0 /* DomainModels */; };
+		C650258EAC38E00CA0264937 /* THIRD-PARTY-NOTICES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29C852C2B4A48ECA10072408 /* THIRD-PARTY-NOTICES.txt */; };
 		C9F0966696C944A8001EB9FB /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 32BFEDD16B63EF4E1E3AABEE /* Persistence */; };
 		D08F4837AA7D02B7EAD1EFB9 /* WorkspaceFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 30E55F0DE6A1D89CB3D12124 /* WorkspaceFeature */; };
 		D4558FA377C664035FBD99D1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0082A30184B65ACD6E36D9BD /* AppDelegate.swift */; };
@@ -41,6 +42,7 @@
 /* Begin PBXFileReference section */
 		0082A30184B65ACD6E36D9BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1E60D3DF83AC6FA78DB547F9 /* AppDependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDependencyContainer.swift; sourceTree = "<group>"; };
+		29C852C2B4A48ECA10072408 /* THIRD-PARTY-NOTICES.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "THIRD-PARTY-NOTICES.txt"; sourceTree = "<group>"; };
 		30F5B1F6CEFA8FE4D38083AB /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DesignSystem; path = Packages/DesignSystem; sourceTree = SOURCE_ROOT; };
 		4BD89CCC5C5900DC34C0DA4C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5461CBDBC2A81F551DAB7478 /* Core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Core; path = Packages/Core; sourceTree = SOURCE_ROOT; };
@@ -105,6 +107,7 @@
 				678A51690BABF7156640242A /* LICENSE-scrcpy */,
 				7BBC50544FCA7CB00A7865CB /* Localizable.xcstrings */,
 				E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */,
+				29C852C2B4A48ECA10072408 /* THIRD-PARTY-NOTICES.txt */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -255,6 +258,7 @@
 				6B273535DB71D8C7FF97506F /* DeviceNames.json in Resources */,
 				E3868D26959A6490F8F7FB52 /* LICENSE-scrcpy in Resources */,
 				E827A178297B008528DC8DF6 /* Localizable.xcstrings in Resources */,
+				C650258EAC38E00CA0264937 /* THIRD-PARTY-NOTICES.txt in Resources */,
 				34567EA082CF2912D2B184F7 /* scrcpy-server-v5.0.1 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

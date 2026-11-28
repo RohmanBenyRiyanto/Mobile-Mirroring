@@ -24,6 +24,12 @@ struct AboutTab: View {
             SettingsRow("scrcpy", detail: "Genymobile, Apache License 2.0") {
                 Button("Open Website") { if let url = URL(string: "https://github.com/Genymobile/scrcpy") { NSWorkspace.shared.open(url) } }.secondaryAction()
             }
+            SettingsRow("Licenses") {
+                Button("Open") {
+                    if let url = Bundle.main.url(forResource: "THIRD-PARTY-NOTICES", withExtension: "txt") { NSWorkspace.shared.open(url) }
+                }
+                .secondaryAction()
+            }
         }
     }
 }

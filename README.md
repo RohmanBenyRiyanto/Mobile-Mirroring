@@ -1,15 +1,17 @@
 # Benz Mirror
 
+> **Beta.** This is the first beta (0.1.0 beta 1). It has been tried mostly on one phone; expect rough edges, and please report what you find.
+
 Native macOS app that mirrors and controls an Android phone, built on the scrcpy server (v5.0.1).
 The client side (protocol, hardware video decoding, audio, recording, streaming, input) is written in Swift.
 Nothing is installed on the phone.
 
 ## Install (DMG)
 
-1. Download `Benz-Mirror.dmg` from the Releases page, open it and drag **Benz Mirror** to Applications.
+1. Download `Benz-Mirror-<version>.dmg` from the Releases page, open it and drag **Benz Mirror** to Applications.
 2. Install `adb` once: `brew install android-platform-tools`.
 3. The first launch is blocked by macOS because the app is not notarized (it is signed ad-hoc, with no paid Apple Developer ID).
-   Right-click the app → **Open** → **Open**, or go to System Settings → Privacy & Security → **Open Anyway**. This is needed only once.
+   Try to open it once, then go to System Settings → Privacy & Security and choose **Open Anyway** (on macOS 14 you can also right-click the app → **Open**). This is needed only once.
 4. Turn on USB debugging on the phone and plug it in. The welcome screen walks through it.
 
 Build the DMG yourself with `scripts/make-dmg.sh`. With a Developer ID later:
@@ -22,7 +24,9 @@ Build the DMG yourself with `scripts/make-dmg.sh`. With a Developer ID later:
 - **Separate display:** mirror one app on a display that follows the window size, with no black bars.
 - Modes (Normal, Gaming, Developer) with a customizable control rail, keymaps for games, macros, recording and GIF export.
 - Developer tools: performance HUD, quick toggles, mock location, Wi-Fi/data switches, database viewer, API call log, UI inspector, Logcat.
-- OBS output, wireless setup, multiple phones, mini mirror, English and Indonesian.
+- OBS output, wireless setup, multiple phones, mini mirror.
+- Looks inside a debug app to show the contents of its HTTP and HTTPS calls (needs Android Studio on the Mac; no certificate on the phone).
+- Thirteen languages (English, Bahasa Indonesia, Español, Français, Deutsch, Português, 简体中文, 日本語, 한국어, Русский, Türkçe, Italiano, Tiếng Việt), chosen in Settings; anything missing falls back to English.
 
 ## Run
 
@@ -150,3 +154,11 @@ scripts/                  build-app.sh, test.sh, fetch-server.sh
 The wire protocol changes between releases and the server must match exactly. To upgrade, change `version`
 and `sha256` in `ServerBundle.swift` and `scripts/`, fetch the new server, and re-check the protocol notes in
 scrcpy's `doc/develop.md` against `ControlMessage.swift` and `ScrcpySession.swift`.
+
+## Beta notes
+
+- Tested so far on a Samsung Galaxy S23 (Android 17). Other phones and Android versions are not verified yet.
+- The translations were written without review by native speakers.
+- No app is installed on the phone. Small helper files are pushed to `/data/local/tmp` (the scrcpy server, a clipboard helper, and, for the debug-app view, Android Studio's profiler files); pasted files wait in `Download/Benz Mirror Paste` until the session ends.
+- The app collects nothing and sends nothing anywhere. It talks to your phone through `adb` and, for the optional debug-app view, to the profiler that ships with your own Android Studio.
+- Third-party licences are in `Resources/THIRD-PARTY-NOTICES.txt` and under Settings › About › Licenses.

@@ -68,6 +68,10 @@ targets:
         CFBundleDisplayName: Benz Mirror
         CFBundleShortVersionString: "0.1.0"
         CFBundleVersion: "1"
+        BenzReleaseChannel: "beta 1"
+        NSHumanReadableCopyright: "© 2026 Rohman Beny Riyanto"
+        LSApplicationCategoryType: public.app-category.developer-tools
+        NSLocalNetworkUsageDescription: "Benz Mirror connects to your phone over your local network for wireless debugging, and streams to OBS on this Mac."
         LSMinimumSystemVersion: "14.0"
         NSHighResolutionCapable: true
         CFBundleDocumentTypes:

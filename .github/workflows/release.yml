@@ -1,15 +1,24 @@
 name: Release DMG
 
-# Builds the ad-hoc signed DMG when a version tag is pushed and attaches it to the GitHub release.
+# Builds the ad-hoc signed DMG when a version tag is pushed (v0.1.0-beta.1, v0.1.0, ...) and attaches it to a GitHub release.
+# A tag with a dash in it is published as a pre-release.
 on:
   push:
     tags: ["v*"]
 
+permissions:
+  contents: write
+
 jobs:
   dmg:
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
+      - name: Use the newest Xcode on the runner
+        run: |
+          newest="$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+          sudo xcode-select -s "$newest/Contents/Developer"
+          xcodebuild -version
       - name: Tools
         run: brew install xcodegen
       - name: Project
@@ -21,4 +30,6 @@ jobs:
       - name: Publish
         uses: softprops/action-gh-release@v2
         with:
-          files: build.noindex/Benz-Mirror.dmg
+          files: build.noindex/Benz-Mirror-*.dmg
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          generate_release_notes: true
