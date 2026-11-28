@@ -40,6 +40,8 @@
 		<string>ko</string>
 		<string>ru</string>
 		<string>tr</string>
+		<string>it</string>
+		<string>vi</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>Benz Mirror</string>

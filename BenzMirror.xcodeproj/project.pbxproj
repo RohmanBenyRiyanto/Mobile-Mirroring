@@ -217,11 +217,13 @@
 				es,
 				fr,
 				id,
+				it,
 				ja,
 				ko,
 				"pt-BR",
 				ru,
 				tr,
+				vi,
 				"zh-Hans",
 			);
 			mainGroup = F1CDED897944FE0CCE9E7EE5;
