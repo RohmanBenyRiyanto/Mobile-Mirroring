@@ -4387,6 +4387,23 @@
         }
       }
     },
+    "On Wi-Fi, Maximum can stutter. Game streaming or Balanced is steadier." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On Wi-Fi, Maximum can stutter. Game streaming or Balanced is steadier."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lewat Wi-Fi, Maksimum bisa tersendat. Game streaming atau Seimbang lebih stabil."
+          }
+        }
+      }
+    },
     "On the phone" : {
       "extractionState" : "manual",
       "localizations" : {

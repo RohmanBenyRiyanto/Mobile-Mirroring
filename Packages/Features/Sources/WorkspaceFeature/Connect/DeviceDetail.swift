@@ -110,6 +110,7 @@ private struct ConnectBanner: View {
 // MARK: Quality
 
 private struct QualityGroup: View {
+    @EnvironmentObject private var model: AppModel
     @Binding var settings: MirrorSettings
     @State private var showsAdvanced = false
 
@@ -117,7 +118,7 @@ private struct QualityGroup: View {
     private let columns = [GridItem(.flexible(), spacing: Theme.Space.s3), GridItem(.flexible(), spacing: Theme.Space.s3)]
 
     var body: some View {
-        SettingsCard("Quality") {
+        SettingsCard("Quality", footer: model.selectedSerial?.contains(":") == true && settings.quality.matchingPreset == .maximum ? "On Wi-Fi, Maximum can stutter. Game streaming or Balanced is steadier." : nil) {
             PlainRow {
                 LazyVGrid(columns: columns, spacing: Theme.Space.s3) {
                     ForEach(Self.presets) { preset in

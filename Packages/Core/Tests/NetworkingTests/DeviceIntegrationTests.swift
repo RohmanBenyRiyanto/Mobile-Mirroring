@@ -139,7 +139,9 @@ final class DeviceIntegrationTests: XCTestCase {
         let adb = try XCTUnwrap(ADB.locate())
 
         var settings = MirrorSettings()
-        settings.quality = try XCTUnwrap(VideoQuality.values(for: .gaming))
+        let preset = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_PRESET"].flatMap(QualityPreset.init(rawValue:)) ?? .gaming
+        settings.quality = try XCTUnwrap(VideoQuality.values(for: preset))
+        let expectsNativeSize = preset == .gaming
         settings.obsStreamEnabled = true
         settings.obsStreamPort = 0 // any free port
 
@@ -180,7 +182,7 @@ final class DeviceIntegrationTests: XCTestCase {
 
         XCTAssertTrue(state.events.contains { $0.hasPrefix("started:") }, "session never started: \(state.events)")
         XCTAssertFalse(state.events.contains { $0.hasPrefix("ended:") }, "session ended early: \(state.events)")
-        XCTAssertEqual(state.size, CGSize(width: 1080, height: 2340), "gaming preset streams at native resolution")
+        if expectsNativeSize { XCTAssertEqual(state.size, CGSize(width: 1080, height: 2340), "gaming preset streams at native resolution") }
         XCTAssertGreaterThan(stats.framesPerSecond, 5)
         XCTAssertGreaterThan(stats.megabitsPerSecond, 0.01)
         XCTAssertGreaterThan(session.streamViewerCount, 0)
