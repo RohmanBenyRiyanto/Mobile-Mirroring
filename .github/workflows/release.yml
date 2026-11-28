@@ -1,0 +1,24 @@
+name: Release DMG
+
+# Builds the ad-hoc signed DMG when a version tag is pushed and attaches it to the GitHub release.
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  dmg:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tools
+        run: brew install xcodegen
+      - name: Project
+        run: scripts/generate-project.sh
+      - name: Tests
+        run: scripts/test.sh
+      - name: DMG
+        run: scripts/make-dmg.sh
+      - name: Publish
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build.noindex/Benz-Mirror.dmg

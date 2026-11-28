@@ -4,6 +4,26 @@ Native macOS app that mirrors and controls an Android phone, built on the scrcpy
 The client side (protocol, hardware video decoding, audio, recording, streaming, input) is written in Swift.
 Nothing is installed on the phone.
 
+## Install (DMG)
+
+1. Download `Benz-Mirror.dmg` from the Releases page, open it and drag **Benz Mirror** to Applications.
+2. Install `adb` once: `brew install android-platform-tools`.
+3. The first launch is blocked by macOS because the app is not notarized (it is signed ad-hoc, with no paid Apple Developer ID).
+   Right-click the app → **Open** → **Open**, or go to System Settings → Privacy & Security → **Open Anyway**. This is needed only once.
+4. Turn on USB debugging on the phone and plug it in. The welcome screen walks through it.
+
+Build the DMG yourself with `scripts/make-dmg.sh`. With a Developer ID later:
+`SIGN_IDENTITY="Developer ID Application: …" NOTARY_PROFILE=<keychain profile> scripts/make-dmg.sh` signs and notarizes it.
+
+## What it does
+
+- Mirror and control the phone with hardware video decoding; sound plays on the Mac (or use the phone's microphone).
+- **Smooth scrolling:** trackpad and arrow keys scroll like a finger, so feeds fling naturally.
+- **Separate display:** mirror one app on a display that follows the window size, with no black bars.
+- Modes (Normal, Gaming, Developer) with a customizable control rail, keymaps for games, macros, recording and GIF export.
+- Developer tools: performance HUD, quick toggles, mock location, Wi-Fi/data switches, database viewer, API call log, UI inspector, Logcat.
+- OBS output, wireless setup, multiple phones, mini mirror, English and Indonesian.
+
 ## Run
 
 ```bash
