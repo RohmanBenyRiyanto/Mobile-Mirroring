@@ -9,7 +9,7 @@ public struct SettingsView: View {
     @AppStorage("settingsTab") private var tab = Tab.general.rawValue
 
     enum Tab: String, CaseIterable, Identifiable {
-        case general, video, audio, rail, shortcuts, advanced
+        case general, video, audio, rail, shortcuts, advanced, about
         var id: String { rawValue }
 
         var title: LocalizedStringKey {
@@ -20,6 +20,7 @@ public struct SettingsView: View {
             case .rail: return "Control Rail"
             case .shortcuts: return "Shortcuts"
             case .advanced: return "Advanced"
+            case .about: return "About"
             }
         }
 
@@ -31,6 +32,7 @@ public struct SettingsView: View {
             case .rail: return "sidebar.right"
             case .shortcuts: return "keyboard"
             case .advanced: return "switch.2"
+            case .about: return "info.circle"
             }
         }
     }
@@ -62,6 +64,7 @@ public struct SettingsView: View {
             case .rail: RailTab(model: model)
             case .shortcuts: ShortcutsTab()
             case .advanced: AdvancedTab(model: model, appearance: appearance)
+            case .about: AboutTab()
             }
         }
     }

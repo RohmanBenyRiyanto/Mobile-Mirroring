@@ -24,6 +24,7 @@ public struct SearchPicker: View {
     private let placeholder: LocalizedStringKey
     private let selectionTitle: (String) -> String
     private let onOpen: () async -> Void
+    private let alignment: HorizontalAlignment
     private let footer: (title: LocalizedStringKey, action: () -> Void)?
     @Binding private var selection: String?
     @State private var isOpen = false
@@ -31,7 +32,8 @@ public struct SearchPicker: View {
 
     public init(selection: Binding<String?>, items: [PickerItem], isLoading: Bool, placeholder: LocalizedStringKey = "Choose an app",
                 selectionTitle: @escaping (String) -> String = { $0 }, footer: (title: LocalizedStringKey, action: () -> Void)? = nil,
-                onOpen: @escaping () async -> Void) {
+                alignment: HorizontalAlignment = .trailing, onOpen: @escaping () async -> Void) {
+        self.alignment = alignment
         _selection = selection
         self.items = items
         self.isLoading = isLoading
@@ -45,7 +47,7 @@ public struct SearchPicker: View {
         Button { isOpen = true } label: {
             HStack(spacing: Theme.Space.s2) {
                 if let selection, !selection.isEmpty {
-                    VStack(alignment: .trailing, spacing: 0) {
+                    VStack(alignment: alignment, spacing: 0) {
                         Text(verbatim: selectionTitle(selection)).lineLimit(1)
                         if selectionTitle(selection) != selection { Text(verbatim: selection).font(Theme.Font.monoCaption).foregroundStyle(.secondary).lineLimit(1) }
                     }

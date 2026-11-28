@@ -18,9 +18,9 @@ public struct DatabaseView<Source: DatabaseSource>: View {
                              items: source.appPickerItems, isLoading: source.isLoadingApps, placeholder: "Choose an app",
                              selectionTitle: { InstalledApps.displayName(for: $0) },
                              footer: source.frontPackage.map { front in (title: LocalizedStringKey("Use app in front"), action: { model.package = front; open() }) },
-                             onOpen: { await source.loadInstalledApps() })
-                Spacer()
+                             alignment: .leading, onOpen: { await source.loadInstalledApps() })
                 Button("Open", action: open).disabled(model.package.isEmpty || model.isBusy)
+                Spacer()
             }
             .padding(Theme.Space.s3)
             Divider()
@@ -30,7 +30,10 @@ public struct DatabaseView<Source: DatabaseSource>: View {
             }
         }
         .frame(minWidth: 760, minHeight: 440)
-        .onAppear { if model.package.isEmpty, let front = source.frontPackage { model.package = front } }
+        .onAppear {
+            if model.package.isEmpty, let front = source.frontPackage { model.package = front }
+            if !model.package.isEmpty, model.files.isEmpty { open() }
+        }
         .onDisappear { model.reset() }
     }
 
@@ -39,6 +42,7 @@ public struct DatabaseView<Source: DatabaseSource>: View {
     private var sidebar: some View {
         List {
             Section("Databases") {
+                if model.files.isEmpty && !model.isBusy { Text("Choose an app to see its databases.").foregroundStyle(.secondary) }
                 ForEach(model.files, id: \.self) { file in
                     Button { Task { await model.select(file) } } label: {
                         Text(verbatim: file).font(Theme.Font.mono).lineLimit(1).truncationMode(.middle)

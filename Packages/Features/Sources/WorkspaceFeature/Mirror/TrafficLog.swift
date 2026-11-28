@@ -110,7 +110,7 @@ private struct TrafficTable: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Toggle("Send traffic through this Mac", isOn: Binding(get: { traffic.isOn }, set: { $0 ? traffic.start() : traffic.stop() }))
+                Toggle("Send traffic through this Mac", isOn: Binding(get: { traffic.isOn }, set: { $0 ? traffic.start() : traffic.stop() })).toggleStyle(.switch)
                 Spacer()
                 Button("Copy CSV") { traffic.copyCSV() }.disabled(traffic.log.calls.isEmpty)
                 Button("Clear") { traffic.clear() }.disabled(traffic.log.calls.isEmpty)
@@ -121,6 +121,15 @@ private struct TrafficTable: View {
                 Label(failure, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.orange).padding(Theme.Space.s3)
                 Divider()
             }
+            if traffic.log.calls.isEmpty {
+                VStack(spacing: Theme.Space.s2) {
+                    Image(systemName: "network").font(.system(size: 28)).foregroundStyle(.secondary)
+                    Text(traffic.isOn ? "Waiting for the phone to make a call" : "No calls yet").font(Theme.Font.headline)
+                    Text(traffic.isOn ? "Use an app on the phone and its requests appear here." : "Turn on “Send traffic through this Mac” to see the phone’s requests.").foregroundStyle(.secondary)
+                }
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
             Table(traffic.log.calls.reversed()) {
                 TableColumn("Method") { Text(verbatim: $0.isTunnel ? "HTTPS" : $0.method).font(Theme.Font.mono) }.width(60)
                 TableColumn("Address") { Text(verbatim: $0.url).font(Theme.Font.mono).lineLimit(1).truncationMode(.middle) }
@@ -131,6 +140,7 @@ private struct TrafficTable: View {
                 TableColumn("Size") { call in
                     Text(verbatim: ByteCountFormatter.string(fromByteCount: Int64(call.sentBytes + call.receivedBytes), countStyle: .file)).font(Theme.Font.mono)
                 }.width(72)
+            }
             }
             Divider()
             Text("HTTPS calls show only the address. Their contents stay encrypted.").font(Theme.Font.caption).foregroundStyle(.secondary).padding(Theme.Space.s2)

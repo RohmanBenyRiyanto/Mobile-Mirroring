@@ -10,7 +10,8 @@ xcodebuild -project BenzMirror.xcodeproj -scheme BenzMirror -configuration Relea
 codesign --force --deep --options runtime --sign - --entitlements Resources/BenzMirror.entitlements "$APP"
 
 pkill -x BenzMirror 2>/dev/null || true
-sleep 1
+# Opening while the old copy is still shutting down would just wake that copy.
+for _ in {1..20}; do pgrep -x BenzMirror >/dev/null || break; sleep 0.25; done
 rm -rf "/Applications/Benz Mirror.app"
 cp -R "$APP" "/Applications/Benz Mirror.app"
 open "/Applications/Benz Mirror.app"

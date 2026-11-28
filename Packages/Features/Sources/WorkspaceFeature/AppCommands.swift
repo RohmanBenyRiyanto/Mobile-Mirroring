@@ -31,6 +31,19 @@ public struct AppCommands: Commands {
     // MARK: File
 
     @CommandsBuilder private var file: some Commands {
+        CommandGroup(replacing: .appInfo) {
+            Button("About \(AppInfo.name)") {
+                let credits = NSMutableAttributedString(string: AppInfo.creditLine + "\n", attributes: [.font: NSFont.systemFont(ofSize: 12, weight: .medium), .foregroundColor: NSColor.labelColor])
+                credits.append(NSAttributedString(string: String(localized: "Built on the scrcpy server (Apache License 2.0)."), attributes: [.font: NSFont.systemFont(ofSize: 11), .foregroundColor: NSColor.secondaryLabelColor]))
+                NSApp.orderFrontStandardAboutPanel(options: [.credits: credits])
+            }
+        }
+        CommandGroup(replacing: .help) {
+            Button("Setup Guide") { model.showsOnboarding = true }
+            Button("About and Credits") { model.showSettingsPane("about"); openSettings() }
+            Divider()
+            Text(verbatim: AppInfo.creditLine)
+        }
         CommandGroup(replacing: .newItem) {
             Button("New Tab") { model.newTab() }
                 .keyboardShortcut("t")

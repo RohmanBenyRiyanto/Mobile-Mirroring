@@ -116,8 +116,10 @@ struct PerformancePanel: View {
     private func metric(_ title: LocalizedStringKey, value: String?, series: [Double?], ceiling: Double) -> some View {
         VStack(alignment: .leading, spacing: Theme.Space.s1) {
             LabeledContent(title) { number(value) }
-            Sparkline(values: series, ceiling: ceiling).frame(height: 22)
+            // A line needs at least two points; before that the row stays as compact as the plain ones.
+            if series.compactMap({ $0 }).count >= 2 { Sparkline(values: series, ceiling: ceiling).frame(height: 20).transition(.opacity) }
         }
+        .animated(value: series.compactMap { $0 }.count >= 2)
     }
 
     private func number(_ text: String?) -> some View {

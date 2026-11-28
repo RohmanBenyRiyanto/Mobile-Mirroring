@@ -222,6 +222,57 @@
         }
       }
     },
+    "About" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentang"
+          }
+        }
+      }
+    },
+    "About %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentang %@"
+          }
+        }
+      }
+    },
+    "About and Credits" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About and Credits"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentang dan Kredit"
+          }
+        }
+      }
+    },
     "Accent" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -953,6 +1004,23 @@
         }
       }
     },
+    "Benz Mirror uses the scrcpy server (Apache License 2.0) on the phone. The client on the Mac is written in Swift. Nothing is installed on the phone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benz Mirror uses the scrcpy server (Apache License 2.0) on the phone. The client on the Mac is written in Swift. Nothing is installed on the phone."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benz Mirror memakai server scrcpy (Apache License 2.0) di ponsel. Klien di Mac ditulis dengan Swift. Tidak ada yang dipasang di ponsel."
+          }
+        }
+      }
+    },
     "Bitrate" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1000,6 +1068,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nomor build"
+          }
+        }
+      }
+    },
+    "Built on" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Built on"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dibangun di atas"
+          }
+        }
+      }
+    },
+    "Built on the scrcpy server (Apache License 2.0)." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Built on the scrcpy server (Apache License 2.0)."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dibangun di atas server scrcpy (Apache License 2.0)."
           }
         }
       }
@@ -1153,6 +1255,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pilih aplikasi"
+          }
+        }
+      }
+    },
+    "Choose an app to see its databases." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose an app to see its databases."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih aplikasi untuk melihat databasenya."
           }
         }
       }
@@ -1701,6 +1820,23 @@
         }
       }
     },
+    "Copyright" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copyright"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hak cipta"
+          }
+        }
+      }
+    },
     "Could not reach the phone over Wi-Fi. Check that it is on the same network." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1748,6 +1884,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tidak dapat menyimpan makro: %@"
+          }
+        }
+      }
+    },
+    "Created by" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Created by"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dibuat oleh"
+          }
+        }
+      }
+    },
+    "Creator" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creator"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pembuat"
           }
         }
       }
@@ -2734,6 +2904,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Umum"
+          }
+        }
+      }
+    },
+    "Genymobile, Apache License 2.0" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genymobile, Apache License 2.0"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genymobile, Apache License 2.0"
           }
         }
       }
@@ -4285,6 +4472,23 @@
         }
       }
     },
+    "No calls yet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No calls yet"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum ada panggilan"
+          }
+        }
+      }
+    },
     "No device" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4774,6 +4978,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buka Pengaturan Sistem"
+          }
+        }
+      }
+    },
+    "Open Website" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Website"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Situs"
           }
         }
       }
@@ -6422,7 +6643,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Panduan Pengaturan"
+            "value" : "Panduan Awal"
           }
         }
       }
@@ -8229,6 +8450,23 @@
         }
       }
     },
+    "Turn on “Send traffic through this Mac” to see the phone’s requests." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on “Send traffic through this Mac” to see the phone’s requests."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyalakan “Kirim lalu lintas lewat Mac ini” untuk melihat permintaan ponsel."
+          }
+        }
+      }
+    },
     "Turn the keymap on when its game opens" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8535,6 +8773,23 @@
         }
       }
     },
+    "Use an app on the phone and its requests appear here." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use an app on the phone and its requests appear here."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pakai aplikasi di ponsel dan permintaannya muncul di sini."
+          }
+        }
+      }
+    },
     "Use app in front" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8582,6 +8837,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memakai kabel USB satu kali, setelah itu kabel boleh dicabut."
+          }
+        }
+      }
+    },
+    "Version %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi %@"
           }
         }
       }
@@ -8735,6 +9007,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Menunggu ponsel"
+          }
+        }
+      }
+    },
+    "Waiting for the phone to make a call" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waiting for the phone to make a call"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menunggu ponsel melakukan panggilan"
           }
         }
       }
@@ -8990,6 +9279,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "atau Esc untuk menampilkan kontrol"
+          }
+        }
+      }
+    },
+    "scrcpy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "scrcpy"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "scrcpy"
           }
         }
       }
