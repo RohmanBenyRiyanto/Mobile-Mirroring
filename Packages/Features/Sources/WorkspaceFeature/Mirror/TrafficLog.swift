@@ -1,3 +1,4 @@
+import AppInspection
 import AppKit
 import Components
 import DomainModels
@@ -25,8 +26,94 @@ public final class TrafficModel: ObservableObject {
     private let buffer = LockedValue<[LoggingProxy.Report]>([])
     private var flushTask: Task<Void, Never>?
 
-    /// `run` executes adb arguments for this phone (the serial is already included).
-    public init(run: @escaping @Sendable ([String]) throws -> String) { self.run = run }
+    // Looking inside a debuggable app (HTTPS contents), a second source for the same log.
+    public enum InspectorStatus: Equatable { case idle, starting, running, failed(String) }
+    @Published public private(set) var inspectorStatus = InspectorStatus.idle
+    @Published public private(set) var inspectedApp: String?
+    @Published public private(set) var debuggableApps: [String] = []
+    private var inspector: AppInspectorSession?
+    private let inspectedBuffer = LockedValue<[APICall]>([])
+    private let adb: ADB?
+    private let serial: String?
+
+    /// `run` executes adb arguments for this phone (the serial is already included). `adb` and `serial` enable looking inside apps.
+    public init(run: @escaping @Sendable ([String]) throws -> String, adb: ADB? = nil, serial: String? = nil) {
+        self.run = run
+        self.adb = adb
+        self.serial = serial
+    }
+
+    public var canInspectApps: Bool { adb != nil && serial != nil }
+
+    /// Debug apps installed on the phone, for the menu.
+    public func loadDebuggableApps() {
+        let run = self.run
+        Task {
+            let apps = await Task.detached { () -> [String] in
+                let third = DebuggableApps.parsePackageList((try? run(["shell", DebuggableApps.thirdPartyCommand])) ?? "")
+                let details = (try? run(["shell", DebuggableApps.detailsCommand + "; true"])) ?? ""
+                return DebuggableApps.parse(details: details, among: third)
+            }.value
+            debuggableApps = apps
+        }
+    }
+
+    public func startInspecting(package: String) {
+        guard let adb, let serial, inspectorStatus != .starting else { return }
+        stopInspecting()
+        inspectorStatus = .starting
+        inspectedApp = package
+        let buffer = inspectedBuffer
+        let session = AppInspectorSession(adb: adb, serial: serial, package: package,
+                                          onCall: { call in buffer.withLock { $0.append(call) } },
+                                          onEnded: { [weak self] reason in
+                                              Task { @MainActor in
+                                                  guard let self, self.inspectedApp == package else { return }
+                                                  self.inspectorStatus = reason.map { .failed($0) } ?? .idle
+                                                  self.inspector = nil
+                                                  if reason == nil { self.inspectedApp = nil }
+                                              }
+                                          })
+        inspector = session
+        ensureFlushing()
+        Task {
+            do {
+                try await session.start(opensApp: true)
+                if inspector === session { inspectorStatus = .running }
+            } catch {
+                if inspector === session {
+                    inspectorStatus = .failed(error.localizedDescription)
+                    inspector = nil
+                }
+                await session.stop()
+            }
+        }
+    }
+
+    /// For the end of a session or quitting: the proxy and the inspector both leave the phone as it was.
+    public func stopEverything() {
+        stop()
+        inspector?.cleanUpPhoneNow()
+        stopInspecting()
+    }
+
+    public func stopInspecting() {
+        guard let session = inspector else { inspectedApp = nil; if case .failed = inspectorStatus { inspectorStatus = .idle }; return }
+        inspector = nil
+        inspectedApp = nil
+        inspectorStatus = .idle
+        Task { await session.stop() }
+    }
+
+    private func ensureFlushing() {
+        guard flushTask == nil else { return }
+        flushTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .milliseconds(250))
+                self?.flush()
+            }
+        }
+    }
 
     public func start() {
         guard !isOn else { return }
@@ -46,12 +133,7 @@ public final class TrafficModel: ObservableObject {
             originalSetting = original
             isOn = true
             failure = nil
-            flushTask = Task { [weak self] in
-                while !Task.isCancelled {
-                    try? await Task.sleep(for: .milliseconds(250))
-                    self?.flush()
-                }
-            }
+            ensureFlushing()
         } catch {
             failure = String(localized: "The phone did not accept the change")
         }
@@ -59,8 +141,7 @@ public final class TrafficModel: ObservableObject {
 
     public func stop() {
         guard isOn, let proxy else { return }
-        flushTask?.cancel()
-        flushTask = nil
+        if inspector == nil { flushTask?.cancel(); flushTask = nil }
         let original = originalSetting ?? ""
         let restore = original.isEmpty || original == "null" || original == ":0" ? ":0" : original
         _ = try? run(["shell", "settings put global http_proxy \(restore)"])
@@ -80,6 +161,7 @@ public final class TrafficModel: ObservableObject {
     }
 
     func flush() {
+        for call in inspectedBuffer.withLock({ all -> [APICall] in defer { all.removeAll() }; return all }) { log.upsert(call) }
         let reports = buffer.withLock { all -> [LoggingProxy.Report] in defer { all.removeAll() }; return all }
         for report in reports {
             if let duration = report.durationMillis {
@@ -126,12 +208,17 @@ private struct TrafficTable: View {
         VStack(spacing: 0) {
             HStack {
                 Toggle("Send traffic through this Mac", isOn: Binding(get: { traffic.isOn }, set: { $0 ? traffic.start() : traffic.stop() })).toggleStyle(.switch)
+                if traffic.canInspectApps { inspectMenu }
                 Spacer()
                 Button("Copy CSV") { traffic.copyCSV() }.disabled(traffic.log.calls.isEmpty)
                 Button("Clear") { selection = nil; traffic.clear() }.disabled(traffic.log.calls.isEmpty)
             }
             .padding(Theme.Space.s3)
             Divider()
+            if case let .failed(message) = traffic.inspectorStatus {
+                Label(message, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.orange).padding(Theme.Space.s3).textSelection(.enabled)
+                Divider()
+            }
             if let failure = traffic.failure {
                 Label(failure, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.orange).padding(Theme.Space.s3)
                 Divider()
@@ -139,8 +226,8 @@ private struct TrafficTable: View {
             if traffic.log.calls.isEmpty {
                 VStack(spacing: Theme.Space.s2) {
                     Image(systemName: "network").font(.system(size: 28)).foregroundStyle(.secondary)
-                    Text(traffic.isOn ? "Waiting for the phone to make a call" : "No calls yet").font(Theme.Font.headline)
-                    Text(traffic.isOn ? "Use an app on the phone and its requests appear here." : "Turn on “Send traffic through this Mac” to see the phone’s requests.").foregroundStyle(.secondary)
+                    Text(traffic.isOn || traffic.inspectorStatus == .running ? "Waiting for the phone to make a call" : "No calls yet").font(Theme.Font.headline)
+                    Text(traffic.isOn || traffic.inspectorStatus == .running ? "Use an app on the phone and its requests appear here." : "Turn on “Send traffic through this Mac”, or look inside a debug app, to see requests.").foregroundStyle(.secondary)
                 }
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -162,9 +249,33 @@ private struct TrafficTable: View {
                 }
             }
             Divider()
-            Text("HTTPS calls show only the address. Their contents stay encrypted.").font(Theme.Font.caption).foregroundStyle(.secondary).padding(Theme.Space.s2)
+            Text("Through the Mac, HTTPS calls show only the address. To see their contents, look inside a debug app.").font(Theme.Font.caption).foregroundStyle(.secondary).padding(Theme.Space.s2)
         }
         .frame(minWidth: 720, minHeight: 440)
+    }
+
+    // MARK: Looking inside an app
+
+    @ViewBuilder private var inspectMenu: some View {
+        let appName = traffic.inspectedApp ?? ""
+        switch traffic.inspectorStatus {
+        case .starting:
+            HStack(spacing: Theme.Space.s2) {
+                ProgressView().controlSize(.small)
+                Text("Looking inside \(appName)")
+            }
+        case .running:
+            Button { traffic.stopInspecting() } label: { Label("Stop looking inside \(appName)", systemImage: "eye.slash") }
+        case .idle, .failed:
+            Menu {
+                if traffic.debuggableApps.isEmpty { Text("No debug apps found on the phone") }
+                ForEach(traffic.debuggableApps, id: \.self) { package in
+                    Button(InstalledApps.displayName(for: package)) { traffic.startInspecting(package: package) }
+                }
+            } label: { Label("Look inside a debug app", systemImage: "eye") }
+            .help("See the contents of an app's HTTP and HTTPS calls. Only debug builds can be looked into, and no certificate is needed.")
+            .onAppear { traffic.loadDebuggableApps() }
+        }
     }
 
     // MARK: Detail pane

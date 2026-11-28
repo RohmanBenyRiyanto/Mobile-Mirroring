@@ -177,7 +177,7 @@ public final class AppModel: ObservableObject {
     public func restorePhoneChanges() {
         for session in sessions {
             session.developerTools.restoreOnEnd()
-            session.traffic.stop()
+            session.traffic.stopEverything()
         }
     }
 

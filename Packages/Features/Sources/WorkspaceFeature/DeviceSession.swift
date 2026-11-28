@@ -72,7 +72,7 @@ public final class DeviceSession: ObservableObject {
         self.adb = adb
         developerTools = DeveloperToolsModel(allowsNetworkSwitches: !serial.contains(":"), run: { try String(decoding: adb.run(["-s", serial, "shell", $0], timeout: 8), as: UTF8.self) })
         self.serial = serial
-        traffic = TrafficModel(run: { try String(decoding: adb.run(["-s", serial] + $0, timeout: 8), as: UTF8.self) })
+        traffic = TrafficModel(run: { try String(decoding: adb.run(["-s", serial] + $0, timeout: 8), as: UTF8.self) }, adb: adb, serial: serial)
         self.settings = settings
         let scrcpy = ScrcpySession(adb: adb, serial: serial, settings: settings)
         self.scrcpy = scrcpy
@@ -242,7 +242,7 @@ public final class DeviceSession: ObservableObject {
         statsTask?.cancel()
         performance.stop()
         developerTools.restoreOnEnd()
-        traffic.stop()
+        traffic.stopEverything()
         foreground.stop()
         isRecording = false
     }

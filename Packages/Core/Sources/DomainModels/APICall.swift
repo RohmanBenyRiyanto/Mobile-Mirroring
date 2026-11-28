@@ -84,6 +84,8 @@ public struct APICall: Identifiable, Equatable, Sendable {
     public var sentBytes = 0
     public var receivedBytes = 0
     public var details: APICallDetails?
+    /// Seen from inside a debuggable app, so even an HTTPS call has its headers and body.
+    public var isInspected = false
 
     public init(id: Int, startedAt: Date, method: String, host: String, url: String, isTunnel: Bool) {
         self.id = id
@@ -117,6 +119,11 @@ public struct APICallLog: Equatable, Sendable {
         calls[index].sentBytes = sent
         calls[index].receivedBytes = received
         calls[index].details = details
+    }
+
+    /// Adds the call or replaces the one with the same id (an inspected call is updated as its parts arrive).
+    public mutating func upsert(_ call: APICall) {
+        if let index = calls.lastIndex(where: { $0.id == call.id && $0.isInspected == call.isInspected }) { calls[index] = call } else { begin(call) }
     }
 
     public mutating func clear() { calls.removeAll() }

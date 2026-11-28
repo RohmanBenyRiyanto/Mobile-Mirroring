@@ -11,10 +11,17 @@ let package = Package(
         .library(name: "Persistence", targets: ["Persistence"]),
         .library(name: "Media", targets: ["Media"]),
         .library(name: "Networking", targets: ["Networking"]),
+        .library(name: "AppInspection", targets: ["AppInspection"]),
         .library(name: "SystemServices", targets: ["SystemServices"]),
         .library(name: "CoreTestSupport", targets: ["CoreTestSupport"]),
     ],
-    dependencies: [.package(path: "../TestSupport")],
+    dependencies: [
+        .package(path: "../TestSupport"),
+        // gRPC to the profiler daemon that Android Studio also uses, to see inside debuggable apps (HTTPS included).
+        .package(url: "https://github.com/grpc/grpc-swift.git", from: "1.24.2"),
+        .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.28.2"),
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
+    ],
     targets: [
         // Generic, versioned profile files (keymaps today). No knowledge of what is stored.
         .target(name: "Persistence"),
@@ -24,6 +31,13 @@ let package = Package(
         .target(name: "Media", dependencies: ["DomainModels"]),
         // adb, the scrcpy session, sockets, wireless setup and the local OBS server.
         .target(name: "Networking", dependencies: ["DomainModels", "Media"]),
+        // Looks inside a debuggable app through Android Studio's transport daemon and network inspector: HTTP and HTTPS calls with headers and bodies.
+        .target(name: "AppInspection", dependencies: ["DomainModels", "Networking",
+                                                     .product(name: "GRPC", package: "grpc-swift"),
+                                                     .product(name: "SwiftProtobuf", package: "swift-protobuf"),
+                                                     .product(name: "NIOCore", package: "swift-nio"),
+                                                     .product(name: "NIOPosix", package: "swift-nio")],
+                exclude: ["Protos"]),
         // macOS facilities: pointer lock, key capture.
         .target(name: "SystemServices", dependencies: ["DomainModels"]),
         // Test helpers shared by the tests below (loopback client, ffmpeg-made test video).
@@ -32,6 +46,7 @@ let package = Package(
         .testTarget(name: "PersistenceTests", dependencies: ["Persistence", "TestSupport"]),
         .testTarget(name: "DomainModelsTests", dependencies: ["DomainModels", "Persistence", "TestSupport"]),
         .testTarget(name: "MediaTests", dependencies: ["Media", "DomainModels", "CoreTestSupport", "TestSupport"]),
+        .testTarget(name: "AppInspectionTests", dependencies: ["AppInspection", "DomainModels", "Networking", "TestSupport"]),
         .testTarget(name: "NetworkingTests", dependencies: ["Networking", "Media", "DomainModels", "CoreTestSupport", "TestSupport"]),
     ]
 )

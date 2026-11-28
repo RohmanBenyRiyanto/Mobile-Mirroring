@@ -11254,6 +11254,329 @@
           }
         }
       }
+    },
+    "Look inside a debug app": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Look inside a debug app"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intip isi aplikasi debug"
+          }
+        }
+      }
+    },
+    "Looking inside %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Looking inside %@"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mengintip isi %@"
+          }
+        }
+      }
+    },
+    "Stop looking inside %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop looking inside %@"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berhenti mengintip %@"
+          }
+        }
+      }
+    },
+    "No debug apps found on the phone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No debug apps found on the phone"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak ada aplikasi debug di HP"
+          }
+        }
+      }
+    },
+    "See the contents of an app's HTTP and HTTPS calls. Only debug builds can be looked into, and no certificate is needed.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See the contents of an app's HTTP and HTTPS calls. Only debug builds can be looked into, and no certificate is needed."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lihat isi panggilan HTTP dan HTTPS sebuah aplikasi. Hanya build debug yang bisa diintip, dan tanpa sertifikat."
+          }
+        }
+      }
+    },
+    "Turn on “Send traffic through this Mac”, or look inside a debug app, to see requests.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn on “Send traffic through this Mac”, or look inside a debug app, to see requests."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nyalakan “Kirim lalu lintas lewat Mac ini”, atau intip aplikasi debug, untuk melihat request."
+          }
+        }
+      }
+    },
+    "Through the Mac, HTTPS calls show only the address. To see their contents, look inside a debug app.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Through the Mac, HTTPS calls show only the address. To see their contents, look inside a debug app."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lewat Mac, panggilan HTTPS hanya menampilkan alamat. Untuk melihat isinya, intip aplikasi debug."
+          }
+        }
+      }
+    },
+    "Android Studio was not found. Looking inside an app uses the inspector that comes with Android Studio, so install it in Applications.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Android Studio was not found. Looking inside an app uses the inspector that comes with Android Studio, so install it in Applications."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Android Studio tidak ditemukan. Mengintip isi aplikasi memakai inspektor bawaan Android Studio, jadi pasang di folder Applications."
+          }
+        }
+      }
+    },
+    "This phone's processor (%@) is not supported.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This phone's processor (%@) is not supported."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prosesor HP ini (%@) belum didukung."
+          }
+        }
+      }
+    },
+    "%@ is not running. Open it on the phone first.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is not running. Open it on the phone first."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ tidak berjalan. Buka dulu di HP."
+          }
+        }
+      }
+    },
+    "%@ is not a debug build, so it cannot be looked into. Only apps built as debuggable can.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is not a debug build, so it cannot be looked into. Only apps built as debuggable can."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ bukan build debug, jadi tidak bisa diintip. Hanya aplikasi yang dibuat debuggable yang bisa."
+          }
+        }
+      }
+    },
+    "The phone did not answer while %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The phone did not answer while %@."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HP tidak menjawab saat %@."
+          }
+        }
+      }
+    },
+    "The app refused the inspector: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app refused the inspector: %@"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aplikasi menolak inspektor: %@"
+          }
+        }
+      }
+    },
+    "stopping": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "stopping"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "berhenti"
+          }
+        }
+      }
+    },
+    "connecting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "connecting"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "menyambung"
+          }
+        }
+      }
+    },
+    "connecting to the phone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "connecting to the phone"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "menyambung ke HP"
+          }
+        }
+      }
+    },
+    "starting the inspector": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "starting the inspector"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "memulai inspektor"
+          }
+        }
+      }
+    },
+    "it could not start": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "it could not start"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tidak bisa dimulai"
+          }
+        }
+      }
+    },
+    "The app stopped the inspector.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app stopped the inspector."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aplikasi menghentikan inspektor."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

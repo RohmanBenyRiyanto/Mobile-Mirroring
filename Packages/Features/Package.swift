@@ -44,7 +44,7 @@ let package = Package(
         // The main window: connect screen, mirror, rail, menus, and the model that ties a phone together.
         .target(name: "WorkspaceFeature", dependencies: [
             .product(name: "DomainModels", package: "Core"), .product(name: "Persistence", package: "Core"),
-            .product(name: "Media", package: "Core"), .product(name: "Networking", package: "Core"),
+            .product(name: "Media", package: "Core"), .product(name: "Networking", package: "Core"), .product(name: "AppInspection", package: "Core"),
             .product(name: "SystemServices", package: "Core"), .product(name: "Theme", package: "DesignSystem"),
             .product(name: "Components", package: "DesignSystem"),
             "KeymapFeature", "LogcatFeature", "InspectorFeature", "DatabaseFeature",
