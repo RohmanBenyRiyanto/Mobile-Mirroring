@@ -584,7 +584,7 @@
         var p = el('p'); p.appendChild(link('', '#install', t('Setelah diunduh, ikuti cara install', 'After downloading, follow the install steps')));
         box.appendChild(p);
       } else if (data.state === 'empty') {
-        box.appendChild(el('div', 'dl-ver', t('Beta pertama sedang disiapkan', 'The first beta is being prepared')));
+        box.appendChild(el('div', 'dl-ver', t('Belum ada unduhan', 'No download yet')));
         box.appendChild(el('p', '', t('Belum ada DMG yang diterbitkan. Pantau halaman rilis, atau bangun sendiri dari kode sumber dengan Xcode (panduannya ada di docs/developers).',
           'No DMG has been published yet. Watch the releases page, or build it yourself from the source with Xcode (the guide is in docs/developers).')));
         var row = el('div', 'cta');

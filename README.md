@@ -85,7 +85,6 @@ Keymaps are shared as `.benzkeymap` files: export one, send it, and import it wi
 ## Beta notes
 
 - Tested so far on a Samsung Galaxy S23 (Android 17). Other phones and Android versions are not verified yet.
-- The translations were written without review by native speakers.
 - Third-party licences are in Settings › About › Licenses.
 
 ## For developers
