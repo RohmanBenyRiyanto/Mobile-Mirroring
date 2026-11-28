@@ -76,9 +76,17 @@ public enum KeymapAction: Codable, Equatable {
     /// fingers on release. `speed` scales the playback time.
     case macro(key: UInt16, steps: [MacroStep], loop: Bool, speed: Double)
 
+    /// Taps the element's position over and over while the key is held, `rate` times a second (auto-clicker, rapid fire).
+    case turbo(key: UInt16, rate: Double)
+
+    /// One swipe from the element's position to `to` over `duration` seconds when the key is pressed (a fixed flick, a scroll, a drag).
+    case swipe(key: UInt16, to: NormalizedPoint, duration: Double)
+
     public static let maxMacroSteps = 5_000
     public static let maxMacroDuration = 120.0
     public static let macroSpeedRange = 0.1...5.0
+    public static let turboRateRange = 1.0...30.0
+    public static let swipeDurationRange = 0.05...2.0
 
     public static let radiusRange = 0.02...0.5
     public static let skillRange = 0.05...1.0
@@ -109,6 +117,8 @@ public struct KeymapElement: Codable, Equatable, Identifiable {
         case .mouseButton: return []
         case let .skillShot(key, _, _, _, _): return [key]
         case let .macro(key, _, _, _): return [key]
+        case let .turbo(key, _): return [key]
+        case let .swipe(key, _, _): return [key]
         }
     }
 }
@@ -136,6 +146,8 @@ public struct Keymap: Codable, Equatable {
         case invalidAim
         case invalidSkillShot(label: String)
         case invalidMacro(label: String)
+        case invalidTurbo(label: String)
+        case invalidSwipe(label: String)
 
         public var errorDescription: String? {
             switch self {
@@ -143,6 +155,8 @@ public struct Keymap: Codable, Equatable {
             case let .invalidPackage(name): return "\"\(name)\" is not a valid app package name."
             case let .invalidPosition(label): return "A button\(label.isEmpty ? "" : " (\(label))") has an invalid position."
             case let .invalidMacro(label): return "A macro\(label.isEmpty ? "" : " (\(label))") is empty, too long, or has invalid steps."
+            case let .invalidTurbo(label): return "A rapid-tap button\(label.isEmpty ? "" : " (\(label))") has an invalid rate."
+            case let .invalidSwipe(label): return "A swipe\(label.isEmpty ? "" : " (\(label))") has an invalid end point or duration."
             case let .invalidSkillShot(label): return "A skill-shot\(label.isEmpty ? "" : " (\(label))") has invalid numbers."
             case .invalidAim: return "A keymap can have one free-look area, with a sensitivity and radius in range; mouse buttons must be 0 to 4."
             case let .invalidJoystick(label): return "A joystick\(label.isEmpty ? "" : " (\(label))") needs four different keys and valid numbers."
@@ -164,6 +178,7 @@ public struct Keymap: Codable, Equatable {
             try Self.validateAim(&checked.elements[index])
             try Self.validateSkillShot(&checked.elements[index])
             try Self.validateMacro(&checked.elements[index])
+            try Self.validateTurboAndSwipe(&checked.elements[index])
             checked.elements[index].label = ProfileFormat.cleanName(checked.elements[index].label, fallback: "")
         }
         guard checked.elements.filter({ if case .aim = $0.action { return true } else { return false } }).count <= 1 else {
@@ -188,6 +203,19 @@ public struct Keymap: Codable, Equatable {
         checked = checked.enumerated().sorted { ($0.element.time, $0.offset) < ($1.element.time, $1.offset) }.map(\.element)
         element.action = .macro(key: key, steps: checked, loop: loop,
                                 speed: min(max(speed, KeymapAction.macroSpeedRange.lowerBound), KeymapAction.macroSpeedRange.upperBound))
+    }
+
+    private static func validateTurboAndSwipe(_ element: inout KeymapElement) throws {
+        switch element.action {
+        case let .turbo(key, rate):
+            guard rate.isFinite else { throw Problem.invalidTurbo(label: element.label) }
+            element.action = .turbo(key: key, rate: min(max(rate, KeymapAction.turboRateRange.lowerBound), KeymapAction.turboRateRange.upperBound))
+        case let .swipe(key, to, duration):
+            guard to.isFinite, duration.isFinite else { throw Problem.invalidSwipe(label: element.label) }
+            element.action = .swipe(key: key, to: to.clamped,
+                                    duration: min(max(duration, KeymapAction.swipeDurationRange.lowerBound), KeymapAction.swipeDurationRange.upperBound))
+        default: break
+        }
     }
 
     private static func validateSkillShot(_ element: inout KeymapElement) throws {

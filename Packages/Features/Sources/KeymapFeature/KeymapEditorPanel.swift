@@ -243,6 +243,24 @@ private struct ElementInspector: View {
             }
             Text("Drag the yellow marker onto your hero.").font(Theme.Font.caption).foregroundStyle(.secondary)
 
+        case let .turbo(key, rate):
+            KeyField(title: "Key", key: key, isUsed: editor.isKeyUsed(key, except: element.id)) { newKey in
+                editor.update(element.id) { $0.action = .turbo(key: newKey, rate: rate) }
+            }
+            slider("Taps per second", value: rate, range: KeymapAction.turboRateRange) { value in
+                editor.change(element.id) { $0.action = .turbo(key: key, rate: value.rounded()) }
+            }
+            Text("Hold the key to keep tapping this spot.").font(Theme.Font.caption).foregroundStyle(.secondary)
+
+        case let .swipe(key, end, duration):
+            KeyField(title: "Key", key: key, isUsed: editor.isKeyUsed(key, except: element.id)) { newKey in
+                editor.update(element.id) { $0.action = .swipe(key: newKey, to: end, duration: duration) }
+            }
+            slider("Duration (s)", value: duration, range: KeymapAction.swipeDurationRange) { value in
+                editor.change(element.id) { $0.action = .swipe(key: key, to: end, duration: value) }
+            }
+            Text("Drag the yellow arrow on the phone to where the swipe ends.").font(Theme.Font.caption).foregroundStyle(.secondary)
+
         case let .macro(key, steps, loop, speed):
             KeyField(title: "Key", key: key, isUsed: editor.isKeyUsed(key, except: element.id)) { newKey in
                 editor.update(element.id) { $0.action = .macro(key: newKey, steps: steps, loop: loop, speed: speed) }

@@ -24,6 +24,9 @@ public struct KeymapEditorOverlay: View {
                 ForEach(editor.keymap.elements) { element in
                     ElementMarker(editor: editor, element: element, mapper: mapper, space: Self.space)
                 }
+                if let selected = editor.selectedElement, case let .swipe(_, end, _) = selected.action {
+                    SwipeHandle(editor: editor, id: selected.id, start: selected.position, end: end, mapper: mapper, space: Self.space)
+                }
                 if let selected = editor.selectedElement, case let .skillShot(_, _, _, range, hero) = selected.action {
                     HeroHandle(editor: editor, id: selected.id, hero: hero, range: range, mapper: mapper, space: Self.space)
                 }
@@ -63,7 +66,7 @@ private struct ElementMarker: View {
     private var reach: Double? {
         switch element.action {
         case let .joystick(_, _, _, _, radius, _), let .aim(_, _, radius), let .skillShot(_, _, radius, _, _): return radius * shorterEdge
-        case .button, .mouseButton, .macro: return nil
+        case .button, .mouseButton, .macro, .turbo, .swipe: return nil
         }
     }
 
@@ -75,6 +78,8 @@ private struct ElementMarker: View {
         case let .aim(key, _, _): return (name + KeyNames.name(for: key), "scope")
         case let .mouseButton(button, _): return (name + ["Left", "Right", "Middle", "Button 4", "Button 5"][min(button, 4)] + " click", "computermouse")
         case let .skillShot(key, _, _, _, _): return (name + KeyNames.name(for: key), "target")
+        case let .turbo(key, rate): return (name + KeyNames.name(for: key) + " ×\(Int(rate))/s", "bolt")
+        case let .swipe(key, _, _): return (name + KeyNames.name(for: key), "arrow.up.forward")
         case let .macro(key, steps, _, _): return (name + KeyNames.name(for: key) + " ×\(steps.count)", "play.circle")
         }
     }
@@ -147,5 +152,42 @@ private struct HeroHandle: View {
         }
         .position(mapper.viewPoint(forRatio: hero.cgPoint))
         .help("Where your hero stands on the screen")
+    }
+}
+
+/// The tip of a swipe: drag it to where the swipe should end. A dashed line shows the path from the chip.
+private struct SwipeHandle: View {
+    @ObservedObject var editor: KeymapEditorModel
+    let id: UUID
+    let start: NormalizedPoint
+    let end: NormalizedPoint
+    let mapper: CoordinateMapper
+    let space: String
+
+    @State private var isDragging = false
+
+    var body: some View {
+        let from = mapper.viewPoint(forRatio: start.cgPoint), to = mapper.viewPoint(forRatio: end.cgPoint)
+        ZStack {
+            Path { path in path.move(to: from); path.addLine(to: to) }
+                .stroke(.yellow.opacity(0.8), style: StrokeStyle(lineWidth: 2, dash: [4, 4]))
+                .allowsHitTesting(false)
+            Image(systemName: "arrowtriangle.right.circle.fill")
+                .font(.system(size: 22))
+                .foregroundStyle(.yellow)
+                .shadow(radius: 2)
+                .position(to)
+                .gesture(
+                    DragGesture(minimumDistance: 0, coordinateSpace: .named(space))
+                        .onChanged { value in
+                            if !isDragging { isDragging = true; editor.checkpoint() }
+                            if let ratio = mapper.clampedRatio(forViewPoint: value.location) {
+                                editor.moveSwipeEnd(of: id, to: NormalizedPoint(x: ratio.x, y: ratio.y))
+                            }
+                        }
+                        .onEnded { _ in isDragging = false }
+                )
+                .help("Where the swipe ends")
+        }
     }
 }

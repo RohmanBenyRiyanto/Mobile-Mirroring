@@ -29,6 +29,7 @@ public struct KeymapSummary: Equatable {
             case .aim: aims += 1
             case .mouseButton: mouse += 1
             case .skillShot: skills += 1
+            case .turbo, .swipe: buttons += 1
             case let .macro(_, macroSteps, _, _):
                 macros += 1
                 steps += macroSteps.count

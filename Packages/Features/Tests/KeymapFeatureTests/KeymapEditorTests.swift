@@ -26,7 +26,7 @@ final class KeymapEditorModelTests: XCTestCase {
     func testEachKindOfElementCanBeAddedWithSensibleDefaults() throws {
         let editor = newEditor()
         for kind in KeymapEditorModel.ElementKind.allCases { editor.add(kind) }
-        XCTAssertEqual(editor.keymap.elements.count, 5)
+        XCTAssertEqual(editor.keymap.elements.count, KeymapEditorModel.ElementKind.allCases.count)
         XCTAssertNoThrow(try editor.validatedKeymap(), "everything the editor creates must pass validation")
         XCTAssertTrue(editor.isDirty)
         XCTAssertNotNil(editor.selection)

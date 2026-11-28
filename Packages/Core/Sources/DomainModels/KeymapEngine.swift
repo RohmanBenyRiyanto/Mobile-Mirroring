@@ -142,7 +142,7 @@ public struct KeymapEngine {
             return []
         case let .skillShot(_, cast, _, _, _):
             return pressSkill(element, cast: cast, frameSize: frameSize)
-        case .macro:
+        case .macro, .turbo, .swipe:
             return startMacro(element, frameSize: frameSize)
         case .joystick:
             guard let direction = direction(of: key, in: element) else { return [] }
@@ -161,6 +161,10 @@ public struct KeymapEngine {
             return cast == .onRelease ? releaseSkill(element) : []
         case let .macro(_, _, loop, _):
             return loop ? cancelMacro(element) : [] // a one-shot macro plays on to its end
+        case .turbo:
+            return cancelMacro(element) // tapping stops with the key
+        case .swipe:
+            return [] // a swipe plays on to its end
         case .joystick:
             guard let direction = direction(of: key, in: element) else { return [] }
             heldDirections[element.id]?.remove(direction)
@@ -438,6 +442,33 @@ extension KeymapEngine {
 // MARK: - Macros
 
 extension KeymapEngine {
+    /// What a macro-like element plays: its recorded steps, or steps generated for a rapid-tap button or a swipe from the element's own position.
+    static func plan(for element: KeymapElement) -> (steps: [MacroStep], loop: Bool, speed: Double)? {
+        let start = element.position
+        switch element.action {
+        case let .macro(_, steps, loop, speed):
+            return (steps, loop, speed)
+        case let .turbo(_, rate):
+            let period = 1 / max(rate, 1)
+            let hold = min(0.04, period * 0.4)
+            // The last step does nothing (no finger is down then); it only makes the cycle exactly one period long.
+            return ([MacroStep(time: 0, kind: .down, finger: 0, position: start), MacroStep(time: hold, kind: .up, finger: 0, position: start),
+                     MacroStep(time: period, kind: .move, finger: 0, position: start)], true, 1)
+        case let .swipe(_, end, duration):
+            let frames = max(Int((duration * 60).rounded()), 2)
+            var steps = [MacroStep(time: 0, kind: .down, finger: 0, position: start)]
+            for frame in 1...frames {
+                let t = Double(frame) / Double(frames)
+                let point = NormalizedPoint(x: start.x + (end.x - start.x) * t, y: start.y + (end.y - start.y) * t)
+                steps.append(MacroStep(time: duration * t, kind: .move, finger: 0, position: point))
+            }
+            steps.append(MacroStep(time: duration + 0.016, kind: .up, finger: 0, position: end))
+            return (steps, false, 1)
+        default:
+            return nil
+        }
+    }
+
     /// Starts playing a macro. One that is already playing is left alone.
     fileprivate mutating func startMacro(_ element: KeymapElement, frameSize: CGSize) -> [Action] {
         guard macros[element.id] == nil else { return [] }
@@ -451,7 +482,8 @@ extension KeymapEngine {
     }
 
     fileprivate mutating func advanceMacro(_ element: KeymapElement, by deltaTime: Double, frameSize: CGSize) -> [Action] {
-        guard case let .macro(_, steps, loop, speed) = element.action, var run = macros[element.id] else { return [] }
+        guard let plan = Self.plan(for: element), var run = macros[element.id] else { return [] }
+        let (steps, loop, speed) = (plan.steps, plan.loop, plan.speed)
         let duration = steps.last?.time ?? 0
         run.elapsed += deltaTime * speed
         var actions: [Action] = []

@@ -6,7 +6,7 @@ import Persistence
 public final class KeymapEditorModel: ObservableObject {
     /// Macros come from recording, so they are not listed here.
     public enum ElementKind: CaseIterable, Identifiable {
-        case button, joystick, freeLook, mouseButton, skillShot
+        case button, joystick, freeLook, mouseButton, skillShot, turbo, swipe
 
         public var id: Self { self }
 
@@ -17,6 +17,8 @@ public final class KeymapEditorModel: ObservableObject {
             case .freeLook: return "Free-look (mouse aim)"
             case .mouseButton: return "Mouse button"
             case .skillShot: return "Skill-shot"
+            case .turbo: return "Rapid tap"
+            case .swipe: return "Swipe"
             }
         }
     }
@@ -64,7 +66,7 @@ public final class KeymapEditorModel: ObservableObject {
 
     /// Menu choices; tap, hold and toggle are separate entries for the same button.
     public enum Choice: CaseIterable {
-        case tap, hold, toggle, joystick, aim, skillShot
+        case tap, hold, toggle, joystick, aim, skillShot, turbo, swipe
     }
 
     @discardableResult
@@ -80,6 +82,8 @@ public final class KeymapEditorModel: ObservableObject {
         case .joystick: id = add(.joystick)
         case .aim: id = add(.freeLook)
         case .skillShot: id = add(.skillShot)
+        case .turbo: id = add(.turbo)
+        case .swipe: id = add(.swipe)
         }
         selection = id
         return id
@@ -117,6 +121,14 @@ public final class KeymapEditorModel: ObservableObject {
 
     public func move(_ id: UUID, to point: NormalizedPoint) {
         change(id) { $0.position = point.clamped }
+    }
+
+    /// Moves the end of a swipe.
+    public func moveSwipeEnd(of id: UUID, to point: NormalizedPoint) {
+        change(id) { element in
+            guard case let .swipe(key, _, duration) = element.action else { return }
+            element.action = .swipe(key: key, to: point.clamped, duration: duration)
+        }
     }
 
     public func moveHero(of id: UUID, to point: NormalizedPoint) {
@@ -198,6 +210,8 @@ public final class KeymapEditorModel: ObservableObject {
         case .mouseButton: return "Mouse button"
         case .skillShot: return "Skill-shot"
         case .macro: return "Macro"
+        case .turbo: return "Rapid tap"
+        case .swipe: return "Swipe"
         }
     }
 
@@ -269,6 +283,11 @@ public final class KeymapEditorModel: ObservableObject {
             return KeymapElement(label: "Look", position: NormalizedPoint(x: 0.7, y: 0.5), action: .aim(toggleKey: 50, sensitivity: 2, radius: 0.15))
         case .mouseButton:
             return KeymapElement(label: "Fire", position: NormalizedPoint(x: 0.88, y: 0.85), action: .mouseButton(button: 0, mode: .hold))
+        case .turbo:
+            return KeymapElement(label: "", position: NormalizedPoint(x: 0.85, y: 0.65), action: .turbo(key: Self.freeKey(avoiding: used), rate: 10))
+        case .swipe:
+            return KeymapElement(label: "", position: NormalizedPoint(x: 0.5, y: 0.7),
+                                 action: .swipe(key: Self.freeKey(avoiding: used), to: NormalizedPoint(x: 0.5, y: 0.3), duration: 0.25))
         case .skillShot:
             return KeymapElement(label: "", position: NormalizedPoint(x: 0.78, y: 0.9),
                                  action: .skillShot(key: Self.freeKey(avoiding: used), cast: .onRelease, radius: 0.12, range: 0.3,

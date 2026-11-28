@@ -392,6 +392,23 @@
         }
       }
     },
+    "Add Rapid Tap" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Rapid Tap"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah Ketuk Cepat"
+          }
+        }
+      }
+    },
     "Add Skill Shot" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -405,6 +422,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tambah Skill Shot"
+          }
+        }
+      }
+    },
+    "Add Swipe" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Swipe"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah Geser"
           }
         }
       }
@@ -2857,6 +2891,23 @@
         }
       }
     },
+    "Drag the yellow arrow on the phone to where the swipe ends." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drag the yellow arrow on the phone to where the swipe ends."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seret panah kuning di ponsel ke tempat geseran berakhir."
+          }
+        }
+      }
+    },
     "Draw a dot where the screen is touched" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2921,6 +2972,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lepas untuk memasang"
+          }
+        }
+      }
+    },
+    "Duration (s)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration (s)"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durasi (dtk)"
           }
         }
       }
@@ -3618,6 +3686,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Riwayat"
+          }
+        }
+      }
+    },
+    "Hold the key to keep tapping this spot." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hold the key to keep tapping this spot."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tahan tombol untuk terus mengetuk titik ini."
           }
         }
       }
@@ -6580,6 +6665,23 @@
         }
       }
     },
+    "Rapid tap" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rapid tap"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk cepat"
+          }
+        }
+      }
+    },
     "Reading the phone" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8450,6 +8552,23 @@
         }
       }
     },
+    "Swipe" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geser"
+          }
+        }
+      }
+    },
     "Switch back to USB" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8735,6 +8854,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ketuk Nomor build tujuh kali."
+          }
+        }
+      }
+    },
+    "Taps per second" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taps per second"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketukan per detik"
           }
         }
       }

@@ -219,6 +219,8 @@ public struct AppCommands: Commands {
             Button("Add Joystick") { model.addKeymapElement(.joystick) }.keyboardShortcut("4", modifiers: []).disabled(!mirroring)
             Button("Add Aim") { model.addKeymapElement(.aim) }.keyboardShortcut("5", modifiers: []).disabled(!mirroring)
             Button("Add Skill Shot") { model.addKeymapElement(.skillShot) }.keyboardShortcut("6", modifiers: []).disabled(!mirroring)
+            Button("Add Rapid Tap") { model.addKeymapElement(.turbo) }.keyboardShortcut("8", modifiers: []).disabled(!mirroring)
+            Button("Add Swipe") { model.addKeymapElement(.swipe) }.keyboardShortcut("9", modifiers: []).disabled(!mirroring)
             Button(LocalizedStringKey(model.isRecordingMacro ? "Stop Recording Macro" : "Record Macro")) { model.toggleMacroRecording() }
                 .keyboardShortcut("7", modifiers: [])
                 .disabled(!mirroring)
