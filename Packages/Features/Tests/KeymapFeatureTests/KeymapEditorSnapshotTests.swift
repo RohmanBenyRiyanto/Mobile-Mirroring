@@ -62,4 +62,25 @@ final class KeymapEditorSnapshotTests: XCTestCase {
         let image = try renderSnapshot(editorScene(editor), size: CGSize(width: 680, height: 867), name: "editor-dark", appearance: .darkAqua)
         XCTAssertFalse(isBlankImage(image))
     }
+
+    /// A landscape game: the picture on the left with the toolbar over it and the profiles panel on the right, as in the app.
+    func testTheEditorRendersForALandscapeGame() throws {
+        let editor = try exampleEditor()
+        editor.selection = editor.keymap.elements.first?.id
+        let scene = HStack(spacing: 0) {
+            ZStack {
+                LinearGradient(colors: [Color(red: 0.07, green: 0.16, blue: 0.40), Color(red: 0.02, green: 0.05, blue: 0.16)], startPoint: .top, endPoint: .bottom)
+                Circle().fill(Color(red: 1, green: 0.93, blue: 0.7).opacity(0.85)).frame(width: 90, height: 90).offset(x: 220, y: -120)
+                Ellipse().fill(Color(red: 0.05, green: 0.2, blue: 0.5)).frame(width: 900, height: 260).offset(x: -150, y: 230)
+                KeymapEditorOverlay(editor: editor, videoSize: CGSize(width: 2340, height: 1080))
+            }
+            .frame(width: 1040, height: 480)
+            .overlay(alignment: .top) { KeymapEditorToolbar(editor: editor, isRecordingMacro: false, onMacro: {}, onDone: {}) }
+            KeymapEditorPanel(editor: editor, foreground: ForegroundAppDetector(), message: nil,
+                              profiles: [ProfileSummary(id: "a", name: "Magic Chess", modified: Date()), ProfileSummary(id: "b", name: "Skyline Arena", modified: Date())],
+                              onSave: {}, onClose: { _ in })
+        }
+        let image = try renderSnapshot(scene.tint(Color(red: 0.04, green: 0.52, blue: 1)), size: CGSize(width: 1320, height: 480), name: "editor-landscape", appearance: .darkAqua)
+        XCTAssertFalse(isBlankImage(image))
+    }
 }

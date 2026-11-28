@@ -572,6 +572,7 @@
         [date(v.date), size(v.size), v.source === 'release' ? 'GitHub Releases' : t('File di repositori', 'File in the repository')]
           .filter(Boolean).forEach(function (x) { facts.appendChild(el('li', '', x)); });
         box.appendChild(facts);
+        if (v.pre) box.appendChild(el('p', 'note', t('Ini versi beta: sudah dicoba terutama di satu ponsel, jadi mungkin masih ada bagian yang kasar.', 'This is a beta. It has been tried mostly on one phone, so some parts may still be rough.')));
         var a = link('btn big', v.url, t('Unduh ', 'Download ') + v.file);
         a.id = 'dlMain';
         box.appendChild(a);
@@ -583,12 +584,12 @@
         var p = el('p'); p.appendChild(link('', '#install', t('Setelah diunduh, ikuti cara install', 'After downloading, follow the install steps')));
         box.appendChild(p);
       } else if (data.state === 'empty') {
-        box.appendChild(el('div', 'dl-ver', t('Rilis pertama segera hadir', 'The first release is coming')));
-        box.appendChild(el('p', '', t('Belum ada DMG yang diterbitkan. Sementara itu, aplikasinya bisa dibuild sendiri dari kode sumber dengan Xcode.',
-          'No DMG has been published yet. Until then you can build the app from source with Xcode.')));
+        box.appendChild(el('div', 'dl-ver', t('Beta pertama sedang disiapkan', 'The first beta is being prepared')));
+        box.appendChild(el('p', '', t('Belum ada DMG yang diterbitkan. Pantau halaman rilis, atau bangun sendiri dari kode sumber dengan Xcode (panduannya ada di docs/developers).',
+          'No DMG has been published yet. Watch the releases page, or build it yourself from the source with Xcode (the guide is in docs/developers).')));
         var row = el('div', 'cta');
-        row.appendChild(link('btn big', R.web + '/tree/' + window.BENZ_CONFIG.folder.branch, t('Lihat kode sumber', 'View the source')));
-        row.appendChild(link('btn big ghost', R.web + '/releases', t('Halaman rilis', 'Releases page')));
+        row.appendChild(link('btn big', R.web + '/releases', t('Halaman rilis', 'Releases page')));
+        row.appendChild(link('btn big ghost', R.web + '/tree/release/development/docs/developers', t('Panduan membangun', 'Build guide')));
         box.appendChild(row);
       } else {
         box.appendChild(el('p', '', t('Info rilis tidak bisa dimuat sekarang (jaringan, atau batas permintaan GitHub). Unduh langsung dari GitHub.',
@@ -602,10 +603,10 @@
       $$('[data-dl]').forEach(function (a) {
         a.href = v ? v.url : '#download';
         var label = $('[data-dl-label]', a);
-        label.textContent = data && data.state === 'empty' ? t('Status rilis', 'Release status') : t('Unduh untuk Mac', 'Download for Mac');
+        label.textContent = data && data.state === 'empty' ? t('Segera hadir', 'Coming soon') : t('Unduh untuk Mac', 'Download for Mac');
       });
       $('[data-dl-meta]').textContent = v ? t('Versi ', 'Version ') + v.version + (size(v.size) ? ' · ' + size(v.size) : '') : '';
-      var file = v ? v.file : window.BENZ_CONFIG.assetName;
+      var file = v ? v.file : 'Benz-Mirror-<' + t('versi', 'version') + '>.dmg';
       $$('[data-file]').forEach(function (n) { n.textContent = file; });
       var cmd = 'shasum -a 256 ~/Downloads/' + file;
       $('[data-sum-cmd]').textContent = cmd;
