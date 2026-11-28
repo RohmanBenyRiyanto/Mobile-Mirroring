@@ -131,15 +131,18 @@ private struct QualityGroup: View {
             }
         }
         SettingsCard {
-            DisclosureGroup(isExpanded: $showsAdvanced) {
-                QualityRows(settings: $settings)
-            } label: {
+            Button { withAnimation(Theme.Motion.smooth) { showsAdvanced.toggle() } } label: {
                 HStack {
                     Text("Advanced")
                     Spacer()
                     Text(ConnectText.advancedSummary(settings.quality)).font(Theme.Font.monoCaption).foregroundStyle(.secondary)
+                    Image(systemName: "chevron.right").font(.system(size: 11, weight: .semibold)).foregroundStyle(.secondary)
+                        .rotationEffect(.degrees(showsAdvanced ? 90 : 0))
                 }
+                .contentShape(Rectangle())
             }
+            .buttonStyle(.plain)
+            if showsAdvanced { QualityRows(settings: $settings) }
         }
     }
 }
