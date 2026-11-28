@@ -9,7 +9,7 @@ The website reads this file. One section per version, newest first:
 The number must match the release tag without "v" (tag v0.2.0 -> 0.2.0). Add the date when you release.
 -->
 
-## [0.1.0-beta.1]
+## [0.1.0-beta.1] - 2026-11-28
 
 First beta. Tried so far on one phone (Samsung Galaxy S23, Android 17); expect rough edges.
 

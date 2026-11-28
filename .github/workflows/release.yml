@@ -34,10 +34,17 @@ jobs:
         with:
           name: Benz-Mirror-dmg
           path: build.noindex/Benz-Mirror-*.dmg
+      - name: Release notes from CHANGELOG.md
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v v="$version" '/^## \[/ { p = (index($0, "[" v "]") > 0); next } p' CHANGELOG.md > release-notes.md
+          if [ ! -s release-notes.md ]; then echo "Benz Mirror $version" > release-notes.md; fi
+          cat release-notes.md
       - name: Publish
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: build.noindex/Benz-Mirror-*.dmg
+          body_path: release-notes.md
           prerelease: ${{ contains(github.ref_name, '-') }}
-          generate_release_notes: true
