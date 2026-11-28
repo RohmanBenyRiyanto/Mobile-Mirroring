@@ -25,6 +25,10 @@ public enum VirtualDisplayMath {
         return (UInt16(w), UInt16(h))
     }
 
+    /// The longest edge the display may have. "Native" (0) means no limit from the quality setting, so a sensible ceiling stands in:
+    /// treating 0 as a limit would shrink the display to the smallest size and blur everything.
+    public static func longestEdge(forMaxSize maxSize: Int) -> Int { maxSize > 0 ? maxSize : 2560 }
+
     /// A density that gives the apps about the width of a phone to draw on, so layouts look as they do on the phone.
     public static func density(shortEdge: Int) -> Int {
         min(max(Int((Double(shortEdge) * 160 / phoneShortEdgeDP).rounded()), 120), 640)

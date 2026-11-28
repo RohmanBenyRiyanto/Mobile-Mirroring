@@ -90,7 +90,7 @@ private struct MirrorScreen: View {
     private var content: some View {
         HStack(spacing: 0) {
             MirrorView(session: session, keymap: keymap, inspector: inspector, design: design, videoSize: model.videoSize, flexibleDisplay: model.active?.usesVirtualDisplay == true,
-                       maxDisplayEdge: model.active?.settings.quality.maxSize ?? 1920,
+                       maxDisplayEdge: VirtualDisplayMath.longestEdge(forMaxSize: model.active?.settings.quality.maxSize ?? 0),
                        onDrag: { dropSummary = $0 }, onDrop: { model.handleDrop($0) }, onEscape: { model.handleEscape() },
                        isStreamMode: { model.isStreamMode }, onExitStreamMode: { model.isStreamMode = false })
                 .aspectRatio(model.videoSize, contentMode: .fit)

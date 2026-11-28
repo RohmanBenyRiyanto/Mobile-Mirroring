@@ -13,6 +13,14 @@ final class VirtualDisplayTests: XCTestCase {
         XCTAssertEqual(VirtualDisplayMath.size(forViewPoints: CGSize(width: 10, height: 10), backingScale: 1, maxLongEdge: 1920)?.width, 320)
     }
 
+    func testNativeQualityDoesNotShrinkTheDisplay() {
+        XCTAssertEqual(VirtualDisplayMath.longestEdge(forMaxSize: 0), 2560)
+        XCTAssertEqual(VirtualDisplayMath.longestEdge(forMaxSize: 1920), 1920)
+        let size = VirtualDisplayMath.size(forViewPoints: CGSize(width: 800, height: 450), backingScale: 2, maxLongEdge: VirtualDisplayMath.longestEdge(forMaxSize: 0))
+        XCTAssertEqual(size?.width, 1600)
+        XCTAssertEqual(size?.height, 896)
+    }
+
     func testDensityKeepsPhoneLikeLayouts() {
         XCTAssertEqual(VirtualDisplayMath.density(shortEdge: 1080), 420)
         XCTAssertEqual(VirtualDisplayMath.density(shortEdge: 100), 120)
