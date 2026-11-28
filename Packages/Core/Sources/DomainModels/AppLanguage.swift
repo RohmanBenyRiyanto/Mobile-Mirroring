@@ -9,7 +9,7 @@ public struct AppLanguage: Equatable, Identifiable, Sendable {
     public init(_ code: String) { self.code = code }
 
     /// Every language the app is translated into. English is the source; the others are listed in the order people see them.
-    public static let supported: [AppLanguage] = ["en", "id"].map(AppLanguage.init)
+    public static let supported: [AppLanguage] = ["en", "id", "es", "fr", "de", "pt-BR"].map(AppLanguage.init)
 
     public static let overrideKey = "benzmirror.languageOverride"
     private static let systemKey = "AppleLanguages"

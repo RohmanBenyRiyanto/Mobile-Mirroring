@@ -176,3 +176,35 @@ final class ShortcutBookTests: XCTestCase {
         XCTAssertFalse(ShortcutRegistry.items.contains { ShortcutRegistry.reserved.contains($0.original) }, "no original menu shortcut collides with a reserved one")
     }
 }
+
+final class LanguageCompletenessTests: XCTestCase {
+    private func placeholders(_ text: String) -> [String] {
+        let pattern = try! NSRegularExpression(pattern: "%(?:\\d+\\$)?(?:lld|ld|d|@|f|\\.\\df|s|u)")
+        let range = NSRange(text.startIndex..., in: text)
+        return pattern.matches(in: text, range: range).map { String(text[Range($0.range, in: text)!]) }.sorted()
+    }
+
+    /// Every language offered in Settings has every string, and keeps the same %@ and %lld as the English text.
+    func testEveryOfferedLanguageIsComplete() throws {
+        let data = try Data(contentsOf: projectFile("Resources/Localizable.xcstrings"))
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let strings = try XCTUnwrap(json["strings"] as? [String: [String: Any]])
+        for language in AppLanguage.supported where language.code != "en" {
+            var missing: [String] = [], mismatched: [String] = []
+            for (key, entry) in strings {
+                let localizations = entry["localizations"] as? [String: [String: Any]] ?? [:]
+                let english = ((localizations["en"]?["stringUnit"] as? [String: Any])?["value"] as? String) ?? key
+                guard let translated = (localizations[language.code]?["stringUnit"] as? [String: Any])?["value"] as? String else { missing.append(key); continue }
+                if placeholders(english) != placeholders(translated) { mismatched.append(key) }
+            }
+            XCTAssertTrue(missing.isEmpty, "\(language.code) is missing \(missing.count) strings, for example \(missing.prefix(3))")
+            XCTAssertTrue(mismatched.isEmpty, "\(language.code) changed the placeholders of \(mismatched.prefix(3))")
+        }
+    }
+
+    func testTheInfoFileListsEveryLanguage() throws {
+        let plist = try XCTUnwrap(NSDictionary(contentsOf: projectFile("Resources/Info.plist")))
+        let listed = Set(plist["CFBundleLocalizations"] as? [String] ?? [])
+        XCTAssertEqual(listed, Set(AppLanguage.supported.map(\.code)))
+    }
+}
