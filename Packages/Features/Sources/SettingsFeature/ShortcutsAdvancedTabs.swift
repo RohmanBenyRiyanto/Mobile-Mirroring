@@ -47,30 +47,22 @@ struct AdvancedTab: View {
     @ObservedObject var appearance: AppearanceStore
     @State private var serverState = AdbServerState.checking
     @State private var confirmsReset = false
+    @State private var adbProblem: String?
 
     var body: some View {
         SettingsCard {
-            SettingsRow("Use bundled adb") {
-                Toggle("Use bundled adb", isOn: .constant(false)).labelsHidden().toggleStyle(.switch).disabled(true)
-            }
             VStack(alignment: .leading, spacing: Theme.Space.s2) {
                 Text("adb path")
                 HStack(spacing: Theme.Space.s2) {
                     Text(model.adb?.executable.path ?? String(localized: "adb was not found"))
                         .lineLimit(1).truncationMode(.middle).frame(maxWidth: .infinity, alignment: .leading).fieldBackground()
-                    Button("Choose") {}.secondaryAction().disabled(true)
+                    Button("Choose") { chooseADB() }.secondaryAction()
+                    if model.settings.adbPath != nil { Button("Automatic") { _ = model.chooseADB(path: nil) }.secondaryAction() }
                 }
+                if let adbProblem { Text(adbProblem).font(.caption).foregroundStyle(.red) }
             }
             SettingsRow("adb server", detail: serverState.detail) {
                 Button("Restart") { restartServer() }.secondaryAction().disabled(model.adb == nil || serverState == .restarting)
-            }
-        }
-        SettingsCard {
-            SettingsRow("Hardware video decoding") {
-                Toggle("Hardware video decoding", isOn: .constant(true)).labelsHidden().toggleStyle(.switch).disabled(true)
-            }
-            SettingsRow("App log level") {
-                Picker("App log level", selection: .constant("Info")) { Text("Info").tag("Info") }.labelsHidden().frame(width: 100).disabled(true)
             }
         }
         SettingsCard {
@@ -88,6 +80,17 @@ struct AdvancedTab: View {
             Text("Video, audio, behavior and appearance go back to their defaults. Keymaps and recordings are not touched.")
         }
         .task { await refreshServerState() }
+    }
+
+    private func chooseADB() {
+        let panel = NSOpenPanel()
+        panel.message = String(localized: "Choose the adb program")
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.directoryURL = model.adb?.executable.deletingLastPathComponent()
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        adbProblem = model.chooseADB(path: url.path) ? nil : String(localized: "That file is not a working adb")
+        Task { await refreshServerState() }
     }
 
     private func restartServer() {

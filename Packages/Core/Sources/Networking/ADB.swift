@@ -57,6 +57,20 @@ public struct ADB: Sendable {
         self.executable = executable
     }
 
+    /// An adb the user chose, if it is an executable file that answers `version`.
+    public static func custom(path: String) -> ADB? {
+        guard FileManager.default.isExecutableFile(atPath: path) else { return nil }
+        let adb = ADB(executable: URL(fileURLWithPath: path))
+        guard let out = try? adb.run(["version"], timeout: 5), String(decoding: out, as: UTF8.self).contains("Android Debug Bridge") else { return nil }
+        return adb
+    }
+
+    /// The chosen adb when there is one that works, otherwise the first adb found in the usual places.
+    public static func locate(preferring path: String?) -> ADB? {
+        if let path, !path.isEmpty, let chosen = custom(path: path) { return chosen }
+        return locate()
+    }
+
     public static func locate() -> ADB? {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
         var candidates = [

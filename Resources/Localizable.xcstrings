@@ -10863,6 +10863,40 @@
           }
         }
       }
+    },
+    "Choose the adb program": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose the adb program"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilih program adb"
+          }
+        }
+      }
+    },
+    "That file is not a working adb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That file is not a working adb"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File itu bukan adb yang berfungsi"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

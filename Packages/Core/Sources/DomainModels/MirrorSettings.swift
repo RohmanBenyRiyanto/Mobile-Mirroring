@@ -129,6 +129,8 @@ public struct MirrorSettings: Equatable, Codable {
     public var confirmDisconnect = true
     /// Closing the phone window disconnects and leaves the app running (a Dock click brings the window back); on, it quits instead.
     public var quitWhenWindowCloses = false
+    /// An adb the user picked in Settings; nil uses the first one found automatically.
+    public var adbPath: String?
     /// Ask before a screen recording starts, an app is installed by dropping it, a network switch goes off, or keymap edits are thrown away.
     public var confirmRecording = true
     public var confirmInstall = true
@@ -165,6 +167,7 @@ public struct MirrorSettings: Equatable, Codable {
         virtualDisplay = (try? values.decodeIfPresent(VirtualDisplaySettings.self, forKey: .virtualDisplay)).flatMap { $0 } ?? defaults.virtualDisplay
         audioOutputUID = try values.decodeIfPresent(String.self, forKey: .audioOutputUID)
         confirmDisconnect = try values.decodeIfPresent(Bool.self, forKey: .confirmDisconnect) ?? defaults.confirmDisconnect
+        adbPath = try values.decodeIfPresent(String.self, forKey: .adbPath)
         quitWhenWindowCloses = try values.decodeIfPresent(Bool.self, forKey: .quitWhenWindowCloses) ?? defaults.quitWhenWindowCloses
         confirmRecording = try values.decodeIfPresent(Bool.self, forKey: .confirmRecording) ?? defaults.confirmRecording
         confirmInstall = try values.decodeIfPresent(Bool.self, forKey: .confirmInstall) ?? defaults.confirmInstall

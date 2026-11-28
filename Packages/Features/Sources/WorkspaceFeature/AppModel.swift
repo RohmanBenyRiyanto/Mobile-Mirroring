@@ -106,7 +106,7 @@ public final class AppModel: ObservableObject {
     @Published public private(set) var lostConnection: LostConnection?
     @Published public private(set) var keymapProfiles: [ProfileSummary] = []
 
-    public let adb: ADB?
+    @Published public private(set) var adb: ADB?
     /// Windows apply this with `themed(_:)`.
     public let appearance: AppearanceStore
     public let keymapStore: ProfileStore<Keymap>?
@@ -145,7 +145,7 @@ public final class AppModel: ObservableObject {
         Self.seedBundledKeymaps(into: keymapStore, defaults: defaults)
         keymapProfiles = keymapStore?.list() ?? []
         keymapPackageIndex = KeymapAutoSwitch.index(from: keymapStore?.loadAll() ?? [])
-        adb = ADB.locate()
+        adb = ADB.locate(preferring: settings.adbPath)
         if adb == nil { launch = .failed(ADBError.notFound.localizedDescription) }
         startPollingDevices()
         gamepad.onConnected = { [weak self] name in self?.notice = String(localized: "Controller connected: \(name)") }
@@ -278,6 +278,19 @@ public final class AppModel: ObservableObject {
                 launch = .failed(error.localizedDescription)
             }
         }
+    }
+
+    /// Settings › Advanced › Choose: uses that adb from now on. Returns false (and changes nothing) if the file is not a working adb.
+    @discardableResult
+    public func chooseADB(path: String?) -> Bool {
+        if let path, !path.isEmpty {
+            guard ADB.custom(path: path) != nil else { return false }
+        }
+        settings.adbPath = (path?.isEmpty ?? true) ? nil : path
+        adb = ADB.locate(preferring: settings.adbPath)
+        if adb != nil, case .failed = launch { launch = .idle }
+        refreshDevicesNow()
+        return true
     }
 
     public func cancelConnect() {
