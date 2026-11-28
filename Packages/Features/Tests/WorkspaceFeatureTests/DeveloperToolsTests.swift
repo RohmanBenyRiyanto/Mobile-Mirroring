@@ -76,3 +76,28 @@ final class MockLocationModelTests: XCTestCase {
         XCTAssertEqual(log.commands.last, MockLocation.stopCommand)
     }
 }
+
+@MainActor
+final class OwedChangesTests: XCTestCase {
+    func testTheLedgerHearsAboutChangesAndAboutThemBeingUndone() async {
+        let log = Log()
+        let tools = DeveloperToolsModel { command in log.add(command); return command.hasPrefix("echo") ? "##FINISH\n0\n##ANIM\n1.0\n##NIGHT\nNight mode: yes\n##WIFI\n1\n##DATA\n1\n" : "" }
+        var owed: [DeveloperState] = []
+        var settled = 0
+        var mocking: [Bool] = []
+        tools.onOwed = { owed.append($0) }
+        tools.onSettled = { settled += 1 }
+        tools.onMockChanged = { mocking.append($0) }
+        await tools.load()
+
+        tools.change { $0.wifiOn = false }
+        XCTAssertEqual(owed.last?.wifiOn, true, "the baseline recorded is what the phone had before")
+        XCTAssertEqual(settled, 0)
+        tools.resetAll()
+        XCTAssertEqual(settled, 1, "putting everything back tells the ledger it owes nothing")
+
+        tools.startMocking(MockLocation(latitude: 1, longitude: 2)!)
+        tools.restoreOnEnd()
+        XCTAssertEqual(mocking, [true, false])
+    }
+}

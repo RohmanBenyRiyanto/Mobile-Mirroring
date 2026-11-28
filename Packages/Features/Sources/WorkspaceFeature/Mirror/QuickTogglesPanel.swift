@@ -19,6 +19,10 @@ public final class DeveloperToolsModel: ObservableObject {
     private var baseline: DeveloperState?
     private var beforeLastChange: DeveloperState?
     private let run: @Sendable (String) throws -> String
+    /// Told about what the phone is owed, so a crash or a pulled cable cannot leave the changes behind for good.
+    public var onOwed: ((_ baseline: DeveloperState) -> Void)?
+    public var onSettled: (() -> Void)?
+    public var onMockChanged: ((_ active: Bool) -> Void)?
 
     /// Wi-Fi and mobile data are only offered over USB: switching Wi-Fi off would also cut a wireless connection to the phone.
     public init(allowsNetworkSwitches: Bool = true, run: @escaping @Sendable (String) throws -> String) {
@@ -66,16 +70,18 @@ public final class DeveloperToolsModel: ObservableObject {
     /// Called when the session ends. Best effort: if the cable is already gone nothing can be sent.
     public func restoreOnEnd() {
         mockTask?.cancel()
-        if mockLocation != nil { _ = try? run(MockLocation.stopCommand); mockLocation = nil }
+        if mockLocation != nil { _ = try? run(MockLocation.stopCommand); mockLocation = nil; onMockChanged?(false) }
         guard let baseline, baseline != state else { return }
         let commands = DeveloperSettings.commands(from: state, to: baseline)
         let run = self.run
         _ = try? run(commands.joined(separator: "; "))
         state = baseline
+        onSettled?()
     }
 
     public func startMocking(_ location: MockLocation) {
         let run = self.run
+        onMockChanged?(true)
         do {
             _ = try run(location.startCommand)
         } catch {
@@ -100,16 +106,19 @@ public final class DeveloperToolsModel: ObservableObject {
         guard mockLocation != nil else { return }
         _ = try? run(MockLocation.stopCommand)
         mockLocation = nil
+        onMockChanged?(false)
     }
 
     private func apply(_ new: DeveloperState) {
         let commands = DeveloperSettings.commands(from: state, to: new)
         guard !commands.isEmpty else { return }
         let run = self.run
+        if let baseline { onOwed?(baseline) }
         do {
             _ = try run(commands.joined(separator: "; "))
             failure = nil
             state = new
+            if new == baseline { onSettled?() }
         } catch {
             failure = String(localized: "The phone did not accept the change")
         }

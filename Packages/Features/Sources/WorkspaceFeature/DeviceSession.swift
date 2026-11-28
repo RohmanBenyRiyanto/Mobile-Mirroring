@@ -43,6 +43,7 @@ public final class DeviceSession: ObservableObject {
     public let macroRecorder = MacroRecorder()
     public let performance = PerformanceMonitor()
     public let developerTools: DeveloperToolsModel
+    public var ledger: PhoneLedgerStore? { didSet { connectLedger() } }
     public let traffic: TrafficModel
     @Published public private(set) var isRecordingMacro = false
 
@@ -158,6 +159,32 @@ public final class DeviceSession: ObservableObject {
     }
 
     /// A previous run may have been killed with the API log's proxy still set; a fresh session removes it.
+    private func connectLedger() {
+        let serial = self.serial
+        developerTools.onOwed = { [weak self] baseline in self?.ledger?.recordBaseline(baseline, for: serial) }
+        developerTools.onSettled = { [weak self] in self?.ledger?.clearBaseline(for: serial) }
+        developerTools.onMockChanged = { [weak self] active in self?.ledger?.setMockLocation(active, for: serial) }
+    }
+
+    /// Anything an earlier run changed on this phone and never put back (it was killed, the cable was pulled, the battery died) is undone now.
+    private func restoreWhatWasLeftBehind() {
+        guard let entry = ledger?.entry(for: serial) else { return }
+        let adb = self.adb, serial = self.serial
+        Task {
+            let current = await Task.detached { () -> DeveloperState in
+                let out = (try? adb.run(["-s", serial, "shell", DeveloperSettings.readCommand], timeout: 8)) ?? Data()
+                return DeveloperSettings.parse(String(decoding: out, as: UTF8.self))
+            }.value
+            let commands = PhoneChangeLedger.restoreCommands(for: entry, current: current)
+            if !commands.isEmpty {
+                _ = await Task.detached { try? adb.run(["-s", serial, "shell", commands.joined(separator: "; ")], timeout: 10) }.value
+                if !hasEnded { onNotice?(String(localized: "Put back settings that an earlier session had changed on the phone")) }
+            }
+            // Only if nothing newer was written meanwhile: this session may already have made changes of its own.
+            if ledger?.entry(for: serial) == entry { ledger?.clear(serial) }
+        }
+    }
+
     private func removeLeftoverProxy() {
         let adb = self.adb, serial = self.serial
         Task {
@@ -170,6 +197,7 @@ public final class DeviceSession: ObservableObject {
 
     private func beginMonitoring() {
         removeLeftoverProxy()
+        restoreWhatWasLeftBehind()
         foreground.start(fetch: ForegroundAppDetector.fetcher(adb: adb, serial: serial))
 
         let adb = self.adb, serial = self.serial

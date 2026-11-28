@@ -53,6 +53,7 @@ public final class AppModel: ObservableObject {
         }
     }
     private var deviceSettings = DeviceSettingsBook()
+    private lazy var phoneLedger = PhoneLedgerStore(defaults: defaults)
     /// For each app opened on a separate display, whether it ended up wide. Bounded, and only valid package names are kept.
     private var displayShapes: [String: Bool] {
         get { defaults.dictionary(forKey: "displayShapes.v1") as? [String: Bool] ?? [:] }
@@ -243,6 +244,7 @@ public final class AppModel: ObservableObject {
         if let app = launchSettings.virtualDisplay.startApp { launchSettings.virtualDisplay.initialLandscape = displayShapes[app] ?? false }
         launchSettings.obsStreamPort = SessionOrder.streamPort(base: settings.obsStreamPort, taken: Set(sessions.compactMap(\.streamPort)))
         let session = DeviceSession(adb: adb, serial: device.serial, settings: launchSettings, cursorCapture: cursorCapture, mode: defaultMode)
+        session.ledger = phoneLedger
         session.onNotice = { [weak self] in self?.notice = $0 }
         session.onVirtualDisplayShape = { [weak self] app, landscape in self?.rememberDisplayShape(app, landscape: landscape) }
         session.onSavedFile = { [weak self] in self?.noticeFile = $0 }

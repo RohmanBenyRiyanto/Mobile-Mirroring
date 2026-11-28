@@ -3,8 +3,8 @@ import Foundation
 // MARK: State
 
 /// The phone's developer switches that the Quick Toggles panel can change. Pure, so reading and writing are tested without a phone.
-public struct DeveloperState: Equatable, Sendable {
-    public enum NightMode: String, CaseIterable, Sendable { case auto, yes, no }
+public struct DeveloperState: Equatable, Sendable, Codable {
+    public enum NightMode: String, CaseIterable, Sendable, Codable { case auto, yes, no }
 
     public var layoutBounds = false
     public var gpuOverdraw = false
