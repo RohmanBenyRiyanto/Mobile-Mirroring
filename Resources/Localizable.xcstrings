@@ -10779,40 +10779,6 @@
       },
       "extractionState": "manual"
     },
-    "File is on the phone's clipboard. Paste it into the chat": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "File ada di clipboard HP. Tempel ke chat"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "File is on the phone's clipboard. Paste it into the chat"
-          }
-        }
-      },
-      "extractionState": "manual"
-    },
-    "%lld files are on the phone's clipboard. Paste them into the chat": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld file ada di clipboard HP. Tempel ke chat"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld files are on the phone's clipboard. Paste them into the chat"
-          }
-        }
-      },
-      "extractionState": "manual"
-    },
     "Could not use the phone's clipboard, copying to Download instead": {
       "localizations": {
         "id": {
@@ -10829,6 +10795,40 @@
         }
       },
       "extractionState": "manual"
+    },
+    "File pasted into the phone. It is also on the phone's clipboard": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File pasted into the phone. It is also on the phone's clipboard"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File ditempel ke HP. File juga ada di clipboard HP"
+          }
+        }
+      }
+    },
+    "%lld files pasted into the phone. They are also on the phone's clipboard": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld files pasted into the phone. They are also on the phone's clipboard"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld file ditempel ke HP. File juga ada di clipboard HP"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

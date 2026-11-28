@@ -349,7 +349,8 @@ public final class DeviceSession: ObservableObject {
             }.value
             guard !hasEnded else { return }
             if copied > 0 {
-                onNotice?(copied == 1 ? String(localized: "File is on the phone's clipboard. Paste it into the chat") : String(localized: "\(copied) files are on the phone's clipboard. Paste them into the chat"))
+                pressWithCtrl(.v) // paste straight into the focused field; the clipboard still holds the files if the app ignores it
+                onNotice?(copied == 1 ? String(localized: "File pasted into the phone. It is also on the phone's clipboard") : String(localized: "\(copied) files pasted into the phone. They are also on the phone's clipboard"))
             } else {
                 onNotice?(String(localized: "Could not use the phone's clipboard, copying to Download instead"))
                 onFilesPasted?(ordinary)
