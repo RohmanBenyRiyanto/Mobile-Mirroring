@@ -4,8 +4,13 @@ import XCTest
 
 @MainActor
 public func renderSnapshot<Content: View>(_ view: Content, size: CGSize, name: String, appearance: NSAppearance.Name = .aqua) throws -> NSBitmapImageRep {
-    let hosting = NSHostingView(rootView: view.frame(width: size.width, height: size.height))
-    hosting.frame = CGRect(origin: .zero, size: size)
+    let scale = ProcessInfo.processInfo.environment["BENZMIRROR_SNAPSHOT_SCALE"].flatMap(Double.init).map { CGFloat($0) } ?? 1
+    let drawn = CGSize(width: size.width * scale, height: size.height * scale)
+    let framed = view.frame(width: size.width, height: size.height)
+    let hosting = scale == 1
+        ? NSHostingView(rootView: AnyView(framed))
+        : NSHostingView(rootView: AnyView(framed.scaleEffect(scale, anchor: .topLeading).frame(width: drawn.width, height: drawn.height, alignment: .topLeading)))
+    hosting.frame = CGRect(origin: .zero, size: drawn)
     hosting.appearance = NSAppearance(named: appearance)
     let window = NSWindow(contentRect: hosting.frame, styleMask: [.borderless], backing: .buffered, defer: false)
     window.contentView = hosting

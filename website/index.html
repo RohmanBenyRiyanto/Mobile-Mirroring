@@ -91,14 +91,9 @@ if(s.variant==='b'||s.variant==='c')d.setAttribute('data-variant',s.variant);d.c
           <div class="s-mac">
             <div class="s-bar"><i></i><i></i><i></i><span>Benz Mirror</span></div>
             <div class="s-body">
-              <div class="s-connect">
-                <div class="s-row on"><b></b><span>Phone · USB</span><u></u></div>
-                <div class="s-row"><span class="s-l">Preset</span><span class="s-v">Game streaming</span></div>
-                <div class="s-row"><span class="s-l">Send picture to OBS</span><span class="s-sw"></span></div>
-                <div class="s-go">Start Mirroring</div>
-              </div>
+              <div class="s-connect"><img class="real" src="assets/img/ui/connect.webp" width="1120" height="1800" alt="" loading="lazy" decoding="async"></div>
               <div class="s-video"><div class="scene"><i class="sun"></i><i class="hill h1"></i><i class="hill h2"></i><i class="hero-dot"></i><i class="pad"></i><i class="fire"></i></div></div>
-              <div class="s-rail"><i></i><i></i><i></i><i></i><i></i><i class="rec"></i></div>
+              <div class="s-rail"><img class="real" src="assets/img/ui/rail.webp" width="208" height="2660" alt="" loading="lazy" decoding="async"></div>
             </div>
           </div>
           <div class="s-cable"></div>
@@ -229,6 +224,32 @@ if(s.variant==='b'||s.variant==='c')d.setAttribute('data-variant',s.variant);d.c
         <div class="tabs-art" aria-hidden="true"><span class="on">Phone 1</span><span>Phone 2</span><span>+</span></div>
         <div class="wifi" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
       </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REAL SCREENS ============ -->
+<section class="real-sec" id="asli">
+  <div class="wrap">
+    <h2 class="head reveal"><span lang="id">Tampilan aslinya.</span><span lang="en">The real thing.</span></h2>
+    <p class="lead reveal"><span lang="id">Ini tampilan aplikasi sebenarnya, diambil dari kode yang sama dengan aplikasinya dan berisi data contoh. Isi layar ponsel selalu gambar tiruan.</span><span lang="en">These are the app's own screens, rendered by the same code as the app with sample data. Phone screens are always stand-in pictures.</span></p>
+    <div class="seg reveal" role="tablist" data-tabs>
+      <button type="button" role="tab" aria-selected="true" aria-controls="r-connect" id="t-rconnect"><span lang="id">Mulai</span><span lang="en">Start</span></button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="r-keymap" id="t-rkeymap">Keymap</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="r-keys" id="t-rkeys"><span lang="id">Pintasan</span><span lang="en">Shortcuts</span></button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="r-log" id="t-rlog">Logcat</button>
+    </div>
+    <div class="shot-panel" role="tabpanel" id="r-connect" aria-labelledby="t-rconnect">
+      <figure class="shot win tall"><div class="bar"><i></i><i></i><i></i><span>Benz Mirror</span></div><img src="assets/img/ui/connect.webp" width="1120" height="1800" alt="" loading="lazy" decoding="async"><figcaption><span lang="id">Pilih preset kualitas, nyalakan OBS, dan mulai.</span><span lang="en">Choose a quality preset, turn on OBS and start.</span></figcaption></figure>
+    </div>
+    <div class="shot-panel" role="tabpanel" id="r-keymap" aria-labelledby="t-rkeymap" hidden>
+      <figure class="shot win tall"><div class="bar"><i></i><i></i><i></i><span>Keymap</span></div><img src="assets/img/ui/keymap.webp" width="1400" height="1785" alt="" loading="lazy" decoding="async"><figcaption><span lang="id">Seret tiap kontrol ke layar ponsel, lalu pilih tombolnya.</span><span lang="en">Drag each control onto the phone screen, then choose its key.</span></figcaption></figure>
+    </div>
+    <div class="shot-panel" role="tabpanel" id="r-keys" aria-labelledby="t-rkeys" hidden>
+      <figure class="shot win"><div class="bar"><i></i><i></i><i></i><span><span lang="id">Pengaturan › Pintasan</span><span lang="en">Settings › Shortcuts</span></span></div><img src="assets/img/ui/shortcuts.webp" width="1100" height="825" alt="" loading="lazy" decoding="async"><figcaption><span lang="id">Setiap pintasan menu bisa diubah.</span><span lang="en">Every menu shortcut can be changed.</span></figcaption></figure>
+    </div>
+    <div class="shot-panel" role="tabpanel" id="r-log" aria-labelledby="t-rlog" hidden>
+      <figure class="shot win wide"><div class="bar"><i></i><i></i><i></i><span>Logcat</span></div><img src="assets/img/ui/logcat.webp" width="1400" height="404" alt="" loading="lazy" decoding="async"><figcaption><span lang="id">Crash ditandai sebagai blok yang mudah dikenali.</span><span lang="en">Crashes are marked as blocks that are easy to spot.</span></figcaption></figure>
     </div>
   </div>
 </section>
