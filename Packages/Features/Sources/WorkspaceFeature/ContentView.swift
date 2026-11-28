@@ -20,7 +20,7 @@ public struct ContentView: View {
 
     private var openPanelWidth: CGFloat {
         (model.showsPerformance ? PerformancePanel.width : 0) + (model.showsQuickToggles ? QuickTogglesPanel.width : 0)
-            + (model.showsInspectorPanel ? InspectorPanel.width : 0)
+            + (model.showsInspectorPanel ? InspectorPanel.width : 0) + (model.editor != nil ? KeymapEditorPanel.width : 0)
     }
 
     /// Gives the window the width of the picture plus every open panel, so panels sit beside the picture instead of covering it.
@@ -60,9 +60,11 @@ public struct ContentView: View {
         .animated(value: model.showsPerformance)
         .animated(value: model.showsQuickToggles)
         .animated(value: model.showsInspectorPanel)
+        .animated(value: model.editor == nil)
         .onChange(of: model.showsInspectorPanel) { _, _ in syncWindowToPanels() }
         .onChange(of: model.showsQuickToggles) { _, _ in syncWindowToPanels() }
         .onChange(of: model.showsPerformance) { _, _ in syncWindowToPanels() }
+        .onChange(of: model.editor == nil) { _, _ in syncWindowToPanels() }
         .sheet(isPresented: $model.showsDeviceInfo) { DeviceInfoSheet() }
         .sheet(isPresented: Binding(get: { model.lostConnection != nil }, set: { if !$0 { model.dismissLostConnection() } })) { ConnectionLostSheet().environmentObject(model) }
         .sheet(isPresented: $model.showsOnboarding) { OnboardingView().environmentObject(model) }
@@ -139,6 +141,7 @@ private struct MirrorScreen: View {
             if let editor = model.editor {
                 KeymapEditorPanel(editor: editor, foreground: model.foreground, message: model.editorMessage, apps: model.appPickerItems, isLoadingApps: model.isLoadingApps, loadApps: { await model.loadInstalledApps() },
                                   onSave: { _ = model.saveEditor() }, onClose: { model.closeEditor(save: $0) })
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }
     }

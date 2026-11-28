@@ -5,6 +5,7 @@ import SystemServices
 import Theme
 
 public struct KeymapEditorPanel: View {
+    public static let width: CGFloat = 280
     @ObservedObject public var editor: KeymapEditorModel
     @ObservedObject public var foreground: ForegroundAppDetector
     public let message: String?
@@ -43,7 +44,7 @@ public struct KeymapEditorPanel: View {
             Divider()
             footer
         }
-        .frame(width: 280)
+        .frame(width: Self.width)
         .background(.bar)
     }
 
