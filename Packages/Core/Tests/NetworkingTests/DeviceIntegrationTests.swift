@@ -52,6 +52,69 @@ final class DeviceIntegrationTests: XCTestCase {
         XCTAssertFalse(second.events.contains { $0.hasPrefix("ended:") }, "\(second.events)")
     }
 
+    func testTouchesReachTheVirtualDisplay() async throws {
+        guard let serial = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_SERIAL"] else { throw XCTSkip("Set BENZMIRROR_TEST_SERIAL to run against a real phone") }
+        var settings = MirrorSettings()
+        settings.virtualDisplay = VirtualDisplaySettings(isEnabled: true, startApp: "com.android.settings")
+        let adb = try XCTUnwrap(ADB.locate())
+        let session = ScrcpySession(adb: adb, serial: serial, settings: settings)
+        let log = EventLog()
+        session.onEvent = { log.record($0) }
+        try await Task.detached { try session.start() }.value
+        defer { session.stop() }
+        try await Task.sleep(for: .seconds(3))
+        _ = session.statistics.snapshot()
+        try await Task.sleep(for: .seconds(2))
+        let idle = session.statistics.snapshot().framesPerSecond
+        let size = try XCTUnwrap(log.snapshot.size)
+        // Settings' search bar sits near the top; a tap there animates the screen, which shows up as a burst of frames.
+        let point = TouchPosition(x: Int32(size.width * 0.5), y: Int32(size.height * 0.12), frameWidth: UInt16(size.width), frameHeight: UInt16(size.height))
+        session.send(.touch(.down, point, pressure: 1))
+        try await Task.sleep(for: .milliseconds(80))
+        session.send(.touch(.up, point, pressure: 0))
+        try await Task.sleep(for: .seconds(1))
+        let busy = session.statistics.snapshot().framesPerSecond
+        print("DEVICE>> vd touch idle=\(idle) fps, after tap=\(busy) fps")
+        XCTAssertGreaterThan(busy, idle + 3, "the tap did not change what is on the virtual display")
+    }
+
+    func testFingerStrokeFlingsTheVirtualDisplay() async throws {
+        guard let serial = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_SERIAL"] else { throw XCTSkip("Set BENZMIRROR_TEST_SERIAL to run against a real phone") }
+        var settings = MirrorSettings()
+        settings.virtualDisplay = VirtualDisplaySettings(isEnabled: true, startApp: "com.android.settings")
+        let session = ScrcpySession(adb: try XCTUnwrap(ADB.locate()), serial: serial, settings: settings)
+        let log = EventLog()
+        session.onEvent = { log.record($0) }
+        try await Task.detached { try session.start() }.value
+        defer { session.stop() }
+        try await Task.sleep(for: .seconds(3))
+        let size = try XCTUnwrap(log.snapshot.size)
+        func send(_ outputs: [ScrollStroke.Output]) {
+            for output in outputs {
+                let (action, ratio): (TouchAction, CGPoint)
+                switch output {
+                case let .down(p): (action, ratio) = (.down, p)
+                case let .move(p): (action, ratio) = (.move, p)
+                case let .up(p): (action, ratio) = (.up, p)
+                }
+                let position = TouchPosition(x: Int32(ratio.x * size.width), y: Int32(ratio.y * size.height), frameWidth: UInt16(size.width), frameHeight: UInt16(size.height))
+                session.send(.touch(action, position, pressure: action == .up ? 0 : 1))
+            }
+        }
+        _ = session.statistics.snapshot()
+        var stroke = ScrollStroke()
+        send(stroke.begin(at: CGPoint(x: 0.5, y: 0.8)))
+        for _ in 0..<12 {
+            send(stroke.move(by: CGVector(dx: 0, dy: -0.04)))
+            try await Task.sleep(for: .milliseconds(12))
+        }
+        send(stroke.end())
+        try await Task.sleep(for: .seconds(1.5))
+        let fps = session.statistics.snapshot().framesPerSecond
+        print("DEVICE>> vd stroke fps over 1.5 s = \(fps)")
+        XCTAssertGreaterThan(fps, 8, "a drag then release should scroll and keep flinging")
+    }
+
     func testPhoneMicrophoneSourceStartsWithoutAudioErrors() async throws {
         guard let serial = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_SERIAL"] else { throw XCTSkip("Set BENZMIRROR_TEST_SERIAL to run against a real phone") }
         var settings = MirrorSettings()
