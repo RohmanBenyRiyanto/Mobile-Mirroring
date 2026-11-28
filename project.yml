@@ -63,7 +63,7 @@ targets:
       path: Resources/Info.plist
       properties:
         CFBundleDevelopmentRegion: en
-        CFBundleLocalizations: [en, id, es, fr, de, pt-BR]
+        CFBundleLocalizations: [en, id, es, fr, de, pt-BR, zh-Hans, ja, ko]
         CFBundleName: Benz Mirror
         CFBundleDisplayName: Benz Mirror
         CFBundleShortVersionString: "0.1.0"

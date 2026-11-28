@@ -35,6 +35,9 @@
 		<string>fr</string>
 		<string>de</string>
 		<string>pt-BR</string>
+		<string>zh-Hans</string>
+		<string>ja</string>
+		<string>ko</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>Benz Mirror</string>
