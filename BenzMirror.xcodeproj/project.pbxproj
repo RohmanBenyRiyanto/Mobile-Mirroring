@@ -23,6 +23,7 @@
 		D4558FA377C664035FBD99D1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0082A30184B65ACD6E36D9BD /* AppDelegate.swift */; };
 		DC2A05A65165316A44DA022A /* LaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E934415E0682CA71DE045F9 /* LaunchTests.swift */; };
 		E3868D26959A6490F8F7FB52 /* LICENSE-scrcpy in Resources */ = {isa = PBXBuildFile; fileRef = 678A51690BABF7156640242A /* LICENSE-scrcpy */; };
+		E6EAA38EC3F0CE8C0B337EAE /* ClipHelper.dex in Resources */ = {isa = PBXBuildFile; fileRef = A8C96CA79EC5D8745C509CC4 /* ClipHelper.dex */; };
 		E827A178297B008528DC8DF6 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 7BBC50544FCA7CB00A7865CB /* Localizable.xcstrings */; };
 		F7FDB0923949DDD47D13CE5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4BD89CCC5C5900DC34C0DA4C /* Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -48,6 +49,7 @@
 		6E934415E0682CA71DE045F9 /* LaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchTests.swift; sourceTree = "<group>"; };
 		7BBC50544FCA7CB00A7865CB /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		816A761943BB291DAF42B9A9 /* Features */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Features; path = Packages/Features; sourceTree = SOURCE_ROOT; };
+		A8C96CA79EC5D8745C509CC4 /* ClipHelper.dex */ = {isa = PBXFileReference; path = ClipHelper.dex; sourceTree = "<group>"; };
 		B6C68D746BE6AFB5D670D9C8 /* BenzMirrorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenzMirrorApp.swift; sourceTree = "<group>"; };
 		C03F96CFAD9DE801A13ABE3A /* DeviceNames.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = DeviceNames.json; sourceTree = "<group>"; };
 		CC97B6F0380385DA21171307 /* UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				4BD89CCC5C5900DC34C0DA4C /* Assets.xcassets */,
+				A8C96CA79EC5D8745C509CC4 /* ClipHelper.dex */,
 				FA4D20D245831BE7515C2535 /* DefaultKeymaps */,
 				C03F96CFAD9DE801A13ABE3A /* DeviceNames.json */,
 				678A51690BABF7156640242A /* LICENSE-scrcpy */,
@@ -236,6 +239,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F7FDB0923949DDD47D13CE5E /* Assets.xcassets in Resources */,
+				E6EAA38EC3F0CE8C0B337EAE /* ClipHelper.dex in Resources */,
 				6CC6D3E2E4C33043D1A9A308 /* DefaultKeymaps in Resources */,
 				6B273535DB71D8C7FF97506F /* DeviceNames.json in Resources */,
 				E3868D26959A6490F8F7FB52 /* LICENSE-scrcpy in Resources */,

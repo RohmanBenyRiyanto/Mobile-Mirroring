@@ -100,6 +100,7 @@ public final class DeviceSession: ObservableObject {
 
     /// Stops on request. Unlike a connection that ends by itself, this does not call `onEnded`.
     public func stop() {
+        removePasteFolder()
         scrcpy.stop()
         cleanUp()
     }
@@ -182,6 +183,7 @@ public final class DeviceSession: ObservableObject {
 
     /// Anything an earlier run changed on this phone and never put back (it was killed, the cable was pulled, the battery died) is undone now.
     private func restoreWhatWasLeftBehind() {
+        removePasteFolder()
         guard let entry = ledger?.entry(for: serial) else { return }
         let adb = self.adb, serial = self.serial
         Task {
@@ -296,11 +298,69 @@ public final class DeviceSession: ObservableObject {
     public func pasteToPhone() {
         let pasteboard = NSPasteboard.general
         if let files = pasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL], !files.isEmpty {
-            onFilesPasted?(files)
+            pasteFiles(files)
             return
         }
         guard let text = pasteboard.string(forType: .string) else { return }
         send(.setClipboard(text, paste: true))
+    }
+
+    /// Finder files become the phone's clipboard, so ⌘V in WhatsApp, Gmail and the like attaches them. An .apk or keymap, a folder,
+    /// or a phone that refuses the helper falls back to the normal Download copy.
+    private func pasteFiles(_ files: [URL]) {
+        let isFile = { (url: URL) -> Bool in
+            var directory: ObjCBool = false
+            return FileManager.default.fileExists(atPath: url.path, isDirectory: &directory) && !directory.boolValue
+        }
+        let ordinary = files.filter { url in isFile(url) && !["apk", KeymapFile.fileExtension].contains(url.pathExtension.lowercased()) }
+        let other = files.filter { !ordinary.contains($0) }
+        if !other.isEmpty { onFilesPasted?(other) }
+        guard !ordinary.isEmpty else { return }
+        guard let dex = Bundle.main.url(forResource: "ClipHelper", withExtension: "dex") else { onFilesPasted?(ordinary); return }
+        let chosen = Array(ordinary.prefix(PhoneClipboardPlan.maxFiles))
+        let tooBig = chosen.contains { ((try? $0.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0) > PhoneClipboardPlan.maxFileBytes }
+        guard !tooBig else { onFilesPasted?(ordinary); return }
+        onNotice?(String(localized: "Preparing the files for the phone's clipboard"))
+        let adb = self.adb, serial = self.serial
+        Task {
+            let copied = await Task.detached { () -> Int in
+                do {
+                    let folder = PhoneClipboardPlan.folder
+                    _ = try adb.run(["-s", serial, "shell", PhoneClipboardPlan.removeFolderCommand + "; mkdir -p " + PhoneTransfer.shellQuoted(folder)], timeout: 10)
+                    var items: [(uri: String, mime: String)] = []
+                    for (index, file) in chosen.enumerated() {
+                        let name = PhoneClipboardPlan.phoneName(file.lastPathComponent, index: index)
+                        let path = "\(folder)/\(name)"
+                        _ = try adb.run(["-s", serial, "push", file.path, path], timeout: 600)
+                        _ = try? adb.run(["-s", serial, "shell", PhoneTransfer.scanCommand(forPhonePath: path)], timeout: 10)
+                        var id: Int?
+                        for _ in 0..<10 where id == nil {
+                            let out = (try? adb.run(["-s", serial, "shell", PhoneClipboardPlan.queryCommand(forPhonePath: path)], timeout: 8)) ?? Data()
+                            id = PhoneClipboardPlan.mediaID(inQueryOutput: String(decoding: out, as: UTF8.self))
+                            if id == nil { Thread.sleep(forTimeInterval: 0.2) }
+                        }
+                        guard let id else { throw NSError(domain: "BenzMirror", code: 1) }
+                        items.append((PhoneClipboardPlan.contentURI(forMediaID: id), PhoneClipboardPlan.mimeType(forFileNamed: file.lastPathComponent)))
+                    }
+                    _ = try adb.run(["-s", serial, "push", dex.path, PhoneClipboardPlan.helperPath], timeout: 20)
+                    let out = try adb.run(["-s", serial, "shell", PhoneClipboardPlan.helperCommand(items: items)], timeout: 15)
+                    return String(decoding: out, as: UTF8.self).hasPrefix("ok") ? items.count : 0
+                } catch { return 0 }
+            }.value
+            guard !hasEnded else { return }
+            if copied > 0 {
+                onNotice?(copied == 1 ? String(localized: "File is on the phone's clipboard. Paste it into the chat") : String(localized: "\(copied) files are on the phone's clipboard. Paste them into the chat"))
+            } else {
+                onNotice?(String(localized: "Could not use the phone's clipboard, copying to Download instead"))
+                onFilesPasted?(ordinary)
+            }
+        }
+    }
+
+    /// The files waited in a folder of their own; they are removed when the session ends and again before the next one.
+    private func removePasteFolder() {
+        let adb = self.adb, serial = self.serial
+        Task.detached { _ = try? adb.run(["-s", serial, "shell", PhoneClipboardPlan.removeFolderCommand + "; rm -f " + PhoneClipboardPlan.helperPath], timeout: 8) }
     }
 
     public func copyFromPhone() { send(.getClipboard(.copy)) }
