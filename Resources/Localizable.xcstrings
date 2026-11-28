@@ -6478,6 +6478,23 @@
         }
       }
     },
+    "Removed a proxy setting left on the phone by an earlier session" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Removed a proxy setting left on the phone by an earlier session"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pengaturan proxy yang tertinggal dari sesi sebelumnya di ponsel telah dihapus"
+          }
+        }
+      }
+    },
     "Request" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -157,7 +157,19 @@ public final class DeviceSession: ObservableObject {
         }
     }
 
+    /// A previous run may have been killed with the API log's proxy still set; a fresh session removes it.
+    private func removeLeftoverProxy() {
+        let adb = self.adb, serial = self.serial
+        Task {
+            let output = await Task.detached { try? adb.run(["-s", serial, "shell", LeftoverSettings.clearLoopbackProxyCommand], timeout: 6) }.value
+            if let output, LeftoverSettings.didClear(String(decoding: output, as: UTF8.self)), !hasEnded {
+                onNotice?(String(localized: "Removed a proxy setting left on the phone by an earlier session"))
+            }
+        }
+    }
+
     private func beginMonitoring() {
+        removeLeftoverProxy()
         foreground.start(fetch: ForegroundAppDetector.fetcher(adb: adb, serial: serial))
 
         let adb = self.adb, serial = self.serial

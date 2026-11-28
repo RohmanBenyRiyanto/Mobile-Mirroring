@@ -50,4 +50,12 @@ final class DeveloperSettingsTests: XCTestCase {
         XCTAssertEqual(DeveloperSettings.commands(from: changed, to: DeveloperState()),
                        ["setprop debug.hwui.overdraw ''", "settings put global always_finish_activities 0"])
     }
+
+    func testLeftoverProxyCleanupOnlyTouchesLoopbackProxies() {
+        let command = LeftoverSettings.clearLoopbackProxyCommand
+        XCTAssertTrue(command.contains("127.0.0.1:*"))
+        XCTAssertFalse(command.contains("10."), "a corporate or hotspot proxy is never touched")
+        XCTAssertTrue(LeftoverSettings.didClear("cleared\n"))
+        XCTAssertFalse(LeftoverSettings.didClear(""))
+    }
 }

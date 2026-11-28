@@ -16,6 +16,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldRestoreApplicationState(_ app: NSApplication) -> Bool { false }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        handleTerminationSignals()
         NSApp.setActivationPolicy(.regular) // Needed for a bare executable to show a normal window.
         NSApp.activate(ignoringOtherApps: true)
         // The system can reopen helper windows without the phone window. Make sure the phone window exists, then put the helpers away
@@ -37,6 +38,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private var closeObserver: NSObjectProtocol?
+    private var signalSources: [DispatchSourceSignal] = []
+
+    /// A plain `kill` (or a log-out) ends the app without its usual goodbye; route it through a normal quit so phone settings are put back.
+    private func handleTerminationSignals() {
+        for number in [SIGTERM, SIGHUP, SIGINT] {
+            signal(number, SIG_IGN)
+            let source = DispatchSource.makeSignalSource(signal: number, queue: .main)
+            source.setEventHandler { NSApp.terminate(nil) }
+            source.resume()
+            signalSources.append(source)
+        }
+    }
     private var isSettlingAtLaunch = true
 
     private static let helperWindowIDs = ["logcat", "mini", "apilog", "database"]

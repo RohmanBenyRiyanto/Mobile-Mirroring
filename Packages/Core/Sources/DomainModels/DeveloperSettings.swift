@@ -65,3 +65,14 @@ public enum DeveloperSettings {
         return commands
     }
 }
+
+
+/// Things the app changes on a phone and must never leave behind, even if it was killed before it could put them back.
+public enum LeftoverSettings {
+    /// A proxy that points at this Mac's loopback (the API log's) can only be ours. With nothing listening, every app that honours the
+    /// system proxy (browsers, TikTok…) loses its internet while games and chat apps still work, so a new session removes it.
+    public static let clearLoopbackProxyCommand =
+        "p=$(settings get global http_proxy); case \"$p\" in 127.0.0.1:*) settings put global http_proxy :0; settings delete global http_proxy; echo cleared;; esac"
+
+    public static func didClear(_ output: String) -> Bool { output.contains("cleared") }
+}
