@@ -715,6 +715,23 @@
         }
       }
     },
+    "Applies the next time you connect." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applies the next time you connect."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berlaku saat sambung berikutnya."
+          }
+        }
+      }
+    },
     "Asks before anything is removed" : {
       "extractionState" : "manual",
       "localizations" : {

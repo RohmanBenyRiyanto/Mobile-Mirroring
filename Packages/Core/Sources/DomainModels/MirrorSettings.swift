@@ -119,6 +119,9 @@ public struct MirrorSettings: Equatable, Codable {
     public var audioSource = AudioSource.output
     /// 0…1, applied to what is played on this Mac.
     public var audioVolume = 1.0
+    /// The Mac output to play on (a CoreAudio UID); nil follows the system default.
+    public var audioOutputUID: String?
+    public var recordAudio = true
     /// How much sound may queue up before the backlog is dropped, in milliseconds. Lower is faster; higher survives Wi-Fi hiccups.
     public var audioBufferMillis = 120
     public static let audioBufferRange = 40...300
@@ -148,6 +151,8 @@ public struct MirrorSettings: Equatable, Codable {
         quality = try values.decodeIfPresent(VideoQuality.self, forKey: .quality) ?? defaults.quality
         audioEnabled = try values.decodeIfPresent(Bool.self, forKey: .audioEnabled) ?? defaults.audioEnabled
         virtualDisplay = (try? values.decodeIfPresent(VirtualDisplaySettings.self, forKey: .virtualDisplay)).flatMap { $0 } ?? defaults.virtualDisplay
+        audioOutputUID = try values.decodeIfPresent(String.self, forKey: .audioOutputUID)
+        recordAudio = try values.decodeIfPresent(Bool.self, forKey: .recordAudio) ?? defaults.recordAudio
         audioVolume = min(max(try values.decodeIfPresent(Double.self, forKey: .audioVolume) ?? defaults.audioVolume, 0), 1)
         audioBufferMillis = Self.clamp(try values.decodeIfPresent(Int.self, forKey: .audioBufferMillis) ?? defaults.audioBufferMillis, Self.audioBufferRange)
         audioSource = (try? values.decodeIfPresent(AudioSource.self, forKey: .audioSource)).flatMap { $0 } ?? defaults.audioSource

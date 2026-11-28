@@ -7,7 +7,13 @@ import DomainModels
 /// after a Wi-Fi hiccup), the backlog is dropped in one go and playback continues from the newest audio. That is one
 /// short gap instead of a stream of small ones, and the delay goes back to a few milliseconds.
 public final class AudioPlayer: @unchecked Sendable {
-    public init(bufferMillis: Int = 120) { maxQueuedFrames = AVAudioFrameCount(max(bufferMillis, 20) * 48) }
+    public init(bufferMillis: Int = 120, outputDeviceUID: String? = nil) {
+        maxQueuedFrames = AVAudioFrameCount(max(bufferMillis, 20) * 48)
+        self.outputDeviceUID = outputDeviceUID
+    }
+
+    /// nil follows the system's default output.
+    private let outputDeviceUID: String?
 
     /// The most that may queue before the backlog is dropped (48 frames per millisecond).
     public let maxQueuedFrames: AVAudioFrameCount
@@ -34,6 +40,9 @@ public final class AudioPlayer: @unchecked Sendable {
     }
 
     public func start() throws {
+        if let uid = outputDeviceUID, var device = AudioOutputDevices.deviceID(forUID: uid), let unit = engine.outputNode.audioUnit {
+            AudioUnitSetProperty(unit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, 0, &device, UInt32(MemoryLayout<AudioDeviceID>.size))
+        }
         engine.attach(node)
         engine.connect(node, to: engine.mainMixerNode, format: format)
         engine.prepare()

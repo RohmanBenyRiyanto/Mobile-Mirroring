@@ -94,3 +94,13 @@ final class AudioBacklogTests: XCTestCase {
         XCTAssertEqual(player.droppedBacklogs, 1, "300 ms queued: dropped once, then playing from the newest audio")
     }
 }
+
+final class AudioOutputDeviceTests: XCTestCase {
+    func testListsOutputsAndResolvesTheirUIDs() throws {
+        let devices = AudioOutputDevices.all()
+        guard let first = devices.first else { throw XCTSkip("no audio output on this machine") }
+        XCTAssertFalse(first.name.isEmpty)
+        XCTAssertNotNil(AudioOutputDevices.deviceID(forUID: first.uid))
+        XCTAssertNil(AudioOutputDevices.deviceID(forUID: "no-such-device"))
+    }
+}

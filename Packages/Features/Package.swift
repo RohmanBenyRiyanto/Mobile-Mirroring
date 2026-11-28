@@ -51,7 +51,7 @@ let package = Package(
 
         // Settings (⌘,): General with Appearance, Video, Audio, Shortcuts, Advanced.
         .target(name: "SettingsFeature", dependencies: [
-            .product(name: "DomainModels", package: "Core"), .product(name: "Networking", package: "Core"),
+            .product(name: "DomainModels", package: "Core"), .product(name: "Networking", package: "Core"), .product(name: "Media", package: "Core"),
             .product(name: "Theme", package: "DesignSystem"), .product(name: "Components", package: "DesignSystem"),
             "WorkspaceFeature",
         ]),

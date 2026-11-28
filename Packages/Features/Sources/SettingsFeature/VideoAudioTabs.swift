@@ -1,5 +1,6 @@
 import Components
 import DomainModels
+import Media
 import SwiftUI
 import Theme
 import WorkspaceFeature
@@ -40,9 +41,12 @@ struct AudioTab: View {
                 }
                 .labelsHidden().frame(width: 170).disabled(!model.settings.audioEnabled)
             }
-            SettingsRow("Output") {
-                Picker("Output", selection: .constant("System default")) { Text("System default").tag("System default") }
-                    .labelsHidden().frame(width: 150).disabled(true)
+            SettingsRow("Output", detail: "Applies the next time you connect.") {
+                Picker("Output", selection: $model.settings.audioOutputUID) {
+                    Text("System default").tag(String?.none)
+                    ForEach(AudioOutputDevices.all()) { Text(verbatim: $0.name).tag(String?.some($0.uid)) }
+                }
+                .labelsHidden().frame(width: 190)
             }
             SettingsRow("Buffer", detail: "Lower is faster. Raise it if sound crackles. Applies the next time you connect.") {
                 HStack(spacing: Theme.Space.s2) {
@@ -56,12 +60,9 @@ struct AudioTab: View {
                 Slider(value: $model.settings.audioVolume, in: 0...1).frame(width: 150)
             }
         }
-        SettingsCard(footer: "Output and recording audio arrive in a later version.") {
-            SettingsRow("Mute the phone speaker", detail: "While audio plays on this Mac") {
-                Toggle("Mute the phone speaker", isOn: .constant(true)).labelsHidden().toggleStyle(.switch).disabled(true)
-            }
+        SettingsCard {
             SettingsRow("Include audio in recordings") {
-                Toggle("Include audio in recordings", isOn: .constant(true)).labelsHidden().toggleStyle(.switch).disabled(true)
+                Toggle("Include audio in recordings", isOn: $model.settings.recordAudio).labelsHidden().toggleStyle(.switch)
             }
         }
     }

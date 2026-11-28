@@ -76,7 +76,7 @@ public final class ScrcpySession: @unchecked Sendable {
         self.serial = serial
         self.settings = settings
         self.decoder = VideoDecoder(codec: settings.quality.codec)
-        self.player = settings.audioEnabled ? AudioPlayer(bufferMillis: settings.audioBufferMillis) : nil
+        self.player = settings.audioEnabled ? AudioPlayer(bufferMillis: settings.audioBufferMillis, outputDeviceUID: settings.audioOutputUID) : nil
         player?.setVolume(settings.audioVolume)
         decoder.onNeedsKeyFrame = { [weak self] in self?.send(.resetVideo) }
     }
@@ -136,7 +136,7 @@ public final class ScrcpySession: @unchecked Sendable {
 
     public func startRecording(to url: URL) throws {
         guard let format = decoder.currentFormat else { throw RecordingError.noVideoYet }
-        let recorder = try ScreenRecorder(url: url, videoFormat: format, includesAudio: isAudioStreaming.get())
+        let recorder = try ScreenRecorder(url: url, videoFormat: format, includesAudio: isAudioStreaming.get() && settings.recordAudio)
         lock.withLock { self.recorder = recorder }
         decoder.setFrameTap { [recorder] sample, isKeyFrame in recorder.appendVideo(sample, isKeyFrame: isKeyFrame) }
     }
