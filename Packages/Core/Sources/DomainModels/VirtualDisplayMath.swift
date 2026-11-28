@@ -3,7 +3,11 @@ import Foundation
 
 /// Sizes for the flexible virtual display. Pure, so the rules are tested without a phone.
 public enum VirtualDisplayMath {
-    public static let initialSize = (width: 1080, height: 1920)
+    public static let initialSize = initialSize(landscape: false)
+
+    /// Where the display starts. Games that insist on landscape would otherwise start portrait and flip a moment later,
+    /// so the shape an app turned out to want is remembered and used the next time.
+    public static func initialSize(landscape: Bool) -> (width: Int, height: Int) { landscape ? (1920, 1080) : (1080, 1920) }
     /// Games and apps are drawn for about this many dp across the short edge of a phone.
     static let phoneShortEdgeDP = 411.0
     static let step = 8

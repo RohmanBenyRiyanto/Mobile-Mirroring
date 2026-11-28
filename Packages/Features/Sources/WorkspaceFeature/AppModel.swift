@@ -53,6 +53,19 @@ public final class AppModel: ObservableObject {
         }
     }
     private var deviceSettings = DeviceSettingsBook()
+    /// For each app opened on a separate display, whether it ended up wide. Bounded, and only valid package names are kept.
+    private var displayShapes: [String: Bool] {
+        get { defaults.dictionary(forKey: "displayShapes.v1") as? [String: Bool] ?? [:] }
+        set { defaults.set(newValue, forKey: "displayShapes.v1") }
+    }
+
+    func rememberDisplayShape(_ app: String, landscape: Bool) {
+        guard ForegroundApp.isValidPackage(app), displayShapes[app] != landscape else { return }
+        var shapes = displayShapes
+        if shapes.count >= 200, shapes[app] == nil, let drop = shapes.keys.first { shapes.removeValue(forKey: drop) }
+        shapes[app] = landscape
+        displayShapes = shapes
+    }
     @Published public private(set) var sessions: [DeviceSession] = []
     @Published public private(set) var activeSerial: String?
     /// True while the user is picking another phone to add; the connect screen shows instead of the mirror.
@@ -214,9 +227,11 @@ public final class AppModel: ObservableObject {
         if sessions.contains(where: { $0.serial == device.serial }) { return activate(device.serial) }
 
         var launchSettings = settings
+        if let app = launchSettings.virtualDisplay.startApp { launchSettings.virtualDisplay.initialLandscape = displayShapes[app] ?? false }
         launchSettings.obsStreamPort = SessionOrder.streamPort(base: settings.obsStreamPort, taken: Set(sessions.compactMap(\.streamPort)))
         let session = DeviceSession(adb: adb, serial: device.serial, settings: launchSettings, cursorCapture: cursorCapture, mode: defaultMode)
         session.onNotice = { [weak self] in self?.notice = $0 }
+        session.onVirtualDisplayShape = { [weak self] app, landscape in self?.rememberDisplayShape(app, landscape: landscape) }
         session.onSavedFile = { [weak self] in self?.noticeFile = $0 }
         session.keymapIndex = { [weak self] in self?.keymapPackageIndex ?? [:] }
         session.loadKeymapProfile = { [weak self, weak session] id in

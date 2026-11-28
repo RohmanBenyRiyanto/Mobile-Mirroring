@@ -47,6 +47,8 @@ public final class DeviceSession: ObservableObject {
     @Published public private(set) var isRecordingMacro = false
 
     public var onNotice: ((String) -> Void)?
+    /// Called when a virtual display takes a shape (landscape or not), so the next start can open that way.
+    public var onVirtualDisplayShape: ((_ package: String, _ landscape: Bool) -> Void)?
     public var onSavedFile: ((URL) -> Void)?
     public var keymapIndex: () -> [String: String] = { [:] }
     public var loadKeymapProfile: (String) -> Bool = { _ in false }
@@ -112,6 +114,7 @@ public final class DeviceSession: ObservableObject {
             beginMonitoring()
         case let .resized(size):
             videoSize = size
+            if usesVirtualDisplay, let app = settings.virtualDisplay.startApp { onVirtualDisplayShape?(app, size.width > size.height) }
             keymap.updateFrameSize(size)
         case let .clipboard(text):
             NSPasteboard.general.clearContents()

@@ -115,6 +115,40 @@ final class DeviceIntegrationTests: XCTestCase {
         XCTAssertGreaterThan(fps, 8, "a drag then release should scroll and keep flinging")
     }
 
+    /// Measures the virtual display at several sizes and codecs. Prints a table; asserts only that frames flow.
+    func testVirtualDisplaySizeAndCodecTable() async throws {
+        guard let serial = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_SERIAL"], ProcessInfo.processInfo.environment["BENZMIRROR_TEST_VD_TABLE"] != nil else { throw XCTSkip("Set BENZMIRROR_TEST_SERIAL and BENZMIRROR_TEST_VD_TABLE") }
+        let app = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_VD_APP"] ?? "com.android.settings"
+        for codec in [VideoCodec.h264, .h265] {
+            var settings = MirrorSettings()
+            settings.quality = try XCTUnwrap(VideoQuality.values(for: .gaming))
+            settings.quality.codec = codec
+            settings.virtualDisplay = VirtualDisplaySettings(isEnabled: true, startApp: app)
+            let adb = try XCTUnwrap(ADB.locate())
+            let session = ScrcpySession(adb: adb, serial: serial, settings: settings)
+            let log = EventLog()
+            session.onEvent = { log.record($0) }
+            try await Task.detached { try session.start() }.value
+            try await Task.sleep(for: .seconds(2))
+            for (w, h) in [(1280, 720), (1920, 1080), (2560, 1440)] {
+                session.send(.resizeDisplay(width: UInt16(w), height: UInt16(h)))
+                try await Task.sleep(for: .seconds(1.5))
+                _ = session.statistics.snapshot()
+                // Keep the picture moving so there is something to encode.
+                let end = Date().addingTimeInterval(4)
+                var up = true
+                while Date() < end {
+                    try? adb.run(["-s", serial, "shell", "input swipe 540 \(up ? 900 : 300) 540 \(up ? 300 : 900) 120"], timeout: 5)
+                    up.toggle()
+                }
+                let snap = session.statistics.snapshot()
+                print("DEVICE>> vdtable \(codec) request=\(w)x\(h) got=\(String(describing: log.snapshot.size)) fps=\(String(format: "%.1f", snap.framesPerSecond)) mbps=\(String(format: "%.1f", snap.megabitsPerSecond)) jitter=\(String(format: "%.1f", snap.jitterMillis))")
+            }
+            session.stop()
+            try await Task.sleep(for: .seconds(2))
+        }
+    }
+
     func testPhoneMicrophoneSourceStartsWithoutAudioErrors() async throws {
         guard let serial = ProcessInfo.processInfo.environment["BENZMIRROR_TEST_SERIAL"] else { throw XCTSkip("Set BENZMIRROR_TEST_SERIAL to run against a real phone") }
         var settings = MirrorSettings()

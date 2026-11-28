@@ -55,3 +55,12 @@ final class VirtualDisplayTests: XCTestCase {
         XCTAssertEqual(ControlMessage.resizeDisplay(width: 1280, height: 720).serialized, Data([21, 0x05, 0x00, 0x02, 0xD0]))
     }
 }
+
+final class VirtualDisplayShapeTests: XCTestCase {
+    func testRememberedLandscapeChangesTheOpeningSize() {
+        XCTAssertEqual(VirtualDisplayMath.initialSize(landscape: true).width, 1920)
+        var settings = MirrorSettings()
+        settings.virtualDisplay = VirtualDisplaySettings(isEnabled: true, startApp: "a.b", initialLandscape: true)
+        XCTAssertTrue(settings.serverArguments(scid: 1).contains("new_display=1920x1080/\(VirtualDisplayMath.density(shortEdge: 1080))"))
+    }
+}

@@ -15,6 +15,7 @@ public struct MirrorView: NSViewRepresentable {
     /// The picture is a virtual display: tell the phone the window's size whenever it changes.
     public let flexibleDisplay: Bool
     public var maxDisplayEdge = 1920
+    public var initialLandscape = false
     public var onDrag: (DropSummary?) -> Void = { _ in }
     public var onDrop: ([URL]) -> Void = { _ in }
     /// Return true when the app used Esc; otherwise it is sent to the phone.
@@ -22,7 +23,7 @@ public struct MirrorView: NSViewRepresentable {
     public var isStreamMode: () -> Bool = { false }
     public var onExitStreamMode: () -> Void = {}
 
-    public init(session: ScrcpySession, keymap: KeymapController, inspector: InspectorModel, design: DesignModel, videoSize: CGSize, flexibleDisplay: Bool = false, maxDisplayEdge: Int = 1920,
+    public init(session: ScrcpySession, keymap: KeymapController, inspector: InspectorModel, design: DesignModel, videoSize: CGSize, flexibleDisplay: Bool = false, maxDisplayEdge: Int = 1920, initialLandscape: Bool = false,
                 onDrag: @escaping (DropSummary?) -> Void = { _ in }, onDrop: @escaping ([URL]) -> Void = { _ in },
                 onEscape: @escaping () -> Bool = { false}, isStreamMode: @escaping () -> Bool = { false },
                 onExitStreamMode: @escaping () -> Void = {}) {
@@ -33,6 +34,7 @@ public struct MirrorView: NSViewRepresentable {
         self.videoSize = videoSize
         self.flexibleDisplay = flexibleDisplay
         self.maxDisplayEdge = maxDisplayEdge
+        self.initialLandscape = initialLandscape
         self.onDrag = onDrag
         self.onDrop = onDrop
         self.onEscape = onEscape
@@ -47,6 +49,7 @@ public struct MirrorView: NSViewRepresentable {
     public func updateNSView(_ view: MirrorNSView, context: Context) {
         view.videoSize = videoSize
         view.flexibleDisplay = flexibleDisplay
+        if view.lastDisplaySize == nil, flexibleDisplay { let start = VirtualDisplayMath.initialSize(landscape: initialLandscape); view.lastDisplaySize = (UInt16(start.width), UInt16(start.height)) }
         view.maxDisplayEdge = maxDisplayEdge
         view.onDrag = onDrag
         view.onDrop = onDrop
@@ -73,7 +76,8 @@ public final class MirrorNSView: NSView {
     private var trackpadPinch: PinchGesture?
     var flexibleDisplay = false
     var maxDisplayEdge = 1920
-    private var lastDisplaySize: (width: UInt16, height: UInt16)? = (UInt16(VirtualDisplayMath.initialSize.width), UInt16(VirtualDisplayMath.initialSize.height))
+    /// What the phone was last told, so a resize is only sent when the window really moved on. Starts as the display's opening size.
+    var lastDisplaySize: (width: UInt16, height: UInt16)?
     private var resizeTimer: Timer?
     private var stroke = ScrollStroke()
     private var heldArrow: HeldArrow?
@@ -106,7 +110,7 @@ public final class MirrorNSView: NSView {
         guard flexibleDisplay else { return }
         // A window drag fires many layouts; the phone only hears about the size once the drag settles.
         resizeTimer?.invalidate()
-        resizeTimer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false) { [weak self] _ in MainActor.assumeIsolated { self?.sendDisplaySize() } }
+        resizeTimer = Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false) { [weak self] _ in MainActor.assumeIsolated { self?.sendDisplaySize() } }
     }
 
     private func sendDisplaySize() {

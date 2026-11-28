@@ -55,3 +55,15 @@ final class PerDeviceSettingsTests: XCTestCase {
         XCTAssertTrue(again.settings.showTouches, "remembered across launches")
     }
 }
+
+@MainActor
+final class DisplayShapeMemoryTests: XCTestCase {
+    func testShapeIsRememberedAcrossLaunchesAndBadNamesAreIgnored() {
+        let defaults = isolatedDefaults()
+        let model = AppModel(defaults: defaults)
+        model.rememberDisplayShape("com.example.game", landscape: true)
+        model.rememberDisplayShape("bad name; x", landscape: true)
+        let dictionary = defaults.dictionary(forKey: "displayShapes.v1") as? [String: Bool]
+        XCTAssertEqual(dictionary, ["com.example.game": true])
+    }
+}

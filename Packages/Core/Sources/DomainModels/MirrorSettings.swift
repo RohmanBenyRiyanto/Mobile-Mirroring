@@ -103,8 +103,11 @@ public struct VirtualDisplaySettings: Equatable, Codable, Sendable {
     public var isEnabled = false
     /// The app opened on that display (a package name). Without one the display stays empty.
     public var startApp: String?
+    /// Start wide instead of tall. Set from what the app asked for last time, not by the user.
+    public var initialLandscape = false
 
-    public init(isEnabled: Bool = false, startApp: String? = nil) {
+    public init(isEnabled: Bool = false, startApp: String? = nil, initialLandscape: Bool = false) {
+        self.initialLandscape = initialLandscape
         self.isEnabled = isEnabled
         self.startApp = startApp
     }
@@ -204,7 +207,7 @@ public struct MirrorSettings: Equatable, Codable {
 
     /// Flexible virtual display: starts phone-shaped and follows the window. Apps are moved back to the phone when it closes.
     private func virtualDisplayArguments() -> [String] {
-        let size = VirtualDisplayMath.initialSize
+        let size = VirtualDisplayMath.initialSize(landscape: virtualDisplay.initialLandscape)
         var arguments = [
             "new_display=\(size.width)x\(size.height)/\(VirtualDisplayMath.density(shortEdge: min(size.width, size.height)))",
             "flex_display=true",
