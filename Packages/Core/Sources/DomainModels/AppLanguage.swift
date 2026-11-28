@@ -6,7 +6,7 @@ public struct AppLanguage: Equatable, Identifiable, Sendable {
 
     public init(_ code: String) { self.code = code }
 
-    public static let supported: [AppLanguage] = ["en", "id", "es", "fr", "de", "pt-BR", "zh-Hans", "ja", "ko"].map(AppLanguage.init)
+    public static let supported: [AppLanguage] = ["en", "id", "es", "fr", "de", "pt-BR", "zh-Hans", "ja", "ko", "ru", "tr"].map(AppLanguage.init)
 
     public static let overrideKey = "benzmirror.languageOverride"
     private static let systemKey = "AppleLanguages"
