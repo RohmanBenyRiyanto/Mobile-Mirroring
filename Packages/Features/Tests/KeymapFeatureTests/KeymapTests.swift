@@ -49,7 +49,7 @@ final class KeymapModelTests: XCTestCase {
     }
 
     func testTheExampleKeymapInTheDocsStillImports() throws {
-        let file = projectFile("docs/examples/example.benzkeymap")
+        let file = projectFile("Resources/Examples/example.benzkeymap")
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
 

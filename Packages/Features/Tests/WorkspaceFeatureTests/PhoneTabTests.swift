@@ -23,7 +23,7 @@ final class PhoneTabTests: XCTestCase {
 
 final class ExampleKeymapTests: XCTestCase {
     func testEveryShippedKeymapLoadsAndValidates() throws {
-        let folder = projectFile("docs/examples/.")
+        let folder = projectFile("Resources/DefaultKeymaps/.")
         let files = try FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil).filter { $0.pathExtension == KeymapFile.fileExtension }
         XCTAssertFalse(files.isEmpty)
         let store = try ProfileStore<Keymap>(kind: "keymap", root: FileManager.default.temporaryDirectory.appendingPathComponent("examples-\(UUID().uuidString)"))
@@ -36,7 +36,7 @@ final class ExampleKeymapTests: XCTestCase {
 
     func testMagicChessKeysDoNotCollide() throws {
         let store = try ProfileStore<Keymap>(kind: "keymap", root: FileManager.default.temporaryDirectory.appendingPathComponent("mc-\(UUID().uuidString)"))
-        let profile = try store.inspect(Data(contentsOf: projectFile("docs/examples/magic-chess-gogo.benzkeymap")))
+        let profile = try store.inspect(Data(contentsOf: projectFile("Resources/DefaultKeymaps/magic-chess-gogo.benzkeymap")))
         XCTAssertEqual(profile.payload.package, "com.mobilechess.gp")
         let keys: [UInt16] = profile.payload.elements.flatMap { $0.keys }
         XCTAssertEqual(keys.count, Set(keys).count)

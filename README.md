@@ -106,7 +106,7 @@ Menu **Keymap** (⌘K switches it on). A keymap is a profile: a list of elements
 Keys that the keymap uses are taken by the game; every other key still types. Fingers are always lifted when the window loses focus,
 the phone rotates or the keymap is switched off. Profiles live in `~/Library/Application Support/Benz Mirror/Profiles/keymap`
 and can be shared (below). Give a keymap the game's package name (editor → *Use app in front*) and it
-switches on by itself when that game opens, and off again when you leave (settings: *Switch keymaps by game*). `docs/examples/example.benzkeymap` shows every element; positions are only an
+switches on by itself when that game opens, and off again when you leave (settings: *Switch keymaps by game*). `Resources/Examples/example.benzkeymap` shows every element; positions are only an
 example, so adjust them for your game, or just open the editor.
 
 **Sharing.** A keymap is a `.benzkeymap` file (JSON). Export it (**Keymap → Export Current Keymap…**) or copy it as text
@@ -131,7 +131,8 @@ Packages/
   Features/               WorkspaceFeature (windows, menus, per-phone session)  ·  KeymapFeature  ·  LogcatFeature  ·  InspectorFeature
   TestSupport/            helpers shared by the tests (snapshots, ffmpeg)
 UITests/                  end-to-end smoke test
-docs/                     design tokens, examples (docs/private is git-ignored: plans and AI notes)
+Resources/                Info.plist, entitlements, string catalog, bundled keymaps, examples, device names
+(docs/ is git-ignored: notes, QA lists and design sources stay local; un-ignore one with a !docs/<file> line in .gitignore)
 scripts/                  build-app.sh, test.sh, fetch-server.sh
 ```
 

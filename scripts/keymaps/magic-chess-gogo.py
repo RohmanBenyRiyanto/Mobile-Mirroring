@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Builds the Magic Chess: Go Go keymap (docs/examples/magic-chess-gogo.benzkeymap).
+"""Builds the Magic Chess: Go Go keymap (Resources/DefaultKeymaps/magic-chess-gogo.benzkeymap).
 
 Positions are fractions of the landscape picture. They were measured on a 2340×1080 screenshot of a match (the shop open):
 shop cards 5, refresh, lock, buy-XP circle, hero list and the bench circles. Mac virtual key codes: see KeyNames.swift.
@@ -50,5 +50,5 @@ profile = {
                 "gamepad": {"leftShoulder": KEY["1"], "rightShoulder": KEY["2"], "leftTrigger": KEY["3"], "rightTrigger": KEY["4"], "buttonA": KEY["5"],
                             "buttonY": KEY["D"], "buttonX": KEY["F"], "buttonB": KEY["R"], "dpadUp": KEY["U"], "dpadDown": KEY["H"]}},
 }
-json.dump(profile, open(sys.argv[1] if len(sys.argv) > 1 else "docs/examples/magic-chess-gogo.benzkeymap", "w"), indent=2, sort_keys=True)
+json.dump(profile, open(sys.argv[1] if len(sys.argv) > 1 else "Resources/DefaultKeymaps/magic-chess-gogo.benzkeymap", "w"), indent=2, sort_keys=True)
 print(len(elements), "elements")

@@ -11,7 +11,7 @@ import TestSupport
 @MainActor
 final class KeymapEditorSnapshotTests: XCTestCase {
     private func exampleEditor() throws -> KeymapEditorModel {
-        let file = projectFile("docs/examples/example.benzkeymap")
+        let file = projectFile("Resources/Examples/example.benzkeymap")
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
         let profile = try ProfileStore<Keymap>(kind: "keymap", root: root).importData(try Data(contentsOf: file))

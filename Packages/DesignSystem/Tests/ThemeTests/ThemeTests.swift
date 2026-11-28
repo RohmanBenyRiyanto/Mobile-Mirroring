@@ -4,13 +4,10 @@ import XCTest
 @testable import Theme
 
 final class ThemeTests: XCTestCase {
-    /// Reads docs/design/tokens.json, which the layout constants must match.
+    /// Reads the design tokens copy next to this file, which the layout constants must match.
     private func tokens() throws -> [String: Any] {
-        var folder = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
-        while !FileManager.default.fileExists(atPath: folder.appendingPathComponent("docs/design/tokens.json").path), folder.path != "/" {
-            folder.deleteLastPathComponent()
-        }
-        let data = try Data(contentsOf: folder.appendingPathComponent("docs/design/tokens.json"))
+        let file = URL(fileURLWithPath: #filePath).deletingLastPathComponent().appendingPathComponent("Fixtures/tokens.json")
+        let data = try Data(contentsOf: file)
         return try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
     }
 

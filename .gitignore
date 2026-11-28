@@ -14,8 +14,8 @@ xcuserdata/
 # macOS
 .DS_Store
 
-# AI files
-docs/private/
+# Notes, QA lists, design sources and AI files stay local. To publish one file, add a line such as  !docs/README.md
+docs/*
 CLAUDE.md
 .claude/
 *.local.md
