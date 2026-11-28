@@ -27,7 +27,7 @@ extension AppModel {
 
     public func newTab() { isAddingDevice = true }
 
-    public func closeTab() { disconnect() }
+    public func closeTab() { requestDisconnect() }
 
     public func showPhone(offset: Int) {
         guard sessions.count > 1, let index = sessions.firstIndex(where: { $0.serial == activeSerial }) else { return }

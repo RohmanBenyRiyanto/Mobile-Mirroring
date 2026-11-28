@@ -3,17 +3,48 @@ import DomainModels
 import SwiftUI
 import Theme
 
+/// What a rail tooltip shows, and where (in the rail view's own coordinates).
+struct RailTooltipContent: Equatable {
+    let title: String
+    let detail: String?
+    let shortcut: String?
+}
+
+struct RailTooltipAction {
+    var show: (RailTooltipContent?, CGRect) -> Void = { _, _ in }
+}
+
+private struct RailTooltipKey: EnvironmentKey { static let defaultValue = RailTooltipAction() }
+
+extension EnvironmentValues {
+    var railTooltip: RailTooltipAction {
+        get { self[RailTooltipKey.self] }
+        set { self[RailTooltipKey.self] = newValue }
+    }
+}
+
+private struct FrameKey: PreferenceKey {
+    static let defaultValue = CGRect.zero
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) { value = nextValue() }
+}
+
 struct RailButton: View {
     let title: LocalizedStringKey
     let symbol: String
     var hint: String?
+    var explanation: String?
     var isOn = false
     var tint: Color?
     let action: () -> Void
     @State private var isHovered = false
+    @State private var frame = CGRect.zero
+    @Environment(\.railTooltip) private var tooltip
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            tooltip.show(nil, .zero)
+            action()
+        } label: {
             Image(systemName: symbol)
                 .font(.system(size: 14, weight: .regular))
                 .foregroundStyle(tint ?? Theme.Palette.text.color)
@@ -22,9 +53,23 @@ struct RailButton: View {
                 .contentShape(Capsule())
         }
         .buttonStyle(.plain)
-        .onHover { isHovered = $0 }
-        .help(hint.map { Text(title) + Text(verbatim: "  \($0)") } ?? Text(title))
+        .background(GeometryReader { proxy in Color.clear.preference(key: FrameKey.self, value: proxy.frame(in: .global)) })
+        .onPreferenceChange(FrameKey.self) { frame = $0 }
+        .onHover { hovering in
+            isHovered = hovering
+            if hovering {
+                tooltip.show(RailTooltipContent(title: Self.text(title), detail: explanation, shortcut: hint), frame)
+            } else {
+                tooltip.show(nil, .zero)
+            }
+        }
         .accessibilityLabel(title)
+    }
+
+    /// A LocalizedStringKey holds its catalog key; looking it up gives the text in the current language.
+    private static func text(_ key: LocalizedStringKey) -> String {
+        let raw = Mirror(reflecting: key).children.first { $0.label == "key" }?.value as? String ?? ""
+        return String(localized: String.LocalizationValue(raw))
     }
 }
 
@@ -74,7 +119,7 @@ struct RailView: View {
                 }
             }
             if !model.railLayout.items(for: model.mode).isEmpty { separator }
-            RailButton(title: "Disconnect", symbol: "eject") { model.disconnect() }
+            RailButton(title: "Disconnect", symbol: "eject", explanation: String(localized: "Stop mirroring and go back to the Connect screen")) { model.requestDisconnect() }
             Button { withAnimation(Theme.Motion.smooth) { isCollapsed = true } } label: {
                 Image(systemName: "chevron.right").font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Theme.Palette.textSecondary.color)
@@ -95,16 +140,16 @@ struct RailView: View {
     @ViewBuilder
     private func button(for item: RailItemID) -> some View {
         switch item {
-        case .back: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.press(.back) }
-        case .home: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.press(.home) }
-        case .recents: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.press(.appSwitch) }
-        case .volumeUp: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.press(.volumeUp) }
-        case .volumeDown: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.press(.volumeDown) }
-        case .power: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.press(.power) }
-        case .notifications: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.send(.expandNotificationPanel) }
-        case .quickSettings: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.send(.expandSettingsPanel) }
-        case .rotate: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.send(.rotateDevice) }
-        case .screenshot: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.takeScreenshot() }
+        case .back: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { model.press(.back) }
+        case .home: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { model.press(.home) }
+        case .recents: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { model.press(.appSwitch) }
+        case .volumeUp: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { model.press(.volumeUp) }
+        case .volumeDown: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { model.press(.volumeDown) }
+        case .power: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { model.press(.power) }
+        case .notifications: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { model.send(.expandNotificationPanel) }
+        case .quickSettings: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { model.send(.expandSettingsPanel) }
+        case .rotate: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { model.send(.rotateDevice) }
+        case .screenshot: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { model.takeScreenshot() }
         case .record:
             RailButton(title: model.isRecording ? "Stop Recording" : item.title, symbol: model.isRecording ? "stop.fill" : item.symbol,
                        isOn: model.isRecording, tint: model.isRecording ? .white : nil) { model.toggleRecording() }
@@ -112,9 +157,9 @@ struct RailView: View {
         case .mute:
             RailButton(title: model.isMuted ? "Unmute" : item.title, symbol: model.isMuted ? "speaker.slash" : item.symbol,
                        isOn: model.isMuted) { model.toggleMute() }
-        case .streamMode: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.isStreamMode = true }
-        case .statistics: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.showsStats) { model.showsStats.toggle() }
-        case .keymapToggle: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.isKeymapEnabled) { model.setKeymapEnabled(!model.isKeymapEnabled) }
+        case .streamMode: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { model.isStreamMode = true }
+        case .statistics: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation, isOn: model.showsStats) { model.showsStats.toggle() }
+        case .keymapToggle: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation, isOn: model.isKeymapEnabled) { model.setKeymapEnabled(!model.isKeymapEnabled) }
         case .keymapProfile:
             Menu {
                 if model.keymapProfiles.isEmpty { Text("No keymaps yet") }
@@ -129,18 +174,18 @@ struct RailView: View {
             }
             .menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden)
             .help(item.title).accessibilityLabel(item.title)
-        case .editKeymap: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { model.startEditingKeymap() }
+        case .editKeymap: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { model.startEditingKeymap() }
         case .recordMacro:
             RailButton(title: model.isRecordingMacro ? "Stop Recording Macro" : item.title, symbol: item.symbol, isOn: model.isRecordingMacro) { model.toggleMacroRecording() }
-        case .inspector: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.isInspecting) { model.setInspecting(!model.isInspecting) }
+        case .inspector: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation, isOn: model.isInspecting) { model.setInspecting(!model.isInspecting) }
         case .designOverlay:
-            RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.designTool == .crosshair) { model.setDesignTool(model.designTool == .crosshair ? .off : .crosshair) }
+            RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation, isOn: model.designTool == .crosshair) { model.setDesignTool(model.designTool == .crosshair ? .off : .crosshair) }
         case .colourPicker:
-            RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.designTool == .colorPicker) { model.setDesignTool(model.designTool == .colorPicker ? .off : .colorPicker) }
-        case .grid: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.designGrid != .off) { model.designGrid = Self.nextGrid(after: model.designGrid) }
-        case .performanceHUD: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.showsPerformance) { model.showsPerformance.toggle() }
-        case .quickToggles: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, isOn: model.showsQuickToggles) { model.showsQuickToggles.toggle() }
-        case .logcat: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint) { openLogcat() }
+            RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation, isOn: model.designTool == .colorPicker) { model.setDesignTool(model.designTool == .colorPicker ? .off : .colorPicker) }
+        case .grid: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation, isOn: model.designGrid != .off) { model.designGrid = Self.nextGrid(after: model.designGrid) }
+        case .performanceHUD: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation, isOn: model.showsPerformance) { model.showsPerformance.toggle() }
+        case .quickToggles: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation, isOn: model.showsQuickToggles) { model.showsQuickToggles.toggle() }
+        case .logcat: RailButton(title: item.title, symbol: item.symbol, hint: item.shortcutHint, explanation: item.explanation) { openLogcat() }
         }
     }
 

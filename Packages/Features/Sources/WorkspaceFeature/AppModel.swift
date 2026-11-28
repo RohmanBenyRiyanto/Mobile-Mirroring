@@ -289,6 +289,24 @@ public final class AppModel: ObservableObject {
         isAddingDevice = false
     }
 
+    /// Rail and menu ask first, because leaving the mirror ends the session and any recording with it.
+    public func requestDisconnect() {
+        guard active != nil else { return }
+        guard settings.confirmDisconnect else { return disconnect() }
+        let alert = NSAlert()
+        alert.messageText = String(localized: "Disconnect from \(deviceName)?")
+        alert.informativeText = isRecording
+            ? String(localized: "The recording is saved first. The window returns to the Connect screen.")
+            : String(localized: "Mirroring stops and the window returns to the Connect screen.")
+        alert.addButton(withTitle: String(localized: "Disconnect"))
+        alert.addButton(withTitle: String(localized: "Cancel"))
+        alert.showsSuppressionButton = true
+        alert.suppressionButton?.title = String(localized: "Don't ask again")
+        let confirmed = alert.runModal() == .alertFirstButtonReturn
+        if alert.suppressionButton?.state == .on, confirmed { settings.confirmDisconnect = false }
+        if confirmed { disconnect() }
+    }
+
     public func disconnect() {
         guard let session = active else { return }
         session.stop()

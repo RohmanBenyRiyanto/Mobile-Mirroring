@@ -59,6 +59,37 @@ public enum RailItemID: String, Codable, CaseIterable, Identifiable {
         }
     }
 
+    /// One line saying what the button does, shown in the tooltip under its name.
+    public var explanation: String {
+        switch self {
+        case .back: return String(localized: "Go back one screen")
+        case .home: return String(localized: "Go to the phone's home screen")
+        case .recents: return String(localized: "Show the recent apps")
+        case .volumeUp: return String(localized: "Raise the phone's volume")
+        case .volumeDown: return String(localized: "Lower the phone's volume")
+        case .power: return String(localized: "Turn the phone's screen on or off")
+        case .notifications: return String(localized: "Pull down the notifications")
+        case .quickSettings: return String(localized: "Pull down the quick settings")
+        case .rotate: return String(localized: "Rotate the phone's screen")
+        case .screenshot: return String(localized: "Save a picture of the screen to your Mac")
+        case .record: return String(localized: "Start or stop recording the screen")
+        case .mute: return String(localized: "Silence or restore the phone's sound on this Mac")
+        case .streamMode: return String(localized: "Hide the window frame for streaming or capture")
+        case .statistics: return String(localized: "Show frame rate, bitrate and delay on the picture")
+        case .keymapToggle: return String(localized: "Turn keyboard and mouse controls for games on or off")
+        case .keymapProfile: return String(localized: "Switch between your saved game keymaps")
+        case .editKeymap: return String(localized: "Place keyboard keys on the phone's screen")
+        case .recordMacro: return String(localized: "Record a sequence of touches to replay with a key")
+        case .inspector: return String(localized: "Point at an element to see its details")
+        case .designOverlay: return String(localized: "Show a crosshair with exact positions")
+        case .colourPicker: return String(localized: "Click the picture to read a colour")
+        case .grid: return String(localized: "Cycle the 4 dp and 8 dp layout grids")
+        case .logcat: return String(localized: "Open the phone's log")
+        case .performanceHUD: return String(localized: "Show frame rate, jank, CPU, memory and temperature")
+        case .quickToggles: return String(localized: "Developer switches, mock location and network")
+        }
+    }
+
     /// The menu shortcut shown in the tooltip, kept in step with the menu bar.
     public var shortcutHint: String? {
         switch self {

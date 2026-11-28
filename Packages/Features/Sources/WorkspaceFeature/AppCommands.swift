@@ -105,7 +105,7 @@ public struct AppCommands: Commands {
             Button("Start Mirroring") { model.connect() }
                 .keyboardShortcut(.return, modifiers: .command)
                 .disabled(mirroring && !model.isAddingDevice)
-            Button("Disconnect") { model.disconnect() }
+            Button("Disconnect") { model.requestDisconnect() }
                 .keyboardShortcut("d", modifiers: [.command, .shift])
                 .disabled(!mirroring)
             Divider()

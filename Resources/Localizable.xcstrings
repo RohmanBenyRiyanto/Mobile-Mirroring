@@ -715,6 +715,23 @@
         }
       }
     },
+    "Ask before disconnecting" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ask before disconnecting"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanya sebelum memutus koneksi"
+          }
+        }
+      }
+    },
     "Asks before anything is removed" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1187,6 +1204,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Biru Jernih"
+          }
+        }
+      }
+    },
+    "Click the picture to read a colour" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Click the picture to read a colour"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klik gambar untuk membaca warna"
           }
         }
       }
@@ -1769,6 +1803,23 @@
         }
       }
     },
+    "Cycle the 4 dp and 8 dp layout grids" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cycle the 4 dp and 8 dp layout grids"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ganti antar grid layout 4 dp dan 8 dp"
+          }
+        }
+      }
+    },
     "Dark" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2041,6 +2092,23 @@
         }
       }
     },
+    "Developer switches, mock location and network" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Developer switches, mock location and network"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saklar developer, lokasi palsu, dan jaringan"
+          }
+        }
+      }
+    },
     "Device" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2104,7 +2172,24 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Putuskan"
+            "value" : "Putuskan koneksi"
+          }
+        }
+      }
+    },
+    "Disconnect from %@?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disconnect from %@?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Putuskan koneksi dari %@?"
           }
         }
       }
@@ -2139,6 +2224,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tampilan"
+          }
+        }
+      }
+    },
+    "Don't ask again" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Don't ask again"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jangan tanya lagi"
           }
         }
       }
@@ -2636,6 +2738,40 @@
         }
       }
     },
+    "Go back one screen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go back one screen"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kembali satu layar"
+          }
+        }
+      }
+    },
+    "Go to the phone's home screen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to the phone's home screen"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ke layar utama ponsel"
+          }
+        }
+      }
+    },
     "Grid" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2785,6 +2921,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sembunyikan Statistik"
+          }
+        }
+      }
+    },
+    "Hide the window frame for streaming or capture" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide the window frame for streaming or capture"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sembunyikan bingkai jendela untuk streaming atau tangkapan"
           }
         }
       }
@@ -3554,6 +3707,23 @@
         }
       }
     },
+    "Lower the phone's volume" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lower the phone's volume"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turunkan volume ponsel"
+          }
+        }
+      }
+    },
     "Mac" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3856,6 +4026,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mirroring tidak bisa dimulai"
+          }
+        }
+      }
+    },
+    "Mirroring stops and the window returns to the Connect screen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mirroring stops and the window returns to the Connect screen."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mirroring berhenti dan jendela kembali ke layar Connect."
           }
         }
       }
@@ -4659,6 +4846,23 @@
         }
       }
     },
+    "Open the phone's log" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the phone's log"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka log ponsel"
+          }
+        }
+      }
+    },
     "Other files are copied to Download on the phone." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4999,6 +5203,23 @@
         }
       }
     },
+    "Place keyboard keys on the phone's screen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Place keyboard keys on the phone's screen"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letakkan tombol keyboard di layar ponsel"
+          }
+        }
+      }
+    },
     "Play phone audio on this Mac" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5063,6 +5284,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Colokkan ponsel ke Mac ini."
+          }
+        }
+      }
+    },
+    "Point at an element to see its details" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Point at an element to see its details"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arahkan ke elemen untuk melihat detailnya"
           }
         }
       }
@@ -5186,6 +5424,40 @@
         }
       }
     },
+    "Pull down the notifications" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pull down the notifications"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarik turun notifikasi"
+          }
+        }
+      }
+    },
+    "Pull down the quick settings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pull down the quick settings"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarik turun pengaturan cepat"
+          }
+        }
+      }
+    },
     "Quality" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5250,6 +5522,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Keluar sekarang akan membuat video tidak selesai. Hentikan rekaman dan simpan dulu?"
+          }
+        }
+      }
+    },
+    "Raise the phone's volume" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raise the phone's volume"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naikkan volume ponsel"
           }
         }
       }
@@ -5403,6 +5692,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rekam Makro"
+          }
+        }
+      }
+    },
+    "Record a sequence of touches to replay with a key" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Record a sequence of touches to replay with a key"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rekam rangkaian sentuhan untuk diputar dengan satu tombol"
           }
         }
       }
@@ -5713,6 +6019,23 @@
         }
       }
     },
+    "Rotate the phone's screen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rotate the phone's screen"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Putar layar ponsel"
+          }
+        }
+      }
+    },
     "Run" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5743,6 +6066,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Berjalan"
+          }
+        }
+      }
+    },
+    "Save a picture of the screen to your Mac" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save a picture of the screen to your Mac"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simpan gambar layar ke Mac Anda"
           }
         }
       }
@@ -6308,6 +6648,74 @@
         }
       }
     },
+    "Show a crosshair with exact positions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show a crosshair with exact positions"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan crosshair dengan posisi tepat"
+          }
+        }
+      }
+    },
+    "Show frame rate, bitrate and delay on the picture" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show frame rate, bitrate and delay on the picture"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan frame rate, bitrate, dan delay di gambar"
+          }
+        }
+      }
+    },
+    "Show frame rate, jank, CPU, memory and temperature" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show frame rate, jank, CPU, memory and temperature"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan frame rate, jank, CPU, memori, dan suhu"
+          }
+        }
+      }
+    },
+    "Show the recent apps" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show the recent apps"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan aplikasi terbaru"
+          }
+        }
+      }
+    },
     "Show touches" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6372,6 +6780,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tampil di Dock selama app berjalan"
+          }
+        }
+      }
+    },
+    "Silence or restore the phone's sound on this Mac" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silence or restore the phone's sound on this Mac"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bisukan atau pulihkan suara ponsel di Mac ini"
           }
         }
       }
@@ -6491,6 +6916,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mulai Merekam"
+          }
+        }
+      }
+    },
+    "Start or stop recording the screen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start or stop recording the screen"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai atau hentikan rekaman layar"
           }
         }
       }
@@ -6665,6 +7107,23 @@
         }
       }
     },
+    "Stop mirroring and go back to the Connect screen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop mirroring and go back to the Connect screen"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hentikan mirroring dan kembali ke layar Connect"
+          }
+        }
+      }
+    },
     "Stopped" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6729,6 +7188,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kembali ke USB"
+          }
+        }
+      }
+    },
+    "Switch between your saved game keymaps" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch between your saved game keymaps"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ganti antar keymap game tersimpan"
           }
         }
       }
@@ -7413,6 +7889,23 @@
         }
       }
     },
+    "The recording is saved first. The window returns to the Connect screen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The recording is saved first. The window returns to the Connect screen."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rekaman disimpan dulu. Jendela kembali ke layar Connect."
+          }
+        }
+      }
+    },
     "The request on the phone was closed or declined." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7668,6 +8161,23 @@
         }
       }
     },
+    "Turn keyboard and mouse controls for games on or off" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn keyboard and mouse controls for games on or off"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyalakan atau matikan kontrol keyboard dan mouse untuk game"
+          }
+        }
+      }
+    },
     "Turn on Developer options" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7732,6 +8242,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nyalakan keymap saat gamenya dibuka"
+          }
+        }
+      }
+    },
+    "Turn the phone's screen on or off" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn the phone's screen on or off"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyalakan atau matikan layar ponsel"
           }
         }
       }
@@ -8225,6 +8752,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Selamat datang"
+          }
+        }
+      }
+    },
+    "When leaving the mirror window for the Connect screen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When leaving the mirror window for the Connect screen"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saat meninggalkan jendela mirror menuju layar Connect"
           }
         }
       }

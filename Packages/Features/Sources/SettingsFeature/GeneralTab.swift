@@ -23,6 +23,9 @@ struct GeneralTab: View {
             SettingsRow("Open at login", detail: loginError.map { LocalizedStringKey($0) }) {
                 Toggle("Open at login", isOn: Binding(get: { opensAtLogin }, set: setLogin)).labelsHidden().toggleStyle(.switch)
             }
+            SettingsRow("Ask before disconnecting", detail: "When leaving the mirror window for the Connect screen") {
+                Toggle("Ask before disconnecting", isOn: $model.settings.confirmDisconnect).labelsHidden().toggleStyle(.switch)
+            }
             SettingsRow("Mirror when a phone connects") {
                 Toggle("Mirror when a phone connects", isOn: $model.settings.mirrorOnConnect).labelsHidden().toggleStyle(.switch)
             }
