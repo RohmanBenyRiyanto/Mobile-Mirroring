@@ -17,3 +17,26 @@ final class PhoneTabTests: XCTestCase {
         XCTAssertEqual(tabs[2].title, "Galaxy S")
     }
 }
+
+final class ExampleKeymapTests: XCTestCase {
+    func testEveryShippedKeymapLoadsAndValidates() throws {
+        let folder = projectFile("docs/examples/.")
+        let files = try FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil).filter { $0.pathExtension == KeymapFile.fileExtension }
+        XCTAssertFalse(files.isEmpty)
+        let store = try ProfileStore<Keymap>(kind: "keymap", root: FileManager.default.temporaryDirectory.appendingPathComponent("examples-\(UUID().uuidString)"))
+        for file in files {
+            let profile = try store.inspect(Data(contentsOf: file))
+            XCTAssertNoThrow(try profile.payload.validated(), file.lastPathComponent)
+            XCTAssertFalse(profile.payload.elements.isEmpty)
+        }
+    }
+
+    func testMagicChessKeysDoNotCollide() throws {
+        let store = try ProfileStore<Keymap>(kind: "keymap", root: FileManager.default.temporaryDirectory.appendingPathComponent("mc-\(UUID().uuidString)"))
+        let profile = try store.inspect(Data(contentsOf: projectFile("docs/examples/magic-chess-gogo.benzkeymap")))
+        XCTAssertEqual(profile.payload.package, "com.mobilechess.gp")
+        let keys = profile.payload.elements.flatMap(\.keys)
+        XCTAssertEqual(keys.count, Set(keys).count)
+        XCTAssertEqual(profile.payload.elements.count, 18)
+    }
+}
