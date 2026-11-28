@@ -231,6 +231,12 @@ extension AppModel {
 
     public func closeEditor(save: Bool) {
         if save, !saveEditor() { return } // stay open so the problem can be fixed
+        if !save, settings.confirmDiscardKeymap, editor?.isDirty == true {
+            let answer = Confirmation.ask(title: String(localized: "Discard your changes to this keymap?"),
+                                          message: String(localized: "What you changed since the last save is lost."), confirm: String(localized: "Discard"), destructive: true)
+            if answer.dontAskAgain { settings.confirmDiscardKeymap = false }
+            guard answer.confirmed else { return }
+        }
         editor = nil
         editorMessage = nil
         active?.keymap.isEditing = false

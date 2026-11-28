@@ -245,6 +245,9 @@ public final class AppModel: ObservableObject {
         launchSettings.obsStreamPort = SessionOrder.streamPort(base: settings.obsStreamPort, taken: Set(sessions.compactMap(\.streamPort)))
         let session = DeviceSession(adb: adb, serial: device.serial, settings: launchSettings, cursorCapture: cursorCapture, mode: defaultMode)
         session.ledger = phoneLedger
+        session.onFilesPasted = { [weak self] urls in self?.handleDrop(urls) }
+        session.shouldConfirmNetworkOff = { [weak self] in self?.settings.confirmNetworkOff ?? false }
+        session.stopAskingAboutNetworkOff = { [weak self] in self?.settings.confirmNetworkOff = false }
         session.onNotice = { [weak self] in self?.notice = $0 }
         session.onVirtualDisplayShape = { [weak self] app, landscape in self?.rememberDisplayShape(app, landscape: landscape) }
         session.onSavedFile = { [weak self] in self?.noticeFile = $0 }
@@ -420,7 +423,50 @@ public final class AppModel: ObservableObject {
     public func press(_ key: AndroidKeyCode) { active?.press(key) }
     public func pasteToPhone() { active?.pasteToPhone() }
     public func copyFromPhone() { active?.copyFromPhone() }
-    public func toggleRecording() { active?.toggleRecording() }
+
+    // MARK: Edit menu
+
+    public enum EditCommand { case undo, redo, cut, copy, paste, selectAll }
+
+    /// Edit commands act on the phone while the picture has the keyboard, and on the focused text field everywhere else.
+    @MainActor public func performEdit(_ command: EditCommand) {
+        guard MirrorNSView.hasKeyboardFocus, let session = active else {
+            let selector: Selector
+            switch command {
+            case .undo: selector = Selector(("undo:"))
+            case .redo: selector = Selector(("redo:"))
+            case .cut: selector = #selector(NSText.cut(_:))
+            case .copy: selector = #selector(NSText.copy(_:))
+            case .paste: selector = #selector(NSText.paste(_:))
+            case .selectAll: selector = #selector(NSText.selectAll(_:))
+            }
+            NSApp.sendAction(selector, to: nil, from: nil)
+            return
+        }
+        switch command {
+        case .undo: if let editor { editor.undo() } else { session.pressWithCtrl(.letterZ) }
+        case .redo: if let editor { editor.redo() } else { session.pressWithCtrl(.letterZ, extra: .shift) }
+        case .cut: session.cutFromPhone()
+        case .copy: session.copyFromPhone()
+        case .paste: session.pasteToPhone()
+        case .selectAll: session.pressWithCtrl(.letterA)
+        }
+    }
+    /// Starting a recording asks first: it captures everything that appears on the phone, including notifications and passwords being typed.
+    /// Stopping never asks.
+    public func toggleRecording() {
+        guard let session = active else { return }
+        if !session.isRecording, settings.confirmRecording {
+            let folder = settings.recordingFolder.map { ($0 as NSString).abbreviatingWithTildeInPath } ?? "~/Movies/\(AppInfo.name)"
+            let sound = settings.audioEnabled && settings.recordAudio ? String(localized: "The phone's sound is recorded too.") : String(localized: "No sound is recorded.")
+            let answer = Confirmation.ask(title: String(localized: "Start recording the screen?"),
+                                          message: String(localized: "Everything shown on the phone is recorded, including notifications and anything you type. \(sound) The video is saved in \(folder).") ,
+                                          confirm: String(localized: "Start Recording"))
+            if answer.dontAskAgain { settings.confirmRecording = false }
+            guard answer.confirmed else { return }
+        }
+        session.toggleRecording()
+    }
     public func toggleMute() { active?.toggleMute() }
     /// The mode of the phone in front, or the one the next phone will start in.
     public var mode: WorkspaceMode { active?.mode ?? defaultMode }

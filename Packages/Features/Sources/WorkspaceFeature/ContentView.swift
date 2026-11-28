@@ -16,6 +16,9 @@ public struct ContentView: View {
 
     /// The window's width with no panel open, remembered while any panel is open so closing them returns to exactly that.
     @State private var widthWithoutPanels: CGFloat?
+    /// What the last sync set, to tell a width the user dragged to from one the app set.
+    @State private var syncedWindowWidth: CGFloat?
+    @State private var syncedPanelWidth: CGFloat = 0
     @State private var host = HostWindow()
 
     private var openPanelWidth: CGFloat {
@@ -27,6 +30,8 @@ public struct ContentView: View {
     /// It grows to the right; if the screen has no room there, the window slides left just enough to stay fully visible.
     @MainActor private func syncWindowToPanels() {
         guard let window = host.window else { return }
+        // The user resized the window since the last sync: the width without panels is whatever they left, minus the panels that were open.
+        if let synced = syncedWindowWidth, abs(window.frame.width - synced) > 1, widthWithoutPanels != nil { widthWithoutPanels = max(window.frame.width - syncedPanelWidth, 200) }
         if openPanelWidth > 0, widthWithoutPanels == nil { widthWithoutPanels = window.frame.width }
         let base = widthWithoutPanels ?? window.frame.width
         if openPanelWidth == 0 { widthWithoutPanels = nil }
@@ -36,6 +41,8 @@ public struct ContentView: View {
         frame.size.width = max(base + openPanelWidth, window.minSize.width)
         if let visible = (window.screen ?? NSScreen.main)?.visibleFrame { frame = WindowPlacement.fitted(frame, in: visible) }
         window.setFrame(frame, display: true, animate: !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion)
+        syncedWindowWidth = frame.width
+        syncedPanelWidth = openPanelWidth
     }
 
     private var isMirrorWindow: Bool { model.isMirroring && !model.isAddingDevice }

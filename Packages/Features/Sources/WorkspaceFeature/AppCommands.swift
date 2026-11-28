@@ -65,15 +65,18 @@ public struct AppCommands: Commands {
     // MARK: Edit
 
     @CommandsBuilder private var edit: some Commands {
+        CommandGroup(replacing: .undoRedo) {
+            Button("Undo") { model.performEdit(.undo) }.keyboardShortcut("z")
+            Button("Redo") { model.performEdit(.redo) }.keyboardShortcut("z", modifiers: [.command, .shift])
+        }
         CommandGroup(replacing: .pasteboard) {
-            Button("Paste to Phone") { model.pasteToPhone() }
-                .keyboardShortcut("v")
-                .disabled(!mirroring)
+            Button("Cut") { model.performEdit(.cut) }.keyboardShortcut("x")
+            Button("Copy") { model.performEdit(.copy) }.keyboardShortcut("c")
+            Button("Paste") { model.performEdit(.paste) }.keyboardShortcut("v")
+            Button("Select All") { model.performEdit(.selectAll) }.keyboardShortcut("a")
+            Divider()
             Button("Send Clipboard Image to Phone") { model.sendClipboardImage() }
                 .keyboardShortcut("v", modifiers: [.command, .option])
-                .disabled(!mirroring)
-            Button("Copy from Phone") { model.copyFromPhone() }
-                .keyboardShortcut("c")
                 .disabled(!mirroring)
         }
     }

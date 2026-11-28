@@ -12,15 +12,9 @@ public enum PhoneTransfer {
         }
     }
 
-    /// Pictures and videos go where Gallery looks; everything else goes to Download.
-    public static func folder(for kind: Kind, appName: String) -> String {
-        let safe = appName.filter { $0.isLetter || $0.isNumber || $0 == " " || $0 == "-" || $0 == "_" }
-        switch kind {
-        case .image: return "/sdcard/Pictures/\(safe)"
-        case .video: return "/sdcard/Movies/\(safe)"
-        case .other: return "/sdcard/Download"
-        }
-    }
+    /// Everything that is sent to the phone lands in Download, where the Files app and every share sheet look first.
+    /// Pictures and videos are still announced to the media scanner, so Gallery shows them too.
+    public static let destinationFolder = "/sdcard/Download"
 
     /// Asks the media scanner to pick the file up so it shows in Gallery at once. The path is single-quoted for the phone's shell.
     public static func scanCommand(forPhonePath path: String) -> String {

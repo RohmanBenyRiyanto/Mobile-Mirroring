@@ -161,9 +161,23 @@ public final class DeviceSession: ObservableObject {
     /// A previous run may have been killed with the API log's proxy still set; a fresh session removes it.
     private func connectLedger() {
         let serial = self.serial
+        developerTools.confirmNetworkOff = { [weak self] in self?.askBeforeNetworkOff() ?? true }
         developerTools.onOwed = { [weak self] baseline in self?.ledger?.recordBaseline(baseline, for: serial) }
         developerTools.onSettled = { [weak self] in self?.ledger?.clearBaseline(for: serial) }
         developerTools.onMockChanged = { [weak self] active in self?.ledger?.setMockLocation(active, for: serial) }
+    }
+
+    /// Set by the app model: whether to ask, and the answer to remember.
+    var shouldConfirmNetworkOff: () -> Bool = { false }
+    var stopAskingAboutNetworkOff: () -> Void = {}
+
+    private func askBeforeNetworkOff() -> Bool {
+        guard shouldConfirmNetworkOff() else { return true }
+        let answer = Confirmation.ask(title: String(localized: "Turn off the phone's connection?"),
+                                      message: String(localized: "Apps on the phone lose the internet until you turn it back on. It is switched back on when you disconnect."),
+                                      confirm: String(localized: "Turn Off"))
+        if answer.dontAskAgain { stopAskingAboutNetworkOff() }
+        return answer.confirmed
     }
 
     /// Anything an earlier run changed on this phone and never put back (it was killed, the cable was pulled, the battery died) is undone now.
@@ -267,12 +281,27 @@ public final class DeviceSession: ObservableObject {
         send(.keycode(.up, key))
     }
 
+    /// Copied files go to the phone's Download folder; copied text is pasted into the field that has focus.
+    public var onFilesPasted: (([URL]) -> Void)?
+
     public func pasteToPhone() {
-        guard let text = NSPasteboard.general.string(forType: .string) else { return }
+        let pasteboard = NSPasteboard.general
+        if let files = pasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL], !files.isEmpty {
+            onFilesPasted?(files)
+            return
+        }
+        guard let text = pasteboard.string(forType: .string) else { return }
         send(.setClipboard(text, paste: true))
     }
 
     public func copyFromPhone() { send(.getClipboard(.copy)) }
+    public func cutFromPhone() { send(.getClipboard(.cut)) }
+
+    /// A shortcut the phone understands with Ctrl held (Ctrl+A selects all, Ctrl+Z undoes).
+    public func pressWithCtrl(_ key: AndroidKeyCode, extra: KeyMeta = []) {
+        send(.keycode(.down, key, meta: [.ctrl, extra]))
+        send(.keycode(.up, key, meta: [.ctrl, extra]))
+    }
 
     // MARK: Recording and audio
 

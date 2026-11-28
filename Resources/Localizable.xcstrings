@@ -766,6 +766,40 @@
         }
       }
     },
+    "Apps on the phone lose the internet until you turn it back on. It is switched back on when you disconnect." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apps on the phone lose the internet until you turn it back on. It is switched back on when you disconnect."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikasi di ponsel kehilangan internet sampai Anda menyalakannya lagi. Koneksi dinyalakan kembali saat Anda memutus koneksi."
+          }
+        }
+      }
+    },
+    "Ask before discarding keymap changes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ask before discarding keymap changes"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanya sebelum membuang perubahan keymap"
+          }
+        }
+      }
+    },
     "Ask before disconnecting" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -779,6 +813,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tanya sebelum memutus koneksi"
+          }
+        }
+      }
+    },
+    "Ask before installing a dropped app" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ask before installing a dropped app"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanya sebelum memasang aplikasi yang di-drop"
+          }
+        }
+      }
+    },
+    "Ask before recording" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ask before recording"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanya sebelum merekam"
+          }
+        }
+      }
+    },
+    "Ask before turning off Wi-Fi or mobile data" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ask before turning off Wi-Fi or mobile data"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanya sebelum mematikan Wi-Fi atau data seluler"
           }
         }
       }
@@ -2092,6 +2177,23 @@
         }
       }
     },
+    "Cut" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cut"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Potong"
+          }
+        }
+      }
+    },
     "Cycle the 4 dp and 8 dp layout grids" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2466,6 +2568,40 @@
         }
       }
     },
+    "Discard" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discard"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buang"
+          }
+        }
+      }
+    },
+    "Discard your changes to this keymap?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discard your changes to this keymap?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buang perubahan pada keymap ini?"
+          }
+        }
+      }
+    },
     "Disconnect" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2717,6 +2853,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Masukkan kunci layar jika ponsel memintanya."
+          }
+        }
+      }
+    },
+    "Everything shown on the phone is recorded, including notifications and anything you type. %@ The video is saved in %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Everything shown on the phone is recorded, including notifications and anything you type. %@ The video is saved in %@."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semua yang tampil di ponsel direkam, termasuk notifikasi dan apa pun yang Anda ketik. %@ Video disimpan di %@."
           }
         }
       }
@@ -3520,6 +3673,40 @@
         }
       }
     },
+    "Install" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasang"
+          }
+        }
+      }
+    },
+    "Install %@ on the phone?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install %@ on the phone?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasang %@ di ponsel?"
+          }
+        }
+      }
+    },
     "Install APK" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3601,6 +3788,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memasang %@"
+          }
+        }
+      }
+    },
+    "It is installed on %@, replacing the version already there if any. Only install apps you trust." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It is installed on %@, replacing the version already there if any. Only install apps you trust."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dipasang di %@, menggantikan versi yang sudah ada jika ada. Pasang hanya aplikasi yang Anda percaya."
           }
         }
       }
@@ -4914,6 +5118,23 @@
         }
       }
     },
+    "No sound is recorded." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No sound is recorded."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada suara yang direkam."
+          }
+        }
+      }
+    },
     "No table open" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5590,6 +5811,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kode pemasangan"
+          }
+        }
+      }
+    },
+    "Paste" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paste"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tempel"
           }
         }
       }
@@ -6427,6 +6665,23 @@
         }
       }
     },
+    "Recordings capture everything shown on the phone" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recordings capture everything shown on the phone"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rekaman menangkap semua yang tampil di ponsel"
+          }
+        }
+      }
+    },
     "Redo" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7018,6 +7273,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bagian"
+          }
+        }
+      }
+    },
+    "Select All" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select All"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih Semua"
           }
         }
       }
@@ -7715,6 +7987,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mulai atau hentikan rekaman layar"
+          }
+        }
+      }
+    },
+    "Start recording the screen?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start recording the screen?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai merekam layar?"
           }
         }
       }
@@ -8739,6 +9028,23 @@
         }
       }
     },
+    "The phone's sound is recorded too." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The phone's sound is recorded too."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suara ponsel ikut direkam."
+          }
+        }
+      }
+    },
     "The phone’s proxy setting returns to normal when you switch this off or disconnect." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9079,6 +9385,23 @@
         }
       }
     },
+    "Turn Off" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn Off"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matikan"
+          }
+        }
+      }
+    },
     "Turn keyboard and mouse controls for games on or off" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9092,6 +9415,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nyalakan atau matikan kontrol keyboard dan mouse untuk game"
+          }
+        }
+      }
+    },
+    "Turn off the phone's connection?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn off the phone's connection?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matikan koneksi ponsel?"
           }
         }
       }
@@ -9789,6 +10129,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Selamat datang"
+          }
+        }
+      }
+    },
+    "What you changed since the last save is lost." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What you changed since the last save is lost."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perubahan sejak penyimpanan terakhir akan hilang."
           }
         }
       }

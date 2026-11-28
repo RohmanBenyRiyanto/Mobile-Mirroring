@@ -127,6 +127,11 @@ public struct MirrorSettings: Equatable, Codable {
     public var recordAudio = true
     /// Ask before leaving the mirror window for the Connect screen.
     public var confirmDisconnect = true
+    /// Ask before a screen recording starts, an app is installed by dropping it, a network switch goes off, or keymap edits are thrown away.
+    public var confirmRecording = true
+    public var confirmInstall = true
+    public var confirmNetworkOff = true
+    public var confirmDiscardKeymap = true
     /// How much sound may queue up before the backlog is dropped, in milliseconds. Lower is faster; higher survives Wi-Fi hiccups.
     public var audioBufferMillis = 120
     public static let audioBufferRange = 40...300
@@ -158,6 +163,10 @@ public struct MirrorSettings: Equatable, Codable {
         virtualDisplay = (try? values.decodeIfPresent(VirtualDisplaySettings.self, forKey: .virtualDisplay)).flatMap { $0 } ?? defaults.virtualDisplay
         audioOutputUID = try values.decodeIfPresent(String.self, forKey: .audioOutputUID)
         confirmDisconnect = try values.decodeIfPresent(Bool.self, forKey: .confirmDisconnect) ?? defaults.confirmDisconnect
+        confirmRecording = try values.decodeIfPresent(Bool.self, forKey: .confirmRecording) ?? defaults.confirmRecording
+        confirmInstall = try values.decodeIfPresent(Bool.self, forKey: .confirmInstall) ?? defaults.confirmInstall
+        confirmNetworkOff = try values.decodeIfPresent(Bool.self, forKey: .confirmNetworkOff) ?? defaults.confirmNetworkOff
+        confirmDiscardKeymap = try values.decodeIfPresent(Bool.self, forKey: .confirmDiscardKeymap) ?? defaults.confirmDiscardKeymap
         recordAudio = try values.decodeIfPresent(Bool.self, forKey: .recordAudio) ?? defaults.recordAudio
         audioVolume = min(max(try values.decodeIfPresent(Double.self, forKey: .audioVolume) ?? defaults.audioVolume, 0), 1)
         audioBufferMillis = Self.clamp(try values.decodeIfPresent(Int.self, forKey: .audioBufferMillis) ?? defaults.audioBufferMillis, Self.audioBufferRange)

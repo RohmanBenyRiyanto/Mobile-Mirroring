@@ -417,7 +417,7 @@ public final class MirrorNSView: NSView {
         if event.keyCode == 53, onEscape() { return }
         if startArrowScroll(event) { return }
         if let key = AndroidKeyCode(macKeyCode: event.keyCode) {
-            session.send(.keycode(.down, key))
+            session.send(.keycode(.down, key, meta: Self.meta(of: event)))
         } else if let text = typedText(from: event) {
             session.send(.text(text))
         }
@@ -428,9 +428,21 @@ public final class MirrorNSView: NSView {
         if keymap.keyUp(event.keyCode) { return }
         if heldArrow?.keyCode == event.keyCode { stopArrowScroll(finishing: true); return }
         if let key = AndroidKeyCode(macKeyCode: event.keyCode) {
-            session.send(.keycode(.up, key))
+            session.send(.keycode(.up, key, meta: Self.meta(of: event)))
         }
     }
+
+    /// Shift, Option and Control go to the phone with the key, so Shift+arrows select text and Option+Delete removes a word.
+    private static func meta(of event: NSEvent) -> KeyMeta {
+        var meta: KeyMeta = []
+        if event.modifierFlags.contains(.shift) { meta.insert(.shift) }
+        if event.modifierFlags.contains(.option) { meta.insert(.alt) }
+        if event.modifierFlags.contains(.control) { meta.insert(.ctrl) }
+        return meta
+    }
+
+    /// True while the phone's picture has the keyboard, which decides whether Edit → Copy and friends act on the phone or on a text field.
+    @MainActor static var hasKeyboardFocus: Bool { NSApp.keyWindow?.firstResponder is MirrorNSView }
 
     /// Shift, Control and Option arrive as flag changes rather than key presses.
     public override func flagsChanged(with event: NSEvent) {

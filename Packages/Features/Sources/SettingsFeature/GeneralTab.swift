@@ -26,6 +26,18 @@ struct GeneralTab: View {
             SettingsRow("Ask before disconnecting", detail: "When leaving the mirror window for the Connect screen") {
                 Toggle("Ask before disconnecting", isOn: $model.settings.confirmDisconnect).labelsHidden().toggleStyle(.switch)
             }
+            SettingsRow("Ask before recording", detail: "Recordings capture everything shown on the phone") {
+                Toggle("Ask before recording", isOn: $model.settings.confirmRecording).labelsHidden().toggleStyle(.switch)
+            }
+            SettingsRow("Ask before installing a dropped app") {
+                Toggle("Ask before installing a dropped app", isOn: $model.settings.confirmInstall).labelsHidden().toggleStyle(.switch)
+            }
+            SettingsRow("Ask before turning off Wi-Fi or mobile data") {
+                Toggle("Ask before turning off Wi-Fi or mobile data", isOn: $model.settings.confirmNetworkOff).labelsHidden().toggleStyle(.switch)
+            }
+            SettingsRow("Ask before discarding keymap changes") {
+                Toggle("Ask before discarding keymap changes", isOn: $model.settings.confirmDiscardKeymap).labelsHidden().toggleStyle(.switch)
+            }
             SettingsRow("Mirror when a phone connects") {
                 Toggle("Mirror when a phone connects", isOn: $model.settings.mirrorOnConnect).labelsHidden().toggleStyle(.switch)
             }

@@ -54,7 +54,7 @@ public struct PointerID: RawRepresentable, Hashable {
 
 /// Client-to-device messages in scrcpy's wire format (v5.0.1).
 public enum ControlMessage: Equatable {
-    case keycode(KeyAction, AndroidKeyCode)
+    case keycode(KeyAction, AndroidKeyCode, meta: KeyMeta = [])
     case text(String)
     case touch(TouchAction, TouchPosition, pressure: Float, pointer: PointerID = .mouse)
     case scroll(TouchPosition, horizontal: Float, vertical: Float)
@@ -87,12 +87,12 @@ public enum ControlMessage: Equatable {
     public var serialized: Data {
         var data = Data()
         switch self {
-        case let .keycode(action, code):
+        case let .keycode(action, code, meta):
             data.append(TypeID.keycode.rawValue)
             data.append(action.rawValue)
             data.appendBigEndian(code.rawValue)
-            data.appendBigEndian(UInt32(0))
-            data.appendBigEndian(UInt32(0))
+            data.appendBigEndian(UInt32(0)) // repeat count
+            data.appendBigEndian(meta.rawValue)
 
         case let .text(text):
             data.append(TypeID.text.rawValue)

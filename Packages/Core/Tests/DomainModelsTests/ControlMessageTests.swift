@@ -62,3 +62,14 @@ final class ControlMessageTests: XCTestCase {
         XCTAssertEqual(ControlMessage.signedFixedPoint(-5), Int16.min)
     }
 }
+
+final class KeyMetaTests: XCTestCase {
+    func testMetaStateTravelsWithTheKey() {
+        let plain = [UInt8](ControlMessage.keycode(.down, .letterA).serialized)
+        let ctrl = [UInt8](ControlMessage.keycode(.down, .letterA, meta: .ctrl).serialized)
+        XCTAssertEqual(plain.count, ctrl.count)
+        XCTAssertEqual(Array(plain.suffix(4)), [0, 0, 0, 0])
+        XCTAssertEqual(Array(ctrl.suffix(4)), [0, 0, 0x30, 0x00], "CTRL_ON | CTRL_LEFT_ON = 0x3000")
+        XCTAssertEqual(KeyMeta([.shift, .alt]).rawValue, 0x53)
+    }
+}

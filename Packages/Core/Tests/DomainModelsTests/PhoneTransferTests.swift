@@ -6,9 +6,7 @@ final class PhoneTransferTests: XCTestCase {
         XCTAssertEqual(PhoneTransfer.kind(ofFileNamed: "Photo.JPG"), .image)
         XCTAssertEqual(PhoneTransfer.kind(ofFileNamed: "clip.mp4"), .video)
         XCTAssertEqual(PhoneTransfer.kind(ofFileNamed: "notes.txt"), .other)
-        XCTAssertEqual(PhoneTransfer.folder(for: .image, appName: "Benz Mirror"), "/sdcard/Pictures/Benz Mirror")
-        XCTAssertEqual(PhoneTransfer.folder(for: .video, appName: "A/../B"), "/sdcard/Movies/AB")
-        XCTAssertEqual(PhoneTransfer.folder(for: .other, appName: "x"), "/sdcard/Download")
+        XCTAssertEqual(PhoneTransfer.destinationFolder, "/sdcard/Download")
     }
 
     func testScanCommandQuotesThePath() {

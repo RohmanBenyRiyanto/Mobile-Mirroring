@@ -20,6 +20,8 @@ public final class DeveloperToolsModel: ObservableObject {
     private var beforeLastChange: DeveloperState?
     private let run: @Sendable (String) throws -> String
     /// Told about what the phone is owed, so a crash or a pulled cable cannot leave the changes behind for good.
+    /// Asked before Wi-Fi or mobile data is switched off; returning false cancels the change.
+    public var confirmNetworkOff: (() -> Bool)?
     public var onOwed: ((_ baseline: DeveloperState) -> Void)?
     public var onSettled: (() -> Void)?
     public var onMockChanged: ((_ active: Bool) -> Void)?
@@ -47,6 +49,10 @@ public final class DeveloperToolsModel: ObservableObject {
     public func change(_ edit: (inout DeveloperState) -> Void) {
         var new = state
         edit(&new)
+        if (state.wifiOn && !new.wifiOn) || (state.mobileDataOn && !new.mobileDataOn), confirmNetworkOff?() == false {
+            objectWillChange.send() // the switch jumps back to where it was
+            return
+        }
         beforeLastChange = state
         apply(new)
         canUndo = beforeLastChange != nil

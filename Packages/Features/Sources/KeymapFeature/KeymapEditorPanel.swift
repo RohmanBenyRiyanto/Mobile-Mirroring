@@ -76,11 +76,9 @@ public struct KeymapEditorPanel: View {
             Spacer()
             Button { editor.undo() } label: { Image(systemName: "arrow.uturn.backward") }
                 .disabled(!editor.canUndo)
-                .keyboardShortcut("z", modifiers: .command)
                 .help("Undo").accessibilityLabel("Undo")
             Button { editor.redo() } label: { Image(systemName: "arrow.uturn.forward") }
                 .disabled(!editor.canRedo)
-                .keyboardShortcut("z", modifiers: [.command, .shift])
                 .help("Redo").accessibilityLabel("Redo")
         }
     }

@@ -49,7 +49,7 @@ extension AppModel {
     public func handleDrop(_ urls: [URL]) {
         for url in urls where url.isFileURL {
             switch url.pathExtension.lowercased() {
-            case "apk": install(apk: url)
+            case "apk": confirmThenInstall(apk: url)
             case KeymapFile.fileExtension: importKeymap(from: url) // a shared keymap, not a file for the phone
             default: push(file: url)
             }
@@ -76,6 +76,18 @@ extension AppModel {
             return
         }
         push(file: file)
+    }
+
+    /// A dropped file is easy to release by accident, and an install changes the phone, so it is confirmed.
+    private func confirmThenInstall(apk: URL) {
+        if settings.confirmInstall {
+            let answer = Confirmation.ask(title: String(localized: "Install \(apk.lastPathComponent) on the phone?"),
+                                          message: String(localized: "It is installed on \(deviceName), replacing the version already there if any. Only install apps you trust."),
+                                          confirm: String(localized: "Install"))
+            if answer.dontAskAgain { settings.confirmInstall = false }
+            guard answer.confirmed else { return }
+        }
+        install(apk: apk)
     }
 
     private func install(apk: URL) {
@@ -112,7 +124,7 @@ extension AppModel {
         guard let adb, let serial = targetSerial else { return }
         let name = OutputFiles.sanitizedName(file.lastPathComponent)
         let kind = PhoneTransfer.kind(ofFileNamed: name)
-        let folder = PhoneTransfer.folder(for: kind, appName: AppInfo.name)
+        let folder = PhoneTransfer.destinationFolder
         notice = String(localized: "Copying \(name)")
         Task {
             do {
@@ -121,7 +133,7 @@ extension AppModel {
                     _ = try adb.run(["-s", serial, "push", file.path, "\(folder)/\(name)"], timeout: 600)
                     if kind != .other { _ = try? adb.run(["-s", serial, "shell", PhoneTransfer.scanCommand(forPhonePath: "\(folder)/\(name)")], timeout: 10) }
                 }.value
-                notice = kind == .other ? String(localized: "Copied \(name) to Download") : String(localized: "Copied \(name) to Gallery")
+                notice = String(localized: "Copied \(name) to Download")
             } catch {
                 notice = error.localizedDescription
             }
