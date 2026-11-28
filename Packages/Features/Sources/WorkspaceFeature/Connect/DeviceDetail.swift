@@ -142,7 +142,10 @@ private struct QualityGroup: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            if showsAdvanced { QualityRows(settings: $settings) }
+        }
+        if showsAdvanced {
+            SettingsCard { QualityRows(settings: $settings) }
+                .transition(.opacity.combined(with: .move(edge: .top)))
         }
     }
 }
