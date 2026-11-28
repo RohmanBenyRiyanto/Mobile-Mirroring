@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="id" data-lang="id" data-variant="a">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Benz Mirror: cerminkan dan kendalikan Android dari Mac</title>
+<meta name="description" content="Benz Mirror, aplikasi macOS native untuk mencerminkan dan mengendalikan ponsel Android. Dibuat oleh Rohman Beny Riyanto. Unduh DMG dan ikuti cara install.">
+<meta name="author" content="Rohman Beny Riyanto">
+<meta name="theme-color" content="#020a1c">
+<link rel="canonical" href="https://rohmanbenyriyanto.github.io/Mobile-Mirroring/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Benz Mirror">
+<meta property="og:description" content="Android Anda, di Mac. Aplikasi macOS native oleh Rohman Beny Riyanto.">
+<meta property="og:url" content="https://rohmanbenyriyanto.github.io/Mobile-Mirroring/">
+<meta property="og:image" content="https://rohmanbenyriyanto.github.io/Mobile-Mirroring/assets/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/img/favicon-64.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<script>
+/* Applied before first paint so the language, theme and icon colour do not flash. */
+(function(){var d=document.documentElement,s={};try{s=JSON.parse(localStorage.getItem('bm.prefs')||'{}')||{}}catch(e){}
+var q=(location.search.match(/[?&]lang=(id|en)/)||[])[1];
+var l=q||s.lang||((navigator.language||'').toLowerCase().indexOf('id')===0?'id':'en');
+d.setAttribute('data-lang',l);d.lang=l;if(s.theme==='light'||s.theme==='dark')d.setAttribute('data-theme',s.theme);
+if(s.variant==='b'||s.variant==='c')d.setAttribute('data-variant',s.variant);d.classList.add('js')})();
+</script>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main"><span lang="id">Lompat ke isi</span><span lang="en">Skip to content</span></a>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top"><svg viewBox="14 17 482 832" aria-hidden="true"><use href="#beny"/></svg><span>Benz Mirror</span></a>
+    <nav class="links" id="links" aria-label="Menu">
+      <a href="#coba"><span lang="id">Coba</span><span lang="en">Try it</span></a>
+      <a href="#fitur"><span lang="id">Fitur</span><span lang="en">Features</span></a>
+      <a href="#install"><span lang="id">Cara install</span><span lang="en">Install</span></a>
+      <a href="#changelog">Changelog</a>
+      <a href="#faq">FAQ</a>
+      <a href="#kreator"><span lang="id">Kreator</span><span lang="en">Creator</span></a>
+    </nav>
+    <div class="nav-tools">
+      <button class="chip" id="langBtn" type="button" data-label-id="Ganti ke bahasa Inggris" data-label-en="Switch to Indonesian"><span lang="id">EN</span><span lang="en">ID</span></button>
+      <button class="chip icon" id="themeBtn" type="button" data-label-id="Ganti tema terang atau gelap" data-label-en="Toggle light or dark theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/></svg></button>
+      <a class="btn small" href="#download"><span lang="id">Unduh</span><span lang="en">Download</span></a>
+      <button class="chip icon menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="links" data-label-id="Menu" data-label-en="Menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    </div>
+  </div>
+  <div class="progress" aria-hidden="true"><i id="progress"></i></div>
+</header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="beny" viewBox="14 17 482 832"><path fill="currentColor" d="M229.8 21.5A16 16 0 0 1 255 34.5L255 550.1A16 16 0 0 1 248.2 563.2L39.2 709.5A16 16 0 0 1 14 696.4L14 182.5A16 16 0 0 1 20.8 169.5ZM291 322.9A16 16 0 0 1 316.2 309.8L489.2 431.6A16 16 0 0 1 496 444.7L496 831.8A16 16 0 0 1 472.7 846.1L169.6 690.8A16 16 0 0 1 167.8 663.5L268.8 592.7A52 52 0 0 0 291 550.1Z"/></symbol></svg>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="hero-icon" id="heroIcon" aria-hidden="true">
+    <div class="tilt" id="tilt">
+      <img class="l l-bg" data-layer="bg" src="assets/img/icon-a-bg.webp" alt="" width="720" height="720">
+      <img class="l l-shadow" data-layer="shadow" src="assets/img/icon-a-shadow.webp" alt="" width="720" height="720">
+      <img class="l l-left" data-layer="left" src="assets/img/icon-a-left.webp" alt="" width="720" height="720">
+      <img class="l l-right" data-layer="right" src="assets/img/icon-a-right.webp" alt="" width="720" height="720">
+    </div>
+  </div>
+  <h1>Benz Mirror</h1>
+  <p class="tagline"><span lang="id">Android Anda. <em>Di Mac.</em></span><span lang="en">Your Android. <em>On your Mac.</em></span></p>
+  <p class="sub"><span lang="id">Aplikasi macOS native untuk mencerminkan dan mengendalikan ponsel Android, bermain dengan keyboard, streaming ke OBS, dan membantu kerja developer.</span><span lang="en">A native macOS app to mirror and control an Android phone, play with your keyboard, stream to OBS and help with developer work.</span></p>
+  <div class="cta">
+    <a class="btn big" data-dl href="#download"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-dl-label><span lang="id">Unduh untuk Mac</span><span lang="en">Download for Mac</span></span></a>
+    <a class="btn big ghost" href="#install"><span lang="id">Cara install</span><span lang="en">How to install</span></a>
+  </div>
+  <p class="meta" aria-live="polite"><span data-dl-meta></span><span>macOS 14+</span><span>Android 5.0+</span></p>
+  <div class="variants" role="radiogroup" data-label-id="Warna ikon" data-label-en="Icon colour">
+    <button type="button" role="radio" aria-checked="true" data-v="a"><img src="assets/img/icon-a-256.webp" alt="" width="34" height="34"><span>Dark Blue</span></button>
+    <button type="button" role="radio" aria-checked="false" data-v="b"><img src="assets/img/icon-b-256.webp" alt="" width="34" height="34"><span>Clear Blue</span></button>
+    <button type="button" role="radio" aria-checked="false" data-v="c"><img src="assets/img/icon-c-256.webp" alt="" width="34" height="34"><span>Light</span></button>
+  </div>
+  <p class="variants-note"><span lang="id">Tiga ikon yang sama bisa dipilih di Pengaturan aplikasi.</span><span lang="en">The same three icons can be chosen in the app's Settings.</span></p>
+</section>
+
+<!-- ============ SCROLL STORY ============ -->
+<section class="story" id="alur">
+  <div class="wrap">
+    <h2 class="head reveal"><span lang="id">Dari kabel USB<br>sampai siaran.</span><span lang="en">From USB cable<br>to live stream.</span></h2>
+    <div class="story-grid">
+      <div class="stage-col">
+        <div class="stage" id="stage" data-step="1" aria-hidden="true">
+          <div class="s-mac">
+            <div class="s-bar"><i></i><i></i><i></i><span>Benz Mirror</span></div>
+            <div class="s-body">
+              <div class="s-connect">
+                <div class="s-row on"><b></b><span>Phone · USB</span><u></u></div>
+                <div class="s-row"><span class="s-l">Preset</span><span class="s-v">Game streaming</span></div>
+                <div class="s-row"><span class="s-l">Send picture to OBS</span><span class="s-sw"></span></div>
+                <div class="s-go">Start Mirroring</div>
+              </div>
+              <div class="s-video"><div class="scene"><i class="sun"></i><i class="hill h1"></i><i class="hill h2"></i><i class="hero-dot"></i><i class="pad"></i><i class="fire"></i></div></div>
+              <div class="s-rail"><i></i><i></i><i></i><i></i><i></i><i class="rec"></i></div>
+            </div>
+          </div>
+          <div class="s-cable"></div>
+          <div class="s-phone"><div class="scene portrait"><i class="sun"></i><i class="hill h1"></i><i class="hill h2"></i><i class="hero-dot"></i><i class="pad"></i><i class="fire"></i></div></div>
+          <div class="s-obs"><div class="s-obs-h"><i></i>OBS · Media Source</div><code>http://127.0.0.1:8765/live.ts</code><div class="s-meter"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        </div>
+      </div>
+      <ol class="steps">
+        <li data-step="1"><span class="num">1</span><h3><span lang="id">Colok dan pilih ponsel</span><span lang="en">Plug in and pick a phone</span></h3><p><span lang="id">Aktifkan USB debugging, sambungkan, lalu klik <b>Start Mirroring</b>. Tidak ada aplikasi yang dipasang di ponsel.</span><span lang="en">Turn on USB debugging, connect, then click <b>Start Mirroring</b>. No app is installed on the phone.</span></p></li>
+        <li data-step="2"><span class="num">2</span><h3><span lang="id">Layar muncul di Mac</span><span lang="en">The screen appears on your Mac</span></h3><p><span lang="id">Gambar didekode oleh hardware dan ditampilkan begitu frame tiba. Klik jadi sentuhan, ketikan diteruskan ke ponsel.</span><span lang="en">The picture is hardware decoded and shown as frames arrive. Clicks become touches and typing goes to the phone.</span></p></li>
+        <li data-step="3"><span class="num">3</span><h3>Stream Mode</h3><p><span lang="id">Tekan <kbd>⇧</kbd><kbd>⌘</kbd><kbd>B</kbd>. Jendela jadi bingkai bersih dengan rasio terkunci, siap ditangkap OBS.</span><span lang="en">Press <kbd>⇧</kbd><kbd>⌘</kbd><kbd>B</kbd>. The window becomes a clean, aspect-locked frame, ready for OBS to capture.</span></p></li>
+        <li data-step="4"><span class="num">4</span><h3><span lang="id">Atau kirim langsung ke OBS</span><span lang="en">Or send it straight to OBS</span></h3><p><span lang="id">Stream lokal tanpa encode ulang, hanya di komputer Anda sendiri (<code>127.0.0.1</code>).</span><span lang="en">A local stream with no re-encoding, only on your own computer (<code>127.0.0.1</code>).</span></p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PLAYGROUND ============ -->
+<section class="play dark" id="coba">
+  <div class="wrap">
+    <h2 class="head reveal"><span lang="id">Coba rasakan.</span><span lang="en">Get a feel for it.</span></h2>
+    <p class="lead reveal"><span lang="id">Klik layar di bawah, lalu gerak dengan <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> dan tembak dengan <kbd>Spasi</kbd>. Di layar sentuh, geser untuk bergerak.</span><span lang="en">Click the screen below, then move with <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> and fire with <kbd>Space</kbd>. On touch screens, drag to move.</span></p>
+    <div class="sim reveal" id="sim">
+      <div class="sim-win" id="simWin">
+        <div class="sim-bar"><i></i><i></i><i></i><span id="simTitle">Benz Mirror · Pixel</span></div>
+        <div class="sim-body">
+          <div class="sim-screen" id="simScreen">
+            <canvas id="game" width="960" height="440" tabindex="0" data-label-id="Simulasi layar ponsel. Gunakan WASD dan spasi." data-label-en="Phone screen simulation. Use WASD and Space."></canvas>
+            <div class="sim-stats" id="simStats" hidden></div>
+            <div class="sim-rec" id="simRec" hidden><i></i><span id="simRecT">00:00</span></div>
+            <div class="sim-keys" id="simKeys">
+              <div class="joy"><kbd data-k="w">W</kbd><kbd data-k="a">A</kbd><kbd data-k="s">S</kbd><kbd data-k="d">D</kbd></div>
+              <div class="act"><kbd data-k="space">Space</kbd></div>
+            </div>
+            <div class="sim-hint" id="simHint"><span lang="id">Klik untuk mulai</span><span lang="en">Click to start</span></div>
+            <div class="sim-toast" id="simToast" role="status"></div>
+            <div class="sim-flash" id="simFlash"></div>
+          </div>
+          <div class="sim-rail" role="toolbar" data-label-id="Control rail" data-label-en="Control rail">
+            <button type="button" data-act="back" title="Back"><svg viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></svg></button>
+            <button type="button" data-act="home" title="Home"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/></svg></button>
+            <button type="button" data-act="recents" title="Recents"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
+            <hr>
+            <button type="button" data-act="rotate" title="Rotate" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2.1-5M19 4v4h-4"/></svg></button>
+            <button type="button" data-act="shot" title="Screenshot"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.2"/></svg></button>
+            <button type="button" data-act="rec" title="Record" aria-pressed="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="3.5" class="fill"/></svg></button>
+            <hr>
+            <button type="button" data-act="keys" title="Keymap" aria-pressed="true"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="11" rx="2.5"/><path d="M7 11h.1M10.3 11h.1M13.6 11h.1M16.9 11h.1M8 14.5h8"/></svg></button>
+            <button type="button" data-act="stats" title="Statistics" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 19h16M6 15l4-5 3 3 5-7"/></svg></button>
+            <button type="button" data-act="stream" title="Stream Mode" aria-pressed="false"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="10" rx="2"/><path d="M8 19h11a2 2 0 0 0 2-2V9"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <p class="note"><span lang="id">Ini simulasi di browser dengan isi contoh, bukan aplikasinya. Angka statistik berasal dari browser Anda.</span><span lang="en">This is a browser simulation with sample content, not the app itself. The statistics come from your browser.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODES ============ -->
+<section class="modes" id="fitur">
+  <div class="wrap">
+    <h2 class="head reveal"><span lang="id">Tiga mode.<br>Satu jendela.</span><span lang="en">Three modes.<br>One window.</span></h2>
+    <p class="lead reveal"><span lang="id">Ganti mode dengan <kbd>⌥</kbd><kbd>⌘</kbd><kbd>1</kbd>, <kbd>2</kbd>, atau <kbd>3</kbd>. Tiap mode punya susunan control rail sendiri.</span><span lang="en">Switch with <kbd>⌥</kbd><kbd>⌘</kbd><kbd>1</kbd>, <kbd>2</kbd> or <kbd>3</kbd>. Each mode keeps its own control rail.</span></p>
+    <div class="seg reveal" role="tablist" data-tabs>
+      <button type="button" role="tab" aria-selected="true" aria-controls="m-normal" id="t-normal">Normal</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="m-gaming" id="t-gaming">Gaming</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="m-dev" id="t-dev">Developer</button>
+    </div>
+    <div class="panel" role="tabpanel" id="m-normal" aria-labelledby="t-normal">
+      <article><h3><span lang="id">Gulir yang halus</span><span lang="en">Smooth scrolling</span></h3><p><span lang="id">Trackpad dan tombol panah menggulir seperti jari, jadi feed meluncur alami.</span><span lang="en">Trackpad and arrow keys scroll like a finger, so feeds fling naturally.</span></p></article>
+      <article><h3><span lang="id">Suara di Mac</span><span lang="en">Sound on your Mac</span></h3><p><span lang="id">Audio ponsel diputar di Mac, atau pakai mikrofon ponsel. Perlu Android 11+.</span><span lang="en">Play the phone's audio on the Mac, or use the phone's microphone. Android 11+.</span></p></article>
+      <article><h3>Drag &amp; drop</h3><p><span lang="id">Jatuhkan <code>.apk</code> untuk install, file lain masuk ke folder Download. <kbd>⌘</kbd><kbd>V</kbd> menempel file dari Finder ke aplikasi ponsel.</span><span lang="en">Drop an <code>.apk</code> to install it; other files go to Download. <kbd>⌘</kbd><kbd>V</kbd> pastes Finder files into phone apps.</span></p></article>
+      <article><h3><span lang="id">Layar terpisah</span><span lang="en">Separate display</span></h3><p><span lang="id">Cerminkan satu aplikasi di layar seukuran jendela, tanpa bar hitam.</span><span lang="en">Mirror one app on a display sized to the window, with no black bars.</span></p></article>
+    </div>
+    <div class="panel" role="tabpanel" id="m-gaming" aria-labelledby="t-gaming" hidden>
+      <article class="wide"><h3><span lang="id">Keymap untuk game</span><span lang="en">Keymaps for games</span></h3><p><span lang="id">Keyboard dan mouse menjadi sentuhan. Posisi disimpan sebagai pecahan layar, jadi cocok di berbagai ponsel.</span><span lang="en">Keyboard and mouse become touches. Positions are stored as fractions of the screen, so they fit any phone.</span></p>
+        <ul class="tags"><li>Tap</li><li>Hold</li><li>Toggle</li><li>Joystick</li><li>Aim</li><li>Skill shot</li><li>Rapid tap</li><li>Swipe</li><li>Macro</li></ul></article>
+      <article><h3><span lang="id">Pindah otomatis</span><span lang="en">Automatic switching</span></h3><p><span lang="id">Keymap menyala saat gamenya dibuka dan mati saat Anda keluar.</span><span lang="en">A keymap turns on when its game opens and off when you leave.</span></p></article>
+      <article><h3>Controller</h3><p><span lang="id">Tombol game controller bisa dihubungkan ke tombol keymap.</span><span lang="en">Game controller buttons can be bound to keymap keys.</span></p></article>
+      <article><h3><span lang="id">Bagikan</span><span lang="en">Share</span></h3><p><span lang="id">Ekspor sebagai file <code>.benzkeymap</code>. Saat diimpor, isinya ditampilkan dulu untuk Anda setujui.</span><span lang="en">Export a <code>.benzkeymap</code> file. On import you see what it contains before confirming.</span></p></article>
+    </div>
+    <div class="panel" role="tabpanel" id="m-dev" aria-labelledby="t-dev" hidden>
+      <article><h3>Developer HUD</h3><p><span lang="id">CPU, memori, suhu baterai, dan frame dari aplikasi yang sedang di depan.</span><span lang="en">CPU, memory, battery temperature and frames from the app in front.</span></p></article>
+      <article><h3>UI Inspector</h3><p><span lang="id">Tunjuk elemen untuk melihat hierarkinya. Ada juga grid, crosshair, penggaris, dan color picker.</span><span lang="en">Point at an element to see its hierarchy. Includes grid, crosshair, ruler and colour picker.</span></p></article>
+      <article><h3>Quick Toggles</h3><p><span lang="id">Dark mode, animasi, lokasi pointer, Wi-Fi dan data, lokasi palsu (Android 12+).</span><span lang="en">Dark mode, animations, pointer location, Wi-Fi and data, mock location (Android 12+).</span></p></article>
+      <article><h3>Database</h3><p><span lang="id">Baca database aplikasi debug, jalankan query baca-saja, ekspor CSV.</span><span lang="en">Read a debug app's databases, run read-only queries, export CSV.</span></p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEV BENTO ============ -->
+<section class="bento-sec dark">
+  <div class="wrap">
+    <h2 class="head reveal"><span lang="id">Meja kerja developer.</span><span lang="en">A developer's workbench.</span></h2>
+    <div class="bento">
+      <article class="card span2 reveal">
+        <header><h3>Logcat</h3><p><span lang="id">Ikuti aplikasi yang di depan, filter level dan teks. Crash dan ANR ditandai sebagai blok.</span><span lang="en">Follows the app in front, with level and text filters. Crashes and ANRs are highlighted as blocks.</span></p></header>
+        <div class="logctl">
+          <div class="seg mini" id="logLv" role="group" data-label-id="Level log" data-label-en="Log level"><button type="button" aria-pressed="true" data-lv="0">All</button><button type="button" aria-pressed="false" data-lv="2">Warn</button><button type="button" aria-pressed="false" data-lv="3">Error</button></div>
+          <input id="logQ" type="search" placeholder="Filter" aria-label="Filter" autocomplete="off">
+          <button type="button" class="chip" id="logPause" aria-pressed="false">Pause</button>
+        </div>
+        <div class="log" id="log"></div>
+        <p class="note"><span lang="id">Baris contoh.</span><span lang="en">Sample lines.</span></p>
+      </article>
+      <article class="card reveal">
+        <header><h3><span lang="id">Jaringan lambat</span><span lang="en">Slow network</span></h3><p><span lang="id">Perlambat lalu lintas ponsel untuk menguji aplikasi.</span><span lang="en">Slow the phone's traffic to test your app.</span></p></header>
+        <div class="seg mini wrap-seg" id="net" role="group" data-label-id="Profil jaringan" data-label-en="Network profile">
+          <button type="button" data-l="0" data-d="0" aria-pressed="false">No limit</button><button type="button" data-l="50" data-d="9000" aria-pressed="true">4G</button><button type="button" data-l="150" data-d="1600" aria-pressed="false">Fast 3G</button><button type="button" data-l="400" data-d="400" aria-pressed="false">Slow 3G</button><button type="button" data-l="840" data-d="240" aria-pressed="false">Edge</button><button type="button" data-l="500" data-d="50" aria-pressed="false">GPRS</button>
+        </div>
+        <div class="netviz"><div class="track"><i id="netDot"></i></div><div class="netnum"><div><b id="netLat">50</b><span>ms</span></div><div><b id="netDown">9000</b><span>kbps ↓</span></div></div></div>
+      </article>
+      <article class="card reveal">
+        <header><h3><span lang="id">Pemilih warna</span><span lang="en">Colour picker</span></h3><p><span lang="id">Gerakkan pointer atau sentuh bidang di bawah.</span><span lang="en">Move the pointer or touch the field below.</span></p></header>
+        <div class="picker"><canvas id="pick" width="480" height="220"></canvas><div class="loupe" id="loupe" hidden></div></div>
+        <button type="button" class="hex" id="hex" data-label-id="Salin kode warna" data-label-en="Copy colour code"><i id="sw"></i><code id="hexV">#0A55C8</code><span><span lang="id">Salin</span><span lang="en">Copy</span></span></button>
+      </article>
+      <article class="card reveal">
+        <header><h3>API Log</h3><p><span lang="id">Lihat panggilan jaringan ponsel lewat proxy di Mac. Isi HTTP bisa dibaca. Untuk HTTPS hanya host-nya, isinya tidak dibuka.</span><span lang="en">See the phone's calls through a proxy on the Mac. HTTP details are readable; for HTTPS only the host, never the contents.</span></p></header>
+        <table class="mini-table"><thead><tr><th>Method</th><th>Host</th><th>Status</th></tr></thead><tbody><tr><td>GET</td><td>api.example.com</td><td>200</td></tr><tr><td>POST</td><td>api.example.com</td><td>201</td></tr><tr><td>CONNECT</td><td>cdn.example.com</td><td>200</td></tr></tbody></table>
+      </article>
+      <article class="card reveal">
+        <header><h3><span lang="id">Rekam &amp; GIF</span><span lang="en">Record &amp; GIF</span></h3><p><span lang="id">Rekaman MP4 menyimpan video apa adanya. Potong bagian yang diperlukan menjadi GIF. Screenshot sekali tekan <kbd>⌘</kbd><kbd>S</kbd>.</span><span lang="en">MP4 recording stores the video as it arrives. Turn part of it into a GIF. Screenshot with <kbd>⌘</kbd><kbd>S</kbd>.</span></p></header>
+        <div class="film" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><b></b></div>
+      </article>
+      <article class="card reveal">
+        <header><h3><span lang="id">Banyak ponsel</span><span lang="en">Multiple phones</span></h3><p><span lang="id">Satu tab per ponsel, Mini Mirror kecil yang selalu di atas, dan nirkabel lewat Wi-Fi.</span><span lang="en">A tab per phone, a small always-on-top Mini Mirror, and wireless over Wi-Fi.</span></p></header>
+        <div class="tabs-art" aria-hidden="true"><span class="on">Phone 1</span><span>Phone 2</span><span>+</span></div>
+        <div class="wifi" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUALITY ============ -->
+<section class="quality" id="kualitas">
+  <div class="wrap">
+    <h2 class="head reveal"><span lang="id">Pilih kualitasnya.</span><span lang="en">Choose your quality.</span></h2>
+    <div class="seg reveal" id="preset" role="group" data-label-id="Preset kualitas" data-label-en="Quality preset">
+      <button type="button" aria-pressed="false" data-p="balanced">Balanced</button><button type="button" aria-pressed="false" data-p="high">High quality</button><button type="button" aria-pressed="true" data-p="gaming">Game streaming</button><button type="button" aria-pressed="false" data-p="max">Maximum</button>
+    </div>
+    <dl class="specs reveal" aria-live="polite">
+      <div><dt><span lang="id">Resolusi</span><span lang="en">Resolution</span></dt><dd id="qRes">Native</dd></div>
+      <div><dt>Bitrate</dt><dd><span id="qBit">40</span><small>Mbps</small></dd></div>
+      <div><dt>Frame rate</dt><dd><span id="qFps">60</span><small>fps</small></dd></div>
+      <div><dt>Codec</dt><dd id="qCodec">H.264</dd></div>
+    </dl>
+    <div class="gauge reveal" aria-hidden="true"><i id="qGauge"></i></div>
+    <p class="note center" id="qNote"></p>
+    <p class="note center"><span lang="id">Di Advanced, nilainya bisa diatur sampai 200 Mbps, 120 fps, dan 4096 px. Hasil nyata bergantung pada ponsel dan sambungan.</span><span lang="en">Under Advanced you can go up to 200 Mbps, 120 fps and 4096 px. Real results depend on the phone and the connection.</span></p>
+
+    <div class="obs reveal">
+      <div>
+        <h3><span lang="id">Ke OBS dalam empat langkah</span><span lang="en">Into OBS in four steps</span></h3>
+        <ol>
+          <li><span lang="id">Nyalakan <b>Send picture to OBS</b> sebelum mulai.</span><span lang="en">Turn on <b>Send picture to OBS</b> before you start.</span></li>
+          <li>OBS: Sources → <b>+</b> → <b>Media Source</b>.</li>
+          <li><span lang="id">Hilangkan centang <b>Local File</b>, tempel alamat di <b>Input</b>, isi <b>Input Format</b> dengan <code>mpegts</code>.</span><span lang="en">Untick <b>Local File</b>, paste the address into <b>Input</b>, set <b>Input Format</b> to <code>mpegts</code>.</span></li>
+          <li><span lang="id">Set <b>Network Buffering</b> ke <b>0 MB</b> untuk delay paling rendah.</span><span lang="en">Set <b>Network Buffering</b> to <b>0 MB</b> for the lowest delay.</span></li>
+        </ol>
+      </div>
+      <div class="obs-box">
+        <label>Input</label>
+        <div class="copyline"><code>http://127.0.0.1:8765/live.ts</code><button type="button" class="chip" data-copy="http://127.0.0.1:8765/live.ts"><span lang="id">Salin</span><span lang="en">Copy</span></button></div>
+        <label>Input Format</label>
+        <div class="copyline"><code>mpegts</code><button type="button" class="chip" data-copy="mpegts"><span lang="id">Salin</span><span lang="en">Copy</span></button></div>
+        <p class="note"><span lang="id">Port bisa diubah di aplikasi. Cara lain: Stream Mode lalu <i>macOS Screen Capture → Window</i>.</span><span lang="en">The port can be changed in the app. Alternative: Stream Mode, then <i>macOS Screen Capture → Window</i>.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHORTCUTS ============ -->
+<section class="keys-sec" id="shortcut">
+  <div class="wrap narrow">
+    <h2 class="head reveal"><span lang="id">Cukup dari keyboard.</span><span lang="en">All from the keyboard.</span></h2>
+    <input class="search reveal" id="keyQ" type="search" autocomplete="off" data-ph-id="Cari shortcut, mis. screenshot" data-ph-en="Search shortcuts, e.g. screenshot" data-label-id="Cari shortcut" data-label-en="Search shortcuts">
+    <ul class="keylist reveal" id="keyList">
+      <li><span>Start Mirroring</span><b><kbd>⌘</kbd><kbd>↩</kbd></b></li>
+      <li><span>Stream Mode</span><b><kbd>⇧</kbd><kbd>⌘</kbd><kbd>B</kbd></b></li>
+      <li><span>Screenshot</span><b><kbd>⌘</kbd><kbd>S</kbd></b></li>
+      <li><span>Start / Stop Recording</span><b><kbd>⇧</kbd><kbd>⌘</kbd><kbd>R</kbd></b></li>
+      <li><span>Mute Audio</span><b><kbd>⇧</kbd><kbd>⌘</kbd><kbd>M</kbd></b></li>
+      <li><span>Mini Mirror</span><b><kbd>⇧</kbd><kbd>⌘</kbd><kbd>Y</kbd></b></li>
+      <li><span>Keep on Top</span><b><kbd>⌥</kbd><kbd>⌘</kbd><kbd>Y</kbd></b></li>
+      <li><span>Copy OBS URL</span><b><kbd>⇧</kbd><kbd>⌘</kbd><kbd>C</kbd></b></li>
+      <li><span>Statistics</span><b><kbd>⌘</kbd><kbd>I</kbd></b></li>
+      <li><span>Developer HUD</span><b><kbd>⇧</kbd><kbd>⌘</kbd><kbd>I</kbd></b></li>
+      <li><span>Control Rail</span><b><kbd>⌥</kbd><kbd>⌘</kbd><kbd>R</kbd></b></li>
+      <li><span>UI Inspector</span><b><kbd>⌥</kbd><kbd>⌘</kbd><kbd>I</kbd></b></li>
+      <li><span>Quick Toggles</span><b><kbd>⌥</kbd><kbd>⌘</kbd><kbd>J</kbd></b></li>
+      <li><span>Logcat</span><b><kbd>⇧</kbd><kbd>⌘</kbd><kbd>L</kbd></b></li>
+      <li><span>API Log</span><b><kbd>⌥</kbd><kbd>⌘</kbd><kbd>A</kbd></b></li>
+      <li><span>Database</span><b><kbd>⌥</kbd><kbd>⌘</kbd><kbd>D</kbd></b></li>
+      <li><span>Install APK</span><b><kbd>⌘</kbd><kbd>O</kbd></b></li>
+      <li><span>Switch to Wi-Fi</span><b><kbd>⇧</kbd><kbd>⌘</kbd><kbd>E</kbd></b></li>
+      <li><span>Rotate</span><b><kbd>⌘</kbd><kbd>R</kbd></b></li>
+      <li><span>Back</span><b><kbd>⌘</kbd><kbd>[</kbd></b></li>
+      <li><span>Home</span><b><kbd>⇧</kbd><kbd>⌘</kbd><kbd>H</kbd></b></li>
+      <li><span>Edit Keymap</span><b><kbd>⌘</kbd><kbd>E</kbd></b></li>
+      <li><span>Keymap on / off</span><b><kbd>⇧</kbd><kbd>⌘</kbd><kbd>K</kbd></b></li>
+    </ul>
+    <p class="note center" id="keyNone" hidden><span lang="id">Tidak ada yang cocok.</span><span lang="en">Nothing matches.</span></p>
+    <p class="note center"><span lang="id">Ini bawaan. Setiap shortcut menu bisa diubah di Pengaturan.</span><span lang="en">These are the defaults. Every menu shortcut can be changed in Settings.</span></p>
+  </div>
+</section>
+
+<!-- ============ DOWNLOAD ============ -->
+<section class="download dark" id="download">
+  <div class="wrap narrow center">
+    <img class="dl-icon reveal" data-icon src="assets/img/icon-a-256.webp" alt="" width="128" height="128">
+    <h2 class="head reveal"><span lang="id">Unduh Benz Mirror.</span><span lang="en">Download Benz Mirror.</span></h2>
+    <div class="dl-card reveal" id="dlCard" aria-live="polite">
+      <div class="dl-state" id="dlState">
+        <p><span lang="id">Memeriksa rilis terbaru…</span><span lang="en">Checking for the latest release…</span></p>
+        <a class="btn big" href="https://github.com/RohmanBenyRiyanto/Mobile-Mirroring/releases" data-releases><span lang="id">Buka halaman rilis</span><span lang="en">Open the releases page</span></a>
+      </div>
+    </div>
+    <noscript><p><a class="btn big" href="https://github.com/RohmanBenyRiyanto/Mobile-Mirroring/releases">Download from GitHub Releases</a></p></noscript>
+    <details class="older reveal" id="older" hidden><summary><span lang="id">Versi lainnya</span><span lang="en">Other versions</span></summary><ul id="olderList"></ul></details>
+    <ul class="req reveal">
+      <li><b>Mac</b><span><span lang="id">macOS 14 atau lebih baru. Tampilan Liquid Glass penuh di macOS 26 ke atas.</span><span lang="en">macOS 14 or later. The full Liquid Glass look needs macOS 26 or later.</span></span></li>
+      <li><b><span lang="id">Ponsel</span><span lang="en">Phone</span></b><span><span lang="id">Android 5.0 atau lebih baru dengan USB debugging. Suara perlu Android 11+.</span><span lang="en">Android 5.0 or later with USB debugging. Audio needs Android 11+.</span></span></li>
+      <li><b>adb</b><span><span lang="id">Android platform-tools terpasang di Mac.</span><span lang="en">Android platform-tools installed on the Mac.</span></span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ INSTALL ============ -->
+<section class="install" id="install">
+  <div class="wrap narrow">
+    <h2 class="head reveal"><span lang="id">Cara install.</span><span lang="en">How to install.</span></h2>
+    <div class="callout reveal">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.8 19.5h18.4L12 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 9.5v4.5M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <p><span lang="id">Benz Mirror <b>belum dinotarisasi Apple</b> karena dibagikan tanpa akun Apple Developer berbayar. macOS akan menahannya saat pertama dibuka. Izinkan hanya jika Anda mengunduhnya dari halaman ini atau dari GitHub Rohman Beny Riyanto.</span><span lang="en">Benz Mirror is <b>not notarized by Apple</b> because it is shared without a paid Apple Developer account. macOS blocks it the first time. Allow it only if you downloaded it from this page or from Rohman Beny Riyanto's GitHub.</span></p>
+    </div>
+
+    <div class="checkbar reveal"><div class="bar"><i id="doneBar"></i></div><span id="doneText" aria-live="polite"></span><button type="button" class="link" id="doneReset"><span lang="id">Ulangi</span><span lang="en">Reset</span></button></div>
+
+    <h3 class="part"><span lang="id">A. Pasang aplikasinya</span><span lang="en">A. Install the app</span></h3>
+    <div class="seg reveal" role="tablist" data-tabs id="osTabs">
+      <button type="button" role="tab" aria-selected="true" aria-controls="os-new" id="t-new"><span lang="id">macOS 15 ke atas</span><span lang="en">macOS 15 and later</span></button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="os-old" id="t-old">macOS 14</button>
+    </div>
+
+    <div role="tabpanel" id="os-new" aria-labelledby="t-new">
+      <ol class="how">
+        <li data-done="dl"><div class="txt"><h4><span lang="id">Unduh DMG</span><span lang="en">Download the DMG</span></h4><p><span lang="id">Ambil <code data-file>Benz-Mirror.dmg</code> dari <a href="#download">bagian unduh</a>.</span><span lang="en">Get <code data-file>Benz-Mirror.dmg</code> from the <a href="#download">download section</a>.</span></p></div><div class="art a-dl" aria-hidden="true"><span class="file">DMG</span><i></i></div></li>
+        <li data-done="drag"><div class="txt"><h4><span lang="id">Seret ke Applications</span><span lang="en">Drag to Applications</span></h4><p><span lang="id">Buka file DMG, lalu seret <b>Benz Mirror</b> ke folder <b>Applications</b>.</span><span lang="en">Open the DMG, then drag <b>Benz Mirror</b> onto the <b>Applications</b> folder.</span></p></div><div class="art a-drag" aria-hidden="true"><img data-icon src="assets/img/icon-a-256.webp" alt="" width="64" height="64"><i></i><span class="folder"></span></div></li>
+        <li data-done="open"><div class="txt"><h4><span lang="id">Buka sekali, lalu tutup peringatannya</span><span lang="en">Open once, then dismiss the warning</span></h4><p><span lang="id">Klik dua kali aplikasinya. Muncul peringatan bahwa Apple tidak bisa memverifikasinya. Pilih <b>Done</b>, jangan <b>Move to Trash</b>.</span><span lang="en">Double-click the app. A warning says Apple could not verify it. Choose <b>Done</b>, not <b>Move to Trash</b>.</span></p></div><div class="art a-alert" aria-hidden="true"><div><s></s><s></s><span>Move to Trash</span><span class="hot">Done</span></div></div></li>
+        <li data-done="allow"><div class="txt"><h4><span lang="id">Klik Open Anyway</span><span lang="en">Click Open Anyway</span></h4><p><span lang="id">Buka <b>System Settings → Privacy &amp; Security</b>, gulir ke bagian <b>Security</b>, klik <b>Open Anyway</b>. Konfirmasi dengan password atau Touch ID, lalu <b>Open</b>. Tombol ini hanya tersedia sebentar setelah langkah sebelumnya (sekitar satu jam).</span><span lang="en">Open <b>System Settings → Privacy &amp; Security</b>, scroll to <b>Security</b> and click <b>Open Anyway</b>. Confirm with your password or Touch ID, then <b>Open</b>. The button is only there for a while (about an hour) after the previous step.</span></p></div><div class="art a-settings" aria-hidden="true"><div><b>Security</b><s></s><span class="hot">Open Anyway</span></div></div></li>
+      </ol>
+      <p class="note"><span lang="id">Di macOS 15 ke atas, klik kanan lalu Open tidak lagi melewati peringatan ini.</span><span lang="en">On macOS 15 and later, right-click then Open no longer skips this warning.</span></p>
+    </div>
+
+    <div role="tabpanel" id="os-old" aria-labelledby="t-old" hidden>
+      <ol class="how">
+        <li data-done="dl"><div class="txt"><h4><span lang="id">Unduh DMG</span><span lang="en">Download the DMG</span></h4><p><span lang="id">Ambil <code data-file>Benz-Mirror.dmg</code> dari <a href="#download">bagian unduh</a>.</span><span lang="en">Get <code data-file>Benz-Mirror.dmg</code> from the <a href="#download">download section</a>.</span></p></div><div class="art a-dl" aria-hidden="true"><span class="file">DMG</span><i></i></div></li>
+        <li data-done="drag"><div class="txt"><h4><span lang="id">Seret ke Applications</span><span lang="en">Drag to Applications</span></h4><p><span lang="id">Buka file DMG, lalu seret <b>Benz Mirror</b> ke folder <b>Applications</b>.</span><span lang="en">Open the DMG, then drag <b>Benz Mirror</b> onto the <b>Applications</b> folder.</span></p></div><div class="art a-drag" aria-hidden="true"><img data-icon src="assets/img/icon-a-256.webp" alt="" width="64" height="64"><i></i><span class="folder"></span></div></li>
+        <li data-done="open"><div class="txt"><h4><span lang="id">Klik kanan, pilih Open</span><span lang="en">Control-click and choose Open</span></h4><p><span lang="id">Di folder Applications, klik kanan (atau <kbd>Control</kbd> + klik) <b>Benz Mirror</b>, pilih <b>Open</b>.</span><span lang="en">In Applications, Control-click <b>Benz Mirror</b> and choose <b>Open</b>.</span></p></div><div class="art a-alert" aria-hidden="true"><div><s></s><span class="hot">Open</span><span>Show Package Contents</span></div></div></li>
+        <li data-done="allow"><div class="txt"><h4><span lang="id">Konfirmasi Open</span><span lang="en">Confirm Open</span></h4><p><span lang="id">Klik <b>Open</b> sekali lagi. Selanjutnya aplikasi bisa dibuka seperti biasa.</span><span lang="en">Click <b>Open</b> once more. After that the app opens normally.</span></p></div><div class="art a-alert" aria-hidden="true"><div><s></s><s></s><span>Cancel</span><span class="hot">Open</span></div></div></li>
+      </ol>
+    </div>
+
+    <h3 class="part"><span lang="id">B. Pasang adb (sekali saja)</span><span lang="en">B. Install adb (once)</span></h3>
+    <div class="seg reveal" role="tablist" data-tabs>
+      <button type="button" role="tab" aria-selected="true" aria-controls="adb-brew" id="t-brew">Homebrew</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="adb-man" id="t-man"><span lang="id">Manual</span><span lang="en">Manual</span></button>
+    </div>
+    <ol class="how plain">
+      <li data-done="adb"><div class="txt">
+        <div role="tabpanel" id="adb-brew" aria-labelledby="t-brew">
+          <h4><span lang="id">Satu perintah di Terminal</span><span lang="en">One command in Terminal</span></h4>
+          <div class="term"><code>brew install android-platform-tools</code><button type="button" class="chip" data-copy="brew install android-platform-tools"><span lang="id">Salin</span><span lang="en">Copy</span></button></div>
+          <p><span lang="id">Belum punya Homebrew? Ikuti petunjuk di <a href="https://brew.sh" rel="noopener">brew.sh</a>.</span><span lang="en">No Homebrew yet? Follow <a href="https://brew.sh" rel="noopener">brew.sh</a>.</span></p>
+        </div>
+        <div role="tabpanel" id="adb-man" aria-labelledby="t-man" hidden>
+          <h4><span lang="id">Unduh dari Google</span><span lang="en">Download from Google</span></h4>
+          <p><span lang="id">Unduh <a href="https://developer.android.com/tools/releases/platform-tools" rel="noopener">SDK Platform-Tools</a> untuk Mac, lalu taruh foldernya sehingga lokasinya <code>~/Library/Android/sdk/platform-tools</code>. Jika sudah memakai Android Studio, biasanya sudah ada. Lokasi lain bisa dipilih di Pengaturan aplikasi.</span><span lang="en">Download <a href="https://developer.android.com/tools/releases/platform-tools" rel="noopener">SDK Platform-Tools</a> for Mac and place the folder at <code>~/Library/Android/sdk/platform-tools</code>. If you use Android Studio it is usually there already. Another location can be chosen in the app's Settings.</span></p>
+        </div>
+      </div></li>
+    </ol>
+
+    <h3 class="part"><span lang="id">C. Siapkan ponsel</span><span lang="en">C. Prepare the phone</span></h3>
+    <ol class="how plain">
+      <li data-done="dev"><div class="txt"><h4><span lang="id">Buka Opsi pengembang</span><span lang="en">Open Developer options</span></h4><p><span lang="id">Di <b>Setelan → Tentang ponsel</b>, ketuk <b>Nomor build</b> tujuh kali. Nama menu bisa berbeda tiap merek.</span><span lang="en">In <b>Settings → About phone</b>, tap <b>Build number</b> seven times. Menu names vary between brands.</span></p>
+        <button type="button" class="tapper" id="tapper"><span id="tapText"></span><i></i></button></div></li>
+      <li data-done="usb"><div class="txt"><h4><span lang="id">Aktifkan USB debugging</span><span lang="en">Turn on USB debugging</span></h4><p><span lang="id">Colok kabel USB, lalu pilih <b>Izinkan</b> pada permintaan di ponsel.</span><span lang="en">Plug in the USB cable, then choose <b>Allow</b> on the prompt on the phone.</span></p></div></li>
+      <li data-done="go"><div class="txt"><h4><span lang="id">Mulai mirroring</span><span lang="en">Start mirroring</span></h4><p><span lang="id">Buka Benz Mirror, pilih ponsel, klik <b>Start Mirroring</b>. Untuk nirkabel, gunakan <b>Switch to Wi-Fi</b>, atau pairing (Android 11+).</span><span lang="en">Open Benz Mirror, pick the phone and click <b>Start Mirroring</b>. For wireless, use <b>Switch to Wi-Fi</b> or pairing (Android 11+).</span></p></div></li>
+    </ol>
+
+    <h3 class="part"><span lang="id">Jika ada kendala</span><span lang="en">If something goes wrong</span></h3>
+    <div class="acc">
+      <details><summary><span lang="id">Muncul “Benz Mirror is damaged and can’t be opened”</span><span lang="en">“Benz Mirror is damaged and can’t be opened”</span></summary><div><p><span lang="id">Pastikan filenya dari sumber resmi di atas (cocokkan checksum di bawah). Lalu hapus tanda karantina lewat Terminal:</span><span lang="en">Make sure the file is from the official source above (compare the checksum below). Then remove the quarantine flag in Terminal:</span></p><div class="term"><code>xattr -dr com.apple.quarantine "/Applications/Benz Mirror.app"</code><button type="button" class="chip" data-copy='xattr -dr com.apple.quarantine "/Applications/Benz Mirror.app"'><span lang="id">Salin</span><span lang="en">Copy</span></button></div></div></details>
+      <details><summary><span lang="id">Cara memeriksa file yang diunduh</span><span lang="en">How to check the downloaded file</span></summary><div><p><span lang="id">Jalankan perintah ini, lalu bandingkan hasilnya dengan SHA-256 di bagian unduh (jika tersedia):</span><span lang="en">Run this and compare the result with the SHA-256 in the download section (when shown):</span></p><div class="term"><code data-sum-cmd>shasum -a 256 ~/Downloads/Benz-Mirror.dmg</code><button type="button" class="chip" data-copy-sum><span lang="id">Salin</span><span lang="en">Copy</span></button></div></div></details>
+      <details><summary><span lang="id">Tombol Open Anyway tidak ada</span><span lang="en">There is no Open Anyway button</span></summary><div><p><span lang="id">Buka aplikasinya sekali lagi sampai peringatan muncul, tutup dengan <b>Done</b>, lalu segera kembali ke <b>Privacy &amp; Security</b>. Mac milik kantor atau sekolah bisa melarang langkah ini.</span><span lang="en">Open the app again until the warning appears, close it with <b>Done</b>, then go straight back to <b>Privacy &amp; Security</b>. A work or school Mac may forbid this step.</span></p></div></details>
+      <details><summary><span lang="id">Ponsel tidak muncul</span><span lang="en">The phone does not show up</span></summary><div><p><span lang="id">Gunakan kabel yang mendukung data, buka kunci ponsel, dan terima permintaan USB debugging. Jika tidak ada permintaan, pilih <b>Cabut otorisasi USB debugging</b> di Opsi pengembang lalu colok ulang.</span><span lang="en">Use a data cable, unlock the phone and accept the USB debugging prompt. If none appears, choose <b>Revoke USB debugging authorizations</b> in Developer options and reconnect.</span></p></div></details>
+      <details><summary><span lang="id">“adb was not found”</span><span lang="en">“adb was not found”</span></summary><div><p><span lang="id">Selesaikan bagian B. Jika adb ada di lokasi lain, pilih di Pengaturan aplikasi.</span><span lang="en">Finish part B. If adb lives elsewhere, choose it in the app's Settings.</span></p></div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHANGELOG ============ -->
+<section class="log-sec" id="changelog">
+  <div class="wrap narrow">
+    <h2 class="head reveal">Changelog.</h2>
+    <ol class="timeline" id="timeline">
+      <li><h3>GitHub</h3><p><a href="https://github.com/RohmanBenyRiyanto/Mobile-Mirroring/releases" data-releases><span lang="id">Lihat catatan rilis di GitHub</span><span lang="en">See the release notes on GitHub</span></a></p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq" id="faq">
+  <div class="wrap narrow">
+    <h2 class="head reveal"><span lang="id">Pertanyaan umum.</span><span lang="en">Questions.</span></h2>
+    <div class="acc reveal">
+      <details><summary><span lang="id">Apakah ada yang dipasang di ponsel?</span><span lang="en">Is anything installed on the phone?</span></summary><div><p><span lang="id">Tidak ada aplikasi yang dipasang. Benz Mirror mengirim server scrcpy dan menjalankannya sementara lewat adb. Checksum server dikunci dan diperiksa sebelum dikirim. Beberapa berkas bantu kecil juga masuk ke /data/local/tmp (pembantu clipboard, dan berkas profiler Android Studio hanya jika Anda memakai tampilan aplikasi debug).</span><span lang="en">No app is installed. Benz Mirror pushes the scrcpy server and runs it temporarily through adb. The server's checksum is pinned and checked before each push. Small helper files also go to /data/local/tmp (a clipboard helper, and Android Studio's profiler files only if you use the debug-app view).</span></p></div></details>
+      <details><summary><span lang="id">Apakah data saya keluar dari komputer?</span><span lang="en">Does my data leave my computer?</span></summary><div><p><span lang="id">Sambungan ke ponsel dan stream OBS hanya mendengarkan di <code>127.0.0.1</code>. Clipboard tidak disinkronkan otomatis, hanya saat Anda memintanya.</span><span lang="en">The phone link and the OBS stream listen only on <code>127.0.0.1</code>. The clipboard never syncs by itself, only when you ask.</span></p></div></details>
+      <details><summary><span lang="id">Mengapa macOS menampilkan peringatan?</span><span lang="en">Why does macOS show a warning?</span></summary><div><p><span lang="id">Aplikasi ditandatangani ad-hoc, bukan dengan Developer ID, dan tidak dinotarisasi Apple. Artinya Apple belum memeriksanya.</span><span lang="en">The app is signed ad-hoc rather than with a Developer ID, and is not notarized. That means Apple has not checked it.</span></p></div></details>
+      <details><summary><span lang="id">Apakah perlu diizinkan lagi setelah update?</span><span lang="en">Do I need to allow it again after an update?</span></summary><div><p><span lang="id">Kemungkinan ya. Versi baru yang diunduh diperiksa lagi oleh macOS, jadi ulangi langkah Open Anyway.</span><span lang="en">Probably. macOS checks a newly downloaded version again, so repeat the Open Anyway step.</span></p></div></details>
+      <details><summary><span lang="id">USB atau Wi-Fi?</span><span lang="en">USB or Wi-Fi?</span></summary><div><p><span lang="id">USB untuk preset tinggi. Wi-Fi cukup untuk Balanced dan High quality. Mac dan ponsel harus di jaringan yang sama.</span><span lang="en">USB for the higher presets. Wi-Fi is fine for Balanced and High quality. Mac and phone must share a network.</span></p></div></details>
+      <details><summary><span lang="id">Bahasa apa saja?</span><span lang="en">Which languages?</span></summary><div><p><span lang="id">Ada 13 bahasa: Inggris, Indonesia, Spanyol, Prancis, Jerman, Portugis (Brasil), Mandarin Sederhana, Jepang, Korea, Rusia, Turki, Italia, dan Vietnam. Pilih di Pengaturan › Umum; yang belum diterjemahkan tampil dalam bahasa Inggris. Terjemahannya belum ditinjau penutur asli.</span><span lang="en">There are 13: English, Indonesian, Spanish, French, German, Portuguese (Brazil), Simplified Chinese, Japanese, Korean, Russian, Turkish, Italian and Vietnamese. Choose one in Settings › General; anything not translated shows in English. Native speakers have not reviewed the translations yet.</span></p></div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CREATOR ============ -->
+<section class="creator dark" id="kreator">
+  <div class="wrap narrow center">
+    <div class="mark reveal"><svg viewBox="14 17 482 832" aria-hidden="true"><use href="#beny"/></svg></div>
+    <p class="kicker reveal"><span lang="id">Dibuat oleh</span><span lang="en">Created by</span></p>
+    <h2 class="name reveal">Rohman Beny Riyanto</h2>
+    <p class="lead reveal"><span lang="id">Perancang dan pengembang Benz Mirror.</span><span lang="en">Designer and developer of Benz Mirror.</span></p>
+    <div class="cta reveal">
+      <a class="btn" href="https://github.com/RohmanBenyRiyanto" rel="noopener author">GitHub</a>
+      <a class="btn ghost" href="https://github.com/RohmanBenyRiyanto/Mobile-Mirroring/tree/release/development" rel="noopener"><span lang="id">Kode sumber</span><span lang="en">Source code</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p><b>© 2026 Rohman Beny Riyanto.</b> Benz Mirror.</p>
+    <p><span lang="id">Komponen pihak ketiga: server <a href="https://github.com/Genymobile/scrcpy" rel="noopener">scrcpy</a> oleh Genymobile, lisensi Apache 2.0.</span><span lang="en">Third-party component: the <a href="https://github.com/Genymobile/scrcpy" rel="noopener">scrcpy</a> server by Genymobile, Apache License 2.0.</span></p>
+    <p><span lang="id">Mac dan macOS adalah merek dagang Apple Inc. Android adalah merek dagang Google LLC. Benz Mirror tidak berafiliasi dengan keduanya.</span><span lang="en">Mac and macOS are trademarks of Apple Inc. Android is a trademark of Google LLC. Benz Mirror is not affiliated with either.</span></p>
+    <p><a href="#top"><span lang="id">Kembali ke atas</span><span lang="en">Back to top</span></a></p>
+  </div>
+</footer>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/releases.js"></script>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

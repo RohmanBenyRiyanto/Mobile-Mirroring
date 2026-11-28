@@ -1,0 +1,89 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "NSLocalNetworkUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benz Mirror connects to your phone over your local network for wireless debugging, and streams to OBS on this Mac."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benz Mirror terhubung ke ponsel melalui jaringan lokal untuk debugging nirkabel, dan mengalirkan gambar ke OBS di Mac ini."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benz Mirror se conecta a tu teléfono por la red local para la depuración inalámbrica y transmite a OBS en este Mac."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benz Mirror se connecte à votre téléphone via le réseau local pour le débogage sans fil et diffuse vers OBS sur ce Mac."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benz Mirror verbindet sich über das lokale Netzwerk mit deinem Telefon für das drahtlose Debugging und streamt an OBS auf diesem Mac."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Benz Mirror se conecta ao seu celular pela rede local para a depuração sem fio e transmite para o OBS neste Mac."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benz Mirror 通过本地网络连接你的手机以进行无线调试，并向此 Mac 上的 OBS 推流。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benz Mirror は、ワイヤレスデバッグのためにローカルネットワーク経由でスマートフォンに接続し、この Mac 上の OBS にストリーミングします。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benz Mirror는 무선 디버깅을 위해 로컬 네트워크로 휴대전화에 연결하고, 이 Mac의 OBS로 스트리밍합니다."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benz Mirror подключается к вашему телефону по локальной сети для беспроводной отладки и передаёт видео в OBS на этом Mac."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benz Mirror, kablosuz hata ayıklama için yerel ağ üzerinden telefonunuza bağlanır ve bu Mac'teki OBS'ye yayın yapar."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benz Mirror si connette al tuo telefono tramite la rete locale per il debug wireless e trasmette a OBS su questo Mac."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benz Mirror kết nối với điện thoại của bạn qua mạng cục bộ để gỡ lỗi không dây và phát tới OBS trên máy Mac này."
+          }
+        }
+      }
+    }
+  }
+}

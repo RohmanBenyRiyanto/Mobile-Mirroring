@@ -26,6 +26,7 @@
 		E3868D26959A6490F8F7FB52 /* LICENSE-scrcpy in Resources */ = {isa = PBXBuildFile; fileRef = 678A51690BABF7156640242A /* LICENSE-scrcpy */; };
 		E6EAA38EC3F0CE8C0B337EAE /* ClipHelper.dex in Resources */ = {isa = PBXBuildFile; fileRef = A8C96CA79EC5D8745C509CC4 /* ClipHelper.dex */; };
 		E827A178297B008528DC8DF6 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 7BBC50544FCA7CB00A7865CB /* Localizable.xcstrings */; };
+		EEEDBB2E01C91D3730E2E350 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BCDE5C7E033F84AFDB4D6DFB /* InfoPlist.xcstrings */; };
 		F7FDB0923949DDD47D13CE5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4BD89CCC5C5900DC34C0DA4C /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -53,6 +54,7 @@
 		816A761943BB291DAF42B9A9 /* Features */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Features; path = Packages/Features; sourceTree = SOURCE_ROOT; };
 		A8C96CA79EC5D8745C509CC4 /* ClipHelper.dex */ = {isa = PBXFileReference; path = ClipHelper.dex; sourceTree = "<group>"; };
 		B6C68D746BE6AFB5D670D9C8 /* BenzMirrorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenzMirrorApp.swift; sourceTree = "<group>"; };
+		BCDE5C7E033F84AFDB4D6DFB /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		C03F96CFAD9DE801A13ABE3A /* DeviceNames.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = DeviceNames.json; sourceTree = "<group>"; };
 		CC97B6F0380385DA21171307 /* UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = "scrcpy-server-v5.0.1"; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				A8C96CA79EC5D8745C509CC4 /* ClipHelper.dex */,
 				FA4D20D245831BE7515C2535 /* DefaultKeymaps */,
 				C03F96CFAD9DE801A13ABE3A /* DeviceNames.json */,
+				BCDE5C7E033F84AFDB4D6DFB /* InfoPlist.xcstrings */,
 				678A51690BABF7156640242A /* LICENSE-scrcpy */,
 				7BBC50544FCA7CB00A7865CB /* Localizable.xcstrings */,
 				E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */,
@@ -256,6 +259,7 @@
 				E6EAA38EC3F0CE8C0B337EAE /* ClipHelper.dex in Resources */,
 				6CC6D3E2E4C33043D1A9A308 /* DefaultKeymaps in Resources */,
 				6B273535DB71D8C7FF97506F /* DeviceNames.json in Resources */,
+				EEEDBB2E01C91D3730E2E350 /* InfoPlist.xcstrings in Resources */,
 				E3868D26959A6490F8F7FB52 /* LICENSE-scrcpy in Resources */,
 				E827A178297B008528DC8DF6 /* Localizable.xcstrings in Resources */,
 				C650258EAC38E00CA0264937 /* THIRD-PARTY-NOTICES.txt in Resources */,
