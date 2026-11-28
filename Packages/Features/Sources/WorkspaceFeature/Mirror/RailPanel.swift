@@ -10,6 +10,8 @@ final class RailPanelController: NSObject {
     private weak var parent: NSWindow?
     private var observers: [NSObjectProtocol] = []
     private let tooltips = RailTooltipPresenter()
+    /// Whether the rail lies along the top of the window (a landscape picture) instead of standing beside it.
+    private var isHorizontal = false
     private static let gap: CGFloat = 12
 
     init(parent: NSWindow, content: AnyView) {
@@ -65,7 +67,8 @@ final class RailPanelController: NSObject {
         }
     }
 
-    func update(content: AnyView) {
+    func update(content: AnyView, isHorizontal: Bool = false) {
+        self.isHorizontal = isHorizontal
         hosting.rootView = AnyView(content.environment(\.railTooltip, RailTooltipAction(show: { [weak self] tip, frame in self?.showTooltip(tip, frame) })))
         reposition()
     }
@@ -75,7 +78,7 @@ final class RailPanelController: NSObject {
         guard let content, frame != .zero else { tooltips.hide(); return }
         let panelFrame = panel.frame
         let screenRect = CGRect(x: panelFrame.minX + frame.minX, y: panelFrame.maxY - frame.maxY, width: frame.width, height: frame.height)
-        tooltips.show(content, besideButtonAt: screenRect, parent: parent)
+        tooltips.show(content, besideButtonAt: screenRect, below: isHorizontal, parent: parent)
     }
 
     func detach() {
@@ -94,8 +97,17 @@ final class RailPanelController: NSObject {
         // The hosted view includes 20 pt of transparent room for the shadow; the visible capsule sits inside it.
         let room: CGFloat = 20
         var origin = CGPoint(x: parent.frame.maxX + Self.gap - room, y: parent.frame.midY - size.height / 2)
+        if isHorizontal {
+            origin = CGPoint(x: parent.frame.midX - size.width / 2, y: parent.frame.maxY + Self.gap - room)
+        }
         if let visible = (parent.screen ?? NSScreen.main)?.visibleFrame {
-            origin.x = min(origin.x, visible.maxX - size.width + room)
+            if isHorizontal {
+                // No room above the window: float it below instead.
+                if origin.y + size.height - room > visible.maxY { origin.y = parent.frame.minY - Self.gap + room - size.height }
+                origin.x = min(max(origin.x, visible.minX - room), visible.maxX - size.width + room)
+            } else {
+                origin.x = min(origin.x, visible.maxX - size.width + room)
+            }
             origin.y = min(max(origin.y, visible.minY), visible.maxY - size.height)
         }
         panel.setFrame(CGRect(origin: origin, size: size), display: true)
@@ -109,14 +121,14 @@ final class RailTooltipPresenter {
     private var pending: Task<Void, Never>?
     private var isShowing = false
 
-    func show(_ content: RailTooltipContent, besideButtonAt button: CGRect, parent: NSWindow?) {
+    func show(_ content: RailTooltipContent, besideButtonAt button: CGRect, below: Bool = false, parent: NSWindow?) {
         pending?.cancel()
         // The first tooltip waits a moment so moving across the rail does not flash bubbles; moving between buttons is instant.
         let delay: Duration = isShowing ? .milliseconds(0) : .milliseconds(450)
         pending = Task { [weak self] in
             try? await Task.sleep(for: delay)
             guard !Task.isCancelled, let self else { return }
-            present(content, button: button, parent: parent)
+            present(content, button: button, below: below, parent: parent)
         }
     }
 
@@ -127,7 +139,7 @@ final class RailTooltipPresenter {
         panel?.orderOut(nil)
     }
 
-    private func present(_ content: RailTooltipContent, button: CGRect, parent: NSWindow?) {
+    private func present(_ content: RailTooltipContent, button: CGRect, below: Bool, parent: NSWindow?) {
         let hosting = NSHostingView(rootView: RailTooltipBubble(content: content))
         let size = hosting.fittingSize
         let panel = self.panel ?? {
@@ -145,7 +157,12 @@ final class RailTooltipPresenter {
         panel.contentView = hosting
         // The rail's own padding (20 pt of shadow room) sits left of the button, so the bubble keeps a little extra distance.
         var origin = CGPoint(x: button.minX - size.width - 18, y: button.midY - size.height / 2)
-        if let visible = (parent?.screen ?? NSScreen.main)?.visibleFrame { origin.x = max(origin.x, visible.minX + 8) }
+        if below { origin = CGPoint(x: button.midX - size.width / 2, y: button.minY - size.height - 6) }
+        if let visible = (parent?.screen ?? NSScreen.main)?.visibleFrame {
+            origin.x = min(max(origin.x, visible.minX + 8), visible.maxX - size.width - 8)
+            // Below the rail would cover the window's title bar only; if the screen's bottom is reached the bubble goes above instead.
+            if below, origin.y < visible.minY { origin.y = button.maxY + 6 }
+        }
         panel.setFrame(CGRect(origin: origin, size: size), display: true)
         panel.orderFront(nil)
         isShowing = true
@@ -184,6 +201,7 @@ private final class RailPanel: NSPanel {
 
 struct RailPanelAttacher: NSViewRepresentable {
     let isVisible: Bool
+    var isHorizontal = false
     let content: AnyView
 
     func makeCoordinator() -> Coordinator { Coordinator() }
@@ -193,12 +211,12 @@ struct RailPanelAttacher: NSViewRepresentable {
     func updateNSView(_ view: NSView, context: Context) {
         let coordinator = context.coordinator
         // The window only exists once the view is attached, so continue on the next turn of the run loop.
-        DispatchQueue.main.async { [content, isVisible] in
+        DispatchQueue.main.async { [content, isVisible, isHorizontal] in
             guard let window = view.window else { return }
             if coordinator.controller == nil {
                 coordinator.controller = RailPanelController(parent: window, content: content)
             }
-            coordinator.controller?.update(content: content)
+            coordinator.controller?.update(content: content, isHorizontal: isHorizontal)
             coordinator.controller?.setVisible(isVisible)
         }
     }

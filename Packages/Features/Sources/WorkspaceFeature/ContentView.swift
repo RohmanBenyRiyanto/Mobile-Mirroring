@@ -98,7 +98,8 @@ private struct MirrorScreen: View {
         }
         .navigationTitle(model.deviceName)
         .background(RailPanelAttacher(isVisible: !model.isStreamMode && model.editor == nil,
-                                      content: AnyView(RailView(model: model, isCollapsed: $model.isRailCollapsed,
+                                      isHorizontal: model.videoSize.width > model.videoSize.height,
+                                      content: AnyView(RailView(model: model, isCollapsed: $model.isRailCollapsed, isHorizontal: model.videoSize.width > model.videoSize.height,
                                                                 openLogcat: { openWindow(id: "logcat") },
                                                                 customize: { model.showSettingsPane("rail"); openSettings() }).themed(model.appearance))))
         .overlay(alignment: .bottom) { if showsStreamHint { StreamHint().transition(.opacity.combined(with: .move(edge: .bottom))) } }

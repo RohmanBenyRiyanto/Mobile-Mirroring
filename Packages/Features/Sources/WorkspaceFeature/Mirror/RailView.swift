@@ -93,6 +93,8 @@ public struct ModePicker: View {
 struct RailView: View {
     @ObservedObject var model: AppModel
     @Binding var isCollapsed: Bool
+    /// A landscape picture gets a horizontal rail above the window instead of a vertical one beside it, as in the design.
+    var isHorizontal = false
     var openLogcat: () -> Void = {}
     var customize: () -> Void = {}
 
@@ -111,7 +113,7 @@ struct RailView: View {
     }
 
     private var expanded: some View {
-        VStack(spacing: Theme.Space.inset) {
+        (isHorizontal ? AnyLayout(HStackLayout(spacing: Theme.Space.inset)) : AnyLayout(VStackLayout(spacing: Theme.Space.inset))) {
             ForEach(Array(model.railLayout.rows(for: model.mode).enumerated()), id: \.offset) { _, row in
                 switch row {
                 case let .item(item): button(for: item)
@@ -121,17 +123,17 @@ struct RailView: View {
             if !model.railLayout.items(for: model.mode).isEmpty { separator }
             RailButton(title: "Disconnect", symbol: "eject", explanation: String(localized: "Stop mirroring and go back to the Connect screen")) { model.requestDisconnect() }
             Button { withAnimation(Theme.Motion.smooth) { isCollapsed = true } } label: {
-                Image(systemName: "chevron.right").font(.system(size: 10, weight: .semibold))
+                Image(systemName: isHorizontal ? "chevron.down" : "chevron.right").font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Theme.Palette.textSecondary.color)
-                    .frame(width: 40, height: 24).contentShape(Capsule())
+                    .frame(width: isHorizontal ? 24 : 40, height: isHorizontal ? 36 : 24).contentShape(Capsule())
             }
             .accessibilityLabel("Hide Control Rail")
             .buttonStyle(.plain)
             .help("Hide Control Rail")
             .accessibilityLabel("Hide Control Rail")
         }
-        .padding(.vertical, Theme.Space.s2)
-        .frame(width: Theme.Size.rail)
+        .padding(isHorizontal ? .horizontal : .vertical, Theme.Space.s2)
+        .frame(width: isHorizontal ? nil : Theme.Size.rail, height: isHorizontal ? Theme.Size.rail : nil)
         .glassSurface(in: RoundedRectangle(cornerRadius: Theme.Radius.rail), morph: GlassMorph(id: "rail", in: glassSpace))
         .shadow(color: .black.opacity(0.18), radius: 14, y: 8)
         .contextMenu { Button("Customize Control Rail") { customize() } }
@@ -199,18 +201,19 @@ struct RailView: View {
     }
 
     private var separator: some View {
-        Rectangle().fill(Self.divider).frame(width: 24, height: 1).padding(.vertical, Theme.Space.s1)
+        Rectangle().fill(Self.divider).frame(width: isHorizontal ? 1 : 24, height: isHorizontal ? 24 : 1)
+            .padding(isHorizontal ? .horizontal : .vertical, Theme.Space.s1)
     }
 
     /// A red dot stays visible while recording.
     private var collapsed: some View {
         Button { withAnimation(Theme.Motion.smooth) { isCollapsed = false } } label: {
             VStack(spacing: Theme.Space.s2) {
-                Image(systemName: "chevron.left").font(.system(size: 12, weight: .semibold))
+                Image(systemName: isHorizontal ? "chevron.up" : "chevron.left").font(.system(size: 12, weight: .semibold))
                 if model.isRecording { Circle().fill(Theme.Palette.redFill.color).frame(width: 6, height: 6) }
             }
             .foregroundStyle(Theme.Palette.textSecondary.color)
-            .frame(width: 36, height: model.isRecording ? 72 : 56)
+            .frame(width: isHorizontal ? (model.isRecording ? 72 : 56) : 36, height: isHorizontal ? 36 : (model.isRecording ? 72 : 56))
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
