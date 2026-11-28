@@ -274,3 +274,30 @@ final class LogcatSnapshotTests: XCTestCase {
         }
     }
 }
+
+@MainActor
+final class ChosenAppScopeTests: XCTestCase {
+    func testAChosenAppKeepsItsLinesWhateverIsInFront() {
+        let model = LogcatModel()
+        model.setForegroundPackage("com.sec.android.app.launcher")
+        model.scope = .chosenApp
+        model.chosenPackage = "com.android.settings"
+        model.updateProcesses(from: Real.processList)
+        XCTAssertEqual(model.targetPackage, "com.android.settings")
+
+        model.ingest(["11-27 16:22:40.000  2651  2651 I SettingsTag: from settings", "11-27 16:22:40.001  4888  4888 I LauncherTag: from the launcher"])
+        XCTAssertEqual(model.entries.map(\.tag), ["SettingsTag"])
+    }
+
+    func testEverythingHasNoTargetAndChangingAppForgetsTheOldProcesses() {
+        let model = LogcatModel()
+        model.scope = .everything
+        XCTAssertNil(model.targetPackage)
+        model.scope = .chosenApp
+        model.chosenPackage = "com.android.settings"
+        model.updateProcesses(from: Real.processList)
+        XCTAssertGreaterThan(model.knownProcessCount, 0)
+        model.chosenPackage = "com.sec.android.app.launcher"
+        XCTAssertEqual(model.knownProcessCount, 0)
+    }
+}

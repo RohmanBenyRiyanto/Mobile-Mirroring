@@ -29,7 +29,7 @@ let package = Package(
         // adb logcat for the app in front, with crash blocks.
         .target(name: "LogcatFeature", dependencies: [
             .product(name: "DomainModels", package: "Core"), .product(name: "Networking", package: "Core"),
-            .product(name: "Theme", package: "DesignSystem"),
+            .product(name: "Theme", package: "DesignSystem"), .product(name: "Components", package: "DesignSystem"),
         ]),
         // Read-only browser for a debug app's SQLite databases.
         .target(name: "DatabaseFeature", dependencies: [

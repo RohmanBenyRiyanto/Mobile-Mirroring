@@ -11,10 +11,16 @@ public final class LogcatModel: ObservableObject {
     private static let maxHeldCrashLines = 200
 
     public enum Scope: String, CaseIterable, Identifiable {
-        case foregroundApp, everything
+        case foregroundApp, chosenApp, everything
 
         public var id: String { rawValue }
-        public var title: String { self == .foregroundApp ? "App in front" : "Everything" }
+        public var title: String {
+            switch self {
+            case .foregroundApp: return "App in front"
+            case .chosenApp: return "Choose an app"
+            case .everything: return "Everything"
+            }
+        }
     }
 
     @Published public private(set) var entries: [LogEntry] = []
@@ -22,7 +28,9 @@ public final class LogcatModel: ObservableObject {
     /// Ids of the lines that open a crash, an ANR or a native crash, oldest first.
     @Published public private(set) var crashIDs: [Int] = []
     @Published public private(set) var foregroundPackage: String?
-    @Published public var scope = Scope.foregroundApp
+    @Published public var scope = Scope.foregroundApp { didSet { if scope != oldValue { retarget() } } }
+    /// The app picked by hand for the "Choose an app" scope.
+    @Published public var chosenPackage: String? { didSet { if chosenPackage != oldValue, scope == .chosenApp { retarget() } } }
     @Published public var minimumLevel = LogLevel.verbose
     @Published public var filter = ""
     @Published public var isPaused = false
@@ -48,6 +56,23 @@ public final class LogcatModel: ObservableObject {
     }
 
     public var knownProcessCount: Int { processIDs.count }
+
+    /// The app whose lines are kept: the one in front, the one chosen, or none (everything).
+    public var targetPackage: String? {
+        switch scope {
+        case .foregroundApp: return foregroundPackage
+        case .chosenApp: return chosenPackage
+        case .everything: return nil
+        }
+    }
+
+    /// A new app to follow starts with an empty process list, which is refreshed at once.
+    private func retarget() {
+        processIDs = []
+        acceptedBlocks = []
+        held = nil
+        Task { await refreshProcesses() }
+    }
 
     public var visibleEntries: [LogEntry] {
         let query = filter.trimmingCharacters(in: .whitespaces)
@@ -124,19 +149,17 @@ public final class LogcatModel: ObservableObject {
     public func setForegroundPackage(_ package: String?) {
         guard package != foregroundPackage else { return }
         foregroundPackage = package
-        processIDs = []
-        held = nil
-        Task { await refreshProcesses() }
+        if scope == .foregroundApp { retarget() }
     }
 
     public func refreshProcesses() async {
-        guard scope == .foregroundApp, let package = foregroundPackage, let fetch = fetchProcesses else { return }
-        guard let output = await Task.detached(operation: { try? fetch() }).value, package == foregroundPackage else { return }
+        guard let package = targetPackage, let fetch = fetchProcesses else { return }
+        guard let output = await Task.detached(operation: { try? fetch() }).value, package == targetPackage else { return }
         updateProcesses(from: output)
     }
 
     public func updateProcesses(from output: String) {
-        guard let package = foregroundPackage else { return }
+        guard let package = targetPackage else { return }
         processIDs.formUnion(ProcessList.pids(of: package, in: ProcessList.parse(output)))
     }
 
@@ -169,7 +192,7 @@ public final class LogcatModel: ObservableObject {
     }
 
     private func accepted(_ entry: LogEntry) -> [LogEntry] {
-        guard scope == .foregroundApp, let package = foregroundPackage else { return [entry] }
+        guard let package = targetPackage else { return [entry] }
         let belongs = LogScope.accepts(entry, package: package, pids: processIDs, acceptedBlocks: acceptedBlocks)
 
         if var pending = held {

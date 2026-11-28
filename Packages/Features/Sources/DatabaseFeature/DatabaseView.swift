@@ -30,10 +30,6 @@ public struct DatabaseView<Source: DatabaseSource>: View {
             }
         }
         .frame(minWidth: 760, minHeight: 440)
-        .onAppear {
-            if model.package.isEmpty, let front = source.frontPackage { model.package = front }
-            if !model.package.isEmpty, model.files.isEmpty { open() }
-        }
         .onDisappear { model.reset() }
     }
 

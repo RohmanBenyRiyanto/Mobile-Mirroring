@@ -24,7 +24,7 @@ struct OnboardingView: View {
             Divider()
             footer.padding(Theme.Space.s4)
         }
-        .frame(width: 520, height: 620)
+        .frame(width: 480, height: 470)
         .animated(value: flow)
         .animated(value: phone)
     }

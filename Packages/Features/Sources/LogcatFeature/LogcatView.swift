@@ -1,6 +1,7 @@
 import AppKit
 import SwiftUI
 import DomainModels
+import Components
 import Networking
 import Theme
 
@@ -10,6 +11,9 @@ public protocol LogcatSource: ObservableObject {
     var adb: ADB? { get }
     var targetSerial: String? { get }
     var frontPackage: String? { get }
+    var appPickerItems: [PickerItem] { get }
+    var isLoadingApps: Bool { get }
+    func loadInstalledApps() async
 }
 
 public struct LogcatView<Source: LogcatSource>: View {
@@ -31,7 +35,7 @@ public struct LogcatView<Source: LogcatSource>: View {
             Divider()
             LogHeader()
             Divider()
-            LogList(entries: logcat.visibleEntries, followsTail: !logcat.isPaused, package: logcat.scope == .foregroundApp ? logcat.foregroundPackage : nil,
+            LogList(entries: logcat.visibleEntries, followsTail: !logcat.isPaused, package: logcat.targetPackage,
                     jumpTarget: $jumpTarget)
             Divider()
             statusLine
@@ -42,6 +46,9 @@ public struct LogcatView<Source: LogcatSource>: View {
             logcat.setForegroundPackage(frontPackage)
         }
         .onChange(of: frontPackage) { _, package in logcat.setForegroundPackage(package) }
+        // Choosing another app re-reads the phone's log buffer, so that app's earlier lines show up too.
+        .onChange(of: logcat.chosenPackage) { _, _ in if logcat.scope == .chosenApp { logcat.clear(); restart() } }
+        .onChange(of: logcat.scope) { _, scope in if scope == .chosenApp, logcat.chosenPackage != nil { logcat.clear(); restart() } }
         .onDisappear { logcat.stop() }
         .focusedSceneValue(\.logcatActions, LogcatActions(isPaused: logcat.isPaused, togglePause: { logcat.isPaused.toggle() },
                                                          clear: { logcat.clear() }, focusFilter: { filterIsFocused = true }))
@@ -55,7 +62,13 @@ public struct LogcatView<Source: LogcatSource>: View {
             .labelsHidden()
             .frame(width: 150)
             .help("Which lines to show")
-            if logcat.scope == .foregroundApp {
+            if logcat.scope == .chosenApp {
+                SearchPicker(selection: $logcat.chosenPackage, items: source.appPickerItems, isLoading: source.isLoadingApps,
+                             selectionTitle: { $0.split(separator: ".").last.map { String($0).capitalized } ?? $0 },
+                             alignment: .leading, onOpen: { await source.loadInstalledApps() })
+                    .frame(maxWidth: 220, alignment: .leading)
+                    .layoutPriority(-1)
+            } else if logcat.scope == .foregroundApp {
                 Text(logcat.foregroundPackage ?? "waiting for an app")
                     .font(Theme.Font.monoCaption).foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle)
                     .frame(maxWidth: 200, alignment: .leading)

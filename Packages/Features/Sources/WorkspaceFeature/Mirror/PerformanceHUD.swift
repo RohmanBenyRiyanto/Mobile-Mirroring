@@ -117,7 +117,7 @@ struct PerformancePanel: View {
         VStack(alignment: .leading, spacing: Theme.Space.s1) {
             LabeledContent(title) { number(value) }
             // A line needs at least two points; before that the row stays as compact as the plain ones.
-            if series.compactMap({ $0 }).count >= 2 { Sparkline(values: series, ceiling: ceiling).frame(height: 20).transition(.opacity) }
+            if series.compactMap({ $0 }).count >= 2 { Sparkline(values: series, ceiling: ceiling).frame(height: 16).transition(.opacity) }
         }
         .animated(value: series.compactMap { $0 }.count >= 2)
     }
@@ -149,8 +149,10 @@ private struct Sparkline: View {
     var body: some View {
         GeometryReader { proxy in
             Path { path in
-                let step = proxy.size.width / CGFloat(max(PerformanceHistory.capacity - 1, 1))
-                let offset = CGFloat(PerformanceHistory.capacity - values.count) * step
+                // Grows from the left across a 30-sample window, then scrolls; a line that hugged the right edge looked like a stray mark.
+                let window = max(values.count, 30)
+                let step = proxy.size.width / CGFloat(max(window - 1, 1))
+                let offset: CGFloat = 0
                 var open = false
                 for (index, value) in values.enumerated() {
                     guard let value else { open = false; continue }
