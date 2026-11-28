@@ -13,6 +13,7 @@
 		2D7F2E94E2AD86125ABB338D /* SystemServices in Frameworks */ = {isa = PBXBuildFile; productRef = 1E560A2E87D2017E41437062 /* SystemServices */; };
 		34567EA082CF2912D2B184F7 /* scrcpy-server-v5.0.1 in Resources */ = {isa = PBXBuildFile; fileRef = E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */; };
 		6B273535DB71D8C7FF97506F /* DeviceNames.json in Resources */ = {isa = PBXBuildFile; fileRef = C03F96CFAD9DE801A13ABE3A /* DeviceNames.json */; };
+		6CC6D3E2E4C33043D1A9A308 /* DefaultKeymaps in Resources */ = {isa = PBXBuildFile; fileRef = FA4D20D245831BE7515C2535 /* DefaultKeymaps */; };
 		8FCD962239B0AE475DA15C73 /* LogcatFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 402245A7E6F598F72F5E4DEB /* LogcatFeature */; };
 		A994CA7235440BA47D9C8717 /* BenzMirrorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C68D746BE6AFB5D670D9C8 /* BenzMirrorApp.swift */; };
 		AF734AA80957A1A118CEDEEA /* DatabaseFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 6736FF2FF4DE9D440AF3D568 /* DatabaseFeature */; };
@@ -51,6 +52,7 @@
 		C03F96CFAD9DE801A13ABE3A /* DeviceNames.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = DeviceNames.json; sourceTree = "<group>"; };
 		CC97B6F0380385DA21171307 /* UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E569BCA3AE8A5F38E0A07B0F /* scrcpy-server-v5.0.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = "scrcpy-server-v5.0.1"; sourceTree = "<group>"; };
+		FA4D20D245831BE7515C2535 /* DefaultKeymaps */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DefaultKeymaps; path = Resources/DefaultKeymaps; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				4BD89CCC5C5900DC34C0DA4C /* Assets.xcassets */,
+				FA4D20D245831BE7515C2535 /* DefaultKeymaps */,
 				C03F96CFAD9DE801A13ABE3A /* DeviceNames.json */,
 				678A51690BABF7156640242A /* LICENSE-scrcpy */,
 				7BBC50544FCA7CB00A7865CB /* Localizable.xcstrings */,
@@ -233,6 +236,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F7FDB0923949DDD47D13CE5E /* Assets.xcassets in Resources */,
+				6CC6D3E2E4C33043D1A9A308 /* DefaultKeymaps in Resources */,
 				6B273535DB71D8C7FF97506F /* DeviceNames.json in Resources */,
 				E3868D26959A6490F8F7FB52 /* LICENSE-scrcpy in Resources */,
 				E827A178297B008528DC8DF6 /* Localizable.xcstrings in Resources */,

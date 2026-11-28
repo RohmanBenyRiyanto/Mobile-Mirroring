@@ -43,3 +43,18 @@ final class ExampleKeymapTests: XCTestCase {
         XCTAssertEqual(profile.payload.elements.count, 18)
     }
 }
+
+@MainActor
+final class BundledKeymapSeedTests: XCTestCase {
+    func testSeededOnceAndNeverRestoredAfterDeletion() throws {
+        let store = try ProfileStore<Keymap>(kind: "keymap", root: FileManager.default.temporaryDirectory.appendingPathComponent("seed-\(UUID().uuidString)"))
+        let folder = projectFile("Resources/DefaultKeymaps/.")
+        let defaults = isolatedDefaults()
+        AppModel.seedBundledKeymaps(into: store, defaults: defaults, folder: folder)
+        XCTAssertTrue(store.contains(id: "magic-chess-gogo"))
+
+        try store.delete(id: "magic-chess-gogo")
+        AppModel.seedBundledKeymaps(into: store, defaults: defaults, folder: folder)
+        XCTAssertFalse(store.contains(id: "magic-chess-gogo"), "a deleted keymap stays deleted")
+    }
+}

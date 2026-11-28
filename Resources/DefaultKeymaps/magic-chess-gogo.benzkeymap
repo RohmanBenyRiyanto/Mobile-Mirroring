@@ -1,0 +1,358 @@
+{
+  "format": "benzmirror.profile",
+  "id": "magic-chess-gogo",
+  "kind": "keymap",
+  "modified": "2026-11-28T01:55:27Z",
+  "name": "Magic Chess: Go Go",
+  "payload": {
+    "elements": [
+      {
+        "action": {
+          "button": {
+            "key": 18,
+            "mode": "tap"
+          }
+        },
+        "id": "AEB77D45-8E1C-4AF7-B96C-E294C7D408BF",
+        "label": "Buy hero 1",
+        "position": {
+          "x": 0.255,
+          "y": 0.3575
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 19,
+            "mode": "tap"
+          }
+        },
+        "id": "9E6C28D4-DAF0-49FA-A7B7-D3C7FA3AEA63",
+        "label": "Buy hero 2",
+        "position": {
+          "x": 0.377,
+          "y": 0.3575
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 20,
+            "mode": "tap"
+          }
+        },
+        "id": "30EACA8B-3925-4597-BFAA-00B70DC6BD46",
+        "label": "Buy hero 3",
+        "position": {
+          "x": 0.4985,
+          "y": 0.3575
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 21,
+            "mode": "tap"
+          }
+        },
+        "id": "B25B8982-31D7-43B9-97FC-6FBE3F2E185E",
+        "label": "Buy hero 4",
+        "position": {
+          "x": 0.6205,
+          "y": 0.3575
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 23,
+            "mode": "tap"
+          }
+        },
+        "id": "071922CB-E3F8-4741-B0FC-9C7941CE59C4",
+        "label": "Buy hero 5",
+        "position": {
+          "x": 0.7425,
+          "y": 0.3575
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 2,
+            "mode": "tap"
+          }
+        },
+        "id": "597FCF40-FC64-42BD-A394-C2BB5F58F78A",
+        "label": "Refresh shop",
+        "position": {
+          "x": 0.846,
+          "y": 0.5038
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 15,
+            "mode": "tap"
+          }
+        },
+        "id": "B8E11C65-F254-4279-ACFA-D6FC5D977F3C",
+        "label": "Lock shop",
+        "position": {
+          "x": 0.155,
+          "y": 0.5255
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 3,
+            "mode": "tap"
+          }
+        },
+        "id": "CEA6EAF5-7D40-4BD0-A2D5-7A1A50013FF2",
+        "label": "Buy XP",
+        "position": {
+          "x": 0.07,
+          "y": 0.9101
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 4,
+            "mode": "tap"
+          }
+        },
+        "id": "7565ECB1-ECA4-4E41-BDE8-16B267DB2CB4",
+        "label": "Hero list",
+        "position": {
+          "x": 0.831,
+          "y": 0.325
+        }
+      },
+      {
+        "action": {
+          "macro": {
+            "key": 32,
+            "loop": false,
+            "speed": 1.0,
+            "steps": [
+              {
+                "finger": 0,
+                "kind": "down",
+                "position": {
+                  "x": 0.255,
+                  "y": 0.3575
+                },
+                "time": 0.0
+              },
+              {
+                "finger": 0,
+                "kind": "up",
+                "position": {
+                  "x": 0.255,
+                  "y": 0.3575
+                },
+                "time": 0.05
+              },
+              {
+                "finger": 0,
+                "kind": "down",
+                "position": {
+                  "x": 0.377,
+                  "y": 0.3575
+                },
+                "time": 0.12
+              },
+              {
+                "finger": 0,
+                "kind": "up",
+                "position": {
+                  "x": 0.377,
+                  "y": 0.3575
+                },
+                "time": 0.17
+              },
+              {
+                "finger": 0,
+                "kind": "down",
+                "position": {
+                  "x": 0.4985,
+                  "y": 0.3575
+                },
+                "time": 0.24
+              },
+              {
+                "finger": 0,
+                "kind": "up",
+                "position": {
+                  "x": 0.4985,
+                  "y": 0.3575
+                },
+                "time": 0.29
+              },
+              {
+                "finger": 0,
+                "kind": "down",
+                "position": {
+                  "x": 0.6205,
+                  "y": 0.3575
+                },
+                "time": 0.36
+              },
+              {
+                "finger": 0,
+                "kind": "up",
+                "position": {
+                  "x": 0.6205,
+                  "y": 0.3575
+                },
+                "time": 0.41
+              },
+              {
+                "finger": 0,
+                "kind": "down",
+                "position": {
+                  "x": 0.7425,
+                  "y": 0.3575
+                },
+                "time": 0.48
+              },
+              {
+                "finger": 0,
+                "kind": "up",
+                "position": {
+                  "x": 0.7425,
+                  "y": 0.3575
+                },
+                "time": 0.53
+              }
+            ]
+          }
+        },
+        "id": "E8A60407-845B-4374-8636-83DAD31D03A5",
+        "label": "Buy all heroes",
+        "position": {
+          "x": 0.4985,
+          "y": 0.3575
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 6,
+            "mode": "tap"
+          }
+        },
+        "id": "B945C0CB-FB7C-4525-8D61-1802E6A9B108",
+        "label": "Bench Z",
+        "position": {
+          "x": 0.265,
+          "y": 0.8505
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 7,
+            "mode": "tap"
+          }
+        },
+        "id": "C0106028-1DD4-4BE5-B0DD-D709F587C2B4",
+        "label": "Bench X",
+        "position": {
+          "x": 0.332,
+          "y": 0.8505
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 8,
+            "mode": "tap"
+          }
+        },
+        "id": "26C4A1C7-FD3C-46DD-9E3C-D30462984EA5",
+        "label": "Bench C",
+        "position": {
+          "x": 0.4,
+          "y": 0.8505
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 9,
+            "mode": "tap"
+          }
+        },
+        "id": "14803B72-1A49-4B0F-A8D8-177B8A660384",
+        "label": "Bench V",
+        "position": {
+          "x": 0.4675,
+          "y": 0.8505
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 11,
+            "mode": "tap"
+          }
+        },
+        "id": "60EF516E-2EC9-4322-A68E-8B76D0A19F94",
+        "label": "Bench B",
+        "position": {
+          "x": 0.5345,
+          "y": 0.8505
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 45,
+            "mode": "tap"
+          }
+        },
+        "id": "7EAE19FA-F758-4CC8-96A4-7305C47B0A88",
+        "label": "Bench N",
+        "position": {
+          "x": 0.6015,
+          "y": 0.8505
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 46,
+            "mode": "tap"
+          }
+        },
+        "id": "3CB17603-8FFD-47A6-AA16-D600E7B68491",
+        "label": "Bench M",
+        "position": {
+          "x": 0.6685,
+          "y": 0.8505
+        }
+      },
+      {
+        "action": {
+          "button": {
+            "key": 43,
+            "mode": "tap"
+          }
+        },
+        "id": "BB445D2B-DF90-4F48-8CBC-BCA75E5F785C",
+        "label": "Bench ,",
+        "position": {
+          "x": 0.7355,
+          "y": 0.8505
+        }
+      }
+    ],
+    "package": "com.mobilechess.gp"
+  },
+  "version": 1
+}

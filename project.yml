@@ -33,6 +33,10 @@ targets:
           - "Info.plist"
           - "*.entitlements"
           - "DeviceNames.state.json"
+          - "DefaultKeymaps"
+      - path: Resources/DefaultKeymaps
+        type: folder
+        buildPhase: resources
     preBuildScripts:
       - name: Refresh device names
         script: '"$SRCROOT/scripts/sync-device-names.sh" || true'

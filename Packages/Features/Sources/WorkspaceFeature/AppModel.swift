@@ -139,12 +139,25 @@ public final class AppModel: ObservableObject {
         deviceSettings = defaults.data(forKey: "deviceSettings.v1").flatMap(DeviceSettingsBook.decode) ?? DeviceSettingsBook()
         showsOnboarding = !defaults.bool(forKey: "onboardingDone")
         keymapStore = try? ProfileStore<Keymap>(kind: "keymap", root: keymapRoot)
+        Self.seedBundledKeymaps(into: keymapStore, defaults: defaults)
         keymapProfiles = keymapStore?.list() ?? []
         keymapPackageIndex = KeymapAutoSwitch.index(from: keymapStore?.loadAll() ?? [])
         adb = ADB.locate()
         if adb == nil { launch = .failed(ADBError.notFound.localizedDescription) }
         startPollingDevices()
         statusObserver = objectWillChange.receive(on: RunLoop.main).sink { [weak self] _ in self?.refreshRecordingStatusItem() }
+    }
+
+    /// Keymaps shipped inside the app (Resources/DefaultKeymaps) are added once. A keymap the user deleted or edited is never put back or overwritten.
+    static func seedBundledKeymaps(into store: ProfileStore<Keymap>?, defaults: UserDefaults, folder: URL? = Bundle.main.url(forResource: "DefaultKeymaps", withExtension: nil)) {
+        guard let store, let folder, let files = try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil) else { return }
+        var seeded = Set(defaults.stringArray(forKey: "seededKeymaps.v1") ?? [])
+        for file in files where file.pathExtension == KeymapFile.fileExtension {
+            guard let data = try? Data(contentsOf: file), let profile = try? store.inspect(data), !seeded.contains(profile.id) else { continue }
+            if !store.contains(id: profile.id) { _ = try? store.importData(data) }
+            seeded.insert(profile.id)
+        }
+        defaults.set(Array(seeded), forKey: "seededKeymaps.v1")
     }
 
     deinit { pollTask?.cancel() }
