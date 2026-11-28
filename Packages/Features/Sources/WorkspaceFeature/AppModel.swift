@@ -61,6 +61,8 @@ public final class AppModel: ObservableObject {
     @Published public var alwaysOnTop = false
     @Published public var showsStats = false
     @Published public var showsOnboarding = false
+    @Published public private(set) var installedApps: [AppChoice] = []
+    @Published public private(set) var isLoadingApps = false
     @Published public var showsPerformance = false
     @Published public var showsQuickToggles = false
     @Published public var showsInspectorPanel = false

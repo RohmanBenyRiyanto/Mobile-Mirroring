@@ -1106,6 +1106,23 @@
         }
       }
     },
+    "Choose an app…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose an app…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih aplikasi…"
+          }
+        }
+      }
+    },
     "Choose files to copy to the Download folder of the phone" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4183,6 +4200,23 @@
         }
       }
     },
+    "No matching apps" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No matching apps"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada aplikasi yang cocok"
+          }
+        }
+      }
+    },
     "No phone is connected." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5305,6 +5339,23 @@
         }
       }
     },
+    "Recent" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terbaru"
+          }
+        }
+      }
+    },
     "Recents" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5896,6 +5947,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tangkapan Layar"
+          }
+        }
+      }
+    },
+    "Search apps" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search apps"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cari aplikasi"
           }
         }
       }

@@ -202,16 +202,7 @@ private struct BehaviorGroup: View {
         SettingsCard("Separate display", footer: "The app opens on its own display that follows the window size, so there are no black bars. The phone's own screen is not mirrored while this is on. When you disconnect, the app returns to the phone.") {
             row("Use a separate display", "Mirror one app on a display sized to the window", $settings.virtualDisplay.isEnabled)
             if settings.virtualDisplay.isEnabled {
-                LabeledContent("App") {
-                    TextField("", text: Binding(get: { settings.virtualDisplay.startApp ?? "" }, set: { settings.virtualDisplay.startApp = $0.isEmpty ? nil : $0 }),
-                              prompt: Text(verbatim: "com.example.game"))
-                        .textFieldStyle(.roundedBorder).font(Theme.Font.mono).multilineTextAlignment(.trailing).frame(width: 220)
-                }
-                HStack {
-                    Spacer()
-                    Button("Use app in front") { model.useFrontAppForSeparateDisplay() }
-                        .secondaryAction().disabled(model.targetSerial == nil)
-                }
+                LabeledContent("App") { AppPickerButton(package: $settings.virtualDisplay.startApp) }
             }
         }
     }
@@ -221,5 +212,72 @@ private struct BehaviorGroup: View {
             Text(title)
             if let detail { Text(detail).font(Theme.Font.caption).foregroundStyle(.secondary) }
         }
+    }
+}
+
+
+// MARK: App picker
+
+/// A button showing the chosen app; it opens a searchable list of the phone's apps, so nothing has to be typed.
+private struct AppPickerButton: View {
+    @EnvironmentObject private var model: AppModel
+    @Binding var package: String?
+    @State private var isOpen = false
+    @State private var query = ""
+
+    var body: some View {
+        Button { isOpen = true } label: {
+            HStack(spacing: Theme.Space.s2) {
+                if let package {
+                    VStack(alignment: .trailing, spacing: 0) {
+                        Text(verbatim: InstalledApps.displayName(for: package))
+                        Text(verbatim: package).font(Theme.Font.monoCaption).foregroundStyle(.secondary)
+                    }
+                } else {
+                    Text("Choose an app…").foregroundStyle(.secondary)
+                }
+                Image(systemName: "chevron.up.chevron.down").font(.system(size: 10, weight: .semibold)).foregroundStyle(.secondary)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(model.targetSerial == nil)
+        .popover(isPresented: $isOpen, arrowEdge: .bottom) { list }
+    }
+
+    private var results: [AppChoice] { InstalledApps.filter(model.installedApps, query: query) }
+
+    private var list: some View {
+        VStack(spacing: 0) {
+            TextField("Search apps", text: $query).textFieldStyle(.roundedBorder).padding(Theme.Space.s3)
+            Divider()
+            if model.isLoadingApps && model.installedApps.isEmpty {
+                LoadingLabel("Reading the phone…").padding(Theme.Space.s4).frame(maxWidth: .infinity, alignment: .leading)
+            } else if results.isEmpty {
+                Text("No matching apps").foregroundStyle(.secondary).padding(Theme.Space.s4).frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                List(results) { app in
+                    Button { package = app.package; isOpen = false } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 0) {
+                                Text(verbatim: app.name)
+                                Text(verbatim: app.package).font(Theme.Font.monoCaption).foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            if app.isRecent { Text("Recent").font(Theme.Font.caption).foregroundStyle(.secondary) }
+                            if app.package == package { Image(systemName: "checkmark").foregroundStyle(Theme.Palette.accentText.color) }
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                }
+                .listStyle(.plain)
+            }
+            Divider()
+            Button("Use app in front") { model.useFrontAppForSeparateDisplay(); isOpen = false }
+                .buttonStyle(.link).padding(Theme.Space.s3).frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(width: 340, height: 380)
+        .task { await model.loadInstalledApps() }
     }
 }

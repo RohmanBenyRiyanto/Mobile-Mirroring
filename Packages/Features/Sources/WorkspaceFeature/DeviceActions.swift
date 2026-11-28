@@ -142,6 +142,18 @@ extension AppModel {
         }
     }
 
+    /// Reads the phone's apps for the picker: recent ones first, then everything with a launcher icon.
+    public func loadInstalledApps() async {
+        guard let adb, let serial = targetSerial else { return }
+        isLoadingApps = true
+        defer { isLoadingApps = false }
+        let apps = await Task.detached { () -> [AppChoice] in
+            func run(_ command: String) -> String { (try? String(decoding: adb.run(["-s", serial, "shell", command + "; true"], timeout: 15), as: UTF8.self)) ?? "" }
+            return InstalledApps.parse(launchableOutput: run(InstalledApps.launchableCommand), recentsOutput: run(InstalledApps.recentsCommand))
+        }.value
+        installedApps = apps
+    }
+
     /// Fills in the separate-display app with whatever is open on the phone right now.
     public func useFrontAppForSeparateDisplay() {
         guard let adb, let serial = targetSerial else { return }
