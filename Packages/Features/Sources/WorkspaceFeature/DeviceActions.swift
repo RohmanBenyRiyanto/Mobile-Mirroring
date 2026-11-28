@@ -80,7 +80,7 @@ extension AppModel {
 
     private func install(apk: URL) {
         guard let adb, let serial = targetSerial else { return }
-        notice = String(localized: "Installing \(apk.lastPathComponent)…")
+        notice = String(localized: "Installing \(apk.lastPathComponent)")
         Task {
             do {
                 let downgraded = try await Task.detached { try Self.installAllowingDowngrade(adb: adb, serial: serial, apk: apk) }.value
@@ -113,7 +113,7 @@ extension AppModel {
         let name = OutputFiles.sanitizedName(file.lastPathComponent)
         let kind = PhoneTransfer.kind(ofFileNamed: name)
         let folder = PhoneTransfer.folder(for: kind, appName: AppInfo.name)
-        notice = String(localized: "Copying \(name)…")
+        notice = String(localized: "Copying \(name)")
         Task {
             do {
                 try await Task.detached {
@@ -171,7 +171,7 @@ extension AppModel {
 
     public func switchToWireless() {
         guard let adb, let serial = selectedSerial else { return }
-        notice = String(localized: "Switching to Wi-Fi…")
+        notice = String(localized: "Switching to Wi-Fi")
         Task {
             do {
                 let address = try await Task.detached { try adb.enableWireless(serial: serial) }.value

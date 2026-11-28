@@ -15,7 +15,7 @@ struct GeneralTab: View {
     var body: some View {
         SettingsCard {
             SettingsRow("Language", detail: "Set per app in Language & Region") {
-                Button("Open System Settings…") {
+                Button("Open System Settings") {
                     if let url = URL(string: "x-apple.systempreferences:com.apple.Localization-Settings.extension") { NSWorkspace.shared.open(url) }
                 }
                 .secondaryAction()
@@ -55,7 +55,7 @@ struct GeneralTab: View {
             HStack(spacing: Theme.Space.s2) {
                 Text(FolderChoice.displayPath(path.wrappedValue, fallback: fallback))
                     .font(Theme.Font.monoCaption).foregroundStyle(Theme.Palette.textSecondary.color).lineLimit(1).truncationMode(.head)
-                Button("Choose…") { if let chosen = FolderChoice.choose(startingAt: path.wrappedValue) { path.wrappedValue = chosen } }
+                Button("Choose") { if let chosen = FolderChoice.choose(startingAt: path.wrappedValue) { path.wrappedValue = chosen } }
                     .secondaryAction()
             }
         }

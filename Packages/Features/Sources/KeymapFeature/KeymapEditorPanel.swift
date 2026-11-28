@@ -263,7 +263,7 @@ private struct KeyField: View {
             Text(title)
             Spacer()
             if isUsed { Image(systemName: "exclamationmark.triangle").foregroundStyle(.secondary).help("Another element uses this key") }
-            Button(isListening ? "Press a key…" : KeyNames.name(for: key)) { listen() }
+            Button(isListening ? "Press a key" : KeyNames.name(for: key)) { listen() }
                 .frame(width: 110, alignment: .trailing)
         }
     }

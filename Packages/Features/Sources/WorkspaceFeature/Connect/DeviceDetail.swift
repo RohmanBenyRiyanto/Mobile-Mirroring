@@ -54,8 +54,8 @@ private struct ConnectBanner: View {
                 Text("Connect your phone").font(Theme.Font.headline).frame(maxWidth: .infinity)
                 Text("Plug it in with a USB cable and turn on USB debugging.").foregroundStyle(Theme.Palette.textSecondary.color).frame(maxWidth: .infinity)
                 HStack {
-                    Button("Setup Guide…") { model.showsOnboarding = true }
-                    Button("Use Wi-Fi…") { showsWireless = true }
+                    Button("Setup Guide") { model.showsOnboarding = true }
+                    Button("Use Wi-Fi") { showsWireless = true }
                 }
                 .secondaryAction()
                 .frame(maxWidth: .infinity)
@@ -64,7 +64,7 @@ private struct ConnectBanner: View {
                 Text("Unlock the phone and tap Allow. Tick “Always allow from this computer”.").foregroundStyle(Theme.Palette.textSecondary.color)
                 HStack {
                     Button("Try Again") { model.refreshDevicesNow() }
-                    Button("Show Me How…") { NSWorkspace.shared.open(Self.setupGuide) }
+                    Button("Show Me How") { NSWorkspace.shared.open(Self.setupGuide) }
                 }
                 .secondaryAction()
             case .offline:
@@ -234,7 +234,7 @@ private struct AppPickerButton: View {
                         Text(verbatim: package).font(Theme.Font.monoCaption).foregroundStyle(.secondary)
                     }
                 } else {
-                    Text("Choose an app…").foregroundStyle(.secondary)
+                    Text("Choose an app").foregroundStyle(.secondary)
                 }
                 Image(systemName: "chevron.up.chevron.down").font(.system(size: 10, weight: .semibold)).foregroundStyle(.secondary)
             }
@@ -252,7 +252,7 @@ private struct AppPickerButton: View {
             TextField("Search apps", text: $query).textFieldStyle(.roundedBorder).padding(Theme.Space.s3)
             Divider()
             if model.isLoadingApps && model.installedApps.isEmpty {
-                LoadingLabel("Reading the phone…").padding(Theme.Space.s4).frame(maxWidth: .infinity, alignment: .leading)
+                LoadingLabel("Reading the phone").padding(Theme.Space.s4).frame(maxWidth: .infinity, alignment: .leading)
             } else if results.isEmpty {
                 Text("No matching apps").foregroundStyle(.secondary).padding(Theme.Space.s4).frame(maxWidth: .infinity, alignment: .leading)
             } else {

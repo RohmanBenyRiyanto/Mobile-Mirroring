@@ -54,7 +54,7 @@ public struct LogcatView<Source: LogcatSource>: View {
             }
             .frame(width: 190)
             if logcat.scope == .foregroundApp {
-                Text(logcat.foregroundPackage ?? "waiting for an app…")
+                Text(logcat.foregroundPackage ?? "waiting for an app")
                     .font(.caption.monospaced()).foregroundStyle(.secondary).lineLimit(1)
             }
             Spacer(minLength: 8)

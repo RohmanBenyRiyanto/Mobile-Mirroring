@@ -127,7 +127,7 @@ struct QuickTogglesPanel: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if !tools.isLoaded && tools.failure == nil { LoadingLabel("Reading the phone…").padding(Theme.Space.s3).frame(maxWidth: .infinity, alignment: .leading) }
+            if !tools.isLoaded && tools.failure == nil { LoadingLabel("Reading the phone").padding(Theme.Space.s3).frame(maxWidth: .infinity, alignment: .leading) }
             GroupedForm {
                 Section {
                     Toggle("Layout bounds", isOn: binding(\.layoutBounds))
@@ -169,7 +169,7 @@ struct QuickTogglesPanel: View {
                 }
                 Section {
                     Toggle("Send traffic through this Mac", isOn: Binding(get: { traffic.isOn }, set: { $0 ? traffic.start() : traffic.stop() }))
-                    Button("Open API Log…") { openWindow(id: "apilog") }
+                    Button("Open API Log") { openWindow(id: "apilog") }
                 } header: { Text("Traffic") } footer: {
                     Text("The phone’s proxy setting returns to normal when you switch this off or disconnect.")
                 }

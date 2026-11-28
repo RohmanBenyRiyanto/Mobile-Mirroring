@@ -118,7 +118,7 @@ struct OnboardingView: View {
             if !(flow.isLast && isReady) { Button("Skip Setup") { finish() }.buttonStyle(.link) }
             if flow.isLast && !isReady && phone == .waiting {
                 ProgressView().controlSize(.small)
-                Text("Waiting for the phone…").foregroundStyle(.secondary)
+                Text("Waiting for the phone").foregroundStyle(.secondary)
             }
             Spacer()
             if !flow.isFirst { Button("Back") { flow.back() }.secondaryAction() }

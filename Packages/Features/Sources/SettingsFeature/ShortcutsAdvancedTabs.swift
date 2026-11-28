@@ -58,7 +58,7 @@ struct AdvancedTab: View {
                 HStack(spacing: Theme.Space.s2) {
                     Text(model.adb?.executable.path ?? String(localized: "adb was not found"))
                         .lineLimit(1).truncationMode(.middle).frame(maxWidth: .infinity, alignment: .leading).fieldBackground()
-                    Button("Choose…") {}.secondaryAction().disabled(true)
+                    Button("Choose") {}.secondaryAction().disabled(true)
                 }
             }
             SettingsRow("adb server", detail: serverState.detail) {
@@ -75,7 +75,7 @@ struct AdvancedTab: View {
         }
         SettingsCard {
             SettingsRow("Reset all settings", detail: "Asks before anything is removed") {
-                Button("Reset…") { confirmsReset = true }.secondaryAction()
+                Button("Reset") { confirmsReset = true }.secondaryAction()
             }
         }
         .confirmationDialog("Reset all settings?", isPresented: $confirmsReset) {
@@ -112,10 +112,10 @@ enum AdbServerState: Equatable {
 
     var detail: LocalizedStringKey {
         switch self {
-        case .checking: return "Checking…"
+        case .checking: return "Checking"
         case .running: return "Running"
         case .stopped: return "Not running"
-        case .restarting: return "Restarting…"
+        case .restarting: return "Restarting"
         }
     }
 }

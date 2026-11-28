@@ -89,7 +89,7 @@ struct RailView: View {
         .frame(width: Theme.Size.rail)
         .glassSurface(in: RoundedRectangle(cornerRadius: Theme.Radius.rail), morph: GlassMorph(id: "rail", in: glassSpace))
         .shadow(color: .black.opacity(0.18), radius: 14, y: 8)
-        .contextMenu { Button("Customize Control Rail…") { customize() } }
+        .contextMenu { Button("Customize Control Rail") { customize() } }
     }
 
     @ViewBuilder

@@ -14,7 +14,7 @@ extension AppModel {
         guard panel.runModal() == .OK, let video = panel.url, let options = Self.askForRange() else { return }
 
         let target = video.deletingPathExtension().appendingPathExtension("gif")
-        notice = String(localized: "Making a GIF…")
+        notice = String(localized: "Making a GIF")
         Task {
             do {
                 try await GIFExporter.export(video: video, to: target, options: options)

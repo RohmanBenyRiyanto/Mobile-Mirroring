@@ -217,7 +217,7 @@ private struct ConnectionLostSheet: View {
                 } else {
                     HStack(spacing: Theme.Space.s2) {
                         ProgressView().controlSize(.small)
-                        Text("Reconnecting… attempt \(lost.attempt) of \(ReconnectPolicy.maxAttempts)").foregroundStyle(.secondary)
+                        Text("Reconnecting, attempt \(lost.attempt) of \(ReconnectPolicy.maxAttempts)").foregroundStyle(.secondary)
                     }
                 }
                 HStack {

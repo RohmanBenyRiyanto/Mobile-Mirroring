@@ -12,7 +12,7 @@ struct ConnectSidebar: View {
         List(selection: $model.selectedSerial) {
             Section("Devices") {
                 if !model.hasListedDevices {
-                    LoadingLabel("Looking for phones…")
+                    LoadingLabel("Looking for phones")
                 } else if model.devices.isEmpty {
                     Text("No devices").foregroundStyle(Theme.Palette.textSecondary.color).transition(.opacity)
                 }

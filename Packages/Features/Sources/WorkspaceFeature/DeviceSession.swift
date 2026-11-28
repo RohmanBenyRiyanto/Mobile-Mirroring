@@ -251,7 +251,7 @@ public final class DeviceSession: ObservableObject {
                 try scrcpy.startRecording(to: url)
                 isRecording = true
                 recordingStartedAt = Date()
-                onNotice?(String(localized: "Recording…"))
+                onNotice?(String(localized: "Recording"))
             } catch {
                 onNotice?(error.localizedDescription)
             }

@@ -54,7 +54,7 @@ public struct InspectorCard: View {
             case .off:
                 EmptyView()
             case .reading:
-                Text("Reading the screen…")
+                Text("Reading the screen")
             case let .failed(message):
                 Text(message).foregroundStyle(.red)
             case .ready:

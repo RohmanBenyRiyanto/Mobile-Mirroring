@@ -40,7 +40,7 @@ struct ConnectScreen: View {
                 .disabled(model.selectedDevice?.isReady != true)
             if status.isStarting {
                 Button("Cancel") { model.cancelConnect() }
-                Label { Text("Starting…") } icon: { ProgressView().controlSize(.small) }
+                Label { Text("Starting") } icon: { ProgressView().controlSize(.small) }
                     .labelStyle(.titleAndIcon)
                     .padding(.horizontal, Theme.Space.s2)
             } else {

@@ -127,7 +127,7 @@ private struct TrafficTable: View {
                 TableColumn("Status") { call in
                     Text(verbatim: call.status.map(String.init) ?? "–").font(Theme.Font.mono).foregroundStyle(call.isError ? Theme.Palette.red.color : .primary)
                 }.width(56)
-                TableColumn("Time") { Text(verbatim: $0.durationMillis.map { "\($0) ms" } ?? "…").font(Theme.Font.mono) }.width(72)
+                TableColumn("Time") { Text(verbatim: $0.durationMillis.map { "\($0) ms" } ?? "").font(Theme.Font.mono) }.width(72)
                 TableColumn("Size") { call in
                     Text(verbatim: ByteCountFormatter.string(fromByteCount: Int64(call.sentBytes + call.receivedBytes), countStyle: .file)).font(Theme.Font.mono)
                 }.width(72)

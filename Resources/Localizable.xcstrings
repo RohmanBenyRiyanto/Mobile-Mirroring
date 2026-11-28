@@ -222,23 +222,6 @@
         }
       }
     },
-    "API Log…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API Log…"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Log API…"
-          }
-        }
-      }
-    },
     "Accent" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -307,19 +290,19 @@
         }
       }
     },
-    "Add Another Phone…" : {
+    "Add Another Phone" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add Another Phone…"
+            "value" : "Add Another Phone"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tambah Ponsel Lain…"
+            "value" : "Tambah Ponsel Lain"
           }
         }
       }
@@ -1038,19 +1021,36 @@
         }
       }
     },
-    "Checking…" : {
+    "Checking" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checking…"
+            "value" : "Checking"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Memeriksa…"
+            "value" : "Memeriksa"
+          }
+        }
+      }
+    },
+    "Choose" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih"
           }
         }
       }
@@ -1106,19 +1106,19 @@
         }
       }
     },
-    "Choose an app…" : {
+    "Choose an app" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choose an app…"
+            "value" : "Choose an app"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pilih aplikasi…"
+            "value" : "Pilih aplikasi"
           }
         }
       }
@@ -1136,23 +1136,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pilih file untuk disalin ke folder Download di ponsel"
-          }
-        }
-      }
-    },
-    "Choose…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choose…"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pilih…"
           }
         }
       }
@@ -1650,19 +1633,19 @@
         }
       }
     },
-    "Copying %@…" : {
+    "Copying %@" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copying %@…"
+            "value" : "Copying %@"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menyalin %@…"
+            "value" : "Menyalin %@"
           }
         }
       }
@@ -1752,19 +1735,19 @@
         }
       }
     },
-    "Customize Control Rail…" : {
+    "Customize Control Rail" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Customize Control Rail…"
+            "value" : "Customize Control Rail"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sesuaikan Rail Kontrol…"
+            "value" : "Sesuaikan Rail Kontrol"
           }
         }
       }
@@ -1901,23 +1884,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Database"
-          }
-        }
-      }
-    },
-    "Database…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Database…"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Database…"
           }
         }
       }
@@ -2313,23 +2279,6 @@
         }
       }
     },
-    "Edit Keymap…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Edit Keymap…"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Edit Keymap…"
-          }
-        }
-      }
-    },
     "Enter your screen lock if the phone asks." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2381,53 +2330,53 @@
         }
       }
     },
-    "Export Current Keymap…" : {
+    "Export Current Keymap" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export Current Keymap…"
+            "value" : "Export Current Keymap"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ekspor Keymap Saat Ini…"
+            "value" : "Ekspor Keymap Saat Ini"
           }
         }
       }
     },
-    "Export Profile…" : {
+    "Export Profile" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export Profile…"
+            "value" : "Export Profile"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ekspor Profil…"
+            "value" : "Ekspor Profil"
           }
         }
       }
     },
-    "Export Recording as GIF…" : {
+    "Export Recording as GIF" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export Recording as GIF…"
+            "value" : "Export Recording as GIF"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ekspor Rekaman sebagai GIF…"
+            "value" : "Ekspor Rekaman sebagai GIF"
           }
         }
       }
@@ -2496,23 +2445,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filter"
-          }
-        }
-      }
-    },
-    "Filter…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filter…"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filter…"
           }
         }
       }
@@ -2874,36 +2806,36 @@
         }
       }
     },
-    "Import Keymap…" : {
+    "Import Keymap" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Import Keymap…"
+            "value" : "Import Keymap"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impor Keymap…"
+            "value" : "Impor Keymap"
           }
         }
       }
     },
-    "Import Profile…" : {
+    "Import Profile" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Import Profile…"
+            "value" : "Import Profile"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impor Profil…"
+            "value" : "Impor Profil"
           }
         }
       }
@@ -2942,19 +2874,19 @@
         }
       }
     },
-    "Import from Clipboard…" : {
+    "Import from Clipboard" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Import from Clipboard…"
+            "value" : "Import from Clipboard"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impor dari Clipboard…"
+            "value" : "Impor dari Clipboard"
           }
         }
       }
@@ -3027,19 +2959,19 @@
         }
       }
     },
-    "Install APK…" : {
+    "Install APK" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Install APK…"
+            "value" : "Install APK"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pasang APK…"
+            "value" : "Pasang APK"
           }
         }
       }
@@ -3095,19 +3027,19 @@
         }
       }
     },
-    "Installing %@…" : {
+    "Installing %@" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Installing %@…"
+            "value" : "Installing %@"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Memasang %@…"
+            "value" : "Memasang %@"
           }
         }
       }
@@ -3554,36 +3486,19 @@
         }
       }
     },
-    "Logcat…" : {
+    "Looking for phones" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Logcat…"
+            "value" : "Looking for phones"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Logcat…"
-          }
-        }
-      }
-    },
-    "Looking for phones…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Looking for phones…"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mencari ponsel…"
+            "value" : "Mencari ponsel"
           }
         }
       }
@@ -3673,19 +3588,19 @@
         }
       }
     },
-    "Making a GIF…" : {
+    "Making a GIF" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Making a GIF…"
+            "value" : "Making a GIF"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Membuat GIF…"
+            "value" : "Membuat GIF"
           }
         }
       }
@@ -4557,19 +4472,19 @@
         }
       }
     },
-    "Open API Log…" : {
+    "Open API Log" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Open API Log…"
+            "value" : "Open API Log"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buka Log API…"
+            "value" : "Buka Log API"
           }
         }
       }
@@ -4608,36 +4523,36 @@
         }
       }
     },
-    "Open System Settings…" : {
+    "Open System Settings" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Open System Settings…"
+            "value" : "Open System Settings"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buka Pengaturan Sistem…"
+            "value" : "Buka Pengaturan Sistem"
           }
         }
       }
     },
-    "Open Wi-Fi Settings…" : {
+    "Open Wi-Fi Settings" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Open Wi-Fi Settings…"
+            "value" : "Open Wi-Fi Settings"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buka Pengaturan Wi-Fi…"
+            "value" : "Buka Pengaturan Wi-Fi"
           }
         }
       }
@@ -4778,19 +4693,19 @@
         }
       }
     },
-    "Pair New Device…" : {
+    "Pair New Device" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pair New Device…"
+            "value" : "Pair New Device"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pasangkan Perangkat Baru…"
+            "value" : "Pasangkan Perangkat Baru"
           }
         }
       }
@@ -5288,19 +5203,19 @@
         }
       }
     },
-    "Reading the phone…" : {
+    "Reading the phone" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reading the phone…"
+            "value" : "Reading the phone"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Membaca ponsel…"
+            "value" : "Membaca ponsel"
           }
         }
       }
@@ -5390,19 +5305,19 @@
         }
       }
     },
-    "Reconnecting… attempt %lld of %lld" : {
+    "Reconnecting, attempt %lld of %lld" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reconnecting… attempt %lld of %lld"
+            "value" : "Reconnecting, attempt %lld of %lld"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menyambung ulang… percobaan %lld dari %lld"
+            "value" : "Menyambung ulang, percobaan %lld dari %lld"
           }
         }
       }
@@ -5488,23 +5403,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rekaman"
-          }
-        }
-      }
-    },
-    "Recording…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recording…"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Merekam…"
           }
         }
       }
@@ -5679,23 +5577,6 @@
         }
       }
     },
-    "Reset…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reset…"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reset…"
-          }
-        }
-      }
-    },
     "Restart" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5713,19 +5594,19 @@
         }
       }
     },
-    "Restarting…" : {
+    "Restarting" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Restarting…"
+            "value" : "Restarting"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Memulai ulang…"
+            "value" : "Memulai ulang"
           }
         }
       }
@@ -6002,19 +5883,19 @@
         }
       }
     },
-    "Send File…" : {
+    "Send File" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Send File…"
+            "value" : "Send File"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kirim File…"
+            "value" : "Kirim File"
           }
         }
       }
@@ -6121,19 +6002,19 @@
         }
       }
     },
-    "Setup Guide…" : {
+    "Setup Guide" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Setup Guide…"
+            "value" : "Setup Guide"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Panduan Pengaturan…"
+            "value" : "Panduan Pengaturan"
           }
         }
       }
@@ -6291,19 +6172,19 @@
         }
       }
     },
-    "Show Me How…" : {
+    "Show Me How" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show Me How…"
+            "value" : "Show Me How"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tunjukkan Caranya…"
+            "value" : "Tunjukkan Caranya"
           }
         }
       }
@@ -6546,19 +6427,19 @@
         }
       }
     },
-    "Starting…" : {
+    "Starting" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Starting…"
+            "value" : "Starting"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Memulai…"
+            "value" : "Memulai"
           }
         }
       }
@@ -6886,36 +6767,19 @@
         }
       }
     },
-    "Switch to Wi-Fi…" : {
+    "Switching to Wi-Fi" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Switch to Wi-Fi…"
+            "value" : "Switching to Wi-Fi"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pindah ke Wi-Fi…"
-          }
-        }
-      }
-    },
-    "Switching to Wi-Fi…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Switching to Wi-Fi…"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beralih ke Wi-Fi…"
+            "value" : "Beralih ke Wi-Fi"
           }
         }
       }
@@ -8042,19 +7906,19 @@
         }
       }
     },
-    "Use Wi-Fi…" : {
+    "Use Wi-Fi" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use Wi-Fi…"
+            "value" : "Use Wi-Fi"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pakai Wi-Fi…"
+            "value" : "Pakai Wi-Fi"
           }
         }
       }
@@ -8263,19 +8127,19 @@
         }
       }
     },
-    "Waiting for the phone…" : {
+    "Waiting for the phone" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Waiting for the phone…"
+            "value" : "Waiting for the phone"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menunggu ponsel…"
+            "value" : "Menunggu ponsel"
           }
         }
       }

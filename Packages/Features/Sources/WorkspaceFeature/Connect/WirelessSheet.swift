@@ -44,7 +44,7 @@ struct WirelessSheet: View {
                                 LabeledContent("Phone") { Text(verbatim: mismatch.phone).font(Theme.Font.mono) }
                                 HStack {
                                     Button("Try Again") { macNetworks = IPv4Interface.ofThisMac() }
-                                    Button("Open Wi-Fi Settings…") {
+                                    Button("Open Wi-Fi Settings") {
                                         if let url = URL(string: "x-apple.systempreferences:com.apple.wifi-settings-extension") { NSWorkspace.shared.open(url) }
                                     }
                                 }

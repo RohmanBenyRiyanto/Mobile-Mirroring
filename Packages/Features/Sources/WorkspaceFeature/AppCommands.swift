@@ -35,10 +35,10 @@ public struct AppCommands: Commands {
             Button("New Tab") { model.newTab() }
                 .keyboardShortcut("t")
                 .disabled(!mirroring)
-            Button("Install APK…") { model.chooseAPKToInstall() }
+            Button("Install APK") { model.chooseAPKToInstall() }
                 .keyboardShortcut("o")
                 .disabled(!mirroring)
-            Button("Send File…") { model.chooseFileToSend() }
+            Button("Send File") { model.chooseFileToSend() }
                 .keyboardShortcut("o", modifiers: [.command, .shift])
                 .disabled(!mirroring)
         }
@@ -79,7 +79,7 @@ public struct AppCommands: Commands {
             Button(LocalizedStringKey(model.isRailCollapsed ? "Show Control Rail" : "Hide Control Rail")) { model.toggleRail() }
                 .keyboardShortcut("r", modifiers: [.command, .option])
                 .disabled(!mirroring)
-            Button("Customize Control Rail…") { model.showSettingsPane("rail"); openSettings() }
+            Button("Customize Control Rail") { model.showSettingsPane("rail"); openSettings() }
             Toggle("Stream Mode", isOn: $model.isStreamMode)
                 .keyboardShortcut("b", modifiers: [.command, .shift])
                 .disabled(!mirroring)
@@ -112,7 +112,7 @@ public struct AppCommands: Commands {
             Button("Screenshot") { model.takeScreenshot() }
                 .keyboardShortcut("s")
                 .disabled(!mirroring)
-            Button("Export Recording as GIF…") { model.exportRecordingAsGIF() }
+            Button("Export Recording as GIF") { model.exportRecordingAsGIF() }
             Button(LocalizedStringKey(model.isRecording ? "Stop Recording" : "Start Recording")) { model.toggleRecording() }
                 .keyboardShortcut("r", modifiers: [.command, .shift])
                 .disabled(!mirroring)
@@ -149,8 +149,8 @@ public struct AppCommands: Commands {
             Button("Quick Settings") { model.send(.expandSettingsPanel) }.keyboardShortcut("n", modifiers: [.command, .option]).disabled(!mirroring)
             Button("Rotate") { model.send(.rotateDevice) }.keyboardShortcut("r").disabled(!mirroring)
             Divider()
-            Button("Pair New Device…") { model.pairNewDevice() }
-            Button("Switch to Wi-Fi…") { model.switchToWireless() }
+            Button("Pair New Device") { model.pairNewDevice() }
+            Button("Switch to Wi-Fi") { model.switchToWireless() }
                 .keyboardShortcut("e", modifiers: [.command, .shift])
                 .disabled(model.selectedDevice?.isReady != true)
             Button("Device Information") { model.showsDeviceInfo = true }
@@ -173,9 +173,9 @@ public struct AppCommands: Commands {
             Divider()
             Button("Logcat") { openWindow(id: "logcat") }
                 .keyboardShortcut("l", modifiers: [.command, .shift])
-            Button("API Log…") { openWindow(id: "apilog") }
+            Button("API Log") { openWindow(id: "apilog") }
                 .keyboardShortcut("a", modifiers: [.command, .option])
-            Button("Database…") { openWindow(id: "database") }
+            Button("Database") { openWindow(id: "database") }
                 .keyboardShortcut("d", modifiers: [.command, .option])
             Button(LocalizedStringKey(model.showsInspectorPanel ? "Hide Inspector Panel" : "Show Inspector Panel")) { model.showsInspectorPanel.toggle(); if model.showsInspectorPanel { model.setInspecting(true) } }
                 .keyboardShortcut("p", modifiers: [.command, .option])
@@ -209,8 +209,8 @@ public struct AppCommands: Commands {
             Button("Revert Changes") { model.revertKeymapChanges() }
                 .disabled(model.editor == nil)
             Divider()
-            Button("Import Profile…") { model.importKeymap() }
-            Button("Export Profile…") { if let id = model.currentKeymap?.id { model.exportKeymap(id: id) } }
+            Button("Import Profile") { model.importKeymap() }
+            Button("Export Profile") { if let id = model.currentKeymap?.id { model.exportKeymap(id: id) } }
                 .disabled(model.currentKeymap == nil)
             Divider()
             Toggle("Keymap Enabled", isOn: Binding(get: { model.isKeymapEnabled }, set: { model.setKeymapEnabled($0) }))
@@ -228,7 +228,7 @@ public struct AppCommands: Commands {
                 }
             }
             .disabled(!mirroring)
-            Button("Import from Clipboard…") { model.importKeymapFromClipboard() }
+            Button("Import from Clipboard") { model.importKeymapFromClipboard() }
             Button("Copy Current Keymap") { if let id = model.currentKeymap?.id { model.copyKeymapToClipboard(id: id) } }
                 .disabled(model.currentKeymap == nil)
             Button("Show Keymap Folder") { model.revealKeymapFolder() }
@@ -245,7 +245,7 @@ public struct AppCommands: Commands {
             Button("Clear") { logcat?.clear() }
                 .keyboardShortcut("k")
                 .disabled(logcat == nil)
-            Button("Filter…") { logcat?.focusFilter() }
+            Button("Filter") { logcat?.focusFilter() }
                 .keyboardShortcut("f", modifiers: [.command, .option])
                 .disabled(logcat == nil)
         }

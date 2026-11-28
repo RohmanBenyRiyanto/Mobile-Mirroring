@@ -66,16 +66,16 @@ public struct ShortcutCatalog {
             e("Device", "Back", "[", cmd), e("Device", "Home", "H", shift), e("Device", "Recents", "A", shift),
             e("Device", "Volume Up", "↑", cmd), e("Device", "Volume Down", "↓", cmd), e("Device", "Power", "P", shift),
             e("Device", "Notifications", "N", shift), e("Device", "Quick Settings", "N", option), e("Device", "Rotate", "R", cmd),
-            e("Device", "Switch to Wi-Fi…", "E", shift), e("Device", "UI Inspector", "I", option), e("Device", "Design Overlay", "G", option),
+            e("Device", "Switch to Wi-Fi", "E", shift), e("Device", "UI Inspector", "I", option), e("Device", "Design Overlay", "G", option),
             e("Device", "Logcat", "L", shift), e("Device", "Quick Toggles", "J", option),
             e("View", "Statistics", "I", cmd), e("View", "Developer HUD", "I", shift), e("View", "Control Rail", "R", option),
             e("View", "Stream Mode", "B", shift),
-            e("File", "New Tab", "T", cmd), e("File", "Install APK…", "O", cmd), e("File", "Send File…", "O", shift), e("File", "Close Tab", "W", cmd),
+            e("File", "New Tab", "T", cmd), e("File", "Install APK", "O", cmd), e("File", "Send File", "O", shift), e("File", "Close Tab", "W", cmd),
             e("Edit", "Paste to Phone", "V", cmd), e("Edit", "Copy from Phone", "C", cmd),
             e("Keymap", "Edit Keymap", "E", cmd), e("Keymap", "Add Tap", "1", []), e("Keymap", "Add Hold", "2", []), e("Keymap", "Add Toggle", "3", []),
             e("Keymap", "Add Joystick", "4", []), e("Keymap", "Add Aim", "5", []), e("Keymap", "Add Skill Shot", "6", []),
             e("Keymap", "Record Macro", "7", []), e("Keymap", "Keymap Enabled", "K", shift),
-            e("Logcat", "Pause", "Space", []), e("Logcat", "Clear", "K", cmd), e("Logcat", "Filter…", "F", option),
+            e("Logcat", "Pause", "Space", []), e("Logcat", "Clear", "K", cmd), e("Logcat", "Filter", "F", option),
         ]
     }
 
