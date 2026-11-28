@@ -81,7 +81,8 @@ public struct WindowStyler: NSViewRepresentable {
         let fit: WindowSizeMemory.PictureFit = locked ? .locked : (isFlexible ? .orientation : .free)
         let current = window.contentLayoutRect.size
         let available = window.screen?.visibleFrame.height ?? 900
-        let target = coordinator.memory.update(isPhoneShaped: phoneShaped, currentContentSize: current, availableHeight: available,
+        let availableWidth = window.screen?.visibleFrame.width ?? 1600
+        let target = coordinator.memory.update(isPhoneShaped: phoneShaped, currentContentSize: current, availableHeight: available, availableWidth: availableWidth,
                                                pictureRatio: phoneShaped ? videoSize.width / videoSize.height : nil, fit: fit)
         if locked {
             window.contentAspectRatio = videoSize
@@ -126,14 +127,14 @@ struct WindowSizeMemory: Equatable {
     /// How a window that is already phone-shaped follows the picture.
     enum PictureFit { case locked, free, orientation }
 
-    mutating func update(isPhoneShaped: Bool, currentContentSize current: CGSize, availableHeight: CGFloat, pictureRatio: CGFloat?, fit: PictureFit = .locked) -> CGSize? {
+    mutating func update(isPhoneShaped: Bool, currentContentSize current: CGSize, availableHeight: CGFloat, availableWidth: CGFloat = .infinity, pictureRatio: CGFloat?, fit: PictureFit = .locked) -> CGSize? {
         defer { wasPhoneShaped = isPhoneShaped; hasSeenAWindow = true }
         guard current.width > 0, current.height > 0 else { return nil }
 
         if isPhoneShaped, let ratio = pictureRatio, ratio > 0 {
             if !wasPhoneShaped {
                 connectSize = hasSeenAWindow ? current : (connectSize ?? Self.defaultConnectSize)
-                return phoneSize(height: phoneHeight ?? Self.defaultPhoneHeight, ratio: ratio, availableHeight: availableHeight)
+                return phoneSize(height: phoneHeight ?? Self.defaultPhoneHeight, ratio: ratio, availableHeight: availableHeight, availableWidth: availableWidth)
             }
             // Already a phone window: only follow a change of the picture's shape (the phone rotated).
             switch fit {
@@ -144,7 +145,7 @@ struct WindowSizeMemory: Equatable {
             case .orientation:
                 guard (current.width > current.height) != (ratio > 1) else { return nil } // only a rotation changes the window's shape
             }
-            return phoneSize(height: current.height, ratio: ratio, availableHeight: availableHeight)
+            return phoneSize(height: current.height, ratio: ratio, availableHeight: availableHeight, availableWidth: availableWidth)
         }
 
         if wasPhoneShaped {
@@ -158,8 +159,9 @@ struct WindowSizeMemory: Equatable {
         return nil
     }
 
-    private func phoneSize(height wanted: CGFloat, ratio: CGFloat, availableHeight: CGFloat) -> CGSize {
-        let height = max(360, min(wanted, availableHeight - 80))
+    /// A wide picture (a rotated phone) must not be wider than the screen, or the window would be cut and the picture left with empty bands.
+    private func phoneSize(height wanted: CGFloat, ratio: CGFloat, availableHeight: CGFloat, availableWidth: CGFloat = .infinity) -> CGSize {
+        let height = max(240, min(wanted, availableHeight - 80, (availableWidth - 24) / ratio))
         return CGSize(width: (height * ratio).rounded(), height: height.rounded())
     }
 }

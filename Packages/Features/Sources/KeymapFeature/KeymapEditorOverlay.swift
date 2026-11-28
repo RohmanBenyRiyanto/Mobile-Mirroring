@@ -57,7 +57,7 @@ private struct ElementMarker: View {
                     .frame(width: radius * 2, height: radius * 2)
                     .allowsHitTesting(false)
             }
-            Chip(text: summary.text, symbol: summary.symbol, isSelected: isSelected)
+            KeyCapMarker(key: summary.key, caption: summary.caption, symbol: summary.symbol, isSelected: isSelected)
                 .gesture(drag)
         }
         .position(center)
@@ -70,17 +70,20 @@ private struct ElementMarker: View {
         }
     }
 
-    private var summary: (text: String, symbol: String) {
-        let name = element.label.isEmpty ? "" : "\(element.label) "
+    /// The key shown inside the round cap, and a short caption below it (the element's own name, or its kind).
+    private var summary: (key: String, caption: String, symbol: String) {
+        func caption(_ fallback: String) -> String { element.label.isEmpty ? fallback : element.label }
         switch element.action {
-        case let .button(key, mode): return (name + KeyNames.name(for: key), mode == .tap ? "hand.tap" : mode == .hold ? "hand.point.down" : "switch.2")
-        case let .joystick(up, left, down, right, _, _): return (name + [up, left, down, right].map(KeyNames.name).joined(), "gamecontroller")
-        case let .aim(key, _, _): return (name + KeyNames.name(for: key), "scope")
-        case let .mouseButton(button, _): return (name + ["Left", "Right", "Middle", "Button 4", "Button 5"][min(button, 4)] + " click", "computermouse")
-        case let .skillShot(key, _, _, _, _): return (name + KeyNames.name(for: key), "target")
-        case let .turbo(key, rate): return (name + KeyNames.name(for: key) + " ×\(Int(rate))/s", "bolt")
-        case let .swipe(key, _, _): return (name + KeyNames.name(for: key), "arrow.up.forward")
-        case let .macro(key, steps, _, _): return (name + KeyNames.name(for: key) + " ×\(steps.count)", "play.circle")
+        case let .button(key, mode):
+            let kind = mode == .tap ? "Tap" : mode == .hold ? "Hold" : "Toggle"
+            return (KeyNames.name(for: key), caption(kind), "hand.tap")
+        case let .joystick(up, left, down, right, _, _): return ([up, left, down, right].map(KeyNames.name).joined(), caption("Joystick"), "gamecontroller")
+        case let .aim(key, _, _): return (KeyNames.name(for: key), caption("Aim"), "scope")
+        case let .mouseButton(button, _): return (["L", "R", "M", "4", "5"][min(button, 4)], caption("Click"), "computermouse")
+        case let .skillShot(key, _, _, _, _): return (KeyNames.name(for: key), caption("Skill shot"), "target")
+        case let .turbo(key, rate): return (KeyNames.name(for: key), caption("Rapid") + " ×\(Int(rate))/s", "bolt")
+        case let .swipe(key, _, _): return (KeyNames.name(for: key), caption("Swipe"), "arrow.up.forward")
+        case let .macro(key, steps, _, _): return (KeyNames.name(for: key), caption("Macro") + " ×\(steps.count)", "play.circle")
         }
     }
 
@@ -101,20 +104,33 @@ private struct ElementMarker: View {
     }
 }
 
-private struct Chip: View {
-    let text: String
+/// A round key cap with the key inside and a small caption under it, as in the design. Colours are fixed so it stays readable on any game.
+private struct KeyCapMarker: View {
+    let key: String
+    let caption: String
     let symbol: String
     let isSelected: Bool
 
     var body: some View {
-        Label(text, systemImage: symbol)
-            .font(.system(size: 11, weight: .semibold))
-            .lineLimit(1)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 5)
-            .foregroundStyle(isSelected ? Color.black : Color.white)
-            .background(isSelected ? Color.white : Color.black.opacity(0.75), in: Capsule())
-            .overlay(Capsule().strokeBorder(.white.opacity(0.8), lineWidth: isSelected ? 0 : 1))
+        VStack(spacing: 3) {
+            Text(key)
+                .font(.system(size: key.count > 2 ? 11 : 14, weight: .semibold, design: .monospaced))
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
+                .frame(minWidth: 34, minHeight: 34)
+                .padding(.horizontal, key.count > 2 ? 6 : 0)
+                .foregroundStyle(isSelected ? Color.black : Color.white)
+                .background(isSelected ? Color.white : Color.black.opacity(0.7), in: RoundedRectangle(cornerRadius: 17))
+                .overlay(RoundedRectangle(cornerRadius: 17).strokeBorder(.white.opacity(isSelected ? 0 : 0.85), lineWidth: 1.5))
+            Text(caption)
+                .font(.system(size: 10, weight: .medium))
+                .lineLimit(1)
+                .padding(.horizontal, 5)
+                .padding(.vertical, 1)
+                .foregroundStyle(.white)
+                .background(Color.black.opacity(0.55), in: Capsule())
+        }
+        .accessibilityElement(children: .combine)
     }
 }
 
