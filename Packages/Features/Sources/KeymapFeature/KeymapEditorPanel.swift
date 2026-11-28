@@ -315,9 +315,10 @@ private struct ElementInspector: View {
             Picker("Cast", selection: Binding(get: { cast }, set: { new in
                 editor.update(element.id) { $0.action = .skillShot(key: key, cast: new, radius: radius, range: range, hero: hero) }
             })) {
-                Text("Aim, release to cast").tag(SkillCast.onRelease)
-                Text("Instant").tag(SkillCast.instant)
+                Text("On release").tag(SkillCast.onRelease)
+                Text("On click").tag(SkillCast.instant)
             }
+            .pickerStyle(.segmented)
             slider("Drag reach", value: radius, range: KeymapAction.radiusRange) { value in
                 editor.change(element.id) { $0.action = .skillShot(key: key, cast: cast, radius: value, range: range, hero: hero) }
             }

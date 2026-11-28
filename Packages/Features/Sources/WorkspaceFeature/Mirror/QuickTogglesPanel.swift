@@ -189,9 +189,13 @@ struct QuickTogglesPanel: View {
                 }
                 Section {
                     Toggle("Send traffic through this Mac", isOn: Binding(get: { traffic.isOn }, set: { $0 ? traffic.start() : traffic.stop() }))
+                    Picker("Network speed", selection: $traffic.profile) {
+                        ForEach(NetworkProfile.presets) { preset in Text(LocalizedStringKey(preset.title)).tag(preset) }
+                    }
+                    .disabled(!traffic.isOn)
                     Button("Open API Log") { openWindow(id: "apilog") }
                 } header: { Text("Traffic") } footer: {
-                    Text("The phone’s proxy setting returns to normal when you switch this off or disconnect.")
+                    Text("The phone’s proxy setting returns to normal when you switch this off or disconnect. Network speed slows what goes through this Mac, so switch it on first. Apps that skip the proxy are not slowed.")
                 }
                 if let failure = tools.failure {
                     Section { Label(failure, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.orange) }

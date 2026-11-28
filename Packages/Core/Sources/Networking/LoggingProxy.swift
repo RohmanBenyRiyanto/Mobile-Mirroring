@@ -23,6 +23,10 @@ public final class LoggingProxy: @unchecked Sendable {
     private let active = LockedValue<[ObjectIdentifier: TCPStream]>([:])
     private let nextID = LockedValue(0)
     private let onReport: @Sendable (Report) -> Void
+    private let profile = LockedValue(NetworkProfile.unlimited)
+
+    /// Slows every call from now on (a call already running picks up the new speed on its next chunk).
+    public func setProfile(_ new: NetworkProfile) { profile.set(new) }
 
     /// `onReport` is called once when a call starts (no duration yet) and once when it ends.
     public init(port: UInt16 = 0, onReport: @escaping @Sendable (Report) -> Void) throws {
@@ -75,6 +79,8 @@ public final class LoggingProxy: @unchecked Sendable {
         var report = Report(id: id, request: request, startedAt: started)
         onReport(report)
 
+        let latency = profile.get().latencyMillis
+        if latency > 0 { Thread.sleep(forTimeInterval: Double(latency) / 1000) }
         guard let server = try? TCPStream.connect(host: request.host, port: request.port) else {
             _ = try? client.write(Data("HTTP/1.1 502 Bad Gateway\r\nConnection: close\r\nContent-Length: 0\r\n\r\n".utf8))
             report.status = 502
@@ -88,6 +94,7 @@ public final class LoggingProxy: @unchecked Sendable {
         defer { server.shutdown(); active.withLock { _ = $0.removeValue(forKey: key) } }
 
         let sent = LockedValue(0), received = LockedValue(0)
+        let limits = profile
         let firstBytes = LockedValue(Data())
         // Plain HTTP is kept for the log's detail view (cut at a size limit); a tunnel's contents are encrypted and are not.
         let requestCapture = LockedValue(Data(leftover.prefix(HTTPMessage.bodyCapture)))
@@ -106,6 +113,8 @@ public final class LoggingProxy: @unchecked Sendable {
         // Client to server runs on its own thread; the call ends when the server side closes.
         Thread.detachNewThread {
             while let chunk = try? client.readSome(limit: 16 << 10), !chunk.isEmpty {
+                let wait = NetworkProfile.transferDelay(bytes: chunk.count, kbps: limits.get().upKbps)
+                if wait > 0 { Thread.sleep(forTimeInterval: wait) }
                 if (try? server.write(chunk)) == nil { break }
                 if !request.isTunnel { requestCapture.withLock { if $0.count < HTTPMessage.bodyCapture { $0.append(chunk.prefix(HTTPMessage.bodyCapture - $0.count)) } } }
                 sent.withLock { $0 += chunk.count }
@@ -116,6 +125,8 @@ public final class LoggingProxy: @unchecked Sendable {
                 firstBytes.withLock { if $0.count < 32 { $0.append(chunk.prefix(32 - $0.count)) } }
                 responseCapture.withLock { if $0.count < HTTPMessage.bodyCapture + ProxyRequestParser.maxHeadBytes { $0.append(chunk.prefix(HTTPMessage.bodyCapture + ProxyRequestParser.maxHeadBytes - $0.count)) } }
             }
+            let wait = NetworkProfile.transferDelay(bytes: chunk.count, kbps: limits.get().downKbps)
+            if wait > 0 { Thread.sleep(forTimeInterval: wait) }
             if (try? client.write(chunk)) == nil { break }
             received.withLock { $0 += chunk.count }
         }

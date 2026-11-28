@@ -9368,23 +9368,6 @@
         }
       }
     },
-    "The phone’s proxy setting returns to normal when you switch this off or disconnect.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The phone’s proxy setting returns to normal when you switch this off or disconnect."
-          }
-        },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pengaturan proxy ponsel kembali normal saat Anda mematikannya atau memutus koneksi."
-          }
-        }
-      }
-    },
     "The processor is fully busy": {
       "extractionState": "manual",
       "localizations": {
@@ -11098,6 +11081,176 @@
           "stringUnit": {
             "state": "translated",
             "value": "⌘E untuk edit"
+          }
+        }
+      }
+    },
+    "No limit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No limit"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanpa batas"
+          }
+        }
+      }
+    },
+    "4G": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4G"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4G"
+          }
+        }
+      }
+    },
+    "Fast 3G": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fast 3G"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3G cepat"
+          }
+        }
+      }
+    },
+    "Slow 3G": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slow 3G"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3G lambat"
+          }
+        }
+      }
+    },
+    "Edge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edge"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edge"
+          }
+        }
+      }
+    },
+    "GPRS": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPRS"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPRS"
+          }
+        }
+      }
+    },
+    "Network speed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Network speed"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kecepatan jaringan"
+          }
+        }
+      }
+    },
+    "On release": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On release"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saat dilepas"
+          }
+        }
+      }
+    },
+    "On click": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On click"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saat diklik"
+          }
+        }
+      }
+    },
+    "The phone’s proxy setting returns to normal when you switch this off or disconnect. Network speed slows what goes through this Mac, so switch it on first. Apps that skip the proxy are not slowed.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The phone’s proxy setting returns to normal when you switch this off or disconnect. Network speed slows what goes through this Mac, so switch it on first. Apps that skip the proxy are not slowed."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pengaturan proxy HP kembali normal saat dimatikan atau diputus. Kecepatan jaringan memperlambat lalu lintas lewat Mac ini, jadi nyalakan dulu. Aplikasi yang melewati proxy tidak diperlambat."
           }
         }
       }

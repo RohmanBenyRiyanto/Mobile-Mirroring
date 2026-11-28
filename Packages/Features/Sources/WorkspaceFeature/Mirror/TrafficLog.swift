@@ -14,6 +14,10 @@ public final class TrafficModel: ObservableObject {
     @Published public private(set) var log = APICallLog()
     @Published public private(set) var isOn = false
     @Published public private(set) var failure: String?
+    /// The pretend network speed; applies while traffic goes through this Mac.
+    @Published public var profile: NetworkProfile = .unlimited {
+        didSet { proxy?.setProfile(profile) }
+    }
 
     private let run: @Sendable ([String]) throws -> String
     private var proxy: LoggingProxy?
@@ -36,6 +40,7 @@ public final class TrafficModel: ObservableObject {
                 _ = try? run(["reverse", "--remove", "tcp:\(port)"])
                 throw error
             }
+            proxy.setProfile(profile)
             proxy.start()
             self.proxy = proxy
             originalSetting = original

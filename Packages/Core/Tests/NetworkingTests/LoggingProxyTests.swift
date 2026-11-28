@@ -48,6 +48,30 @@ final class LoggingProxyTests: XCTestCase {
         XCTAssertEqual(reports.all.count, 2)
     }
 
+    func testASlowProfileMakesTheCallTakeLonger() throws {
+        let body = String(repeating: "x", count: 12_000)
+        func timeOneCall(_ profile: NetworkProfile) throws -> TimeInterval {
+            let (server, _) = try upstream { _ in Data("HTTP/1.1 200 OK\r\nContent-Length: \(body.count)\r\n\r\n\(body)".utf8) }
+            let proxy = try LoggingProxy { _ in }
+            proxy.setProfile(profile)
+            proxy.start()
+            defer { proxy.stop() }
+            let started = Date()
+            let client = try TCPStream.connect(host: "127.0.0.1", port: Int(proxy.port))
+            client.setTimeouts(seconds: 10)
+            try client.write(Data("GET http://127.0.0.1:\(server.port)/ HTTP/1.1\r\nHost: 127.0.0.1\r\n\r\n".utf8))
+            var received = 0
+            while let chunk = try? client.readSome(limit: 4096), !chunk.isEmpty { received += chunk.count }
+            XCTAssertGreaterThan(received, 12_000)
+            return Date().timeIntervalSince(started)
+        }
+        let fast = try timeOneCall(.unlimited)
+        // 12 kB at 96 kbit/s (12 kB/s) is about a second, plus 300 ms before the call starts.
+        let slow = try timeOneCall(NetworkProfile(id: "t", title: "t", latencyMillis: 300, downKbps: 96, upKbps: 0))
+        XCTAssertLessThan(fast, 0.5)
+        XCTAssertGreaterThan(slow, 1.0)
+    }
+
     func testConnectTunnelsBytesBothWays() throws {
         let server = try LoopbackListener()
         Thread {
