@@ -127,6 +127,8 @@ public struct MirrorSettings: Equatable, Codable {
     public var recordAudio = true
     /// Ask before leaving the mirror window for the Connect screen.
     public var confirmDisconnect = true
+    /// Closing the phone window disconnects and leaves the app running (a Dock click brings the window back); on, it quits instead.
+    public var quitWhenWindowCloses = false
     /// Ask before a screen recording starts, an app is installed by dropping it, a network switch goes off, or keymap edits are thrown away.
     public var confirmRecording = true
     public var confirmInstall = true
@@ -163,6 +165,7 @@ public struct MirrorSettings: Equatable, Codable {
         virtualDisplay = (try? values.decodeIfPresent(VirtualDisplaySettings.self, forKey: .virtualDisplay)).flatMap { $0 } ?? defaults.virtualDisplay
         audioOutputUID = try values.decodeIfPresent(String.self, forKey: .audioOutputUID)
         confirmDisconnect = try values.decodeIfPresent(Bool.self, forKey: .confirmDisconnect) ?? defaults.confirmDisconnect
+        quitWhenWindowCloses = try values.decodeIfPresent(Bool.self, forKey: .quitWhenWindowCloses) ?? defaults.quitWhenWindowCloses
         confirmRecording = try values.decodeIfPresent(Bool.self, forKey: .confirmRecording) ?? defaults.confirmRecording
         confirmInstall = try values.decodeIfPresent(Bool.self, forKey: .confirmInstall) ?? defaults.confirmInstall
         confirmNetworkOff = try values.decodeIfPresent(Bool.self, forKey: .confirmNetworkOff) ?? defaults.confirmNetworkOff

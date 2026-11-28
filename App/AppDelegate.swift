@@ -30,10 +30,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self.isSettlingAtLaunch = false
             }
         }
-        // The helper windows (Logcat, Mini Mirror, …) mean nothing without the main window, so closing it ends the app.
-        closeObserver = NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: nil, queue: .main) { note in
+        // The helper windows (Logcat, Mini Mirror, …) mean nothing without the main window: closing it disconnects, and the app quits only if asked to.
+        closeObserver = NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: nil, queue: .main) { [weak self] note in
+            guard let self else { return }
             guard let window = note.object as? NSWindow, Self.isMainWindow(window) else { return }
-            NSApp.terminate(nil)
+            if self.model?.quitsWhenWindowCloses ?? false { NSApp.terminate(nil); return }
+            self.model?.windowClosed()
+            for helper in NSApp.windows where Self.helperWindowIDs.contains(helper.identifier?.rawValue ?? "") { helper.close() }
         }
     }
 
@@ -65,7 +68,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         model?.restorePhoneChanges()
     }
 
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { !isSettlingAtLaunch }
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { !isSettlingAtLaunch && (model?.quitsWhenWindowCloses ?? false) }
+
+    /// A Dock click with no window open brings the phone window back.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        if !NSApp.windows.contains(where: { $0.isVisible && Self.isMainWindow($0) }) {
+            NSApp.sendAction(Selector(("newWindowForTab:")), to: nil, from: nil)
+        }
+        return true
+    }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         guard let model, model.isAnyRecording else { return .terminateNow }

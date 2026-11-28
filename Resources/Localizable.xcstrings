@@ -10829,6 +10829,40 @@
           }
         }
       }
+    },
+    "Quit when the window closes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quit when the window closes"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keluar saat jendela ditutup"
+          }
+        }
+      }
+    },
+    "Off: closing the window disconnects and the app stays in the Dock": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off: closing the window disconnects and the app stays in the Dock"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mati: menutup jendela memutus koneksi dan app tetap di Dock"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

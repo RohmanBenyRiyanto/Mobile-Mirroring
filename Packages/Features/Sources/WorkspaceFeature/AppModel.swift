@@ -336,6 +336,15 @@ public final class AppModel: ObservableObject {
         remove(session, reason: nil)
     }
 
+    /// The phone window was closed: every session ends (a recording is saved first), and the app waits in the Dock.
+    public func windowClosed() {
+        cancelConnect()
+        dismissLostConnection()
+        for session in sessions { session.stop(); remove(session, reason: nil) }
+    }
+
+    public var quitsWhenWindowCloses: Bool { settings.quitWhenWindowCloses }
+
     private func add(_ session: DeviceSession) {
         guard !session.hasEnded else { return launch = .idle } // it dropped while we were finishing the setup
         sessions.append(session)

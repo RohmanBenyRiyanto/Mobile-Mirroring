@@ -26,6 +26,9 @@ struct GeneralTab: View {
             SettingsRow("Ask before disconnecting", detail: "When leaving the mirror window for the Connect screen") {
                 Toggle("Ask before disconnecting", isOn: $model.settings.confirmDisconnect).labelsHidden().toggleStyle(.switch)
             }
+            SettingsRow("Quit when the window closes", detail: "Off: closing the window disconnects and the app stays in the Dock") {
+                Toggle("Quit when the window closes", isOn: $model.settings.quitWhenWindowCloses).labelsHidden().toggleStyle(.switch)
+            }
             SettingsRow("Ask before recording", detail: "Recordings capture everything shown on the phone") {
                 Toggle("Ask before recording", isOn: $model.settings.confirmRecording).labelsHidden().toggleStyle(.switch)
             }
