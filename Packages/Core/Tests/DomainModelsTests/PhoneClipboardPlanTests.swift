@@ -24,6 +24,7 @@ final class PhoneClipboardPlanTests: XCTestCase {
         XCTAssertEqual(PhoneClipboardPlan.mediaID(inQueryOutput: "Row: 0 _id=1000036975\n"), 1000036975)
         XCTAssertNil(PhoneClipboardPlan.mediaID(inQueryOutput: "No result found.\n"))
         XCTAssertTrue(PhoneClipboardPlan.queryCommand(forPhonePath: "/a/it's.png").contains("it'\\'''\\''s"), "a quote is doubled for SQL, then escaped for the shell")
+        XCTAssertTrue(PhoneClipboardPlan.queryCommand(forPhonePath: "/sdcard/Download/x.png").contains("/storage/emulated/0/Download/x.png"))
         XCTAssertEqual(PhoneClipboardPlan.contentURI(forMediaID: 5), "content://media/external/file/5")
     }
 

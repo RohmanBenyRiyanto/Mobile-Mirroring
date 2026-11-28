@@ -23,8 +23,10 @@ public enum PhoneClipboardPlan {
     }
 
     /// Finds the media-store row of a file that was just pushed and scanned.
+    /// The media store records `/storage/emulated/0/…`, not the `/sdcard/…` spelling adb uses.
     public static func queryCommand(forPhonePath path: String) -> String {
-        "content query --uri content://media/external/file --projection _id --where " + PhoneTransfer.shellQuoted("_data='\(path.replacingOccurrences(of: "'", with: "''"))'")
+        let path = path.hasPrefix("/sdcard/") ? "/storage/emulated/0/" + path.dropFirst("/sdcard/".count) : path
+        return "content query --uri content://media/external/file --projection _id --where " + PhoneTransfer.shellQuoted("_data='\(path.replacingOccurrences(of: "'", with: "''"))'")
     }
 
     public static func mediaID(inQueryOutput output: String) -> Int? {
