@@ -162,3 +162,8 @@ scrcpy's `doc/develop.md` against `ControlMessage.swift` and `ScrcpySession.swif
 - No app is installed on the phone. Small helper files are pushed to `/data/local/tmp` (the scrcpy server, a clipboard helper, and, for the debug-app view, Android Studio's profiler files); pasted files wait in `Download/Benz Mirror Paste` until the session ends.
 - The app collects nothing and sends nothing anywhere. It talks to your phone through `adb` and, for the optional debug-app view, to the profiler that ships with your own Android Studio.
 - Third-party licences are in `Resources/THIRD-PARTY-NOTICES.txt` and under Settings › About › Licenses.
+
+## License
+
+Benz Mirror is released under the Apache License 2.0 (see `LICENSE` and `NOTICE`). Copyright 2026 Rohman Beny Riyanto.
+It builds on third-party software under their own licences, listed in `Resources/THIRD-PARTY-NOTICES.txt`.

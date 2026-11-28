@@ -18,7 +18,7 @@ struct AboutTab: View {
         }
         SettingsCard("Creator") {
             SettingsRow("Created by") { Text(verbatim: AppInfo.creator) }
-            SettingsRow("Copyright") { Text(verbatim: "© 2026 \(AppInfo.creator)").foregroundStyle(.secondary) }
+            SettingsRow("Copyright") { Text(verbatim: "© 2026 \(AppInfo.creator) · Apache License 2.0").foregroundStyle(.secondary) }
         }
         SettingsCard("Built on", footer: "Benz Mirror uses the scrcpy server (Apache License 2.0) on the phone. The client on the Mac is written in Swift. Nothing is installed on the phone.") {
             SettingsRow("scrcpy", detail: "Genymobile, Apache License 2.0") {
