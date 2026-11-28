@@ -25,7 +25,7 @@ let package = Package(
         // adb, the scrcpy session, sockets, wireless setup and the local OBS server.
         .target(name: "Networking", dependencies: ["DomainModels", "Media"]),
         // macOS facilities: pointer lock, key capture.
-        .target(name: "SystemServices"),
+        .target(name: "SystemServices", dependencies: ["DomainModels"]),
         // Test helpers shared by the tests below (loopback client, ffmpeg-made test video).
         .target(name: "CoreTestSupport", dependencies: ["DomainModels", "Media", "Networking", "TestSupport"]),
 
